@@ -1,45 +1,60 @@
 package roomescape;
 
+import java.net.URI;
 import java.text.ParseException;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicLong;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
 public class ReservationController {
 
   private List<Reservation> reservations = new ArrayList<>();
 
+  private AtomicLong index = new AtomicLong(1);
+
   @GetMapping("/reservation")
   public String reservation(Model model) throws ParseException {
-    if(reservations.size() == 0){
-      LocalDate date1 = LocalDate.of(2023, 1, 1);
-      LocalTime time1 = LocalTime.of(10, 0, 0);
-      Reservation reservation1 = new Reservation(1L, "브라운", date1, time1);
-      reservations.add(reservation1);
-
-      LocalDate date2 = LocalDate.of(2023, 1, 1);
-      LocalTime time2 = LocalTime.of(10, 0, 0);
-      Reservation reservation2 = new Reservation(2L, "브라운", date2, time2);
-      reservations.add(reservation2);
-
-      LocalDate date3 = LocalDate.of(2023, 1, 1);
-      LocalTime time3 = LocalTime.of(10, 0, 0);
-      Reservation reservation3 = new Reservation(3L, "브라운", date3, time3);
-      reservations.add(reservation3);
-    }
-
     return "reservation";
+  }
+
+  @PostMapping("/reservations")
+  public ResponseEntity<Reservation> create(@RequestBody Reservation reservation){
+    Reservation newReservation = Reservation.toEntity(reservation, index.getAndIncrement());
+    reservations.add(newReservation);
+
+    HttpHeaders headers = new HttpHeaders();
+    headers.setLocation(URI.create("/reservations/" + newReservation.getId()));
+
+    return new ResponseEntity<>(newReservation, headers, HttpStatus.CREATED);
   }
 
   @GetMapping("/reservations")
   public ResponseEntity<List<Reservation>> read() {
     return ResponseEntity.ok().body(reservations);
+  }
+
+  @DeleteMapping("/reservations/{id}")
+  public ResponseEntity<Void> delete(@PathVariable Long id){
+    Reservation reservation = reservations.stream()
+        .filter(it -> Objects.equals(it.getId(), id))
+        .findFirst()
+        .orElseThrow(RuntimeException::new);
+
+    reservations.remove(reservation);
+
+    return ResponseEntity.noContent().build();
   }
 
 }
