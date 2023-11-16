@@ -16,4 +16,17 @@ public class MissionStepTest {
                 .then().log().all()
                 .statusCode(200);
     }
+
+    @Test
+    void 이단계() {
+        RestAssured.given().log().all()
+            .when().get("/reservation")
+            .then().log().all()
+            .statusCode(200);
+
+        RestAssured.given().log().all()
+            .when().get("/reservations")
+            .then().log().all()
+            .statusCode(200);
+    }
 }
