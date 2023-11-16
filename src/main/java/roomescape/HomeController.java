@@ -11,4 +11,9 @@ public class HomeController {
   public String home(Model model) {
     return "home";
   }
+
+  @GetMapping("/reservation")
+  public String reservation(Model model) {
+    return "reservation";
+  }
 }
