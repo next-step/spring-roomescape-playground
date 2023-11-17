@@ -79,6 +79,22 @@ public class ReservationControllerTest extends RoomescapeApplicationTest {
                     .statusCode(200)
                     .body("size()", is(1));
         }
+
+        @Test
+        @DisplayName("필요한 인자가 없는 경우 예약 추가는 400 Bad Request를 반환한다.")
+        public void 필요한_인자가_없는_경우_예약_추가는_400_Bad_Request를_반환한다() {
+            Map<String, String> params = new HashMap<>();
+            params.put("name", "브라운");
+            params.put("date", "");
+            params.put("time", "");
+
+            RestAssured.given().log().all()
+                    .contentType(JSON)
+                    .body(params)
+                    .when().post("/reservations")
+                    .then().log().all()
+                    .statusCode(400);
+        }
     }
 
     @Nested
@@ -132,6 +148,15 @@ public class ReservationControllerTest extends RoomescapeApplicationTest {
                     .then().log().all()
                     .statusCode(200)
                     .body("size()", is(0));
+        }
+
+        @Test
+        @DisplayName("삭제할 예약을 찾을 수 없을 경우 400 Bad Request를 반환한다.")
+        public void 삭제할_예약을_찾을_수_없을_경우_400_Bad_Request를_반환한다() {
+            RestAssured.given().log().all()
+                    .when().delete("/reservations/2")
+                    .then().log().all()
+                    .statusCode(400);
         }
     }
 }
