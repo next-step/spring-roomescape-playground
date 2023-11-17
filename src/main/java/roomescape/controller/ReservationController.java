@@ -1,6 +1,7 @@
 package roomescape.controller;
 
 import static roomescape.utils.ErrorMessage.*;
+import static roomescape.validation.ReservationValidation.validate;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -11,12 +12,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.util.StringUtils;
 import roomescape.exception.NotFoundReservationException;
 import roomescape.repository.Reservation;
 
@@ -55,20 +54,5 @@ public class ReservationController {
         return ResponseEntity.noContent().build();
     }
 
-    private void validate(Reservation reservation){
-        if (!StringUtils.hasText(reservation.getName())) {
-            throw new NotFoundReservationException(EMPTY_NAME_ERROR);
-        }
-        if (!StringUtils.hasText(reservation.getDate())) {
-            throw new NotFoundReservationException(EMPTY_DATE_ERROR);
-        }
-        if (!StringUtils.hasText(reservation.getTime())) {
-            throw new NotFoundReservationException(EMPTY_TIME_ERROR);
-        }
-    }
 
-    @ExceptionHandler(NotFoundReservationException.class)
-    public ResponseEntity handleException(NotFoundReservationException e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
-    }
 }
