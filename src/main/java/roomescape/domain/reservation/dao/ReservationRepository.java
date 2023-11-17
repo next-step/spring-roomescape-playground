@@ -31,4 +31,9 @@ public class ReservationRepository {
     public void delete(Reservation reservation) {
         reservations.remove(reservation);
     }
+
+    public void deleteById(long reservationId) {
+        Reservation reservation = findById(reservationId);
+        delete(reservation);
+    }
 }
