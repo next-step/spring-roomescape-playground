@@ -19,4 +19,16 @@ public class SimpleReservationRepository {
     public List<Reservation> findAll() {
         return reservations;
     }
+
+    public void delete(final Long id) {
+        final Reservation reservation = findById(id);
+        reservations.remove(reservation);
+    }
+
+    public Reservation findById(final Long id) {
+        return reservations.stream()
+                .filter(reservation -> reservation.getId() == id)
+                .findFirst()
+                .orElseThrow();
+    }
 }
