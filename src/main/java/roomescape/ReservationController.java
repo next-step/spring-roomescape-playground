@@ -6,16 +6,18 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Controller
 public class ReservationController {
-    private final List<Reservation> reservations = new ArrayList<>();
-    private final AtomicLong index = new AtomicLong(1);
+    private List<Reservation> reservations = new ArrayList<>();
+    private AtomicLong index = new AtomicLong(1);
 
     @GetMapping("/reservation")
     public String reservation(Model model) {
@@ -31,6 +33,28 @@ public class ReservationController {
     @GetMapping("/reservations")
     public ResponseEntity<List<Reservation>> read() {
         return ResponseEntity.status(HttpStatus.OK).body(reservations);
+    }
+
+    @PostMapping("/reservations")
+    public ResponseEntity<Reservation> create(@RequestBody Reservation reservation){
+        Reservation newReservation = Reservation.toEntity(reservation, index.getAndIncrement());
+        reservations.add(newReservation);
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .location(URI.create("/reservations/" + newReservation.getId()))
+                .body(newReservation);
+    }
+
+    @DeleteMapping("/reservations/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        Reservation reservation = reservations.stream()
+                .filter(it -> Objects.equals(it.getId(), id))
+                .findFirst()
+                .orElseThrow();
+
+        reservations.remove(reservation);
+
+        return ResponseEntity.noContent().build();
     }
 
 
