@@ -32,7 +32,7 @@ public class ReservationController {
         Reservation newReservation = Reservation.toEntity(reservation, index.getAndIncrement());
         reservations.add(newReservation);
         return ResponseEntity
-                .created(URI.create("/reservations/" + newReservation.getId()))
+                .created(URI.create("/reservations/" + newReservation.id()))
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(newReservation);
     }
@@ -45,7 +45,7 @@ public class ReservationController {
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         Reservation reservation = reservations.stream()
-                .filter(it -> Objects.equals(it.getId(), id))
+                .filter(it -> Objects.equals(it.id(), id))
                 .findFirst()
                 .orElseThrow(() -> new NotFoundReservationException(NON_EXISTING_RESERVATION));
 
