@@ -7,7 +7,9 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import roomescape.domain.reservation.dao.ReservationRepository;
@@ -37,5 +39,12 @@ public class ReservationController {
         return ResponseEntity.status(CREATED)
                 .location(URI.create("/reservations/" + reservation.getId()))
                 .body(reservation);
+    }
+
+    @DeleteMapping("/reservations/{reservationId}")
+    public ResponseEntity<Void> deleteReservation(@PathVariable long reservationId) {
+        Reservation reservation = reservationRepository.findById(reservationId);
+        reservationRepository.delete(reservation);
+        return ResponseEntity.noContent().build();
     }
 }
