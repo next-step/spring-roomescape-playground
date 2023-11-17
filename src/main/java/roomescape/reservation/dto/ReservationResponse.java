@@ -1,10 +1,11 @@
-package roomescape.reservation;
+package roomescape.reservation.dto;
 
 import static lombok.AccessLevel.PRIVATE;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import roomescape.reservation.Reservation;
 
 @Getter
 @Builder
