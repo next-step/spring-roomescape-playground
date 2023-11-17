@@ -13,4 +13,8 @@ public class ReservationRepository {
     public List<Reservation> findAll() {
         return reservations;
     }
+
+    public void save(Reservation reservation) {
+        reservations.add(reservation);
+    }
 }
