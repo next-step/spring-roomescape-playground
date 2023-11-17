@@ -1,9 +1,12 @@
 package roomescape.domain.reservation.dao;
 
+import static roomescape.global.error.exception.ReservationException.ErrorCode.NOT_FOUND;
+
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.reservation.model.Reservation;
+import roomescape.global.error.exception.ReservationException;
 
 @Repository
 public class ReservationRepository {
@@ -22,7 +25,7 @@ public class ReservationRepository {
         return reservations.stream()
                 .filter(reservation -> reservation.isEquals(reservationId))
                 .findFirst()
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new ReservationException(NOT_FOUND));
     }
 
     public void delete(Reservation reservation) {
