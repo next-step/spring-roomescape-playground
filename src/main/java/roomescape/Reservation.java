@@ -34,15 +34,4 @@ public class Reservation {
     public static Reservation toEntity(Reservation reservation, Long Id){
         return new Reservation(Id, reservation.name, reservation.date, reservation.time);
     }
-
-
-    @Override
-    public String toString() {
-        return "Reservation{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", date='" + date + '\'' +
-                ", time='" + time + '\'' +
-                '}';
-    }
 }

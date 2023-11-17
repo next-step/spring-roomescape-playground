@@ -1,12 +1,12 @@
 package roomescape;
 
+import error.Exception400;
+import error.HandleException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.stereotype.Repository;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.net.URI;
@@ -24,7 +24,11 @@ public class ReservationController {
         return "reservation";
     }
     @PostMapping("/reservation")
-    public String PostReservation (@RequestBody Reservation reservation,Model model ){
+    public String PostReservation (@RequestBody Reservation reservation,Model model ) {
+        if (reservation.getDate().isEmpty() || reservation.getTime().isEmpty()) {
+            throw new Exception400("정보를 모두 기입해주세요");
+        }
+
         Reservation newReservation = Reservation.toEntity(reservation,index.getAndIncrement());
         reservations.add(newReservation);
         model.addAttribute("reservations",reservations);
@@ -49,6 +53,10 @@ public class ReservationController {
 
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> PostReservations ( @RequestBody Reservation reservation ){
+        if (reservation.getDate().isEmpty() || reservation.getTime().isEmpty()) {
+            throw new Exception400("정보를 모두 기입해주세요");
+        }
+
         Reservation newReservation = Reservation.toEntity( reservation,index.getAndIncrement());
         reservations.add(newReservation);
         return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
@@ -56,7 +64,6 @@ public class ReservationController {
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> DeleteReservations (@PathVariable Long id){
-        System.out.println("Aa : " + id);
         Reservation reservation = reservations.stream()
                 .filter(it -> Objects.equals(it.getId(), id))
                 .findFirst()
