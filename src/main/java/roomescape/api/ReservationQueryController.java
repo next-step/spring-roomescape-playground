@@ -10,10 +10,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/reservations")
-public class ReservationController {
+public class ReservationQueryController {
     private final SimpleReservationRepository reservationRepository;
 
-    public ReservationController(final SimpleReservationRepository reservationRepository) {
+    public ReservationQueryController(final SimpleReservationRepository reservationRepository) {
         this.reservationRepository = reservationRepository;
     }
 
