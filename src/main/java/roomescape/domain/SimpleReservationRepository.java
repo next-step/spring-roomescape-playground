@@ -32,6 +32,6 @@ public class SimpleReservationRepository {
         return reservations.stream()
                 .filter(reservation -> reservation.getId() == id)
                 .findFirst()
-                .orElseThrow();
+                .orElseThrow(() -> new IllegalArgumentException("해당 id를 가진 예약이 존재하지 않습니다."));
     }
 }
