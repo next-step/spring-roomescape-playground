@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import roomescape.exception.NotFoundReservationException;
-import roomescape.repository.Reservation;
+import roomescape.domain.Reservation;
 
 @Controller
 public class ReservationController {

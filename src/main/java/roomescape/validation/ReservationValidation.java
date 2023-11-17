@@ -4,7 +4,7 @@ import static roomescape.utils.ErrorMessage.*;
 
 import org.springframework.util.StringUtils;
 import roomescape.exception.NotFoundReservationException;
-import roomescape.repository.Reservation;
+import roomescape.domain.Reservation;
 import roomescape.utils.ErrorMessage;
 
 
