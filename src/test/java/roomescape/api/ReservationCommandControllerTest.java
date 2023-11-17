@@ -41,7 +41,25 @@ class ReservationCommandControllerTest {
     }
 
     @Test
-    @DisplayName("특적 예약을 삭제할 수 있다.")
+    @DisplayName("추가하려는 예약의 정보 중 필요한 인자가 없는 경우 400 상태코드를 반환한다.")
+    void addReservation_fail() {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", "브라운");
+        params.put("date", "");
+        params.put("time", "");
+
+        // 필요한 인자가 없는 경우
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(400);
+
+    }
+
+    @Test
+    @DisplayName("특정 예약을 삭제할 수 있다.")
     void removeReservation() {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
@@ -69,4 +87,13 @@ class ReservationCommandControllerTest {
                 .body("size()", is(0));
     }
 
+    @Test
+    @DisplayName("삭제하려는 예약이 존재하지 않을 경우 400 상태코드를 반환한다.")
+    void removeReservation_fail() {
+        // 삭제할 예약이 없는 경우
+        RestAssured.given().log().all()
+                .when().delete("/reservations/1")
+                .then().log().all()
+                .statusCode(400);
+    }
 }
