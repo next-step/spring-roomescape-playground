@@ -39,7 +39,7 @@ public class ReservationController {
         Reservation reservation = reservations.stream()
                 .filter(it -> Objects.equals(it.getId(), id))
                 .findFirst()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(()-> new Exception400("해당 아이디를 찾을 수 없습니다"));
         reservations.remove(reservation);
         model.addAttribute("reservations",reservations);
         return "reservation";
@@ -53,7 +53,7 @@ public class ReservationController {
 
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> PostReservations ( @RequestBody Reservation reservation ){
-        if (reservation.getDate().isEmpty() || reservation.getTime().isEmpty()) {
+        if (reservation.getName().isEmpty()|| reservation.getDate().isEmpty() || reservation.getTime().isEmpty()) {
             throw new Exception400("정보를 모두 기입해주세요");
         }
 
@@ -64,10 +64,11 @@ public class ReservationController {
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> DeleteReservations (@PathVariable Long id){
+
         Reservation reservation = reservations.stream()
                 .filter(it -> Objects.equals(it.getId(), id))
                 .findFirst()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(()-> new Exception400("해당 아이디를 찾을 수 없습니다"));
         reservations.remove(reservation);
         return ResponseEntity.noContent().build();
     }
