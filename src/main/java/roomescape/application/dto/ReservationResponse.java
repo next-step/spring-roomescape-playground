@@ -1,5 +1,7 @@
 package roomescape.application.dto;
 
+import roomescape.domain.Reservation;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -30,5 +32,9 @@ public class ReservationResponse {
 
     public LocalTime getTime() {
         return time;
+    }
+
+    public static ReservationResponse from(final Reservation reservation) {
+        return new ReservationResponse(reservation.getId(), reservation.getName(), reservation.getDate(), reservation.getTime());
     }
 }
