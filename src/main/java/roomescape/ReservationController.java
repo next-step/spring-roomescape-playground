@@ -2,12 +2,15 @@ package roomescape;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Repository;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.net.URI;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Controller
@@ -17,27 +20,26 @@ public class ReservationController {
 
     @GetMapping("/reservation")
     public String GetReservation (Model model){
-//        reservations = new ArrayList<>();
-//        reservations.add(new Reservation(index.incrementAndGet(), "브라운1", "2023-01-01", "10:00"));
-//        reservations.add( new Reservation(index.incrementAndGet(),"브라운2", "2023-01-01", "11:00"));
-//        reservations.add(new Reservation(index.incrementAndGet(),"브라운3", "2023-01-01", "12:00"));
         model.addAttribute("reservations",reservations);
         return "reservation";
     }
     @PostMapping("/reservation")
     public String PostReservation (@RequestBody Reservation reservation,Model model ){
-        Reservation newReservation = Reservation.toEntity( reservation,index.getAndIncrement());
+        Reservation newReservation = Reservation.toEntity(reservation,index.getAndIncrement());
         reservations.add(newReservation);
         model.addAttribute("reservations",reservations);
         return "reservation";
     }
-//    @DeleteMapping("/reservations")
-//    public String DeleteReservation (@RequestBody Reservation reservation,){
-//        Reservation newReservation = Reservation.toEntity( reservation,index.incrementAndGet());
-//        reservations.add(newReservation);
-//        model.addAttribute("reservations",reservations);
-//        return "reservation";
-//    }
+    @DeleteMapping("/reservation")
+    public String DeleteReservation (@PathVariable Long id, Model model){
+        Reservation reservation = reservations.stream()
+                .filter(it -> Objects.equals(it.getId(), id))
+                .findFirst()
+                .orElseThrow(RuntimeException::new);
+        reservations.remove(reservation);
+        model.addAttribute("reservations",reservations);
+        return "reservation";
+    }
 
     @GetMapping("/reservations")
     public ResponseEntity<List<Reservation>> GetReservations (){
@@ -46,19 +48,21 @@ public class ReservationController {
 
 
     @PostMapping("/reservations")
-    public ResponseEntity<Reservation> PostReservations ( @RequestBody Reservation reservation ,Model model){
-        System.out.println("bb : " + reservations +",  " + index );
+    public ResponseEntity<Reservation> PostReservations ( @RequestBody Reservation reservation ){
         Reservation newReservation = Reservation.toEntity( reservation,index.getAndIncrement());
-        System.out.println("aaa : "+ newReservation);
-        model.addAttribute("reservations",reservations);
         reservations.add(newReservation);
         return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
     }
 
-
-//    @DeleteMapping("/reservations")
-//    public ResponseEntity<List<Reservation>> DeleteReservations (){
-//        return ResponseEntity.ok().body(reservations);
-//    }
+    @DeleteMapping("/reservations/{id}")
+    public ResponseEntity<Void> DeleteReservations (@PathVariable Long id){
+        System.out.println("Aa : " + id);
+        Reservation reservation = reservations.stream()
+                .filter(it -> Objects.equals(it.getId(), id))
+                .findFirst()
+                .orElseThrow(RuntimeException::new);
+        reservations.remove(reservation);
+        return ResponseEntity.noContent().build();
+    }
 
 }
