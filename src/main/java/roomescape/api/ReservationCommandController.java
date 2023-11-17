@@ -21,21 +21,21 @@ public class ReservationCommandController {
     }
 
     @PostMapping
-    public ResponseEntity<ReservationResponse> addReservation(@RequestBody ReservationCreateRequest request) {
+    public ResponseEntity<ReservationResponse> addReservation(@RequestBody final ReservationCreateRequest request) {
         validateNotEmptyRequest(request);
         final Reservation savedReservation = reservationRepository.save(ReservationCreateRequest.from(request));
         return ResponseEntity.created(URI.create("/reservations/" + savedReservation.getId()))
                 .body(ReservationResponse.from(savedReservation));
     }
 
-    private void validateNotEmptyRequest(ReservationCreateRequest request) {
+    private void validateNotEmptyRequest(final ReservationCreateRequest request) {
         if (request.getName().isEmpty() || request.getDate().isEmpty() || request.getTime().isEmpty()) {
             throw new IllegalArgumentException("예약 정보의 인자는 비어있을 수 없습니다.");
         }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> removeReservation(@PathVariable Long id) {
+    public ResponseEntity<Void> removeReservation(@PathVariable final Long id) {
         reservationRepository.delete(id);
         return ResponseEntity.noContent().build();
     }
