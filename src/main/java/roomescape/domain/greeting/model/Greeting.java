@@ -1,4 +1,4 @@
-package roomescape.domain;
+package roomescape.domain.greeting.model;
 
 public class Greeting {
 
