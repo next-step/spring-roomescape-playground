@@ -3,19 +3,19 @@ package roomescape;
 
 
 public class Reservation {
-    private int id;
+    private Long id;
     private  String name;
     private  String date;
     private  String time;
 
-    public Reservation(int id, String name, String date, String time) {
+    public Reservation(Long id, String name, String date, String time) {
         this.id = id;
         this.name = name;
         this.date = date;
         this.time = time;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
@@ -29,5 +29,20 @@ public class Reservation {
 
     public String getTime() {
         return time;
+    }
+
+    public static Reservation toEntity(Reservation reservation, Long Id){
+        return new Reservation(Id, reservation.name, reservation.date, reservation.time);
+    }
+
+
+    @Override
+    public String toString() {
+        return "Reservation{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", date='" + date + '\'' +
+                ", time='" + time + '\'' +
+                '}';
     }
 }
