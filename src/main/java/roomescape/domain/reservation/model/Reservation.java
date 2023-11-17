@@ -22,4 +22,8 @@ public class Reservation {
         this.date = date;
         this.time = time;
     }
+
+    public boolean isEquals(long id) {
+        return this.id == id;
+    }
 }

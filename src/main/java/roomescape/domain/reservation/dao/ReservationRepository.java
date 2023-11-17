@@ -17,4 +17,15 @@ public class ReservationRepository {
     public void save(Reservation reservation) {
         reservations.add(reservation);
     }
+
+    public Reservation findById(long reservationId) {
+        return reservations.stream()
+                .filter(reservation -> reservation.isEquals(reservationId))
+                .findFirst()
+                .orElseThrow(IllegalArgumentException::new);
+    }
+
+    public void delete(Reservation reservation) {
+        reservations.remove(reservation);
+    }
 }
