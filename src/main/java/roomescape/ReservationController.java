@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,6 +33,11 @@ public class ReservationController {
 
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> create(@RequestBody Reservation reservation){
+        if( reservation.getName() == null ||
+            reservation.getDate() == null ||
+            reservation.getTimeNotFormatted() == null )
+            throw new NotFoundReservationException();
+
         Reservation newReservation = Reservation.toEntity(reservation, index.getAndIncrement());
         reservations.add(newReservation);
 
@@ -46,10 +52,20 @@ public class ReservationController {
         Reservation reservation = reservations.stream()
             .filter(it -> Objects.equals(it.getId(), id))
             .findFirst()
-            .orElseThrow(RuntimeException::new);
+            .orElseThrow(NotFoundReservationException::new);
 
         reservations.remove(reservation);
 
         return ResponseEntity.noContent().build();
     }
+
+    @ExceptionHandler(NotFoundReservationException.class)
+    public ResponseEntity handleException(NotFoundReservationException e){
+        return ResponseEntity.badRequest().build();
+    }
+}
+
+class NotFoundReservationException extends RuntimeException{
+    public NotFoundReservationException(){}
+    public NotFoundReservationException(String message){super(message);}
 }

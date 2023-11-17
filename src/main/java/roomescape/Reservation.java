@@ -39,6 +39,9 @@ public class Reservation {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
         return time.format(formatter);
     }
+    public LocalTime getTimeNotFormatted(){
+        return time;
+    }
 
     public static Reservation toEntity(Reservation reservation, Long id){
         return new Reservation(id, reservation.name, reservation.date, reservation.time);
