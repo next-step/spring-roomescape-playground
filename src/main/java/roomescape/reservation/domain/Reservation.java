@@ -5,6 +5,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -19,10 +20,12 @@ public class Reservation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
     private String name;
     private LocalDate date;
     private LocalTime time;
 
+    @Builder
     public Reservation(final Long id, final String name, final LocalDate date, final LocalTime time) {
         this.id = id;
         this.name = name;
