@@ -90,6 +90,6 @@ public class MissionStepTest {
                 .when().delete("/reservations/1")
                 .then().log().all()
                 .statusCode(400);
-    }s
+    }
 }
 
