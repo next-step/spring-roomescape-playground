@@ -18,15 +18,19 @@ public class ReservationService {
 
     private final ReservationRepository reservationRepository;
 
-    private final List<Reservation> reservations = new ArrayList<>();
-
     public List<Reservation> findReservations() {
-        return reservations;
+        return reservationRepository.findAll();
     }
 
     public ReservationResponse.createReservationDto saveReservation(ReservationRequest.CreateReservationDto request) {
         Reservation reservation = request.toEntity();
         reservationRepository.save(reservation);
         return new ReservationResponse.createReservationDto(reservation);
+    }
+
+    public void removeReservation(Long id) {
+        Reservation reservation = reservationRepository.findById(id)
+                .orElseThrow();
+        reservationRepository.delete(reservation);
     }
 }
