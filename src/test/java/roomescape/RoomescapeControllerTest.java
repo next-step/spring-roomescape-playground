@@ -16,4 +16,18 @@ public class RoomescapeControllerTest {
                 .then().log().all()
                 .statusCode(200);
     }
+
+    @Test
+    void step2() {
+        RestAssured.given().log().all()
+                .when().get("/reservation")
+                .then().log().all()
+                .statusCode(200);
+
+        RestAssured.given().log().all()
+                .when().get("/reservations")
+                .then().log().all()
+                .statusCode(200)
+                .body("size()", is(3));
+    }
 }
