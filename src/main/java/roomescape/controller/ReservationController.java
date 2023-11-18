@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 import roomescape.dto.Reservation;
+import roomescape.exception.IllegalReservationException;
+import roomescape.exception.NotFoundReservationException;
 
 @RestController
 @RequestMapping("/reservations")
@@ -26,17 +28,27 @@ public class ReservationController {
     private final AtomicLong counter = new AtomicLong(0);
 
     @PostMapping
-    public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservation,
-                                                         UriComponentsBuilder uriBuilder) {
-        reservation.setId(counter.incrementAndGet());
-        reservation.setDate(reservation.getDate());
-        reservation.setTime(reservation.getTime());
-        reservations.add(reservation);
+    public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservation) {
+        try {
+            if (reservation == null || reservation.getDate() == null || reservation.getTime() == null
+                    || reservation.getName().isEmpty()) {
+                throw new IllegalReservationException("Reservation의 항목이 채워지지 않았습니다");
+            }
 
-        // "Location" 헤더 설정
-        return ResponseEntity.status(CREATED)
-                .location(java.net.URI.create("/reservations/" + reservation.getId()))
-                .body(reservation);
+            reservation.setId(counter.incrementAndGet());
+            reservation.setDate(reservation.getDate());
+            reservation.setTime(reservation.getTime());
+            reservations.add(reservation);
+
+            return ResponseEntity
+                    .<Reservation>status(CREATED)
+                    .location(java.net.URI.create("/reservations/" + reservation.getId()))
+                    .body(reservation);
+        } catch (IllegalReservationException e) {
+            return ResponseEntity.<Reservation>status(HttpStatus.BAD_REQUEST).body(reservation);
+        } catch (Exception e) {
+            return ResponseEntity.<Reservation>status(HttpStatus.INTERNAL_SERVER_ERROR).body(reservation);
+        }
     }
 
 
@@ -56,7 +68,9 @@ public class ReservationController {
                 return ResponseEntity.noContent().build();
             }
         }
-        return ResponseEntity.notFound().build();
+
+        // 해당 ID의 예약이 없으면 예외 발생
+        throw new NotFoundReservationException("Reservation with ID " + id + " not found");
     }
 
 
