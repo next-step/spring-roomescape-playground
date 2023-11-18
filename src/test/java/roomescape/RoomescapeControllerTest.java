@@ -1,5 +1,7 @@
 package roomescape;
 
+import static org.hamcrest.Matchers.is;
+
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
