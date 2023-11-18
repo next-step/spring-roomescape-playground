@@ -1,9 +1,6 @@
 package roomescape.reservation.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,6 +12,7 @@ import java.time.LocalTime;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "reservation_tb")
 public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,8 +20,10 @@ public class Reservation {
 
     private String name;
 
+    @Temporal(TemporalType.DATE)
     private LocalDate date;
 
+    @Temporal(TemporalType.TIME)
     private LocalTime time;
 
     @Builder

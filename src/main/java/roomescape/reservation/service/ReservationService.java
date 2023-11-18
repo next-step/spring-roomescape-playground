@@ -1,8 +1,10 @@
 package roomescape.reservation.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 import roomescape.reservation.domain.Reservation;
 import roomescape.reservation.dto.request.ReservationRequest;
 import roomescape.reservation.dto.response.ReservationResponse;
@@ -24,6 +26,11 @@ public class ReservationService {
 
     @Transactional
     public ReservationResponse.createReservationDto saveReservation(ReservationRequest.CreateReservationDto request) {
+        if (request.name() == null || request.date() == null || request.time() == null) {
+            System.out.println("hello");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "양식을 채워주세요.");
+        }
+
         Reservation reservation = request.toEntity();
         reservationRepository.save(reservation);
         return new ReservationResponse.createReservationDto(reservation);
@@ -32,7 +39,7 @@ public class ReservationService {
     @Transactional
     public void removeReservation(Long id) {
         Reservation reservation = reservationRepository.findById(id)
-                .orElseThrow();
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         reservationRepository.delete(reservation);
     }
 }
