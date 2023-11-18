@@ -10,7 +10,7 @@ import org.springframework.test.annotation.DirtiesContext;
 public class RoomescapeControllerTest {
 
     @Test
-    void 일단계() {
+    void step1() {
         RestAssured.given().log().all()
                 .when().get("/")
                 .then().log().all()
