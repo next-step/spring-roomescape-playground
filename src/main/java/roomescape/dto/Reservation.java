@@ -31,7 +31,4 @@ public class Reservation {
         return id;
     }
 
-//    public void setId(long l) {
-//        this.id = l;
-//    }
 }
