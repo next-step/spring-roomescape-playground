@@ -9,7 +9,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class ReservationRequest {
-    public record createReservationDto(
+    public record CreateReservationDto(
             @NotBlank(message = "이름은 필수 입력입니다.")
             String name,
 

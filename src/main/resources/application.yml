@@ -10,3 +10,19 @@ spring:
     driver-class-name: org.h2.Driver
     username: sa
     password: sa
+  h2:
+    console:
+      enabled: true
+    jpa:
+      hibernate:
+        ddl-auto: create
+      properties:
+        hibernate:
+          format_sql: true
+          highlight_sql: true
+        default_batch_fetch_size: 100
+      open-in-view: false
+      defer-datasource-initialization: true
+    sql:
+      init:
+        encoding: utf-8
