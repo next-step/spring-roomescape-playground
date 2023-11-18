@@ -31,7 +31,7 @@ public class ReservationController {
     public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservation) {
         validate(reservation);
 
-        Reservation newReservation = Reservation.toEntity(reservation, index.getAndIncrement());
+        Reservation newReservation = Reservation.createWithId(reservation, index.getAndIncrement());
         reservations.add(newReservation);
         return ResponseEntity
                 .created(URI.create("/reservations/" + newReservation.id()))
