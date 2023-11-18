@@ -45,9 +45,9 @@ public class ReservationController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable AtomicLong id) {
         Reservation reservation = reservations.stream()
-                .filter(it -> Objects.equals(it.id(), id))
+                .filter(it -> Objects.equals(it.id().get(), id.get()))
                 .findFirst()
                 .orElseThrow(() -> new NotFoundReservationException(NON_EXISTING_RESERVATION));
 
