@@ -1,8 +1,11 @@
 package roomescape.domain;
 
+import lombok.Getter;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+@Getter
 public class Reservation {
     private final Long id;
     private final String name;
