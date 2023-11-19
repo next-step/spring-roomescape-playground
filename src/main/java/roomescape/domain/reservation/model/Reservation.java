@@ -8,7 +8,7 @@ import lombok.Getter;
 
 @Getter
 public class Reservation {
-    private static AtomicLong INDEX = new AtomicLong(0);
+    private static final AtomicLong INDEX = new AtomicLong(0);
 
     private Long id;
     private String name;
