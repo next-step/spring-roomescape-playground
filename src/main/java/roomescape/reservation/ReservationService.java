@@ -62,7 +62,8 @@ public class ReservationService {
 
   @Transactional
   public void deleteReservation(Long id) {
-    reservationRepository.findById(id).orElseThrow(() -> new Exception400("예약 내역이 없습니다."));
+    Reservation reservation = reservationRepository.findById(id).orElseThrow(() -> new Exception400("예약 내역이 없습니다."));
+    reservationRepository.delete(reservation);
   }
 
 }
