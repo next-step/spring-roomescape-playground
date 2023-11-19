@@ -1,39 +1,19 @@
 package roomescape.domain.reservation.dao;
 
-import static roomescape.global.error.exception.ReservationException.ErrorCode.NOT_FOUND;
-
-import java.util.ArrayList;
 import java.util.List;
-import org.springframework.stereotype.Repository;
 import roomescape.domain.reservation.model.Reservation;
-import roomescape.global.error.exception.ReservationException;
 
-@Repository
-public class ReservationRepository {
+public interface ReservationRepository {
 
-    private final List<Reservation> reservations = new ArrayList<>();
+    List<Reservation> findAll();
 
-    public List<Reservation> findAll() {
-        return reservations;
-    }
+    void save(Reservation reservation);
 
-    public void save(Reservation reservation) {
-        reservations.add(reservation);
-    }
+    Reservation findById(long reservationId);
 
-    public Reservation findById(long reservationId) {
-        return reservations.stream()
-                .filter(reservation -> reservation.isEquals(reservationId))
-                .findFirst()
-                .orElseThrow(() -> new ReservationException(NOT_FOUND));
-    }
+    void delete(Reservation reservation);
 
-    public void delete(Reservation reservation) {
-        reservations.remove(reservation);
-    }
+    void deleteById(long reservationId);
 
-    public void deleteById(long reservationId) {
-        Reservation reservation = findById(reservationId);
-        delete(reservation);
-    }
+    void clear();
 }
