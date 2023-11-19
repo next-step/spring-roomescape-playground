@@ -1,7 +1,9 @@
 package roomescape.reservation.domain;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
+import static lombok.AccessLevel.PROTECTED;
+
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +13,7 @@ import java.time.LocalTime;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = PROTECTED)
 @Table(name = "reservation_tb")
 public class Reservation {
     @Id
