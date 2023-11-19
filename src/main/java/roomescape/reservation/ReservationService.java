@@ -39,7 +39,7 @@ public class ReservationService {
 
   @Transactional
   public ReservationResponse addReservation(String date, String name, String time) {
-    if (date == null || name == null || time == null || date.isEmpty() || name.isEmpty() || time.isEmpty()) {
+    if (date.isEmpty() || name.isEmpty() || time.isEmpty()) {
       throw new Exception400("올바른 예약 정보가 제공되지 않았습니다.");
     }
 
