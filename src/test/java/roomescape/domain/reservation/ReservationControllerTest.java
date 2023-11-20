@@ -12,12 +12,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import roomescape.RoomescapeApplicationTest;
-import roomescape.domain.reservation.dao.ReservationRepository;
-import roomescape.domain.reservation.dao.SimpleReservationRepository;
+import roomescape.domain.reservation.model.Reservations;
 
 public class ReservationControllerTest extends RoomescapeApplicationTest {
 
-    private final ReservationRepository reservationRepository = new SimpleReservationRepository();
+    private final Reservations reservations = new Reservations();
 
     @Test
     @DisplayName("reservation 페이지 조회 시 200 OK를 반환한다.")
@@ -41,7 +40,7 @@ public class ReservationControllerTest extends RoomescapeApplicationTest {
         @BeforeEach
         void setUp() {
             params = putAllParams("브라운", "2023-08-05", "15:40");
-            reservationRepository.clear();
+            reservations.clear();
         }
 
         @Test
@@ -78,6 +77,17 @@ public class ReservationControllerTest extends RoomescapeApplicationTest {
             // when & then
             postMethodTest(params, "/reservations", 400);
         }
+
+        @Test
+        @DisplayName("중복된 예약일 경우 400 Bad Request를 반환한다.")
+        public void 중복된_예약일_경우_400_Bad_Request를_반환한다() {
+            // given
+            params = putAllParams("브라운", "2023-08-05", "15:40");
+            postMethodTest(params, "/reservations", 201);
+
+            // when & then
+            postMethodTest(params, "/reservations", 400);
+        }
     }
 
     @Nested
@@ -89,7 +99,7 @@ public class ReservationControllerTest extends RoomescapeApplicationTest {
         @BeforeEach
         void setUp() {
             params = putAllParams("브라운", "2023-08-05", "15:40");
-            reservationRepository.clear();
+            reservations.clear();
         }
 
         @Test
