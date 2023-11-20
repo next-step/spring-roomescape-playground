@@ -1,8 +1,11 @@
-package roomescape;
+package roomescape.reservation.domain;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
+
+
 
 public class Reservation {
     private Long id;
@@ -29,8 +32,9 @@ public class Reservation {
     public LocalDate getDate(){
         return date;
     }
-    public String getTime(){
-        return time.format(DateTimeFormatter.ofPattern("HH:mm"));
+    public Optional<String> getTime() {
+        return Optional.ofNullable(time)
+                .map(t -> t.format(DateTimeFormatter.ofPattern("HH:mm")));
     }
 
     public static Reservation toEntity(Reservation reservation, Long id) {
