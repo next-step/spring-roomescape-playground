@@ -3,16 +3,20 @@ package roomescape;
 import static org.hamcrest.Matchers.is;
 
 import io.restassured.RestAssured;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+@SuppressWarnings("NonAsciiCharacters")
 class MissionStepTest {
 
     @Test
-    void 일단계() {
+    void 홈_화면을_반환한다() {
         RestAssured.given().log().all()
             .when().get("/")
             .then().log().all()
@@ -20,7 +24,7 @@ class MissionStepTest {
     }
 
     @Test
-    void 이단계() {
+    void 에약_정보를_반환한다() {
         RestAssured.given().log().all()
             .when().get("/reservation")
             .then().log().all()

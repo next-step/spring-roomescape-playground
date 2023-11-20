@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import roomescape.controller.dto.ReservationResponse;
 import roomescape.domain.Reservation;
 
 @Controller
@@ -27,7 +28,9 @@ public class ReservationController {
 
     @GetMapping("/reservations")
     @ResponseBody
-    public List<Reservation> reservations() {
-        return reservations;
+    public List<ReservationResponse> reservations() {
+        return reservations.stream()
+            .map(ReservationResponse::from)
+            .toList();
     }
 }
