@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -35,16 +33,13 @@ public class ReservationController {
     public ResponseEntity<Reservation> create(@RequestBody Reservation reservation){
         if( reservation.getName() == null ||
             reservation.getDate() == null ||
-            reservation.getTimeNotFormatted() == null )
+            reservation.getTime() == null )
             throw new NotFoundReservationException();
 
-        Reservation newReservation = Reservation.toEntity(reservation, index.getAndIncrement());
+        Reservation newReservation = Reservation.newInstance(reservation, index.getAndIncrement());
         reservations.add(newReservation);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(URI.create("/reservations/" + newReservation.getId()));
-
-        return new ResponseEntity<>(newReservation, headers, HttpStatus.CREATED);
+        return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
     }
 
     @DeleteMapping("/reservations/{id}")
@@ -63,9 +58,4 @@ public class ReservationController {
     public ResponseEntity handleException(NotFoundReservationException e){
         return ResponseEntity.badRequest().build();
     }
-}
-
-class NotFoundReservationException extends RuntimeException{
-    public NotFoundReservationException(){}
-    public NotFoundReservationException(String message){super(message);}
 }
