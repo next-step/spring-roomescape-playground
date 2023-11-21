@@ -12,8 +12,6 @@ public class Reservation {
     @JsonFormat(pattern = "HH:mm")
     private LocalTime time;
 
-    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-
     public Reservation(){
     }
 
