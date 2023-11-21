@@ -3,11 +3,10 @@ package roomescape.dto;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.concurrent.atomic.AtomicLong;
+
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
 public class Reservation {
     private final AtomicLong idGenerator = new AtomicLong();
     private long id;

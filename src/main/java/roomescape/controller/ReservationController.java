@@ -2,11 +2,11 @@ package roomescape.controller;
 
 import static org.springframework.http.HttpStatus.CREATED;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.util.UriComponentsBuilder;
 import roomescape.dto.Reservation;
 import roomescape.exception.IllegalReservationException;
 import roomescape.exception.NotFoundReservationException;
@@ -35,9 +34,6 @@ public class ReservationController {
                 throw new IllegalReservationException("Reservation의 항목이 채워지지 않았습니다");
             }
 
-            reservation.setId(counter.incrementAndGet());
-            reservation.setDate(reservation.getDate());
-            reservation.setTime(reservation.getTime());
             reservations.add(reservation);
 
             return ResponseEntity
