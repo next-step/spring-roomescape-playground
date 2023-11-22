@@ -1,4 +1,4 @@
-package roomescape.domain.reservation.model;
+package roomescape.domain.reservation.dao;
 
 import static java.util.Collections.unmodifiableList;
 import static roomescape.domain.reservation.exception.ReservationException.ErrorCode.DUPLICATED;
@@ -9,38 +9,29 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
-import lombok.Getter;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import roomescape.domain.reservation.exception.ReservationException;
+import roomescape.domain.reservation.model.Reservation;
 
-@Component
-public class Reservations {
+@Repository
+public class SimpleReservationRepository implements ReservationRepository {
     private static final AtomicLong INDEX = new AtomicLong(0);
 
-    @Getter
     private final List<Reservation> reservations = new ArrayList<>();
 
-    public Reservation save(String name, LocalDate date, LocalTime time) {
-        Reservation reservation = generateReservation(name, date, time);
-        validateDuplicate(reservation);
-        reservations.add(reservation);
-        return reservation;
+    public List<Reservation> findAll() {
+        return unmodifiableList(reservations);
     }
 
-    private Reservation generateReservation(String name, LocalDate date, LocalTime time) {
-        return Reservation.builder()
+    public Reservation save(Reservation reservation) {
+        Reservation build = Reservation.builder()
                 .id(INDEX.incrementAndGet())
-                .name(name)
-                .date(date)
-                .time(time)
+                .name(reservation.getName())
+                .date(reservation.getDate())
+                .time(reservation.getTime())
                 .build();
-    }
-
-    private void validateDuplicate(Reservation reservation) {
-        boolean isDuplicate = reservations.stream().anyMatch(r -> r.isNameEquals(reservation));
-        if (isDuplicate) {
-            throw new ReservationException(DUPLICATED);
-        }
+        reservations.add(build);
+        return build;
     }
 
     public Reservation findById(long reservationId) {
@@ -62,9 +53,5 @@ public class Reservations {
     public void clear() {
         INDEX.set(0);
         reservations.clear();
-    }
-
-    public List<Reservation> get() {
-        return unmodifiableList(reservations);
     }
 }

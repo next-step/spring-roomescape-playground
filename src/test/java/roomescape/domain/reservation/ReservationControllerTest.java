@@ -12,11 +12,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import roomescape.RoomescapeApplicationTest;
-import roomescape.domain.reservation.model.Reservations;
+import roomescape.domain.reservation.dao.SimpleReservationRepository;
 
 public class ReservationControllerTest extends RoomescapeApplicationTest {
 
-    private final Reservations reservations = new Reservations();
+    private final SimpleReservationRepository reservations = new SimpleReservationRepository();
 
     @Test
     @DisplayName("reservation 페이지 조회 시 200 OK를 반환한다.")
