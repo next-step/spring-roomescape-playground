@@ -1,24 +1,37 @@
 package roomescape.reservation.api;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
+import roomescape.reservation.dao.QueryingDAO;
 import roomescape.reservation.domain.Reservation;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 
+
 @RestController
 @RequestMapping("/reservations")
 public class ReservationController {
-    private List<Reservation> reservations = new ArrayList<>();
+    private List<Reservation> reservations; // = new ArrayList<>();
     private AtomicLong index = new AtomicLong(1);
+
+    private QueryingDAO queryingDAO;
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
 
     @GetMapping
     public ResponseEntity<List<Reservation>> read() {
+
+        queryingDAO = new QueryingDAO(jdbcTemplate);
+        reservations = queryingDAO.getAllReservations();
+
         return ResponseEntity.status(HttpStatus.OK).body(reservations);
     }
 
