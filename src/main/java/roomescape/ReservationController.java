@@ -55,8 +55,8 @@ public class ReservationController {
         String insertSql = "INSERT INTO reservation(name, date, time) VALUES (?, ?, ?)";
         jdbcTemplate.update(insertSql, reservation.getName(), reservation.getDate(), reservation.getTime());
 
-        String findSql = "SELECT id, name, date, time FROM reservation";
-        List<Reservation> reservations = jdbcTemplate.query(
+        String findSql = "SELECT id, name, date, time FROM reservation WHERE name = ? AND date = ? AND time = ?";
+        Reservation newReservation = jdbcTemplate.queryForObject(
             findSql, (resultSet, rowNum) -> {
                 Reservation tmpReservation = new Reservation(
                     resultSet.getLong("id"),
@@ -65,13 +65,7 @@ public class ReservationController {
                     resultSet.getString("time")
                 );
                 return tmpReservation;
-            });
-
-        Reservation newReservation = reservations
-            .stream()
-            .filter(r -> Objects.equals(r.getName(), reservation.getName()) && Objects.equals(r.getDate(), reservation.getDate()) && Objects.equals(r.getTime(), reservation.getTime()))
-            .findFirst()
-            .get();
+            }, reservation.getName(), reservation.getDate(), reservation.getTime());
 
         return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
     }
