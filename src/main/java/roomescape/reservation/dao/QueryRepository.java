@@ -8,10 +8,10 @@ import roomescape.reservation.domain.Reservation;
 import java.util.List;
 
 @Repository
-public class QueryingDAO {
+public class QueryRepository {
     private JdbcTemplate jdbcTemplate;
 
-    public QueryingDAO(JdbcTemplate jdbcTemplate) {
+    public QueryRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
