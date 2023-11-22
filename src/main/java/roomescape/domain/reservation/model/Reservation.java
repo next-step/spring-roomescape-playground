@@ -1,7 +1,7 @@
 package roomescape.domain.reservation.model;
 
 import static lombok.AccessLevel.PRIVATE;
-import static roomescape.global.error.exception.ReservationException.ErrorCode.INVALID_VALUE;
+import static roomescape.domain.reservation.exception.ReservationException.ErrorCode.INVALID_VALUE;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDate;
@@ -11,7 +11,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.util.StringUtils;
-import roomescape.global.error.exception.ReservationException;
+import roomescape.domain.reservation.exception.ReservationException;
 
 @Getter
 @NoArgsConstructor(access = PRIVATE)

@@ -1,10 +1,11 @@
-package roomescape.global.error.exception;
+package roomescape.domain.reservation.exception;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import roomescape.global.error.BusinessException;
 
 @Getter
 public class ReservationException extends BusinessException {

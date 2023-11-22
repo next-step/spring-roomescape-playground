@@ -1,8 +1,8 @@
 package roomescape.domain.reservation.model;
 
 import static java.util.Collections.unmodifiableList;
-import static roomescape.global.error.exception.ReservationException.ErrorCode.DUPLICATED;
-import static roomescape.global.error.exception.ReservationException.ErrorCode.NOT_FOUND;
+import static roomescape.domain.reservation.exception.ReservationException.ErrorCode.DUPLICATED;
+import static roomescape.domain.reservation.exception.ReservationException.ErrorCode.NOT_FOUND;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 import lombok.Getter;
 import org.springframework.stereotype.Component;
-import roomescape.global.error.exception.ReservationException;
+import roomescape.domain.reservation.exception.ReservationException;
 
 @Component
 public class Reservations {
