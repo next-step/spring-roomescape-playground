@@ -1,13 +1,16 @@
 package roomescape;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import java.net.URI;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,7 +18,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-public class RoomeController {
+public class RoomController {
+
 	private final RoomRepository roomRepository = new RoomRepository();
 
 	@GetMapping("/reservation")
@@ -24,22 +28,17 @@ public class RoomeController {
 	}
 
 	@PostMapping("/reservations")
-	public ResponseEntity<RoomResponseDTO.Create> createRoom(@RequestBody Room room) {
-		room.validates();
-		Long savedId = roomRepository.save(room);
-		return ResponseEntity
-			.status(HttpStatus.CREATED)
-			.header("Location", "/reservations/" + savedId)
-			.body(RoomResponseDTO.Create.toDTO(savedId));
+	public ResponseEntity<RoomResponseDTO.Create> createRoom(@Valid @RequestBody RoomRequestDTO.Create request) {
+		Long savedId = roomRepository.save(request.toEntity());
+		return ResponseEntity.created(URI.create("/reservations/" + savedId))
+				.body(RoomResponseDTO.Create.toDTO(savedId));
 	}
 
 	@GetMapping("/reservations/{id}")
 	@ResponseBody
 	public ResponseEntity<RoomResponseDTO.Read> getRoom(@PathVariable Long id) {
 		Room room = roomRepository.findById(id);
-		return ResponseEntity
-			.ok()
-			.body(RoomResponseDTO.Read.toDTO(room));
+		return ResponseEntity.ok().body(RoomResponseDTO.Read.toDTO(room));
 	}
 
 	@DeleteMapping("/reservations/{id}")
@@ -55,36 +54,31 @@ public class RoomeController {
 		return RoomResponseDTO.Read.toDTO(roomRepository.findAll());
 	}
 
-	private static class RoomResponseDTO {
-		private static class Create {
-			private Long id;
+	private class RoomRequestDTO {
 
-			private Create(Long id) {
-				this.id = id;
+		private record Create(@NotBlank(message = "이름은 필수 입력값입니다.") String name,
+		                      @NotNull(message = "날짜는 필수 입력값입니다.") LocalDate date,
+		                      @NotNull(message = "시간은 필수 입력값입니다.") LocalTime time) {
+
+			public Room toEntity() {
+				return new Room(name, date, time);
 			}
+		}
+	}
+
+	private class RoomResponseDTO {
+
+		private record Create(Long id) {
 
 			public static Create toDTO(Long id) {
 				return new Create(id);
 			}
-
-			public Long getId() {
-				return id;
-			}
 		}
 
-		private static class Read {
-
-			private Long id;
-			private String name;
-			private LocalDate date;
-			private LocalTime time;
-
-			private Read(Long id, String name, LocalDate date, LocalTime time) {
-				this.id = id;
-				this.name = name;
-				this.date = date;
-				this.time = time;
-			}
+		private record Read
+				(Long id, String name, @JsonFormat(pattern = "yyyy-MM-dd") LocalDate date,
+				 @JsonFormat(pattern = "HH:mm") LocalTime time
+				) {
 
 			public static Read toDTO(Room room) {
 				return new Read(room.getId(), room.getName(), room.getDate(), room.getTime());
@@ -92,22 +86,6 @@ public class RoomeController {
 
 			public static List<Read> toDTO(List<Room> rooms) {
 				return rooms.stream().map(Read::toDTO).toList();
-			}
-
-			public Long getId() {
-				return id;
-			}
-
-			public String getName() {
-				return name;
-			}
-
-			public String getDate() {
-				return date.format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-			}
-
-			public String getTime() {
-				return time.format(java.time.format.DateTimeFormatter.ofPattern("HH:mm"));
 			}
 		}
 	}
