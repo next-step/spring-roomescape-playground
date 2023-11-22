@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
 <head>
   <meta charset="UTF-8">
@@ -9,7 +9,6 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
   <link rel="stylesheet" href="/css/styles.css">
-  <link rel="stylesheet" href="/css/reservation.css">
 </head>
 
 <body>
@@ -22,8 +21,7 @@
         <!-- 로고 영역 -->
         <div class="sidebar-logo p-4">
           <a href="/">
-            <img src="https://avatars.githubusercontent.com/u/141792611?s=96&v=4" alt="logo"
-                 class="img-fluid rounded-circle">
+            <img src="https://avatars.githubusercontent.com/u/141792611?s=96&v=4" alt="logo" class="img-fluid rounded-circle">
           </a>
         </div>
         <ul class="list-unstyled mt-4">
@@ -40,30 +38,11 @@
     </div>
     <!-- Content -->
     <div id="content-container" class="col-md-9 p-5">
-      <h1>예약 관리</h1>
-      <div class="table-header">
-        <button id="add-reservation" class="btn btn-primary">예약 추가</button>
-      </div>
-      <div class="table-container"/>
-      <table class="table table-bordered">
-        <thead>
-        <tr>
-          <th>예약번호</th>
-          <th>예약자</th>
-          <th>날짜</th>
-          <th>시간</th>
-          <th></th>
-        </tr>
-        </thead>
-        <tbody id="reservation-table-body">
-        </tbody>
-      </table>
+      <h1>어드민 페이지</h1>
     </div>
   </div>
 </div>
 
 <script src="/js/scripts.js"></script>
-<script src="/js/reservation.js"></script>
 </body>
-
 </html>
