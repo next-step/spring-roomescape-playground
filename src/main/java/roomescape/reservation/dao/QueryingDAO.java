@@ -30,5 +30,5 @@ public class QueryingDAO {
         String sql = "select id, name, date, time FROM reservation";
         return jdbcTemplate.query(sql, reservationRowMapper);
     }
-
+    
 }
