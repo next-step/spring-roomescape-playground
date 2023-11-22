@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
@@ -77,12 +78,9 @@ public class ReservationController {
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id){
-        Reservation reservation = reservations.stream()
-            .filter(it -> Objects.equals(it.getId(), id))
-            .findFirst()
-            .orElseThrow(NotFoundReservationException::new);
 
-        reservations.remove(reservation);
+        String sql = "DELETE FROM reservation WHERE id = ?";
+        jdbcTemplate.update(sql, id);
 
         return ResponseEntity.noContent().build();
     }
