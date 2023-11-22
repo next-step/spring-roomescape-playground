@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -18,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class ReservationController {
     private List<Reservation> reservations = new ArrayList<>();
     private AtomicLong index = new AtomicLong(1);
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @GetMapping("reservation")
     public String reservation(){
@@ -26,6 +30,17 @@ public class ReservationController {
 
     @GetMapping("/reservations")
     public ResponseEntity<List<Reservation>> read(){
+        String sql = "select id, name, date, time from reservation";
+        List<Reservation> reservations = jdbcTemplate.query(
+            sql, (resultSet, rowNum) -> {
+                Reservation reservation = new Reservation(
+                    resultSet.getLong("id"),
+                    resultSet.getString("name"),
+                    resultSet.getString("date"),
+                    resultSet.getString("time")
+                );
+                return reservation;
+            });
         return ResponseEntity.ok().body(reservations);
     }
 
