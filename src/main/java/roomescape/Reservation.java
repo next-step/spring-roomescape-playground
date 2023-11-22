@@ -3,7 +3,6 @@ package roomescape;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 
 public class Reservation {
     private Long id;
