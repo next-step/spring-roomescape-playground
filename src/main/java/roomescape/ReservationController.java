@@ -51,8 +51,26 @@ public class ReservationController {
             reservation.getTime() == null )
             throw new NotFoundReservationException();
 
-        Reservation newReservation = Reservation.newInstance(reservation, index.getAndIncrement());
-        reservations.add(newReservation);
+        String insertSql = "INSERT INTO reservation(name, date, time) VALUES (?, ?, ?)";
+        jdbcTemplate.update(insertSql, reservation.getName(), reservation.getDate(), reservation.getTime());
+
+        String findSql = "SELECT id, name, date, time FROM reservation";
+        List<Reservation> reservations = jdbcTemplate.query(
+            findSql, (resultSet, rowNum) -> {
+                Reservation tmpReservation = new Reservation(
+                    resultSet.getLong("id"),
+                    resultSet.getString("name"),
+                    resultSet.getString("date"),
+                    resultSet.getString("time")
+                );
+                return tmpReservation;
+            });
+
+        Reservation newReservation = reservations
+            .stream()
+            .filter(r -> Objects.equals(r.getName(), reservation.getName()) && Objects.equals(r.getDate(), reservation.getDate()) && Objects.equals(r.getTime(), reservation.getTime()))
+            .findFirst()
+            .get();
 
         return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
     }
