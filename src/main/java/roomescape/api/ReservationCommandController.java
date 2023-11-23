@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import roomescape.application.dto.ReservationCreateRequest;
 import roomescape.application.dto.ReservationResponse;
 import roomescape.domain.Reservation;
-import roomescape.domain.SimpleReservationRepository;
+import roomescape.domain.ReservationRepository;
 
 import java.net.URI;
 
@@ -14,16 +14,16 @@ import java.net.URI;
 @RequestMapping("/reservations")
 public class ReservationCommandController {
 
-    private final SimpleReservationRepository reservationRepository;
+    private final ReservationRepository jdbcReservationRepository;
 
-    public ReservationCommandController(final SimpleReservationRepository reservationRepository) {
-        this.reservationRepository = reservationRepository;
+    public ReservationCommandController(final ReservationRepository jdbcReservationRepository) {
+        this.jdbcReservationRepository = jdbcReservationRepository;
     }
 
     @PostMapping
     public ResponseEntity<ReservationResponse> addReservation(@RequestBody final ReservationCreateRequest request) {
         validateNotEmptyRequest(request);
-        final Reservation savedReservation = reservationRepository.save(ReservationCreateRequest.from(request));
+        final Reservation savedReservation = jdbcReservationRepository.save(ReservationCreateRequest.from(request));
         return ResponseEntity.created(URI.create("/reservations/" + savedReservation.getId()))
                 .body(ReservationResponse.from(savedReservation));
     }
@@ -36,7 +36,7 @@ public class ReservationCommandController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> removeReservation(@PathVariable final Long id) {
-        reservationRepository.delete(id);
+        jdbcReservationRepository.delete(id);
         return ResponseEntity.noContent().build();
     }
 }

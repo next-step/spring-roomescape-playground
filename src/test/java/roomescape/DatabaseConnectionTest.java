@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 
 @SpringBootTest
-@Sql("schema.sql")
+@Sql("classpath:init.sql")
 class DatabaseConnectionTest {
 
     @Autowired
