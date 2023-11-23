@@ -8,7 +8,7 @@ import org.springframework.test.annotation.DirtiesContext;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-public class RoomscapeControllerTest {
+public class RoomescapeControllerTest {
 
     @Test
     @DisplayName("/경로로 GET 요청을 보내면 홈 화면을 반환한다.")
