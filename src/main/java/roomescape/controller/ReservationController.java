@@ -7,6 +7,8 @@ import java.net.URI;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import roomescape.domain.Reservation;
+import roomescape.exception.NotFoundReservationException;
 
 @RestController
 @RequestMapping("/reservations")
@@ -58,14 +61,8 @@ public class ReservationController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable AtomicLong id) {
-//        Reservation reservation = reservations.stream()
-//                .filter(it -> Objects.equals(it.id().get(), id.get()))
-//                .findFirst()
-//                .orElseThrow(() -> new NotFoundReservationException(NON_EXISTING_RESERVATION));
-//
-//        reservations.remove(reservation);
-
+    public ResponseEntity<Void> delete(@PathVariable String id) {
+        jdbcTemplate.update("delete from reservation where id = ?", id);
         return ResponseEntity.noContent().build();
     }
 
