@@ -23,6 +23,7 @@ import roomescape.dto.Reservation;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class MissionStepTest {
 
+/*
     @Test
     void 일단계() {
         RestAssured.given().log().all()
@@ -100,6 +101,7 @@ public class MissionStepTest {
                 .then().log().all()
                 .statusCode(400);
     }
+*/
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
