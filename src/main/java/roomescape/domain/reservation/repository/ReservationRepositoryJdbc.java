@@ -2,10 +2,14 @@ package roomescape.domain.reservation.repository;
 
 import lombok.AllArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.reservation.entity.Reservation;
 import roomescape.global.BusinessException;
 
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -22,9 +26,18 @@ public class ReservationRepositoryJdbc implements ReservationRepository {
     @Override
     public Reservation save(final String name, final LocalDate date, final LocalTime time) {
         String sql = "INSERT INTO RESERVATION (name, date, time) VALUES (?, ?, ?)";
-        jdbcTemplate.update(sql, name, date, time);
+
+        GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(con -> {
+            PreparedStatement pstmt = con.prepareStatement(sql, new String[]{"id"});
+            pstmt.setString(1, name);
+            pstmt.setDate(2, Date.valueOf(date));
+            pstmt.setTime(3, Time.valueOf(time));
+            return pstmt;
+        }, keyHolder);
+
         return Reservation.builder()
-                .id(Reservation.pk.getAndIncrement())
+                .id(keyHolder.getKey().longValue())
                 .name(name)
                 .date(date)
                 .time(time)

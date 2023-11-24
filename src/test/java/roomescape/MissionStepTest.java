@@ -26,12 +26,6 @@ public class MissionStepTest {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    @BeforeEach
-    void setUp() {
-        jdbcTemplate.update("DELETE FROM RESERVATION");
-        Reservation.pk.set(1);
-    }
-
     @Test
     void 이단계() {
         RestAssured.given().log().all()

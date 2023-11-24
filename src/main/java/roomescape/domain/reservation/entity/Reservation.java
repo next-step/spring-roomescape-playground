@@ -12,9 +12,6 @@ import java.util.concurrent.atomic.AtomicLong;
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Reservation {
-
-    public static AtomicLong pk = new AtomicLong(1);
-
     private Long id;
     private String name;
     private LocalDate date;
