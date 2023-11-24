@@ -28,8 +28,4 @@ public class CreateReservationRequest {
     @NotNull(message = "날짜를 입력해 주세요.")
     @JsonFormat(pattern = "HH:mm")
     LocalTime time;
-
-    public Reservation toEntity() {
-        return new Reservation(name, date, time);
-    }
 }
