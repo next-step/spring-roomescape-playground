@@ -2,7 +2,6 @@ package roomescape;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import org.springframework.util.StringUtils;
 
 public class Room {
 	Long id;
@@ -36,15 +35,4 @@ public class Room {
 		return time;
 	}
 
-	public void validates() {
-		if (StringUtils.isEmpty(name)) {
-			throw new DomainEmptyFieldException("이름은 필수 입력값입니다.");
-		}
-		if (date == null) {
-			throw new DomainEmptyFieldException("날짜는 필수 입력값입니다.");
-		}
-		if (time == null) {
-			throw new DomainEmptyFieldException("시간은 필수 입력값입니다.");
-		}
-	}
 }
