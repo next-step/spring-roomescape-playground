@@ -1,7 +1,5 @@
   package roomescape;
 
-  import java.time.LocalDate;
-  import java.time.LocalTime;
   import java.util.HashMap;
   import java.util.List;
   import java.util.Map;
@@ -10,10 +8,6 @@
 public class RoomRepository {
 	private static AtomicLong counter = new AtomicLong();
 	private static Map<Long, Room> repository = new HashMap<>();
-
-	static {
-//		seedData();
-	}
 
 	public static Long save(Room room) {
 		room.setId(counter.incrementAndGet());
@@ -29,22 +23,12 @@ public class RoomRepository {
 		return repository.values().stream().toList();
 	}
 
-	private static void seedData() {
-		Room room1 = new Room("박한수", LocalDate.now(), LocalTime.now());
-		Room room2 = new Room("홍길동", LocalDate.now(), LocalTime.now());
-		Room room3 = new Room("브라운", LocalDate.now(), LocalTime.now());
-
-		save(room1);
-		save(room2);
-		save(room3);
-	}
-
-	public void deleteById(Long id) {
+	public static void deleteById(Long id) {
 		Room result = repository.remove(id);
 		if(result == null) throw new NotFoundReservationException("삭제하려는 예약이 존재하지 않습니다.");
 	}
 
-	public void clear() {
+	public static void clear() {
 		counter.set(0);
 		repository.clear();
 	}

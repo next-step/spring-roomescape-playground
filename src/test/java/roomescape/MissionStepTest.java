@@ -5,6 +5,8 @@ import static org.hamcrest.Matchers.is;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,10 +35,18 @@ public class MissionStepTest {
 
 	@Test
 	void 이단계() {
+		Room room1 = new Room("박한수", LocalDate.now(), LocalTime.now());
+		Room room2 = new Room("홍길동", LocalDate.now(), LocalTime.now());
+		Room room3 = new Room("브라운", LocalDate.now(), LocalTime.now());
+
+		roomRepository.save(room1);
+		roomRepository.save(room2);
+		roomRepository.save(room3);
+
 		RestAssured.given().log().all()
 				.when().get("/reservations")
 				.then().log().all()
-				.body("size()", is(0));
+				.body("size()", is(3));
 	}
 
 	@Test
