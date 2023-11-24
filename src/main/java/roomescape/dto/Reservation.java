@@ -5,7 +5,9 @@ import java.time.LocalTime;
 import java.util.concurrent.atomic.AtomicLong;
 
 import lombok.Getter;
+import lombok.Setter;
 
+@Setter
 @Getter
 public class Reservation {
     private final AtomicLong idGenerator = new AtomicLong();
