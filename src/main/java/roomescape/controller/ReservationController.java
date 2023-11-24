@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -44,7 +43,6 @@ public class ReservationController {
                     || reservation.getName().isEmpty()) {
                 throw new IllegalReservationException("Reservation의 항목이 채워지지 않았습니다");
             }
-            System.out.println("성공티비");
             addReservationToDatabase(reservation); // database에 추가
 
             reservations.add(reservation); // 리스트에 예약정보 추가
@@ -90,15 +88,6 @@ public class ReservationController {
         jdbcTemplate.update(sql, id);
     }
 
-    private Reservation getReservationFromDatabase(long id) {
-        String sql = "SELECT * FROM reservation WHERE id = ?";
-        try {
-            return jdbcTemplate.queryForObject(sql, new ReservationRowMapper(), id);
-        } catch (EmptyResultDataAccessException e) {
-            // If no reservation is found, throw a custom exception
-            throw new NotFoundReservationException("Reservation with ID " + id + " not found");
-        }
-    }
 
     @GetMapping("/from-database")
     public List<Reservation> getReservationsFromDatabase() {
