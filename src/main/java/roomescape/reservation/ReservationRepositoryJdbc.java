@@ -49,18 +49,6 @@ public class ReservationRepositoryJdbc implements ReservationRepository {
         .toList();
   }
 
-  public Optional<Reservation> findById(final Long id) {
-    String sql = "SELECT * FROM RESERVATION WHERE id = ?";
-    return jdbcTemplate.queryForStream(sql, (rs, rowNum) -> Reservation.builder()
-                .id(rs.getLong("id"))
-                .name(rs.getString("name"))
-                .date(rs.getDate("date").toString())
-                .time(rs.getTime("time").toString())
-                .build(),
-            id)
-        .findFirst();
-  }
-
   public void deleteById(final Long id) {
     String sql = "DELETE FROM RESERVATION WHERE id = ?";
     int rowCount = jdbcTemplate.update(sql, id);
