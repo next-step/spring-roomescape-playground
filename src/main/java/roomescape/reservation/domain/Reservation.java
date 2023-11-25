@@ -14,7 +14,7 @@ import java.time.LocalTime;
 @Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)
-@Table(name = "reservations")
+@Table(name = "reservation")
 public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
