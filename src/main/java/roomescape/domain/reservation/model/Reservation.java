@@ -2,7 +2,6 @@ package roomescape.domain.reservation.model;
 
 import static lombok.AccessLevel.PRIVATE;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Objects;
@@ -15,13 +14,8 @@ import lombok.NoArgsConstructor;
 public class Reservation {
 
     private Long id;
-
     private String name;
-
-    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
-
-    @JsonFormat(pattern = "HH:mm")
     private LocalTime time;
 
     @Builder
@@ -34,9 +28,5 @@ public class Reservation {
 
     public boolean isIdEquals(long reservationId) {
         return Objects.equals(this.id, reservationId);
-    }
-
-    public boolean isNameEquals(String name) {
-        return Objects.equals(this.name, name);
     }
 }
