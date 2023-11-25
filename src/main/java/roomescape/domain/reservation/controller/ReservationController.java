@@ -2,6 +2,7 @@ package roomescape.domain.reservation.controller;
 
 import static org.springframework.http.HttpStatus.CREATED;
 
+import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import roomescape.domain.reservation.dto.ReservationDTO;
 import roomescape.domain.reservation.model.Reservation;
 import roomescape.domain.reservation.service.ReservationService;
 
@@ -34,12 +36,12 @@ public class ReservationController {
     }
 
     @PostMapping("/reservations")
-    public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservation) {
-        Reservation response = reservationService.createReservation(reservation.getName(), reservation.getDate(),
-                reservation.getTime());
+    public ResponseEntity<Reservation> createReservation(@Valid @RequestBody ReservationDTO reservationDto) {
+        Reservation reservation = reservationService
+                .createReservation(reservationDto.name(), reservationDto.date(), reservationDto.time());
         return ResponseEntity.status(CREATED)
-                .location(URI.create("/reservations/" + response.getId()))
-                .body(response);
+                .location(URI.create("/reservations/" + reservation.getId()))
+                .body(reservation);
     }
 
     @DeleteMapping("/reservations/{reservationId}")
