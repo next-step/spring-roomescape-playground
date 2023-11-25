@@ -92,4 +92,6 @@ public class RoomescapeControllerTest {
                 .then().log().all()
                 .statusCode(404);
     }
+
+
 }

@@ -27,7 +27,7 @@ public class ReservationService {
     @Transactional
     public ReservationResponse.createReservationDto saveReservation(ReservationRequest.CreateReservationDto request) {
         if (request.name() == null || request.date() == null || request.time() == null) {
-            System.out.println("hello");
+            System.out.println("roomescape/hello");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "양식을 채워주세요.");
         }
 
