@@ -1,11 +1,8 @@
 package roomescape.domain.reservation.dao;
 
 import static java.util.Collections.unmodifiableList;
-import static roomescape.domain.reservation.exception.ReservationException.ErrorCode.DUPLICATED;
 import static roomescape.domain.reservation.exception.ReservationException.ErrorCode.NOT_FOUND;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;

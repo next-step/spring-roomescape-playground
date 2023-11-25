@@ -7,6 +7,8 @@ public interface ReservationRepository {
 
     Reservation save(Reservation reservation);
 
+    Reservation findById(long reservationId);
+
     void delete(Reservation reservation);
 
     void deleteById(long reservationId);
