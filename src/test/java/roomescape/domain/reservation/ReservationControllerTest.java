@@ -14,11 +14,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import roomescape.RoomescapeApplicationTest;
-import roomescape.domain.reservation.dao.SimpleReservationRepository;
 import roomescape.domain.reservation.model.Reservation;
 
 public class ReservationControllerTest extends RoomescapeApplicationTest {
-    private final SimpleReservationRepository simpleReservationRepository = new SimpleReservationRepository();
 
     @Nested
     @DisplayName("예약 조회 테스트")
@@ -57,7 +55,6 @@ public class ReservationControllerTest extends RoomescapeApplicationTest {
             @BeforeEach
             void setUp() {
                 params = putAllParams("브라운", "2023-08-05", "15:40");
-                simpleReservationRepository.clear();
             }
 
             @Test
@@ -105,7 +102,6 @@ public class ReservationControllerTest extends RoomescapeApplicationTest {
             @BeforeEach
             void setUp() {
                 params = putAllParams("브라운", "2023-08-05", "15:40");
-                simpleReservationRepository.clear();
             }
 
             @Test
