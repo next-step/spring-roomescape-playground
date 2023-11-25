@@ -3,7 +3,9 @@ package roomescape.reservation;
 import error.Exception400;
 //import error.HandleException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -15,11 +17,25 @@ import java.util.concurrent.atomic.AtomicLong;
 @RequestMapping("/reservations")
 public class ReservationsController {
     private List<Reservation> reservations = new ArrayList<>();
+    private JdbcTemplate jdbcTemplate;
 
+    public ReservationsController(JdbcTemplate jdbcTemplate){
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     @GetMapping
     public ResponseEntity<List<Reservation>> GetReservations (){
-        return ResponseEntity.ok().body(reservations);
+
+        String sql = "SELECT id, name, date, time FROM reservation";
+        List<Reservation> reservations1 = jdbcTemplate.query(sql , (resultSet, rowNum) -> {
+            Reservation reservation = new Reservation(
+                    resultSet.getLong("id"),
+                    resultSet.getString("name"),
+                    resultSet.getString("date"),
+                    resultSet.getString("time"));
+            return reservation;
+        });
+        return ResponseEntity.ok().body(reservations1);
     }
 
 
