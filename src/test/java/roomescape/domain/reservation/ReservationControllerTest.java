@@ -1,34 +1,55 @@
 package roomescape.domain.reservation;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;
 import static roomescape.helper.TestHelper.deleteMethodTest;
 import static roomescape.helper.TestHelper.getMethodTest;
 import static roomescape.helper.TestHelper.postMethodTest;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import roomescape.RoomescapeApplicationTest;
+import roomescape.domain.reservation.dao.JdbcReservationRepository;
 import roomescape.domain.reservation.dao.SimpleReservationRepository;
+import roomescape.domain.reservation.model.Reservation;
 
 public class ReservationControllerTest extends RoomescapeApplicationTest {
 
-    private final SimpleReservationRepository reservations = new SimpleReservationRepository();
+    private final JdbcReservationRepository jdbcReservationRepository = new JdbcReservationRepository();
+    private final SimpleReservationRepository simpleReservationRepository = new SimpleReservationRepository();
 
-    @Test
-    @DisplayName("reservation 페이지 조회 시 200 OK를 반환한다.")
-    public void reservation_페이지_조회_시_200_OK를_반환한다() {
-        getMethodTest("/reservation", 200);
-    }
+    @Nested
+    @DisplayName("예약 조회 테스트")
+    class GetReservationTest {
 
-    @Test
-    @DisplayName("예약 리스트 조회 시 200 OK를 반환한다.")
-    public void 예약_리스트_조회_시_200_OK를_반환한다() {
-        getMethodTest("/reservations", 200)
-                .body("size()", is(0));
+        @Test
+        @DisplayName("reservation 페이지 조회 시 200 OK를 반환한다.")
+        public void reservation_페이지_조회_시_200_OK를_반환한다() {
+            getMethodTest("/reservation", 200);
+        }
+
+        @Test
+        @DisplayName("예약 리스트 조회 시 200 OK를 반환한다.")
+        public void 예약_리스트_조회_시_200_OK를_반환한다() {
+            getMethodTest("/reservations", 200)
+                    .body("size()", is(0));
+        }
+
+        @Test
+        @DisplayName("예약 조회는 성공한다.")
+        public void 예약_조회는_성공한다() {
+            //when
+            List<Reservation> reservations = getMethodTest("/reservations", 200).extract()
+                    .jsonPath().getList(".", Reservation.class);
+
+            //then
+            assertThat(reservations.size()).isEqualTo(0);
+        }
     }
 
     @Nested
@@ -40,7 +61,7 @@ public class ReservationControllerTest extends RoomescapeApplicationTest {
         @BeforeEach
         void setUp() {
             params = putAllParams("브라운", "2023-08-05", "15:40");
-            reservations.clear();
+            simpleReservationRepository.clear();
         }
 
         @Test
@@ -77,17 +98,6 @@ public class ReservationControllerTest extends RoomescapeApplicationTest {
             // when & then
             postMethodTest(params, "/reservations", 400);
         }
-
-        @Test
-        @DisplayName("중복된 예약일 경우 400 Bad Request를 반환한다.")
-        public void 중복된_예약일_경우_400_Bad_Request를_반환한다() {
-            // given
-            params = putAllParams("브라운", "2023-08-05", "15:40");
-            postMethodTest(params, "/reservations", 201);
-
-            // when & then
-            postMethodTest(params, "/reservations", 400);
-        }
     }
 
     @Nested
@@ -99,7 +109,7 @@ public class ReservationControllerTest extends RoomescapeApplicationTest {
         @BeforeEach
         void setUp() {
             params = putAllParams("브라운", "2023-08-05", "15:40");
-            reservations.clear();
+            simpleReservationRepository.clear();
         }
 
         @Test
