@@ -52,7 +52,6 @@ public class ReservationRepositoryJdbc implements ReservationRepository {
   public void deleteById(final Long id) {
     String sql = "DELETE FROM RESERVATION WHERE id = ?";
     int rowCount = jdbcTemplate.update(sql, id);
-
   }
 }
 
