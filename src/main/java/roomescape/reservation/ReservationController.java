@@ -24,32 +24,32 @@ public class ReservationController {
   private final ReservationService reservationService;
 
   @GetMapping
-  public ResponseEntity<List<ReservationResponse>> getReservationInfo() {
-    List<ReservationResponse> response = reservationService.getReservationInfo();
-    return ResponseEntity.ok(response);
+  public ResponseEntity<List<Reservation>> getReservationInfo() {
+//    List<ReservationResponse> response = reservationService.getReservationInfo();
+    return ResponseEntity.ok(reservationService.getReservationInfo());
   }
 
-  @PostMapping
-  public ResponseEntity<ReservationResponse> addReservation(@RequestBody ReservationRequest request) {
-    ReservationResponse reservation = reservationService.addReservation(request.getDate(), request.getName(),
-        request.getTime());
-
-    HttpHeaders headers = new HttpHeaders();
-    headers.setLocation(URI.create("/reservations/" + reservation.getId()));
-
-    return new ResponseEntity<>(reservation, headers, HttpStatus.CREATED);
-  }
-
-  @GetMapping("/{id}")
-  public ResponseEntity<ReservationResponse> getByReservationId(@PathVariable Long id) {
-    ReservationResponse reservations = reservationService.getByReservationId(id);
-    return ResponseEntity.ok(reservations);
-  }
-
-  @DeleteMapping("/{id}")
-  public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
-    reservationService.deleteReservation(id);
-    return ResponseEntity.noContent().build();
-  }
+//  @PostMapping
+//  public ResponseEntity<ReservationResponse> addReservation(@RequestBody ReservationRequest request) {
+//    ReservationResponse reservation = reservationService.addReservation(request.getDate(), request.getName(),
+//        request.getTime());
+//
+//    HttpHeaders headers = new HttpHeaders();
+//    headers.setLocation(URI.create("/reservations/" + reservation.getId()));
+//
+//    return new ResponseEntity<>(reservation, headers, HttpStatus.CREATED);
+//  }
+//
+//  @GetMapping("/{id}")
+//  public ResponseEntity<ReservationResponse> getByReservationId(@PathVariable Long id) {
+//    ReservationResponse reservations = reservationService.getByReservationId(id);
+//    return ResponseEntity.ok(reservations);
+//  }
+//
+//  @DeleteMapping("/{id}")
+//  public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
+//    reservationService.deleteReservation(id);
+//    return ResponseEntity.noContent().build();
+//  }
 }
 
