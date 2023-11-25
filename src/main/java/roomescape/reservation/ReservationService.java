@@ -38,12 +38,12 @@ public class ReservationService {
 
   }
 
-//  @Transactional
-//  public ReservationResponse addReservation(String date, String name, String time) {
-//    if (date.isEmpty() || name.isEmpty() || time.isEmpty()) {
-//      throw new Exception400("올바른 예약 정보가 제공되지 않았습니다.");
-//    }
-//
+  @Transactional
+  public Reservation addReservation(String date, String name, String time) {
+    if (date.isEmpty() || name.isEmpty() || time.isEmpty()) {
+      throw new Exception400("올바른 예약 정보가 제공되지 않았습니다.");
+    }
+
 //    Reservation reservation = Reservation.builder()
 //        .id(reservationRepository.count() + 1)
 //        .date(date)
@@ -51,20 +51,22 @@ public class ReservationService {
 //        .time(time)
 //        .build();
 //    reservationRepository.save(reservation);
-//
-//    return ReservationResponse.from(reservation);
-//  }
+
+    return reservationRepositoryJdbc.save(name, date, time);
+  }
 
 //  @Transactional
-//  public ReservationResponse getByReservationId(Long id) {
-//    Reservation reservation = reservationRepository.findById(id).orElseThrow();
-//    return ReservationResponse.from(reservation);
+//  public Reservation getByReservationId(Long id) {
+////    Reservation reservation = reservationRepository.findById(id).orElseThrow();
+////    return ReservationResponse.from(reservation);
+//    return reservationRepositoryJdbc.findById(id);
 //  }
-//
-//  @Transactional
-//  public void deleteReservation(Long id) {
+
+  @Transactional
+  public void deleteReservation(Long id) {
 //    Reservation reservation = reservationRepository.findById(id).orElseThrow(() -> new Exception400("예약 내역이 없습니다."));
 //    reservationRepository.delete(reservation);
-//  }
+    reservationRepositoryJdbc.deleteById(id);
+  }
 
 }

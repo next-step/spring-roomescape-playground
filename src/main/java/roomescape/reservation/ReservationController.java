@@ -1,5 +1,7 @@
 package roomescape.reservation;
 
+import static org.springframework.http.HttpStatus.CREATED;
+
 import java.net.URI;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -29,27 +31,26 @@ public class ReservationController {
     return ResponseEntity.ok(reservationService.getReservationInfo());
   }
 
-//  @PostMapping
-//  public ResponseEntity<ReservationResponse> addReservation(@RequestBody ReservationRequest request) {
+  @PostMapping
+  public ResponseEntity<Reservation> addReservation(@RequestBody ReservationRequest request) {
 //    ReservationResponse reservation = reservationService.addReservation(request.getDate(), request.getName(),
 //        request.getTime());
-//
-//    HttpHeaders headers = new HttpHeaders();
-//    headers.setLocation(URI.create("/reservations/" + reservation.getId()));
-//
-//    return new ResponseEntity<>(reservation, headers, HttpStatus.CREATED);
-//  }
-//
+    Reservation reservation = reservationService.addReservation(request.getName(), request.getDate(), request.getTime());
+
+    return ResponseEntity.status(CREATED)
+        .location(URI.create("/reservations/" + reservation.getId())).body(reservation);
+  }
+
 //  @GetMapping("/{id}")
 //  public ResponseEntity<ReservationResponse> getByReservationId(@PathVariable Long id) {
-//    ReservationResponse reservations = reservationService.getByReservationId(id);
+////    ReservationResponse reservations = reservationService.getByReservationId(id);
 //    return ResponseEntity.ok(reservations);
 //  }
-//
-//  @DeleteMapping("/{id}")
-//  public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
-//    reservationService.deleteReservation(id);
-//    return ResponseEntity.noContent().build();
-//  }
+
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
+    reservationService.deleteReservation(id);
+    return ResponseEntity.noContent().build();
+  }
 }
 
