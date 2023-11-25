@@ -3,6 +3,8 @@ package roomescape.reservation;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.Time;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +25,8 @@ public class ReservationRepositoryJdbc implements ReservationRepository {
     jdbcTemplate.update(connection -> {
       PreparedStatement preparedStatement = connection.prepareStatement(sql, new String[]{"id"});
       preparedStatement.setString(1, name);
-      preparedStatement.setDate(2, Date.valueOf(date));
-      preparedStatement.setTime(3, Time.valueOf(time));
+      preparedStatement.setObject(2, date);
+      preparedStatement.setObject(3, time);
       return preparedStatement;
     }, keyHolder);
 

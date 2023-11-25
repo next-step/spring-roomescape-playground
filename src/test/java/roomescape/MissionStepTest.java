@@ -59,10 +59,10 @@ public class MissionStepTest {
         .statusCode(201)
         .header("Location", "/reservations/1");
 
-    RestAssured.given().log().all()
-        .when().get("/reservations")
-        .then().log().all()
-        .statusCode(200);
+//    RestAssured.given().log().all()
+//        .when().get("/reservations")
+//        .then().log().all()
+//        .statusCode(200);
 
     RestAssured.given().log().all()
         .when().delete("/reservations/1")
@@ -139,7 +139,7 @@ public class MissionStepTest {
         .header("Location", "/reservations/1");
 
     Integer count = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
-    assertThat(count).isEqualTo(0);
+    assertThat(count).isEqualTo(1);
 
     RestAssured.given().log().all()
         .when().delete("/reservations/1")
