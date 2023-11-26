@@ -1,5 +1,6 @@
 package roomescape.service;
 
+import static roomescape.utils.ErrorMessage.NON_EXISTING_RESERVATION;
 import static roomescape.validation.ReservationValidation.validate;
 
 import java.net.URI;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import roomescape.domain.Reservation;
+import roomescape.exception.NotFoundReservationException;
 import roomescape.repository.ReservationRepository;
 
 @Service
@@ -24,7 +26,7 @@ public class ReservationService {
     }
 
     // 예약 추가
-    public  ResponseEntity<Reservation> reserve(Reservation reservation) {
+    public ResponseEntity<Reservation> reserve(Reservation reservation) {
         validate(reservation);
 
         Reservation newReservation = reservationRepository.save(reservation);
@@ -43,7 +45,10 @@ public class ReservationService {
 
     // 예약 삭제
     public ResponseEntity<Void> deleteReservation(String id) {
-        reservationRepository.delete(id);
+        int deletedNum = reservationRepository.delete(id);
+        if (deletedNum <= 0) {
+            throw new NotFoundReservationException(NON_EXISTING_RESERVATION);
+        }
         return ResponseEntity.noContent().build();
     }
 }

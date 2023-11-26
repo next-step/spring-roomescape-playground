@@ -37,7 +37,7 @@ public class ReservationRepository {
                 ));
     }
 
-    public void delete(String id) {
-        jdbcTemplate.update("delete from reservation where id = ?", id);
+    public int delete(String id) {
+        return jdbcTemplate.update("delete from reservation where id = ?", id);
     }
 }
