@@ -20,7 +20,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class RoomController {
 
-	private final RoomRepository roomRepository = new RoomRepository();
+	public RoomController(RoomRepository roomRepository) {
+		this.roomRepository = roomRepository;
+	}
+
+	private final RoomRepository roomRepository;
 
 	@GetMapping("/reservation")
 	public String getReservationPage() {
