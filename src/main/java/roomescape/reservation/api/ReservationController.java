@@ -19,6 +19,7 @@ public class ReservationController {
 
     private QueryRepository queryRepository;
     private UpdateRepository updateRepository;
+
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
@@ -26,9 +27,11 @@ public class ReservationController {
     @GetMapping
     public ResponseEntity<List<Reservation>> read() {
 
+
         queryRepository = new QueryRepository(jdbcTemplate);
 
         return ResponseEntity.status(HttpStatus.OK).body(queryRepository.getAllReservations());
+
     }
 
     @PostMapping
@@ -37,11 +40,13 @@ public class ReservationController {
             throw new NotFoundReservationException("빈 값이 존재합니다!");
         }
 
+
         updateRepository = new UpdateRepository(jdbcTemplate);
 
         Reservation newReservation = Reservation.toEntity(reservation);
 
         Long id = updateRepository.insert(newReservation);
+
 
         newReservation.setId(id);
 
@@ -52,6 +57,7 @@ public class ReservationController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
+
         updateRepository = new UpdateRepository(jdbcTemplate);
         updateRepository.delete(id);
 
