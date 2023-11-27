@@ -1,26 +1,19 @@
 package roomescape.dto.request;
 
-import java.time.LocalDate;
-
-import roomescape.domain.Reservation;
+import java.sql.Time;
+import java.util.Date;
 
 public class ReservationRequest {
 
-    private final String name;
-    private final LocalDate date;
-    private final String time;
-
-    private ReservationRequest(String name, LocalDate date, String time) {
-        this.name = name;
-        this.date = date;
-        this.time = time;
-    }
+    private String name;
+    private String date;
+    private String time;
 
     public String getName() {
         return name;
     }
 
-    public LocalDate getDate() {
+    public String getDate() {
         return date;
     }
 
