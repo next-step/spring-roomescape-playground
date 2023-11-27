@@ -7,6 +7,8 @@ import org.springframework.stereotype.Repository;
 import roomescape.reservation.domain.Reservation;
 
 import java.sql.PreparedStatement;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Repository
 public class UpdateRepository {
@@ -16,22 +18,22 @@ public class UpdateRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public Long insert(Reservation reservation) {
+    public Reservation insert(String name, LocalDate date, LocalTime time) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(
                     "insert into reservation (name, date, time) values (?, ?, ?)",
                     new String[]{"id"});
-            ps.setString(1, reservation.getName());
-            ps.setString(2, reservation.getDate().toString());
-            ps.setString(3, reservation.getTime().toString());
+            ps.setString(1, name);
+            ps.setDate(2, java.sql.Date.valueOf(date));
+            ps.setTime(3, java.sql.Time.valueOf(time));
 
             return ps;
         }, keyHolder);
 
         Long id = keyHolder.getKey().longValue();
-        return id;
+        return new Reservation(id, name, date, time);
     }
 
     public int delete(Long id) {
