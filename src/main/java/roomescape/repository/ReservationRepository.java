@@ -1,7 +1,6 @@
 package roomescape.repository;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -17,13 +16,15 @@ public class ReservationRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    private final AtomicLong index = new AtomicLong(1);
+    private Long index = 1L;
 
     public Reservation save(Reservation reservation) {
-        Reservation newReservation = Reservation.createWithId(reservation, index.getAndIncrement());
-        jdbcTemplate.update("insert into reservation (name, date, time) values (?, ?, ?)", reservation.name(),
-                reservation.date(), reservation.time());
-        return newReservation;
+        synchronized (index) {
+            Reservation newReservation = Reservation.createWithId(reservation, index++);
+            jdbcTemplate.update("insert into reservation (name, date, time) values (?, ?, ?)", reservation.name(),
+                    reservation.date(), reservation.time());
+            return newReservation;
+        }
     }
 
     public List<Reservation> findAll() {
