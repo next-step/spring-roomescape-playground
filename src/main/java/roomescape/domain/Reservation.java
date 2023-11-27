@@ -8,19 +8,19 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class Reservation {
 
-    private final AtomicLong id = new AtomicLong(1);
-    String name;
-    LocalDate date;
-    String time;
+    private final Long id;
+    private final String name;
+    private final LocalDate date;
+    private final String time;
 
-    public Reservation(String name) {
-        id.incrementAndGet();
+    public Reservation(Long id, String name) {
+        this.id = id;
         this.name = name;
         this.date = LocalDate.now();
         this.time = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm"));
     }
 
-    public AtomicLong getId() {
+    public Long getId() {
         return id;
     }
 

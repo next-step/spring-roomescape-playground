@@ -1,18 +1,18 @@
-package roomescape.dto;
+package roomescape.dto.response;
 
 import java.time.LocalDate;
-import java.util.concurrent.atomic.AtomicLong;
 
 import roomescape.domain.Reservation;
+import roomescape.dto.request.ReservationRequest;
 
 public class ReservationResponse {
 
-    private final AtomicLong id;
+    private final Long id;
     private final String name;
     private final LocalDate date;
     private final String time;
 
-    private ReservationResponse(AtomicLong id, String name, LocalDate date, String time) {
+    private ReservationResponse(Long id, String name, LocalDate date, String time) {
         this.id = id;
         this.name = name;
         this.date = date;
@@ -23,7 +23,11 @@ public class ReservationResponse {
         return new ReservationResponse(reservation.getId(), reservation.getName(), reservation.getDate(), reservation.getTime());
     }
 
-    public AtomicLong getId() {
+    public static ReservationResponse from(Long id, ReservationRequest reservation) {
+        return new ReservationResponse(id, reservation.getName(), reservation.getDate(), reservation.getTime());
+    }
+
+    public Long getId() {
         return id;
     }
 
