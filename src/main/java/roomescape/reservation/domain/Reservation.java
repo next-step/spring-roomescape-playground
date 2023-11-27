@@ -32,8 +32,4 @@ public class Reservation {
         this.id = id;
     }
 
-    public static Reservation toEntity(Reservation reservation) {
-        return new Reservation(reservation.name, reservation.date, reservation.time);
-    }
-
 }
