@@ -26,4 +26,8 @@ public class ReservationService {
     public ReservationResponse createReservation(ReservationRequest reservation) {
         return ReservationResponse.from(index.incrementAndGet(), reservation);
     }
+
+    public void deleteReservation(Long id) {
+        reservations.removeIf(reservation -> reservation.equals(id));
+    }
 }
