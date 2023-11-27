@@ -15,19 +15,21 @@ import roomescape.dto.response.ReservationResponse;
 public class ReservationService {
 
     private List<Reservation> reservations = new ArrayList<>();
-    private AtomicLong index = new AtomicLong(1);
+    private AtomicLong index = new AtomicLong(0);
 
     public List<ReservationResponse> getReservations() {
         return reservations.stream()
-            .map(ReservationResponse::from)
+            .map(ReservationResponse::toDto)
             .collect(Collectors.toList());
     }
 
-    public ReservationResponse createReservation(ReservationRequest reservation) {
-        return ReservationResponse.from(index.incrementAndGet(), reservation);
+    public ReservationResponse createReservation(ReservationRequest reservationRequest) {
+        Reservation reservation = Reservation.toDomain(index.incrementAndGet(),reservationRequest);
+        reservations.add(reservation);
+        return ReservationResponse.toDto(reservation);
     }
 
     public void deleteReservation(Long id) {
-        reservations.removeIf(reservation -> reservation.equals(id));
+        reservations.removeIf(reservation -> reservation.getId().equals(id));
     }
 }

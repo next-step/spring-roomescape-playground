@@ -5,6 +5,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.concurrent.atomic.AtomicLong;
 
+import roomescape.dto.request.ReservationRequest;
 
 public class Reservation {
 
@@ -18,6 +19,10 @@ public class Reservation {
         this.name = name;
         this.date = LocalDate.now();
         this.time = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm"));
+    }
+
+    public static Reservation toDomain(long id, ReservationRequest reservationRequest) {
+        return new Reservation(id, reservationRequest.getName());
     }
 
     public Long getId() {

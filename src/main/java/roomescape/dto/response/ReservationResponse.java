@@ -19,12 +19,8 @@ public class ReservationResponse {
         this.time = time;
     }
 
-    public static ReservationResponse from(Reservation reservation) {
+    public static ReservationResponse toDto(Reservation reservation) {
         return new ReservationResponse(reservation.getId(), reservation.getName(), reservation.getDate(), reservation.getTime());
-    }
-
-    public static ReservationResponse from(Long id, ReservationRequest reservation) {
-        return new ReservationResponse(id, reservation.getName(), reservation.getDate(), reservation.getTime());
     }
 
     public Long getId() {
