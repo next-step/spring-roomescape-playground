@@ -2,30 +2,31 @@ package roomescape.dto;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.concurrent.atomic.AtomicLong;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
 public class Reservation {
-    private final AtomicLong idGenerator = new AtomicLong();
     private long id;
     private String name;
     private LocalDate date;
     private LocalTime time;
 
-    public Reservation() {
-        this.id = idGenerator.incrementAndGet();
-    }
-
-
-    public Reservation(String name, LocalDate localDate, LocalTime localTime) {
-        this.id = idGenerator.incrementAndGet();
+    @JsonCreator
+    public Reservation(
+            @JsonProperty("id") long id,
+            @JsonProperty("name") String name,
+            @JsonProperty("date") LocalDate date,
+            @JsonProperty("time") LocalTime time
+    ) {
+        this.id = id;
         this.name = name;
-        this.date = localDate;
-        this.time = localTime;
+        this.date = date;
+        this.time = time;
     }
+
 
     public long getId() {
         return id;

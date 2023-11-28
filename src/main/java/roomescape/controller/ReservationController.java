@@ -2,13 +2,18 @@ package roomescape.controller;
 
 import static org.springframework.http.HttpStatus.CREATED;
 
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,7 +21,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.util.UriComponentsBuilder;
 import roomescape.dto.Reservation;
 import roomescape.exception.IllegalReservationException;
 import roomescape.exception.NotFoundReservationException;
@@ -24,8 +28,8 @@ import roomescape.exception.NotFoundReservationException;
 @RestController
 @RequestMapping("/reservations")
 public class ReservationController {
-    private List<Reservation> reservations = new ArrayList<>();
-    private final AtomicLong counter = new AtomicLong(0);
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @PostMapping
     public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservation) {
@@ -34,11 +38,8 @@ public class ReservationController {
                     || reservation.getName().isEmpty()) {
                 throw new IllegalReservationException("Reservation의 항목이 채워지지 않았습니다");
             }
+            addReservationToDatabase(reservation); // database에 추가
 
-            reservation.setId(counter.incrementAndGet());
-            reservation.setDate(reservation.getDate());
-            reservation.setTime(reservation.getTime());
-            reservations.add(reservation);
 
             return ResponseEntity
                     .<Reservation>status(CREATED)
@@ -54,24 +55,59 @@ public class ReservationController {
 
     @GetMapping
     public List<Reservation> getReservation() {
-        return reservations;
+        return getReservationsFromDatabase();
     }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Reservation> deleteReservation(@PathVariable long id) {
-        Iterator<Reservation> iterator = reservations.iterator();
-        while (iterator.hasNext()) {
-            Reservation reservation = iterator.next();
-            if (reservation.getId() == id) {
-                iterator.remove();
-                counter.decrementAndGet();
-                return ResponseEntity.noContent().build();
-            }
-        }
+        try {
+            Reservation existingReservation = getReservationFromDatabase(id);
+            deleteReservationFromDatabase(id);
 
-        // 해당 ID의 예약이 없으면 예외 발생
-        throw new NotFoundReservationException("Reservation with ID " + id + " not found");
+            return ResponseEntity.noContent().build();
+        } catch (NotFoundReservationException e) {
+            throw new NotFoundReservationException("[ERROR] 해당 ID의 Reservation이 없음");
+        }
     }
 
+    private Reservation getReservationFromDatabase(long id) {
+        String sql = "SELECT * FROM reservation WHERE id = ?";
+        try {
+            return jdbcTemplate.queryForObject(sql, new ReservationRowMapper(), id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new NotFoundReservationException("[ERROR] 예약 아이디: " + id + " 없음");
+        }
+    }
+
+    private void deleteReservationFromDatabase(long id) {
+        String sql = "DELETE FROM reservation WHERE id = ?";
+        jdbcTemplate.update(sql, id);
+    }
+
+
+    @GetMapping("/from-database")
+    public List<Reservation> getReservationsFromDatabase() {
+        String sql = "SELECT * FROM reservation";
+        return jdbcTemplate.query(sql, new ReservationRowMapper());
+    }
+
+    private static class ReservationRowMapper implements RowMapper<Reservation> {
+        @Override
+        public Reservation mapRow(ResultSet rs, int rowNum) throws SQLException {
+            long id = rs.getLong("id");
+            String name = rs.getString("name");
+            LocalDate date = LocalDate.parse(rs.getString("date"));
+            LocalTime time = LocalTime.parse(rs.getString("time"));
+
+            return new Reservation(id, name, date, time);
+        }
+
+    }
+
+    private void addReservationToDatabase(Reservation reservation) {
+        String sql = "INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)";
+        jdbcTemplate.update(sql, reservation.getName(), reservation.getDate(), reservation.getTime());
+    }
 
 }
