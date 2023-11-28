@@ -41,8 +41,6 @@ public class ReservationsController {
             return reservation;
         });
         return ResponseEntity.ok().body(reservations1);
-=======
-    private List<Reservation> reservations = new ArrayList<>();
 
     }
 
@@ -78,8 +76,6 @@ public class ReservationsController {
     public ResponseEntity<Void> DeleteReservations (@PathVariable Long id){
         String sql = "DELETE FROM reservation WHERE id = ?";
         int rowNum = jdbcTemplate.update(sql, Long.valueOf(id));
-
-
         return ResponseEntity.noContent().build();
     }
 }

@@ -10,6 +10,7 @@ public class Reservation {
     private String date;
     private String time;
 
+    public Reservation() {}
 
     public static Reservation toEntity(Reservation reservation) {
         Reservation reservation1 = new Reservation(reservation.name, reservation.date, reservation.time);
