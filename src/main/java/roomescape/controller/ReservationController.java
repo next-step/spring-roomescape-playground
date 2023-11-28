@@ -68,7 +68,7 @@ public class ReservationController {
 
             return ResponseEntity.noContent().build();
         } catch (NotFoundReservationException e) {
-            return ResponseEntity.notFound().build();
+            throw new NotFoundReservationException("[ERROR] 해당 ID의 Reservation이 없음");
         }
     }
 
