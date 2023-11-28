@@ -18,13 +18,13 @@ import roomescape.exception.BaseException;
 @Service
 public class ReservationService {
 
-    private List<Reservation> reservations = new ArrayList<>();
-    private AtomicLong index = new AtomicLong(0);
+    private final List<Reservation> reservations = new ArrayList<>();
+    private final AtomicLong index = new AtomicLong(0);
 
     public List<ReservationResponse> getReservations() {
         return reservations.stream()
             .map(ReservationResponse::toDto)
-            .collect(Collectors.toList());
+            .toList();
     }
 
     public ReservationResponse createReservation(ReservationRequest reservationRequest) {

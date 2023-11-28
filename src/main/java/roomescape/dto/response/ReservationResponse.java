@@ -1,8 +1,5 @@
 package roomescape.dto.response;
 
-import java.sql.Time;
-import java.util.Date;
-
 import roomescape.domain.Reservation;
 
 public class ReservationResponse {
