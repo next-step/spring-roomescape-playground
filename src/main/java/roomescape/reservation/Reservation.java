@@ -10,13 +10,12 @@ public class Reservation {
     private String date;
     private String time;
 
-    private static AtomicLong index = new AtomicLong(1 );
+    public Reservation() {}
 
     public static Reservation toEntity(Reservation reservation) {
-        Reservation reservation1 = new Reservation(index.getAndIncrement(), reservation.getName(), reservation.getDate(), reservation.getTime());
+        Reservation reservation1 = new Reservation(reservation.name, reservation.date, reservation.time);
         return reservation1;
     }
-
 
     public String getName() {
         return name;
@@ -38,5 +37,13 @@ public class Reservation {
         this.name = name;
         this.date = date;
         this.time = time;
+    }
+    public Reservation(String name, String date, String time) {
+        this.name = name;
+        this.date = date;
+        this.time = time;
+    }
+    public void setId(Long id) {
+        this.id = id;
     }
 }
