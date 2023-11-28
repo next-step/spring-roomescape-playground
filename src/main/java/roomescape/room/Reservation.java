@@ -3,20 +3,20 @@ package roomescape.room;
 import java.time.LocalDate;
 import roomescape.time.Time;
 
-public class Room {
+public class Reservation {
 	private final Long id;
 	private final String name;
 	private final LocalDate date;
 	private final Time time;
 
-	public Room(String name, LocalDate date, Time time) {
+	public Reservation(String name, LocalDate date, Time time) {
 		this.id = null;
 		this.name = name;
 		this.date = date;
 		this.time = time;
 	}
 
-	public Room(Long id, String name, LocalDate date, Time time) {
+	public Reservation(Long id, String name, LocalDate date, Time time) {
 		this.id = id;
 		this.name = name;
 		this.date = date;

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDate;
 import java.util.List;
 
-public class RoomResponseDTO {
+public class ReservationResponse {
 
 	public record Create(Long id) {
 
@@ -18,12 +18,12 @@ public class RoomResponseDTO {
 			 Long time
 			) {
 
-		public static Read toDTO(Room room) {
-			return new Read(room.getId(), room.getName(), room.getDate(), room.getTime().getId());
+		public static Read toDTO(Reservation reservation) {
+			return new Read(reservation.getId(), reservation.getName(), reservation.getDate(), reservation.getTime().getId());
 		}
 
-		public static List<Read> toDTO(List<Room> rooms) {
-			return rooms.stream().map(Read::toDTO).toList();
+		public static List<Read> toDTO(List<Reservation> reservations) {
+			return reservations.stream().map(Read::toDTO).toList();
 		}
 	}
 }
