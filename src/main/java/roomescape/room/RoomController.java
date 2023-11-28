@@ -28,7 +28,7 @@ public class RoomController {
 
 	@GetMapping("/reservation")
 	public String getReservationPage() {
-		return "reservation";
+		return "new-reservation";
 	}
 
 	@PostMapping("/reservations")
