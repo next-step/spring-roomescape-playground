@@ -6,7 +6,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.net.URI;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
+import roomescape.time.Time;
 
 @Controller
 public class RoomController {
@@ -62,10 +62,12 @@ public class RoomController {
 
 		private record Create(@NotBlank(message = "이름은 필수 입력값입니다.") String name,
 		                      @NotNull(message = "날짜는 필수 입력값입니다.") LocalDate date,
-		                      @NotNull(message = "시간은 필수 입력값입니다.") LocalTime time) {
+		                      @NotNull(message = "시간은 필수 입력값입니다.") Long time) {
 
 			public Room toEntity() {
-				return new Room(name, date, time);
+				Time timeObj = new Time(null);
+				timeObj.setId(time);
+				return new Room(name, date, timeObj);
 			}
 		}
 	}
@@ -81,11 +83,11 @@ public class RoomController {
 
 		private record Read
 				(Long id, String name, @JsonFormat(pattern = "yyyy-MM-dd") LocalDate date,
-				 @JsonFormat(pattern = "HH:mm") LocalTime time
+				Long timeId
 				) {
 
 			public static Read toDTO(Room room) {
-				return new Read(room.getId(), room.getName(), room.getDate(), room.getTime());
+				return new Read(room.getId(), room.getName(), room.getDate(), room.getTime().getId());
 			}
 
 			public static List<Read> toDTO(List<Room> rooms) {
