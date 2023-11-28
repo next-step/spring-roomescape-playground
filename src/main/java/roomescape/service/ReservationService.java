@@ -21,7 +21,13 @@ public class ReservationService {
     private final AtomicLong index = new AtomicLong(1);
 
     public List<Reservation> getAllReservations() {
-        return reservations.values().stream().toList();
+        return jdbcTemplate.query("SELECT * FROM reservation",
+            (rs, rowNum) -> new Reservation(
+                rs.getLong("id"),
+                rs.getString("name"),
+                rs.getString("date"),
+                rs.getString("time")
+            ));
     }
 
     public Reservation addReservation(Reservation reservation) {
