@@ -1,11 +1,10 @@
 package roomescape;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicLong;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -16,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
 public class ReservationController {
-    private List<Reservation> reservations = new ArrayList<>();
-    private AtomicLong index = new AtomicLong(1);
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @GetMapping("reservation")
     public String reservation(){
@@ -26,6 +25,17 @@ public class ReservationController {
 
     @GetMapping("/reservations")
     public ResponseEntity<List<Reservation>> read(){
+        String sql = "select id, name, date, time from reservation";
+        List<Reservation> reservations = jdbcTemplate.query(
+            sql, (resultSet, rowNum) -> {
+                Reservation reservation = new Reservation(
+                    resultSet.getLong("id"),
+                    resultSet.getString("name"),
+                    resultSet.getString("date"),
+                    resultSet.getString("time")
+                );
+                return reservation;
+            });
         return ResponseEntity.ok().body(reservations);
     }
 
@@ -36,20 +46,29 @@ public class ReservationController {
             reservation.getTime() == null )
             throw new NotFoundReservationException();
 
-        Reservation newReservation = Reservation.newInstance(reservation, index.getAndIncrement());
-        reservations.add(newReservation);
+        String insertSql = "INSERT INTO reservation(name, date, time) VALUES (?, ?, ?)";
+        jdbcTemplate.update(insertSql, reservation.getName(), reservation.getDate(), reservation.getTime());
+
+        String findSql = "SELECT id, name, date, time FROM reservation WHERE name = ? AND date = ? AND time = ?";
+        Reservation newReservation = jdbcTemplate.queryForObject(
+            findSql, (resultSet, rowNum) -> {
+                Reservation tmpReservation = new Reservation(
+                    resultSet.getLong("id"),
+                    resultSet.getString("name"),
+                    resultSet.getString("date"),
+                    resultSet.getString("time")
+                );
+                return tmpReservation;
+            }, reservation.getName(), reservation.getDate(), reservation.getTime());
 
         return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
     }
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id){
-        Reservation reservation = reservations.stream()
-            .filter(it -> Objects.equals(it.getId(), id))
-            .findFirst()
-            .orElseThrow(NotFoundReservationException::new);
 
-        reservations.remove(reservation);
+        String sql = "DELETE FROM reservation WHERE id = ?";
+        jdbcTemplate.update(sql, id);
 
         return ResponseEntity.noContent().build();
     }
