@@ -23,7 +23,7 @@ import roomescape.room.Room;
 import roomescape.room.RoomRepository;
 import roomescape.room.RoomResponseDTO;
 import roomescape.time.Time;
-import roomescape.time.TimeRepository;
+import roomescape.time.TimeDAO;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -32,7 +32,7 @@ public class MissionStepTest {
 	@Autowired
 	private RoomRepository roomRepository;
 	@Autowired
-	private TimeRepository timeRepository;
+	private TimeDAO timeDAO;
 
 	@Test
 	void 일단계() {
@@ -45,7 +45,7 @@ public class MissionStepTest {
 	@Test
 	void 이단계() {
 		Time time = new Time(LocalTime.now());
-		timeRepository.save(time);
+		timeDAO.save(time);
 
 		Room room1 = new Room("박한수", LocalDate.now(), time);
 		Room room2 = new Room("홍길동", LocalDate.now(), time);
@@ -64,7 +64,7 @@ public class MissionStepTest {
 	@Test
 	void 삼단계() {
 		Time time = new Time(LocalTime.of(15, 40));
-		timeRepository.save(time);
+		timeDAO.save(time);
 
 		Map<String, String> params = new HashMap<>();
 
@@ -124,7 +124,7 @@ public class MissionStepTest {
 	@Test
 	void 날짜의_형식은_YYYY_MM_DD_형식이어야_한다() {
 		Time time = new Time(LocalTime.of(15, 40));
-		timeRepository.save(time);
+		timeDAO.save(time);
 
 		Map<String, String> params = new HashMap<>();
 
@@ -192,7 +192,7 @@ public class MissionStepTest {
 	void 육단계() {
 
 		Time time = new Time(LocalTime.now());
-		timeRepository.save(time);
+		timeDAO.save(time);
 
 		jdbcTemplate.update("INSERT INTO reservation (name, date, time_id) VALUES (?, ?, ?)", "브라운", "2023-08-05", time.getId());
 
@@ -210,7 +210,7 @@ public class MissionStepTest {
 	@Test
 	void 칠단계() {
 		Time time = new Time(LocalTime.now());
-		timeRepository.save(time);
+		timeDAO.save(time);
 
 		Map<String, String> params = new HashMap<>();
 

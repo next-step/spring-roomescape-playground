@@ -10,12 +10,12 @@ import org.springframework.stereotype.Repository;
 import roomescape.common.NotFoundTimeException;
 
 @Repository
-public class TimeRepository {
+public class TimeDAO {
 
 	private final JdbcTemplate jdbcTemplate;
 	private final SimpleJdbcInsert simpleJdbcInsert;
 
-	public TimeRepository(JdbcTemplate jdbcTemplate) {
+	public TimeDAO(JdbcTemplate jdbcTemplate) {
 		this.jdbcTemplate = jdbcTemplate;
 		this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("time").usingGeneratedKeyColumns("id");
 	}
