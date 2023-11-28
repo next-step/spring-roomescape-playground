@@ -63,7 +63,6 @@ public class ReservationController {
     public ResponseEntity<Reservation> deleteReservation(@PathVariable long id) {
         try {
             Reservation existingReservation = getReservationFromDatabase(id);
-
             deleteReservationFromDatabase(id);
 
             return ResponseEntity.noContent().build();
@@ -96,13 +95,14 @@ public class ReservationController {
     private static class ReservationRowMapper implements RowMapper<Reservation> {
         @Override
         public Reservation mapRow(ResultSet rs, int rowNum) throws SQLException {
-            Reservation reservation = new Reservation();
-            reservation.setId(rs.getLong("id"));
-            reservation.setName(rs.getString("name"));
-            reservation.setDate(LocalDate.parse(rs.getString("date")));
-            reservation.setTime(LocalTime.parse(rs.getString("time")));
-            return reservation;
+            long id = rs.getLong("id");
+            String name = rs.getString("name");
+            LocalDate date = LocalDate.parse(rs.getString("date"));
+            LocalTime time = LocalTime.parse(rs.getString("time"));
+
+            return new Reservation(id, name, date, time);
         }
+
     }
 
     private void addReservationToDatabase(Reservation reservation) {
