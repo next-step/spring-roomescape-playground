@@ -27,13 +27,15 @@ public class ReservationService {
     @Transactional
     public ReservationResponse.createReservationDto saveReservation(ReservationRequest.CreateReservationDto request) {
         if (request.name() == null || request.date() == null || request.time() == null) {
-            System.out.println("hello");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "양식을 채워주세요.");
         }
+        return new ReservationResponse.createReservationDto(createReservation(request));
+    }
 
+    private Reservation createReservation(ReservationRequest.CreateReservationDto request) {
         Reservation reservation = request.toEntity();
         reservationRepository.save(reservation);
-        return new ReservationResponse.createReservationDto(reservation);
+        return reservation;
     }
 
     @Transactional

@@ -6,13 +6,14 @@ server:
   port: 8080
 spring:
   datasource:
-    url: jdbc:h2:mem:test;MODE=MySQL
+    url: jdbc:h2:mem:database
     driver-class-name: org.h2.Driver
     username: sa
-    password: sa
+    password: ${PASSWORD}
   h2:
     console:
       enabled: true
+      path: /h2-console
     jpa:
       hibernate:
         ddl-auto: create
