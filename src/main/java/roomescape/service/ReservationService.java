@@ -8,11 +8,14 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import roomescape.domain.Reservation;
+import roomescape.domain.ReservationValidator;
 import roomescape.dto.request.ReservationRequest;
 import roomescape.dto.response.ReservationResponse;
 
 @Service
 public class ReservationService {
+
+    private final ReservationValidator reservationValidator = new ReservationValidator();
 
     private List<Reservation> reservations = new ArrayList<>();
     private AtomicLong index = new AtomicLong(0);
