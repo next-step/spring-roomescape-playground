@@ -44,7 +44,7 @@ public class TimeRepository {
 		jdbcTemplate.update("delete from time where id = ?", id);
 	}
 
-	private Time findById(Long id) {
+	public Time findById(Long id) {
 		try {
 			return jdbcTemplate.queryForObject("select * from time where id = ?", (rs, rowNum) -> {
 				Time time = new Time(rs.getTime("time").toLocalTime());

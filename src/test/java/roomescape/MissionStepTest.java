@@ -21,6 +21,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import roomescape.room.Room;
 import roomescape.room.RoomRepository;
+import roomescape.room.RoomResponseDTO;
+import roomescape.time.Time;
+import roomescape.time.TimeRepository;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -28,6 +31,8 @@ public class MissionStepTest {
 
 	@Autowired
 	private RoomRepository roomRepository;
+	@Autowired
+	private TimeRepository timeRepository;
 
 	@Test
 	void 일단계() {
@@ -39,9 +44,12 @@ public class MissionStepTest {
 
 	@Test
 	void 이단계() {
-		Room room1 = new Room("박한수", LocalDate.now(), LocalTime.now());
-		Room room2 = new Room("홍길동", LocalDate.now(), LocalTime.now());
-		Room room3 = new Room("브라운", LocalDate.now(), LocalTime.now());
+		Time time = new Time(LocalTime.now());
+		timeRepository.save(time);
+
+		Room room1 = new Room("박한수", LocalDate.now(), time);
+		Room room2 = new Room("홍길동", LocalDate.now(), time);
+		Room room3 = new Room("브라운", LocalDate.now(), time);
 
 		roomRepository.save(room1);
 		roomRepository.save(room2);
@@ -55,10 +63,14 @@ public class MissionStepTest {
 
 	@Test
 	void 삼단계() {
+		Time time = new Time(LocalTime.of(15, 40));
+		timeRepository.save(time);
+
 		Map<String, String> params = new HashMap<>();
+
 		params.put("name", "브라운");
 		params.put("date", "2023-08-05");
-		params.put("time", "15:40");
+		params.put("time", time.getId().toString());
 
 		RestAssured.given().log().all()
 				.contentType(ContentType.JSON)
@@ -111,10 +123,15 @@ public class MissionStepTest {
 
 	@Test
 	void 날짜의_형식은_YYYY_MM_DD_형식이어야_한다() {
+		Time time = new Time(LocalTime.of(15, 40));
+		timeRepository.save(time);
+
 		Map<String, String> params = new HashMap<>();
+
 		params.put("name", "브라운");
 		params.put("date", "2023-08-05");
-		params.put("time", "15:40");
+		params.put("time", time.getId().toString());
+
 
 		RestAssured.given().log().all()
 				.contentType(ContentType.JSON)
@@ -137,21 +154,19 @@ public class MissionStepTest {
 	@Test
 	void 시간의_형식은_HH_MM_형식이어야_한다() {
 		Map<String, String> params = new HashMap<>();
-		params.put("name", "브라운");
-		params.put("date", "2023-08-05");
 		params.put("time", "15:40");
 
 		RestAssured.given().log().all()
 				.contentType(ContentType.JSON)
 				.body(params)
-				.when().post("/reservations")
+				.when().post("/times")
 				.then().log().all()
 				.statusCode(201)
-				.header("Location", "/reservations/1")
+				.header("Location", "/times/1")
 				.body("id", is(1));
 
 		ValidatableResponse validatableResponse = RestAssured.given().log().all()
-				.when().get("/reservations/1")
+				.when().get("/times/1")
 				.then().log().all()
 				.statusCode(200);
 
@@ -175,13 +190,17 @@ public class MissionStepTest {
 
 	@Test
 	void 육단계() {
-		jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "브라운", "2023-08-05", "15:40");
 
-		List<Room> reservations = RestAssured.given().log().all()
+		Time time = new Time(LocalTime.now());
+		timeRepository.save(time);
+
+		jdbcTemplate.update("INSERT INTO reservation (name, date, time_id) VALUES (?, ?, ?)", "브라운", "2023-08-05", time.getId());
+
+		List<RoomResponseDTO.Read> reservations = RestAssured.given().log().all()
 				.when().get("/reservations")
 				.then().log().all()
 				.statusCode(200).extract()
-				.jsonPath().getList(".", Room.class);
+				.jsonPath().getList(".", RoomResponseDTO.Read.class);
 
 		Integer count = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
 
@@ -190,10 +209,14 @@ public class MissionStepTest {
 
 	@Test
 	void 칠단계() {
+		Time time = new Time(LocalTime.now());
+		timeRepository.save(time);
+
 		Map<String, String> params = new HashMap<>();
+
 		params.put("name", "브라운");
 		params.put("date", "2023-08-05");
-		params.put("time", "10:00");
+		params.put("time", time.getId().toString());
 
 		RestAssured.given().log().all()
 				.contentType(ContentType.JSON)

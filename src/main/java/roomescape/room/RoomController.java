@@ -1,6 +1,5 @@
 package roomescape.room;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -68,30 +67,6 @@ public class RoomController {
 				Time timeObj = new Time(null);
 				timeObj.setId(time);
 				return new Room(name, date, timeObj);
-			}
-		}
-	}
-
-	private class RoomResponseDTO {
-
-		private record Create(Long id) {
-
-			public static Create toDTO(Long id) {
-				return new Create(id);
-			}
-		}
-
-		private record Read
-				(Long id, String name, @JsonFormat(pattern = "yyyy-MM-dd") LocalDate date,
-				Long timeId
-				) {
-
-			public static Read toDTO(Room room) {
-				return new Read(room.getId(), room.getName(), room.getDate(), room.getTime().getId());
-			}
-
-			public static List<Read> toDTO(List<Room> rooms) {
-				return rooms.stream().map(Read::toDTO).toList();
 			}
 		}
 	}
