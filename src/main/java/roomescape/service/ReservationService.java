@@ -1,10 +1,13 @@
 package roomescape.service;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import roomescape.dto.Reservation;
@@ -12,6 +15,9 @@ import roomescape.dto.Reservation;
 @Service
 public class ReservationService {
     private final Map<Long, Reservation> reservations = new LinkedHashMap<>();
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
     private final AtomicLong index = new AtomicLong(1);
 
     public List<Reservation> getAllReservations() {
