@@ -5,28 +5,21 @@ import java.time.LocalTime;
 import java.util.concurrent.atomic.AtomicLong;
 
 import lombok.Getter;
-import lombok.Setter;
 
-@Setter
 @Getter
 public class Reservation {
-    private final AtomicLong idGenerator = new AtomicLong();
-    private long id;
+    private long id = 0;
     private String name;
     private LocalDate date;
-    private LocalTime time;
 
-    public Reservation() {
-        this.id = idGenerator.incrementAndGet();
-    }
-
-
-    public Reservation(String name, LocalDate localDate, LocalTime localTime) {
-        this.id = idGenerator.incrementAndGet();
+    public Reservation(long id, String name, LocalDate date, LocalTime time) {
+        this.id = id;
         this.name = name;
-        this.date = localDate;
-        this.time = localTime;
+        this.date = date;
+        this.time = time;
     }
+
+    private LocalTime time;
 
     public long getId() {
         return id;
