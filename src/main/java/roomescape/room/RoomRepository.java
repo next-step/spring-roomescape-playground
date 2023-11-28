@@ -1,4 +1,4 @@
-package roomescape;
+package roomescape.room;
 
 import java.sql.PreparedStatement;
 import java.util.HashMap;
@@ -12,6 +12,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import roomescape.common.NotFoundReservationException;
 
 @Repository
 public class RoomRepository {
@@ -61,7 +62,7 @@ public class RoomRepository {
 			room = new Room(id, room.getName(), room.getDate(), room.getTime());
 			return room;
 		} catch (EmptyResultDataAccessException e) {
-			throw new DomainEmptyFieldException("해당하는 예약이 없습니다.");
+			throw new NotFoundReservationException("해당하는 예약이 없습니다.");
 		}
 	}
 

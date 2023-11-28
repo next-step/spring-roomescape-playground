@@ -1,4 +1,4 @@
-package roomescape;
+package roomescape.room;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.Valid;
