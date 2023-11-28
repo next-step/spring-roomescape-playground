@@ -1,14 +1,7 @@
 package roomescape.controller;
 
-import static roomescape.utils.ErrorMessage.*;
-import static roomescape.validation.ReservationValidation.validate;
-
-import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicLong;
-import org.springframework.http.MediaType;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,43 +10,33 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import roomescape.exception.NotFoundReservationException;
 import roomescape.domain.Reservation;
+import roomescape.service.ReservationService;
 
 @RestController
 @RequestMapping("/reservations")
 public class ReservationController {
-    private final List<Reservation> reservations = new ArrayList<>();
-    private final AtomicLong index = new AtomicLong(1);
 
+    private final ReservationService reservationService;
+
+    @Autowired
+    public ReservationController(ReservationService reservationService) {
+        this.reservationService = reservationService;
+    }
 
     @PostMapping
     public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservation) {
-        validate(reservation);
-
-        Reservation newReservation = Reservation.createWithId(reservation, index.getAndIncrement());
-        reservations.add(newReservation);
-        return ResponseEntity
-                .created(URI.create("/reservations/" + newReservation.id()))
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(newReservation);
+        return reservationService.reserve(reservation);
     }
 
     @GetMapping
     public ResponseEntity<List<Reservation>> readReservation() {
-        return ResponseEntity.ok().body(reservations);
+        return reservationService.findReservations();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable AtomicLong id) {
-        Reservation reservation = reservations.stream()
-                .filter(it -> Objects.equals(it.id().get(), id.get()))
-                .findFirst()
-                .orElseThrow(() -> new NotFoundReservationException(NON_EXISTING_RESERVATION));
-
-        reservations.remove(reservation);
-
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Void> delete(@PathVariable String id) {
+        return reservationService.deleteReservation(id);
     }
 
 
