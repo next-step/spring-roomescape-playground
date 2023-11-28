@@ -3,7 +3,7 @@ package roomescape.exception;
 import org.springframework.http.HttpStatus;
 
 public enum ExceptionMessage {
-    TEST_EXCEPTION("테스트예외", HttpStatus.valueOf(400));
+    NOT_EXIST_RESERVATION("존재하지 않는 예약입니다.", HttpStatus.valueOf(400));
 
     private final String message;
     private final HttpStatus httpStatus;
