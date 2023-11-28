@@ -1,56 +1,54 @@
 package roomescape.service;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
-import roomescape.dto.Reservation;
+import roomescape.dao.ReservationDao;
+import roomescape.domain.Reservation;
+import roomescape.dto.ReservationDto;
 
 @Service
 public class ReservationService {
     private final Map<Long, Reservation> reservations = new LinkedHashMap<>();
 
     @Autowired
-    private JdbcTemplate jdbcTemplate;
-    private final AtomicLong index = new AtomicLong(1);
+    ReservationDao reservationDao;
 
-    public List<Reservation> getAllReservations() {
-        return jdbcTemplate.query("SELECT * FROM reservation",
-            (rs, rowNum) -> new Reservation(
-                rs.getLong("id"),
-                rs.getString("name"),
-                rs.getString("date"),
-                rs.getString("time")
-            ));
+    public List<ReservationDto> getAllReservations() {
+        return reservationDao.getAllReservations().stream()
+            .map(this::convertToDto)
+            .toList();
     }
 
-    public Reservation addReservation(Reservation reservation) {
-        validateAddReservation(reservation);
-        var saved = new Reservation(index.get(), reservation.name(), reservation.date(), reservation.time());
-        reservations.put(index.getAndIncrement(), saved);
-        return saved;
-    }
-
-    private void validateAddReservation(Reservation reservation) {
-        if (reservation == null || reservation.name().isEmpty() || reservation.date().isEmpty() || reservation.time().isEmpty()) {
-            throw new IllegalArgumentException("필수 필드가 비어있습니다.");
-        }
+    public ReservationDto addReservation(ReservationDto reservationDto) {
+        Reservation reservation = convertToDomain(reservationDto);
+        reservationDao.saveReservation(reservation);
+        return convertToDto(reservation);
     }
 
     public void deleteReservation(Long id) {
-        validateDeleteReservation(id);
-        reservations.remove(id);
+        reservationDao.removeReservation(id);
     }
 
-    private void validateDeleteReservation(Long id) {
-        if (!reservations.containsKey(id)) {
-            throw new IllegalArgumentException("존재하지 않는 id입니다.");
-        }
+    private ReservationDto convertToDto(Reservation reservation) {
+        return new ReservationDto(
+            reservation.getId(),
+            reservation.getName(),
+            reservation.getDate(),
+            reservation.getTime()
+        );
+    }
+
+    private Reservation convertToDomain(ReservationDto reservationDto) {
+        return new Reservation(
+            reservationDto.id(),
+            reservationDto.name(),
+            reservationDto.date(),
+            reservationDto.time()
+        );
     }
 }
