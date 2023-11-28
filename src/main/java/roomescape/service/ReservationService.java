@@ -4,9 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Service;
+
 import roomescape.dto.Reservation;
 
+@Service
 public class ReservationService {
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
     private final List<Reservation> reservations = new ArrayList<>();
     private final AtomicLong index = new AtomicLong(1);
 
