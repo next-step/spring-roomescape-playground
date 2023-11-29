@@ -8,8 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
@@ -48,11 +47,8 @@ public class ReservationDao {
 
     public Long saveReservation(Reservation reservation) {
         validateAddReservation(reservation);
-        SqlParameterSource sqlParameterSource = new MapSqlParameterSource()
-            .addValue("name", reservation.getName())
-            .addValue("date", reservation.getDate())
-            .addValue("time", reservation.getTime());
-        Number id = simpleJdbcInsert.executeAndReturnKey(sqlParameterSource);
+        var parameterSource = new BeanPropertySqlParameterSource(reservation);
+        Number id = simpleJdbcInsert.executeAndReturnKey(parameterSource);
         reservation.setId(id.longValue());
         return id.longValue();
     }
