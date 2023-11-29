@@ -14,7 +14,7 @@ public class Reservation {
         this.time = time;
     }
 
-    public static Reservation from(long id, String name, String date, String time) {
+    public static Reservation of(long id, String name, String date, String time) {
         return new Reservation(id, name, date, time);
     }
 
