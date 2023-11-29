@@ -37,11 +37,13 @@ public class ReservationController {
     @GetMapping("/reservations")
     @ResponseBody
     public ResponseEntity<List<ReservationResponseForm>> getReservations() {
-        return ResponseEntity.ok().body(reservationRepository
+        List<Reservation> all = reservationRepository.findAll();
+        ResponseEntity<List<ReservationResponseForm>> body = ResponseEntity.ok().body(reservationRepository
                 .findAll()
                 .stream()
                 .map(ReservationResponseForm::new)
                 .toList());
+        return body;
     }
 
     @PostMapping("/reservations")
