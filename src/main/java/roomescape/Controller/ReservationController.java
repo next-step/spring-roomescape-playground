@@ -27,6 +27,7 @@ public class ReservationController {
     public String reservation() {
         return "reservation";
     }
+
     @GetMapping("/reservations")
     @ResponseBody
     public ResponseEntity<List<ReservationResponseForm>> getReservations() {
