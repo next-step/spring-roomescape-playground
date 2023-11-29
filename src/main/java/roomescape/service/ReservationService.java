@@ -27,7 +27,7 @@ public class ReservationService {
     }
 
     public ReservationResponse createReservation(ReservationRequest reservationRequest) {
-        Reservation reservation = Reservation.from(index.incrementAndGet(), reservationRequest.getName(),
+        Reservation reservation = Reservation.of(index.incrementAndGet(), reservationRequest.getName(),
             reservationRequest.getDate(), reservationRequest.getTime());
         reservations.add(reservation);
         return ReservationResponse.from(reservation);
