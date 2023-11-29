@@ -36,10 +36,11 @@ public class ReservationController {
 
     @ResponseBody
     @PostMapping("/reservations")
-    public ResponseEntity<ReservationResponse> createReservation(@Valid @RequestBody ReservationRequest reservationRequest) throws
+    public ResponseEntity<ReservationResponse> createReservation(
+        @Valid @RequestBody ReservationRequest reservationRequest) throws
         URISyntaxException {
         ReservationResponse reservationResponse = reservationService.createReservation(reservationRequest);
-        return ResponseEntity.created(new URI("/reservations/"+reservationResponse.getId()))
+        return ResponseEntity.created(new URI("/reservations/" + reservationResponse.getId()))
             .body(reservationResponse);
     }
 

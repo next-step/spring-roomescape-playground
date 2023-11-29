@@ -17,7 +17,8 @@ public class Reservation {
     }
 
     public static Reservation toDomain(long id, ReservationRequest reservationRequest) {
-        return new Reservation(id, reservationRequest.getName(), reservationRequest.getDate(), reservationRequest.getTime());
+        return new Reservation(id, reservationRequest.getName(), reservationRequest.getDate(),
+            reservationRequest.getTime());
     }
 
     public Long getId() {

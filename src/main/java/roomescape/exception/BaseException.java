@@ -2,7 +2,7 @@ package roomescape.exception;
 
 import org.springframework.http.HttpStatus;
 
-public class BaseException extends RuntimeException{
+public class BaseException extends RuntimeException {
 
     private final ExceptionMessage exceptionMessage;
 

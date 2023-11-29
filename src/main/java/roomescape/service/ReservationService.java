@@ -28,7 +28,7 @@ public class ReservationService {
     }
 
     public ReservationResponse createReservation(ReservationRequest reservationRequest) {
-        Reservation reservation = Reservation.toDomain(index.incrementAndGet(),reservationRequest);
+        Reservation reservation = Reservation.toDomain(index.incrementAndGet(), reservationRequest);
         reservations.add(reservation);
         return ReservationResponse.toDto(reservation);
     }
@@ -41,7 +41,7 @@ public class ReservationService {
             }
         }
         deleteReservation = Optional.ofNullable(deleteReservation)
-            .orElseThrow(()->new BaseException(NOT_EXIST_RESERVATION));
+            .orElseThrow(() -> new BaseException(NOT_EXIST_RESERVATION));
 
         reservations.remove(deleteReservation);
     }
