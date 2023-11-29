@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
+import roomescape.repository.rowMapper.ReservationRowMapper;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -26,7 +27,7 @@ public class JdbcReservationRepository {
 
     public List<Reservation> findAll() {
         List<Reservation> reservations = template.query("select * from reservation",
-                new BeanPropertyRowMapper<>(Reservation.class));
+                new ReservationRowMapper());
 
         return reservations;
     }
@@ -41,7 +42,7 @@ public class JdbcReservationRepository {
 
     public Reservation findById(Long id) {
         Reservation reservation = template.queryForObject("select * from reservation where id = ?",
-                new BeanPropertyRowMapper<>(Reservation.class),
+                new ReservationRowMapper(),
                 id);
 
         return reservation;
