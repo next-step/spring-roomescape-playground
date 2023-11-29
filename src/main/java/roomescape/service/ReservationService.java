@@ -13,7 +13,7 @@ import roomescape.dto.ReservationDto;
 public class ReservationService {
 
     @Autowired
-    ReservationDao reservationDao;
+    private ReservationDao reservationDao;
 
     public List<ReservationDto> getAllReservations() {
         return reservationDao.getAllReservations().stream()
