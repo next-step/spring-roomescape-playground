@@ -1,7 +1,5 @@
 package roomescape.domain;
 
-import roomescape.dto.request.ReservationRequest;
-
 public class Reservation {
 
     private final Long id;
@@ -16,9 +14,8 @@ public class Reservation {
         this.time = time;
     }
 
-    public static Reservation from(long id, ReservationRequest reservationRequest) {
-        return new Reservation(id, reservationRequest.getName(), reservationRequest.getDate(),
-            reservationRequest.getTime());
+    public static Reservation from(long id, String name, String date, String time) {
+        return new Reservation(id, name, date, time);
     }
 
     public Long getId() {
