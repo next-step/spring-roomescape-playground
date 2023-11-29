@@ -45,7 +45,6 @@ public class ReservationService {
         try {
             reservationRepository.cancel(id);
         } catch (EmptyResultDataAccessException e) {
-            // Handle case where reservation with the given id was not found
             throw new IllegalArgumentException("예약된 아이디가 없습니다 id: " + id, e);
         } catch (Exception e) {
             throw new RuntimeException("예약을 지울수 없습니다", e);
