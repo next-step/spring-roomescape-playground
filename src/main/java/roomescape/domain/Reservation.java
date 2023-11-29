@@ -16,7 +16,7 @@ public class Reservation {
         this.time = time;
     }
 
-    public static Reservation toDomain(long id, ReservationRequest reservationRequest) {
+    public static Reservation from(long id, ReservationRequest reservationRequest) {
         return new Reservation(id, reservationRequest.getName(), reservationRequest.getDate(),
             reservationRequest.getTime());
     }

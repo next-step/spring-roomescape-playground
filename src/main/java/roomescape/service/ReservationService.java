@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -23,14 +22,14 @@ public class ReservationService {
 
     public List<ReservationResponse> getReservations() {
         return reservations.stream()
-            .map(ReservationResponse::toDto)
+            .map(ReservationResponse::from)
             .toList();
     }
 
     public ReservationResponse createReservation(ReservationRequest reservationRequest) {
-        Reservation reservation = Reservation.toDomain(index.incrementAndGet(), reservationRequest);
+        Reservation reservation = Reservation.from(index.incrementAndGet(), reservationRequest);
         reservations.add(reservation);
-        return ReservationResponse.toDto(reservation);
+        return ReservationResponse.from(reservation);
     }
 
     public void deleteReservation(Long id) {

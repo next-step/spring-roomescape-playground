@@ -16,7 +16,7 @@ public class ReservationResponse {
         this.time = time;
     }
 
-    public static ReservationResponse toDto(Reservation reservation) {
+    public static ReservationResponse from(Reservation reservation) {
         return new ReservationResponse(reservation.getId(), reservation.getName(), reservation.getDate(),
             reservation.getTime());
     }
