@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.springframework.stereotype.Service;
+
 import roomescape.dto.Reservation;
 
+@Service
 public class ReservationService {
     private final List<Reservation> reservations = new ArrayList<>();
     private final AtomicLong index = new AtomicLong(1);
@@ -18,12 +21,13 @@ public class ReservationService {
 
     public Reservation addReservation(Reservation reservation) {
         validateAddReservation(reservation);
-        reservations.add(new Reservation(index.get(), reservation.name(), reservation.date(), reservation.time()));
-        return reservations.get((int)index.getAndIncrement() - 1);
+        var saved = new Reservation(index.getAndIncrement(), reservation.name(), reservation.date(), reservation.time());
+        reservations.add(saved);
+        return saved;
     }
 
     private void validateAddReservation(Reservation reservation) {
-        if (reservation.name().isEmpty() || reservation.date().isEmpty() || reservation.time().isEmpty()) {
+        if (reservation == null || reservation.name().isEmpty() || reservation.date().isEmpty() || reservation.time().isEmpty()) {
             throw new IllegalArgumentException("필수 필드가 비어있습니다.");
         }
     }
@@ -36,7 +40,7 @@ public class ReservationService {
     }
 
     private void validateDeleteReservation(Long id) {
-        if (reservations.size() <= id || reservations.get(id.intValue()).id() == null) {
+        if (reservations.size() < id || reservations.get(id.intValue() - 1).id() == null) {
             throw new IllegalArgumentException("존재하지 않는 id입니다.");
         }
     }
