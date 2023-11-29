@@ -4,7 +4,6 @@ import static roomescape.exception.ExceptionMessage.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.stereotype.Service;
@@ -39,11 +38,9 @@ public class ReservationService {
     }
 
     public void deleteReservation(Long id) {
-        Reservation deleteReservation = reservations.stream()
-            .filter(reservation -> Objects.equals(reservation.getId(), id))
-            .findFirst()
-            .orElseThrow(() -> new BaseException(NOT_EXIST_RESERVATION));
-
-        reservations.remove(deleteReservation);
+        if (reservationRepository.findById(id) == null) {
+            throw new BaseException(NOT_EXIST_RESERVATION);
+        }
+        reservationRepository.delete(id);
     }
 }

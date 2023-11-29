@@ -44,4 +44,8 @@ public class ReservationRepository {
             ((rs, rowNum) -> new Reservation(rs.getLong("id"), rs.getString("name"),
                 rs.getString("date"), rs.getString("time"))), id);
     }
+
+    public void delete(Long id) {
+        jdbcTemplate.update(DELETE.getQuery(), id);
+    }
 }
