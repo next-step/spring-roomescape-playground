@@ -1,8 +1,6 @@
 package roomescape.service;
 
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,7 +11,6 @@ import roomescape.dto.ReservationDto;
 
 @Service
 public class ReservationService {
-    private final Map<Long, Reservation> reservations = new LinkedHashMap<>();
 
     @Autowired
     private ReservationDao reservationDao;
