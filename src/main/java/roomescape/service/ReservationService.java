@@ -1,7 +1,8 @@
 package roomescape.service;
 
-import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.stereotype.Service;
@@ -10,19 +11,17 @@ import roomescape.dto.Reservation;
 
 @Service
 public class ReservationService {
-    private final List<Reservation> reservations = new ArrayList<>();
+    private final Map<Long, Reservation> reservations = new LinkedHashMap<>();
     private final AtomicLong index = new AtomicLong(1);
 
     public List<Reservation> getAllReservations() {
-        return reservations.stream()
-            .filter(reservation -> reservation.id() != null)
-            .toList();
+        return reservations.values().stream().toList();
     }
 
     public Reservation addReservation(Reservation reservation) {
         validateAddReservation(reservation);
-        var saved = new Reservation(index.getAndIncrement(), reservation.name(), reservation.date(), reservation.time());
-        reservations.add(saved);
+        var saved = new Reservation(index.get(), reservation.name(), reservation.date(), reservation.time());
+        reservations.put(index.getAndIncrement(), saved);
         return saved;
     }
 
@@ -33,14 +32,12 @@ public class ReservationService {
     }
 
     public void deleteReservation(Long id) {
-        // id 유지를 위해 리스트에서 제거된 객체는 모든 요소를 null로 유지
-        // DB가 적용되면서 바뀔 예정
         validateDeleteReservation(id);
-        reservations.set(id.intValue() - 1, new Reservation(null, null, null, null));
+        reservations.remove(id);
     }
 
     private void validateDeleteReservation(Long id) {
-        if (reservations.size() < id || reservations.get(id.intValue() - 1).id() == null) {
+        if (!reservations.containsKey(id)) {
             throw new IllegalArgumentException("존재하지 않는 id입니다.");
         }
     }
