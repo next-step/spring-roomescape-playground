@@ -1,18 +1,15 @@
 package roomescape.repository;
 
-import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
-import roomescape.repository.rowMapper.ReservationRowMapper;
 
 import javax.sql.DataSource;
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Objects;
 
 @Repository
 public class JdbcReservationRepository {
@@ -28,13 +25,8 @@ public class JdbcReservationRepository {
     }
 
     public List<Reservation> findAll() {
-        List<Reservation> reservations;
-        try {
-            reservations = template.query("select * from reservation",
-                    new ReservationRowMapper());
-        } catch (DataAccessException e) {
-            throw new NoSuchElementException(e);
-        }
+        List<Reservation> reservations = template.query("select * from reservation",
+                new BeanPropertyRowMapper<>(Reservation.class));
 
         return reservations;
     }
@@ -48,20 +40,14 @@ public class JdbcReservationRepository {
 
 
     public Reservation findById(Long id) {
-        Reservation reservation;
-        try {
-            reservation = template.queryForObject("select * from reservation where id = ?",
-                    new ReservationRowMapper(),
-                    id);
-        } catch (DataAccessException e) {
-            throw new NoSuchElementException(e);
-        }
+        Reservation reservation = template.queryForObject("select * from reservation where id = ?",
+                new BeanPropertyRowMapper<>(Reservation.class),
+                id);
 
         return reservation;
     }
 
-    public void delete(Long id) {
-        findById(id);
+    public void cancel(Long id) {
         template.update("delete from reservation where id = ?", id);
     }
 }
