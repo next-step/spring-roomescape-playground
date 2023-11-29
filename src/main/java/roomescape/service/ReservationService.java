@@ -27,15 +27,14 @@ public class ReservationService {
     }
 
     public List<ReservationResponse> getReservations() {
-        return reservationRepository.getReservations().stream()
+        return reservationRepository.findAll().stream()
             .map(ReservationResponse::from)
             .toList();
     }
 
     public ReservationResponse createReservation(ReservationRequest reservationRequest) {
-        Reservation reservation = Reservation.of(index.incrementAndGet(), reservationRequest.getName(),
-            reservationRequest.getDate(), reservationRequest.getTime());
-        reservations.add(reservation);
+        Long id = reservationRepository.create(reservationRequest);
+        Reservation reservation = reservationRepository.findById(id);
         return ReservationResponse.from(reservation);
     }
 

@@ -1,7 +1,8 @@
 package roomescape.query;
 
 public enum ReservationQuery {
-    SELECT_RESERVATIONS("SELECT id, name, date, time FROM reservation");
+    FIND_ALL("SELECT id, name, date, time FROM reservation"),
+    FIND_BY_ID("SELECT id, name, date, time FROM reservation WHERE id = ?");
 
     private final String query;
 
