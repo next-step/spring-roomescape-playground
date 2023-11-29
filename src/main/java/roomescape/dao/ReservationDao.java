@@ -58,7 +58,7 @@ public class ReservationDao {
     }
 
     private void validateAddReservation(Reservation reservation) {
-        if (reservation.getName().isEmpty() || reservation.getDate().isEmpty() || reservation.getTime().isEmpty()) {
+        if (reservation == null || reservation.getName().isEmpty() || reservation.getDate().isEmpty() || reservation.getTime().isEmpty()) {
             throw new IllegalArgumentException("필수 필드가 비어있습니다.");
         }
     }

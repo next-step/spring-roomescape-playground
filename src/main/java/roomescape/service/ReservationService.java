@@ -16,7 +16,7 @@ public class ReservationService {
     private final Map<Long, Reservation> reservations = new LinkedHashMap<>();
 
     @Autowired
-    ReservationDao reservationDao;
+    private ReservationDao reservationDao;
 
     public List<ReservationDto> getAllReservations() {
         return reservationDao.getAllReservations().stream()
