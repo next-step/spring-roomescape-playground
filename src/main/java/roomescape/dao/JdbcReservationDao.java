@@ -1,12 +1,12 @@
 package roomescape.dao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.util.List;
+import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
 
@@ -14,6 +14,7 @@ import roomescape.domain.Reservation;
 public class JdbcReservationDao implements ReservationDao {
 
     private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert simpleJdbcInsert;
 
     private static final RowMapper<Reservation> RESERVATION_ROW_MAPPER = (resultSet, rowNum) -> new Reservation(
         resultSet.getLong("id"),
@@ -22,26 +23,17 @@ public class JdbcReservationDao implements ReservationDao {
         resultSet.getTime("time").toLocalTime()
     );
 
-    public JdbcReservationDao(JdbcTemplate jdbcTemplate) {
+    public JdbcReservationDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
+        this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource)
+            .withTableName("reservation")
+            .usingGeneratedKeyColumns("id");
     }
 
     @Override
     public Reservation save(Reservation reservation) {
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcTemplate.update((Connection con) -> {
-            PreparedStatement pstmt = con.prepareStatement(
-                "INSERT INTO reservation(name, date, time) VALUES (?, ?, ?)", new String[]{"ID"});
-            pstmt.setString(1, reservation.getName());
-            pstmt.setString(2, reservation.getDate().toString());
-            pstmt.setString(3, reservation.getTime().toString());
-            return pstmt;
-        }, keyHolder);
-
-        Number key = keyHolder.getKey();
-        if (key == null) {
-            throw new IllegalStateException("키 생성 실패");
-        }
+        SqlParameterSource source = new BeanPropertySqlParameterSource(reservation);
+        Number key = simpleJdbcInsert.executeAndReturnKey(source);
         return new Reservation(key.longValue(), reservation.getName(), reservation.getDate(), reservation.getTime());
     }
 
