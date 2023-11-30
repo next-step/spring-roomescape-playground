@@ -65,6 +65,10 @@ public class RoomRepository {
 		}
 	}
 
+	public boolean existsById(Long id) {
+		return jdbcTemplate.queryForObject("select exists(select * from reservation where id = ? limit 1)", Boolean.class, id);
+	}
+
 	public List<Room> findAll() {
 		return jdbcTemplate.query(
 				"select id, name, date, time from reservation",
@@ -80,7 +84,9 @@ public class RoomRepository {
 	}
 
 	public void deleteById(Long id) {
-		findById(id);
+		if(!existsById(id)) {
+			throw new DomainEmptyFieldException("해당하는 예약이 없습니다.");
+		}
 
 		jdbcTemplate.update("delete from reservation where id = ?", id);
 	}
