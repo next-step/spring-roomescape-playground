@@ -27,11 +27,6 @@ public class MissionStepTest {
 	@Autowired
 	private RoomRepository roomRepository;
 
-	@BeforeEach
-	void setUp() {
-		roomRepository.clear();
-	}
-
 	@Test
 	void 일단계() {
 		RestAssured.given().log().all()

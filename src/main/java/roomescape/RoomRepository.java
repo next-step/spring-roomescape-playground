@@ -4,7 +4,6 @@ import java.sql.PreparedStatement;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -24,10 +23,6 @@ public class RoomRepository {
 				.withTableName("reservation")
 				.usingGeneratedKeyColumns("id");
 	}
-
-	private static final AtomicLong counter = new AtomicLong();
-	private static final Map<Long, Room> repository = new HashMap<>();
-
 	public Long save(Room room) {
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("name", room.getName());
@@ -81,10 +76,5 @@ public class RoomRepository {
 		findById(id);
 
 		jdbcTemplate.update("delete from reservation where id = ?", id);
-	}
-
-	public void clear() {
-		counter.set(0);
-		repository.clear();
 	}
 }
