@@ -58,7 +58,7 @@ public class RoomRepository {
 			Room room = jdbcTemplate.queryForObject("select * from reservation where id = ?",
 					(rs, rowNum) -> new Room(rs.getString("name"), rs.getDate("date").toLocalDate(),
 							rs.getTime("time").toLocalTime()), id);
-			room.setId(id);
+			room = new Room(id, room.getName(), room.getDate(), room.getTime());
 			return room;
 		} catch (EmptyResultDataAccessException e) {
 			throw new DomainEmptyFieldException("해당하는 예약이 없습니다.");
@@ -78,7 +78,8 @@ public class RoomRepository {
 							resultSet.getDate("date").toLocalDate(),
 							resultSet.getTime("time").toLocalTime()
 					);
-					room.setId(resultSet.getLong("id"));
+					Long id = resultSet.getLong("id");
+					room = new Room(id, room.getName(), room.getDate(), room.getTime());
 					return room;
 				});
 	}
