@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -24,6 +26,11 @@ public class RoomRepository {
 				.usingGeneratedKeyColumns("id");
 	}
 	public Long save(Room room) {
+		SqlParameterSource parameters = new BeanPropertySqlParameterSource(room);
+		return simpleJdbcInsert.executeAndReturnKey(parameters).longValue();
+	}
+
+	public Long saveV2(Room room) {
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("name", room.getName());
 		parameters.put("date", room.getDate().toString());
@@ -31,7 +38,7 @@ public class RoomRepository {
 		return simpleJdbcInsert.executeAndReturnKey(parameters).longValue();
 	}
 
-	public Long saveV2(Room room) {
+	public Long saveV3(Room room) {
 		KeyHolder keyHolder = new GeneratedKeyHolder();
 		jdbcTemplate.update(connection -> {
 			PreparedStatement ps = connection.prepareStatement(
