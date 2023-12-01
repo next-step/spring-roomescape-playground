@@ -1,8 +1,11 @@
 package roomescape.repository;
 
+import java.sql.PreparedStatement;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
 
@@ -16,15 +19,19 @@ public class ReservationRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    private Long index = 1L;
+    private final KeyHolder keyHolder = new GeneratedKeyHolder();
+    //private Long index = 1L;
 
-    public Reservation save(Reservation reservation) {
-        synchronized (index) {
-            Reservation newReservation = Reservation.createWithId(reservation, index++);
-            jdbcTemplate.update("insert into reservation (name, date, time) values (?, ?, ?)", reservation.name(),
-                    reservation.date(), reservation.time());
-            return newReservation;
-        }
+    public Long save(Reservation reservation) {
+        final String sql = "insert into reservation (name, date, time) values (?, ?, ?)";
+        jdbcTemplate.update(connection -> {
+                    final PreparedStatement preparedStatement = connection.prepareStatement(sql, new String[]{"id"});
+                    preparedStatement.setString(1, reservation.name());
+                    preparedStatement.setString(2, reservation.date());
+                    preparedStatement.setString(3, reservation.time());
+                    return preparedStatement;
+                }, keyHolder);
+        return (Long) keyHolder.getKey();
     }
 
     public List<Reservation> findAll() {

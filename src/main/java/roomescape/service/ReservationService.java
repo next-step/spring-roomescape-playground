@@ -29,11 +29,11 @@ public class ReservationService {
     public ResponseEntity<Reservation> reserve(Reservation reservation) {
         validate(reservation);
 
-        Reservation newReservation = reservationRepository.save(reservation);
+        Long newReservationId = reservationRepository.save(reservation);
         return ResponseEntity
-                .created(URI.create("/reservations/" + newReservation.id()))
+                .created(URI.create("/reservations/" + newReservationId))
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(newReservation);
+                .body(reservation);
     }
 
     // 예약 조회
