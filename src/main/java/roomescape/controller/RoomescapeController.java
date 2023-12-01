@@ -14,4 +14,9 @@ public class RoomescapeController {
     public String loadReservationPage() {
         return "reservation";
     }
+
+    @GetMapping("/time")
+    public String loadTimePage() {
+        return "time";
+    }
 }
