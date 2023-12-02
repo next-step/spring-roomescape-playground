@@ -3,8 +3,8 @@ package roomescape.reservation.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import roomescape.reservation.dao.QueryRepository;
-import roomescape.reservation.dao.UpdateRepository;
+import roomescape.reservation.dao.ReservationQueryRepository;
+import roomescape.reservation.dao.ReservationUpdateRepository;
 import roomescape.reservation.domain.Reservation;
 
 import java.time.LocalDate;
@@ -12,13 +12,14 @@ import java.time.LocalTime;
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class ReservationService {
 
-    private final QueryRepository queryRepository;
-    private final UpdateRepository updateRepository;
+    private final ReservationQueryRepository queryRepository;
+    private final ReservationUpdateRepository updateRepository;
 
-    @Transactional(readOnly = true)
+    @Transactional
     public List<Reservation> getAllReservations() {
         return queryRepository.getAllReservations();
     }
@@ -28,7 +29,6 @@ public class ReservationService {
         if (date == null || name == null || time == null ) {
             throw new NotFoundReservationException("빈 값이 존재합니다!");
         }
-
         return updateRepository.insert(name, date, time);
     }
 
