@@ -1,5 +1,6 @@
 package roomescape.reservation;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -39,10 +40,10 @@ public class ReservationService {
   }
 
   @Transactional
-  public Reservation addReservation(String date, String name, String time) {
-    if (date.isBlank() || name.isBlank() || time.isBlank()) {
-      throw new Exception400("올바른 예약 정보가 제공되지 않았습니다.");
-    }
+  public Reservation addReservation(String date, String name, Time time) {
+//    if (date.isBlank() || name.isBlank() || time.isBlank()) {
+//      throw new Exception400("올바른 예약 정보가 제공되지 않았습니다.");
+//    }
 
 //    Reservation reservation = Reservation.builder()
 //        .id(reservationRepository.count() + 1)

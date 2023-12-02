@@ -7,6 +7,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import java.sql.Time;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,10 +26,10 @@ public class Reservation {
 
   private String date;
 
-  private String time;
+  private Time time;
 
   @Builder
-  private Reservation(Long id, String name, String date, String time) {
+  private Reservation(Long id, String name, String date, Time time) {
     this.id = id;
     this.name = name;
     this.date = date;
