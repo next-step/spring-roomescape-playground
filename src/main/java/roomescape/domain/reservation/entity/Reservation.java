@@ -1,4 +1,4 @@
-package roomescape.domain.reservation.model;
+package roomescape.domain.reservation.entity;
 
 import static lombok.AccessLevel.PRIVATE;
 

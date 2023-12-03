@@ -14,7 +14,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import roomescape.RoomescapeApplicationTest;
-import roomescape.domain.reservation.model.Reservation;
+import roomescape.domain.reservation.entity.Reservation;
 
 public class ReservationControllerTest extends RoomescapeApplicationTest {
 

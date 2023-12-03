@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.reservation.exception.ReservationException;
-import roomescape.domain.reservation.model.Reservation;
+import roomescape.domain.reservation.entity.Reservation;
 
 @Repository
 public class SimpleReservationRepository implements ReservationRepository {

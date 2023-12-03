@@ -6,7 +6,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import roomescape.domain.reservation.dao.ReservationRepository;
-import roomescape.domain.reservation.model.Reservation;
+import roomescape.domain.reservation.entity.Reservation;
 
 @Service
 @RequiredArgsConstructor
