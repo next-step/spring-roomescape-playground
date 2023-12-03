@@ -11,7 +11,7 @@ public class TimeRequest {
             @NotNull(message = "시간을 입력해주세요.")
             @JsonFormat(pattern = "HH:mm")
             LocalTime time
-    ){
+    ) {
         public Time toEntity() {
             return Time.builder()
                     .time(time)
