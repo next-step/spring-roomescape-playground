@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import roomescape.domain.Time;
 
 import java.time.LocalTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class TimeResponse {
     private final Long id;
@@ -25,5 +27,11 @@ public class TimeResponse {
 
     public static TimeResponse from(final Time time) {
         return new TimeResponse(time.getId(), time.getTime());
+    }
+
+    public static List<TimeResponse> from(final List<Time> times) {
+        return times.stream()
+                .map(time -> new TimeResponse(time.getId(), time.getTime()))
+                .collect(Collectors.toList());
     }
 }

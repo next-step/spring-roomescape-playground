@@ -1,5 +1,6 @@
 package roomescape.persistence;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -42,7 +43,8 @@ public class JdbcTimeRepository implements TimeRepository {
 
     @Override
     public List<Time> findAll() {
-        return null;
+        final String sql = "select * from time";
+        return jdbcTemplate.query(sql, rowMapper);
     }
 
     @Override
@@ -56,6 +58,11 @@ public class JdbcTimeRepository implements TimeRepository {
 
     @Override
     public Time findById(Long id) {
-        return null;
+        try {
+            final String sql = "select * from time where id = ?";
+            return jdbcTemplate.queryForObject(sql, rowMapper, id);
+        } catch (final DataAccessException exception) {
+            throw new IllegalArgumentException("해당 id를 가진 시간이 존재하지 않습니다.");
+        }
     }
 }
