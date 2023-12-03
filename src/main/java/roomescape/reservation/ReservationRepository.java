@@ -31,7 +31,7 @@ public class ReservationRepository {
         return  reservations1;
     }
 
-    public Reservation selectReservation(Reservation reservation) {
+    public Reservation insertReservation(Reservation reservation) {
         Reservation newReservation = Reservation.toEntity(reservation);
 
         KeyHolder keyHolder = new GeneratedKeyHolder();

@@ -7,8 +7,6 @@ import java.util.List;
 @Service
 @Transactional
 public class ReservationService {
-
-
     private final  ReservationRepository reservationRepository;
 
     public ReservationService(ReservationRepository reservationRepository) {
@@ -20,7 +18,7 @@ public class ReservationService {
     }
     @Transactional
     public Reservation postReservations(Reservation reservation) {
-        return reservationRepository.selectReservation(reservation);
+        return reservationRepository.insertReservation(reservation);
     }
 
     @Transactional
