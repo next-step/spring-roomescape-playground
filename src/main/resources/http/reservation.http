@@ -1,8 +1,8 @@
 ### 예약 조회
-GET /reservations HTTP/1.1
+GET localhost:8080/reservations HTTP/1.1
 
 ### 예약 추가
-POST /reservations HTTP/1.1
+POST localhost:8080/reservations HTTP/1.1
 content-type: application/json
 
 {
@@ -12,4 +12,4 @@ content-type: application/json
 }
 
 ### 예약 취소
-DELETE /reservations/1 HTTP/1.1
+DELETE localhost:8080/reservations/1 HTTP/1.1
