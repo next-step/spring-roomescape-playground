@@ -8,12 +8,12 @@ import java.time.LocalDate;
 public class ReservationCreateRequest {
     private final String name;
     private final String date;
-    private final Long timeId;
+    private final Long time;
 
-    public ReservationCreateRequest(final String name, final String date, final Long timeId) {
+    public ReservationCreateRequest(final String name, final String date, final Long time) {
         this.name = name;
         this.date = date;
-        this.timeId = timeId;
+        this.time = time;
     }
 
     public String getName() {
@@ -24,13 +24,13 @@ public class ReservationCreateRequest {
         return date;
     }
 
-    public Long getTimeId() {
-        return timeId;
+    public Long getTime() {
+        return time;
     }
 
     public static Reservation from(final ReservationCreateRequest request) {
         return new Reservation(
-                request.getName(), LocalDate.parse(request.getDate()), new Time(request.getTimeId())
+                request.getName(), LocalDate.parse(request.getDate()), new Time(request.getTime())
         );
     }
 }

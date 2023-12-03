@@ -30,7 +30,7 @@ class ReservationCommandControllerTest {
         Map<String, String> reservation = new HashMap<>();
         reservation.put("name", "브라운");
         reservation.put("date", "2023-08-05");
-        reservation.put("timeId", "1");
+        reservation.put("time", "1");
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -54,7 +54,7 @@ class ReservationCommandControllerTest {
         Map<String, String> reservation = new HashMap<>();
         reservation.put("name", "브라운");
         reservation.put("date", "2023-08-05");
-        reservation.put("timeId", "1");
+        reservation.put("time", "1");
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -90,7 +90,7 @@ class ReservationCommandControllerTest {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
         params.put("date", "");
-        params.put("timeId", "");
+        params.put("time", "");
 
         // 필요한 인자가 없는 경우
         RestAssured.given().log().all()
@@ -108,7 +108,7 @@ class ReservationCommandControllerTest {
         Map<String, String> reservation = new HashMap<>();
         reservation.put("name", "브라운");
         reservation.put("date", "2023-08-05");
-        reservation.put("timeId", "1");
+        reservation.put("time", "1");
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -138,7 +138,7 @@ class ReservationCommandControllerTest {
         Map<String, String> reservation = new HashMap<>();
         reservation.put("name", "브라운");
         reservation.put("date", "2023-08-05");
-        reservation.put("timeId", "1");
+        reservation.put("time", "1");
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)

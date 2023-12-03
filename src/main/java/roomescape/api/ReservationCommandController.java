@@ -29,7 +29,7 @@ public class ReservationCommandController {
     }
 
     private void validateNotEmptyRequest(final ReservationCreateRequest request) {
-        if (request.getName().isEmpty() || request.getDate().isEmpty() || request.getTimeId() == null) {
+        if (request.getName().isEmpty() || request.getDate().isEmpty() || request.getTime() == null) {
             throw new IllegalArgumentException("예약 정보의 인자는 비어있을 수 없습니다.");
         }
     }
