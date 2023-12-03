@@ -15,7 +15,7 @@ import static lombok.AccessLevel.PROTECTED;
 public class Time {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @Temporal(TemporalType.TIME)
     private LocalTime time;
 
