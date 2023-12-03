@@ -1,6 +1,5 @@
 package roomescape.room;
 
-import java.sql.PreparedStatement;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,9 +8,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import roomescape.common.DomainEmptyFieldException;
 import roomescape.common.NotFoundReservationException;
 import roomescape.time.Time;
 
@@ -28,12 +26,12 @@ public class ReservationDAO {
 				.usingGeneratedKeyColumns("id");
 	}
 
-	public Long save(Room room) {
-		SqlParameterSource parameters = new BeanPropertySqlParameterSource(room);
+	public Long saveV2(Reservation reservation) {
+		SqlParameterSource parameters = new BeanPropertySqlParameterSource(reservation);
 		return simpleJdbcInsert.executeAndReturnKey(parameters).longValue();
 	}
 
-	public Long saveV2(Reservation reservation) {
+	public Long save(Reservation reservation) {
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("name", reservation.getName());
 		parameters.put("date", reservation.getDate().toString());

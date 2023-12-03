@@ -51,14 +51,6 @@ public class TimeController {
 				.body(response);
 	}
 
-	@GetMapping("/times/{id}")
-	@ResponseBody
-	public ResponseEntity<TimeResponse.Read> getTime(@PathVariable Long id) {
-		Time time = timeRepository.findById(id);
-		return ResponseEntity.ok()
-				.body(TimeResponse.Read.toDTO(time));
-	}
-
 	@DeleteMapping("/times/{id}")
 	@ResponseBody
 	public ResponseEntity<Void> deleteTime(@PathVariable Long id) {

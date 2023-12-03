@@ -6,6 +6,7 @@ import static org.hamcrest.Matchers.is;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
+import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -13,15 +14,15 @@ import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
-import roomescape.room.Room;
-import roomescape.room.RoomRepository;
-import roomescape.room.RoomResponseDTO;
+import roomescape.room.Reservation;
+import roomescape.room.ReservationController;
+import roomescape.room.ReservationDAO;
+import roomescape.room.ReservationResponse;
 import roomescape.time.Time;
 import roomescape.time.TimeDAO;
 
@@ -30,7 +31,7 @@ import roomescape.time.TimeDAO;
 public class MissionStepTest {
 
 	@Autowired
-	private RoomRepository roomRepository;
+	private ReservationDAO reservationDAO;
 	@Autowired
 	private TimeDAO timeDAO;
 
@@ -47,13 +48,13 @@ public class MissionStepTest {
 		Time time = new Time(LocalTime.now());
 		timeDAO.save(time);
 
-		Room room1 = new Room("박한수", LocalDate.now(), time);
-		Room room2 = new Room("홍길동", LocalDate.now(), time);
-		Room room3 = new Room("브라운", LocalDate.now(), time);
+		Reservation reservation1 = new Reservation("박한수", LocalDate.now(), time);
+		Reservation reservation2 = new Reservation("홍길동", LocalDate.now(), time);
+		Reservation reservation3 = new Reservation("브라운", LocalDate.now(), time);
 
-		roomRepository.save(room1);
-		roomRepository.save(room2);
-		roomRepository.save(room3);
+		reservationDAO.save(reservation1);
+		reservationDAO.save(reservation2);
+		reservationDAO.save(reservation3);
 
 		RestAssured.given().log().all()
 				.when().get("/reservations")
@@ -196,11 +197,11 @@ public class MissionStepTest {
 
 		jdbcTemplate.update("INSERT INTO reservation (name, date, time_id) VALUES (?, ?, ?)", "브라운", "2023-08-05", time.getId());
 
-		List<RoomResponseDTO.Read> reservations = RestAssured.given().log().all()
+		List<ReservationResponse.Read> reservations = RestAssured.given().log().all()
 				.when().get("/reservations")
 				.then().log().all()
 				.statusCode(200).extract()
-				.jsonPath().getList(".", RoomResponseDTO.Read.class);
+				.jsonPath().getList(".", ReservationResponse.Read.class);
 
 		Integer count = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
 
@@ -260,5 +261,21 @@ public class MissionStepTest {
 				.when().delete("/times/1")
 				.then().log().all()
 				.statusCode(204);
+	}
+	@Autowired
+	private ReservationController reservationController;
+
+	@Test
+	void 십단계() {
+		boolean isJdbcTemplateInjected = false;
+
+		for (Field field : reservationController.getClass().getDeclaredFields()) {
+			if (field.getType().equals(JdbcTemplate.class)) {
+				isJdbcTemplateInjected = true;
+				break;
+			}
+		}
+
+		assertThat(isJdbcTemplateInjected).isFalse();
 	}
 }
