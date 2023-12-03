@@ -40,12 +40,12 @@ public class ReservationResponse {
     }
 
     public static ReservationResponse from(final Reservation reservation) {
-        return new ReservationResponse(reservation.getId(), reservation.getName(), reservation.getDate(), reservation.getTime());
+        return new ReservationResponse(reservation.getId(), reservation.getName(), reservation.getDate(), reservation.getTime().getTime());
     }
 
     public static List<ReservationResponse> from(final List<Reservation> reservations) {
         return reservations.stream()
-                .map(reservation -> new ReservationResponse(reservation.getId(), reservation.getName(), reservation.getDate(), reservation.getTime()))
+                .map(reservation -> new ReservationResponse(reservation.getId(), reservation.getName(), reservation.getDate(), reservation.getTime().getTime()))
                 .collect(Collectors.toList());
     }
 }

@@ -1,19 +1,19 @@
 package roomescape.application.dto;
 
 import roomescape.domain.Reservation;
+import roomescape.domain.Time;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 public class ReservationCreateRequest {
     private final String name;
     private final String date;
-    private final String time;
+    private final Long timeId;
 
-    public ReservationCreateRequest(final String name, final String date, final String time) {
+    public ReservationCreateRequest(final String name, final String date, final Long timeId) {
         this.name = name;
         this.date = date;
-        this.time = time;
+        this.timeId = timeId;
     }
 
     public String getName() {
@@ -24,13 +24,13 @@ public class ReservationCreateRequest {
         return date;
     }
 
-    public String getTime() {
-        return time;
+    public Long getTimeId() {
+        return timeId;
     }
 
     public static Reservation from(final ReservationCreateRequest request) {
         return new Reservation(
-                request.getName(), LocalDate.parse(request.getDate()), LocalTime.parse(request.getTime())
+                request.getName(), LocalDate.parse(request.getDate()), new Time(request.getTimeId())
         );
     }
 }
