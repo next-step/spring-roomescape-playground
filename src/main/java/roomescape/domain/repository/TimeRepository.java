@@ -1,4 +1,6 @@
-package roomescape.domain;
+package roomescape.domain.repository;
+
+import roomescape.domain.Time;
 
 import java.util.List;
 

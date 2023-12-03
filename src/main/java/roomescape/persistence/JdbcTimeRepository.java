@@ -6,7 +6,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Time;
-import roomescape.domain.TimeRepository;
+import roomescape.domain.repository.TimeRepository;
 
 import java.sql.PreparedStatement;
 import java.time.LocalTime;

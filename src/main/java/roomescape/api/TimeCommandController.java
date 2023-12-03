@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import roomescape.application.dto.TimeCreateRequest;
 import roomescape.application.dto.TimeResponse;
 import roomescape.domain.Time;
-import roomescape.domain.TimeRepository;
+import roomescape.domain.repository.TimeRepository;
 
 import java.net.URI;
 
