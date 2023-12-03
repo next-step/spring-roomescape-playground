@@ -3,7 +3,7 @@ package roomescape.api;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import roomescape.domain.Reservation;
+import roomescape.application.dto.ReservationResponse;
 import roomescape.domain.repository.ReservationRepository;
 
 import java.util.List;
@@ -18,7 +18,7 @@ public class ReservationQueryController {
     }
 
     @GetMapping
-    public List<Reservation> getReservations() {
-        return jdbcReservationRepository.findAll();
+    public List<ReservationResponse> getReservations() {
+        return ReservationResponse.from(jdbcReservationRepository.findAll());
     }
 }
