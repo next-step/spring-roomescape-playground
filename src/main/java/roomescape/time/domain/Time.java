@@ -12,6 +12,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)
+@Embeddable
 public class Time {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

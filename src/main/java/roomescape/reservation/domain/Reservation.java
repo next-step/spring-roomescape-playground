@@ -3,13 +3,12 @@ package roomescape.reservation.domain;
 import jakarta.persistence.*;
 import static lombok.AccessLevel.PROTECTED;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import roomescape.time.domain.Time;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 @Entity
 @Getter
@@ -26,10 +25,11 @@ public class Reservation {
     private LocalDate date;
 
     @Temporal(TemporalType.TIME)
-    private LocalTime time;
+    @Embedded
+    private Time time;
 
     @Builder
-    public Reservation(final Long id, final String name, final LocalDate date, final LocalTime time) {
+    public Reservation(final Long id, final String name, final LocalDate date, final Time time) {
         this.id = id;
         this.name = name;
         this.date = date;
