@@ -9,9 +9,7 @@ import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
 import roomescape.domain.repository.ReservationRepository;
 
-import java.sql.Date;
 import java.sql.PreparedStatement;
-import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -38,8 +36,8 @@ public class JdbcReservationRepository implements ReservationRepository {
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
             ps.setString(1, reservation.getName());
-            ps.setDate(2, Date.valueOf(reservation.getDate()));
-            ps.setTime(3, Time.valueOf(reservation.getTime()));
+            ps.setString(2, reservation.getDate().toString());
+            ps.setString(3, reservation.getTime().toString());
             return ps;
         }, keyHolder);
         return new Reservation(keyHolder.getKey().longValue(), reservation.getName(), reservation.getDate(), reservation.getTime());
