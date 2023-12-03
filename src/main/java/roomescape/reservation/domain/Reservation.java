@@ -24,8 +24,9 @@ public class Reservation {
     @Temporal(TemporalType.DATE)
     private LocalDate date;
 
+    @ManyToOne // 다대일(N:1) 관계 설정
+    @JoinColumn(name = "time_id") // 외래키 설정
     @Temporal(TemporalType.TIME)
-    @Embedded
     private Time time;
 
     @Builder
