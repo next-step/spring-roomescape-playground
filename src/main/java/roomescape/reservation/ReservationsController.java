@@ -8,12 +8,13 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 import roomescape.Time.Time;
 
 import java.net.URI;
 import java.sql.PreparedStatement;
-
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -23,6 +24,7 @@ public class ReservationsController {
     private final ReservationService reservationService;
     public ReservationsController( ReservationService reservationService){
         this.reservationService = reservationService;
+
     }
 
     @GetMapping
@@ -35,6 +37,7 @@ public class ReservationsController {
         Reservation newReservation = reservationService.postReservations(reservationRequest);
         System.out.println("예약 컨트롤러 : "+ newReservation.toString());
         int id = (int)newReservation.getId();
+
         return ResponseEntity.created(URI.create("/reservations/" + id)).body(newReservation);
 
     }
@@ -44,6 +47,7 @@ public class ReservationsController {
     public ResponseEntity<Void> DeleteReservations (@PathVariable Long id){
         reservationService.deleteReservations(id);
         return  ResponseEntity.noContent().build();
+
     }
 
 }
