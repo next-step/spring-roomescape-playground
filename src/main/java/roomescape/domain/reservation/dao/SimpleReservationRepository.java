@@ -6,11 +6,9 @@ import static roomescape.domain.reservation.exception.ReservationException.Error
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
-import org.springframework.stereotype.Repository;
-import roomescape.domain.reservation.exception.ReservationException;
 import roomescape.domain.reservation.entity.Reservation;
+import roomescape.domain.reservation.exception.ReservationException;
 
-@Repository
 public class SimpleReservationRepository implements ReservationRepository {
     private static final AtomicLong INDEX = new AtomicLong(0);
 

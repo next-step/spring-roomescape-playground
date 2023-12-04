@@ -1,8 +1,10 @@
 package roomescape.domain.reservation.dao;
 
 import java.util.List;
+import org.springframework.stereotype.Repository;
 import roomescape.domain.reservation.entity.Reservation;
 
+@Repository
 public interface ReservationRepository {
 
     Reservation save(Reservation reservation);

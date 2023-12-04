@@ -5,24 +5,34 @@ import java.time.LocalTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import roomescape.domain.reservation.dao.ReservationRepository;
 import roomescape.domain.reservation.entity.Reservation;
+import roomescape.domain.time.dao.TimeRepository;
+import roomescape.domain.time.entity.Time;
 
 @Service
 @RequiredArgsConstructor
 public class ReservationService {
     private final ReservationRepository reservationRepository;
+    private final TimeRepository timeRepository;
 
     public List<Reservation> getReservations() {
         return reservationRepository.findAll();
     }
 
+    @Transactional
     public Reservation createReservation(String name, LocalDate date, LocalTime time) {
-        Reservation reservation = generateReservation(name, date, time);
+        Time validateTime = validateTimeAndGet(time);
+        Reservation reservation = generateReservation(name, date, validateTime);
         return reservationRepository.save(reservation);
     }
 
-    private Reservation generateReservation(String name, LocalDate date, LocalTime time) {
+    private Time validateTimeAndGet(LocalTime time) {
+        return timeRepository.findByTime(time);
+    }
+
+    private Reservation generateReservation(String name, LocalDate date, Time time) {
         return Reservation.builder()
                 .name(name)
                 .date(date)
@@ -30,6 +40,7 @@ public class ReservationService {
                 .build();
     }
 
+    @Transactional
     public void deleteReservation(long reservationId) {
         reservationRepository.deleteById(reservationId);
     }
