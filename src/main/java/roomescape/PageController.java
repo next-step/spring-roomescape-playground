@@ -13,7 +13,10 @@ public class PageController {
     }
 
     @GetMapping("/reservation")
-    public String GetReservation (Model model){
-        return "reservation";
+    public String GetReservation (){
+        return "new-reservation";
     }
+
+    @GetMapping("/time")
+    public String GetTimePage () { return "time";}
 }

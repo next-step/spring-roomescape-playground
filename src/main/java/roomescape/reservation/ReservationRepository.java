@@ -5,6 +5,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import roomescape.Time.Time;
+import roomescape.Time.TimeRepository;
 
 import java.sql.PreparedStatement;
 import java.util.List;
@@ -13,19 +15,32 @@ import java.util.List;
 public class ReservationRepository {
     @Autowired
     private JdbcTemplate jdbcTemplate;
+    private final TimeRepository timeRepository;
 
-    public ReservationRepository(JdbcTemplate jdbcTemplate) {
+    public ReservationRepository(JdbcTemplate jdbcTemplate, TimeRepository timeRepository) {
         this.jdbcTemplate = jdbcTemplate;
+        this.timeRepository = timeRepository;
     }
 
     public List<Reservation> SelectAll (){
-        String sql = "SELECT id, name, date, time FROM reservation";
+//        SELECT id, name, date, time FROM reservation
+
+        String sql = "SELECT \n" +
+                "    r.id as reservation_id, \n" +
+                "    r.name, \n" +
+                "    r.date, \n" +
+                "    t.id as time_id, \n" +
+                "    t.time as time_value \n" +
+                "FROM reservation as r inner join time as t on r.time_id = t.id";
         List<Reservation> reservations1 = jdbcTemplate.query(sql , (resultSet, rowNum) -> {
+            System.out.println("결과값 : "+ resultSet);
+            List<Time> timeList= timeRepository.SelectAll();
+            Time newTime = new Time(resultSet.getLong("time_id"), timeList.get(rowNum).getTime());
             Reservation reservation = new Reservation(
-                    resultSet.getLong("id"),
+                    resultSet.getLong("reservation_id"),
                     resultSet.getString("name"),
                     resultSet.getString("date"),
-                    resultSet.getString("time"));
+                    newTime);
             return reservation;
         });
         return  reservations1;
@@ -33,16 +48,14 @@ public class ReservationRepository {
 
     public Reservation insertReservation(Reservation reservation) {
         Reservation newReservation = Reservation.toEntity(reservation);
-
         KeyHolder keyHolder = new GeneratedKeyHolder();
-
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(
-                    "insert into reservation (name, date, time) values (?, ?, ?)",
+                    "insert into reservation (name, date, time_id) values (?, ?, ?)",
                     new String[]{"id"});
             ps.setString(1, newReservation.getName());
             ps.setString(2, newReservation.getDate());
-            ps.setString(3, newReservation.getTime());
+            ps.setLong(3, newReservation.getTime().getId());
             return ps;
         }, keyHolder);
 

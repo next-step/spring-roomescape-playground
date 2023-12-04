@@ -24,4 +24,12 @@ public class Time {
     public void setId(Long id) {
         this.id = id;
     }
+
+    @Override
+    public String toString() {
+        return "Time{" +
+                "id=" + id +
+                ", time='" + time + '\'' +
+                '}';
+    }
 }

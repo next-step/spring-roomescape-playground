@@ -9,6 +9,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import roomescape.Time.Time;
 
 import java.net.URI;
 import java.sql.PreparedStatement;
@@ -29,15 +30,13 @@ public class ReservationsController {
         return ResponseEntity.ok().body(reservationService.getReservations());
     }
 
-
     @PostMapping
-    public ResponseEntity<Reservation> PostReservations ( @RequestBody Reservation reservation ){
-        if (reservation.getName().isEmpty() ||reservation.getDate().isEmpty() || reservation.getTime().isEmpty()) {
-            throw new Exception400("Date and time cannot be null");
-        }
-        Reservation newReservation = reservationService.postReservations(reservation);
+    public ResponseEntity<Reservation> PostReservations ( @RequestBody ReservationRequest reservationRequest ){
+        Reservation newReservation = reservationService.postReservations(reservationRequest);
+        System.out.println("예약 컨트롤러 : "+ newReservation.toString());
         int id = (int)newReservation.getId();
         return ResponseEntity.created(URI.create("/reservations/" + id)).body(newReservation);
+
     }
 
 

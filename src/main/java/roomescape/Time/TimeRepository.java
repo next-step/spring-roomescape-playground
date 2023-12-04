@@ -1,6 +1,9 @@
 package roomescape.Time;
 
+import error.Exception400;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -33,6 +36,21 @@ public class TimeRepository {
         Long id = keyHolder.getKey().longValue();
         newTime.setId(id);
         return newTime;
+    }
+    public Time findById(Long id){
+        String sql = "select id, time from time where id = ?";
+
+        try {
+            Time time = jdbcTemplate.queryForObject(sql, new Object[]{id}, (ps, rowNum)-> {
+                Long Timeid = ps.getLong("id");
+                String TimeVal = ps.getString("time");
+                return new Time(Timeid, TimeVal);
+            });
+            return time;
+        } catch (EmptyResultDataAccessException e) {
+            // 찾는 값이 없을 경우 예외 처리
+            throw new Exception400("존재하지 않는 time입니다."); // Exception400은 예시일 뿐 실제 예외 클래스에 따라서 사용
+        }
     }
 
     public List<Time> SelectAll() {
