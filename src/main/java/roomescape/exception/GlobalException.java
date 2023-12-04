@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 public class GlobalException {
-    @ExceptionHandler(NotFoundReservationException.class)
-    public ResponseEntity<String> handleException(NotFoundReservationException e) {
+    @ExceptionHandler(RoomEscapeException.class)
+    public ResponseEntity<String> handleException(RoomEscapeException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 }
