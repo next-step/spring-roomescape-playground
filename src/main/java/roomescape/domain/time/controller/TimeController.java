@@ -1,6 +1,7 @@
 package roomescape.domain.time.controller;
 
 import jakarta.validation.Valid;
+import java.net.URI;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -31,6 +32,7 @@ public class TimeController {
     public ResponseEntity<Time> createTime(@Valid @RequestBody TimeDTO requestDto) {
         Time time = timeService.createTime(requestDto.time());
         return ResponseEntity.status(HttpStatus.CREATED)
+                .location(URI.create("/times/" + time.getId()))
                 .body(time);
     }
 

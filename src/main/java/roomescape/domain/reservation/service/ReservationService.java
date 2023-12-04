@@ -1,7 +1,6 @@
 package roomescape.domain.reservation.service;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,14 +21,10 @@ public class ReservationService {
     }
 
     @Transactional
-    public Reservation createReservation(String name, LocalDate date, LocalTime time) {
-        Time validateTime = validateTimeAndGet(time);
-        Reservation reservation = generateReservation(name, date, validateTime);
+    public Reservation createReservation(String name, LocalDate date, long timeId) {
+        Time time = timeRepository.findById(timeId);
+        Reservation reservation = generateReservation(name, date, time);
         return reservationRepository.save(reservation);
-    }
-
-    private Time validateTimeAndGet(LocalTime time) {
-        return timeRepository.findByTime(time);
     }
 
     private Reservation generateReservation(String name, LocalDate date, Time time) {
