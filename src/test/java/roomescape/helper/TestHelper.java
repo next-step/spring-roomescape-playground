@@ -24,9 +24,9 @@ public class TestHelper {
                 .statusCode(expectedStatusCode);
     }
 
-    public static ValidatableResponse deleteMethodTest(String path, long reservationId, int expectedStatusCode) {
+    public static ValidatableResponse deleteMethodTest(String path, long id, int expectedStatusCode) {
         return RestAssured.given().log().all()
-                .when().delete(path + "/" + reservationId)
+                .when().delete(path + "/" + id)
                 .then().log().all()
                 .statusCode(expectedStatusCode);
     }

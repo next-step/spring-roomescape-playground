@@ -1,13 +1,13 @@
-package roomescape.domain.reservation.model;
+package roomescape.domain.reservation.entity;
 
 import static lombok.AccessLevel.PRIVATE;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.Objects;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import roomescape.domain.time.entity.Time;
 
 @Getter
 @NoArgsConstructor(access = PRIVATE)
@@ -16,10 +16,10 @@ public class Reservation {
     private Long id;
     private String name;
     private LocalDate date;
-    private LocalTime time;
+    private Time time;
 
     @Builder
-    private Reservation(Long id, String name, LocalDate date, LocalTime time) {
+    private Reservation(Long id, String name, LocalDate date, Time time) {
         this.id = id;
         this.name = name;
         this.date = date;
