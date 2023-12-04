@@ -23,12 +23,12 @@ public class ReservationRepository {
     //private Long index = 1L;
 
     public Long save(Reservation reservation) {
-        final String sql = "insert into reservation (name, date, time) values (?, ?, ?)";
+        final String sql = "insert into reservation (name, date, time_id) values (?, ?, ?)";
         jdbcTemplate.update(connection -> {
                     final PreparedStatement preparedStatement = connection.prepareStatement(sql, new String[]{"id"});
                     preparedStatement.setString(1, reservation.name());
                     preparedStatement.setString(2, reservation.date());
-                    preparedStatement.setString(3, reservation.time());
+                    preparedStatement.setString(3, String.valueOf(reservation.time()));
                     return preparedStatement;
                 }, keyHolder);
         return (Long) keyHolder.getKey();
@@ -36,12 +36,18 @@ public class ReservationRepository {
 
     public List<Reservation> findAll() {
         return jdbcTemplate.query(
-                "select id, name, date, time from reservation",
+                    "SELECT"
+                            + " r.id as reservation_id, "
+                            + " r.name, "
+                            + " r.date, "
+                            + " t.id as time_id, "
+                            + " t.time as time_value "
+                        + " FROM reservation as r inner join time as t on r.time_id = t.id",
                 (resultSet, rowNum) -> Reservation.of(
                         resultSet.getLong("id"),
                         resultSet.getString("name"),
                         resultSet.getString("date"),
-                        resultSet.getString("time")
+                        resultSet.getLong("time_id")
                 ));
     }
 

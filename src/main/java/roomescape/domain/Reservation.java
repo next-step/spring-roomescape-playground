@@ -1,8 +1,8 @@
 package roomescape.domain;
 
-public record Reservation(Long id, String name, String date, String time) {
+public record Reservation(Long id, String name, String date, Long time) {
 
-    public static Reservation of(long id, String name, String date, String time) {
+    public static Reservation of(Long id, String name, String date, Long time) {
         return new Reservation(id, name, date, time);
     }
 

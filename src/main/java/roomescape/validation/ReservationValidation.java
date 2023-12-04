@@ -12,7 +12,7 @@ public class ReservationValidation{
     public static void validate(Reservation reservation){
         isInputEmpty(reservation.name(), EMPTY_NAME_ERROR);
         isInputEmpty(reservation.date(), EMPTY_DATE_ERROR);
-        isInputEmpty(reservation.time(), EMPTY_TIME_ERROR);
+        isInputEmpty(String.valueOf(reservation.time()), EMPTY_TIME_ERROR);
     }
 
     private static void isInputEmpty(String input, ErrorMessage errorMessage) {
