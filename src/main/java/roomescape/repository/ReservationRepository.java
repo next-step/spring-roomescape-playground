@@ -3,6 +3,7 @@ package roomescape.repository;
 import static roomescape.query.ReservationQuery.*;
 
 import java.util.List;
+import java.util.Objects;
 
 import javax.sql.DataSource;
 
@@ -21,9 +22,9 @@ public class ReservationRepository {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
 
-    public ReservationRepository(JdbcTemplate jdbcTemplate, DataSource dataSource) {
+    public ReservationRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.jdbcInsert = new SimpleJdbcInsert(dataSource)
+        this.jdbcInsert = new SimpleJdbcInsert(Objects.requireNonNull(jdbcTemplate.getDataSource()))
             .withTableName("RESERVATION")
             .usingGeneratedKeyColumns("id");
     }
