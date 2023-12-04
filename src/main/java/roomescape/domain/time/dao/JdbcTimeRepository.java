@@ -1,7 +1,7 @@
 package roomescape.domain.time.dao;
 
 import static java.util.Objects.requireNonNull;
-import static roomescape.domain.reservation.exception.ReservationException.ErrorCode.NOT_FOUND;
+import static roomescape.domain.time.exception.TimeException.TimeErrorCode.NOT_FOUND;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,8 +14,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import roomescape.domain.reservation.exception.ReservationException;
 import roomescape.domain.time.entity.Time;
+import roomescape.domain.time.exception.TimeException;
 
 public class JdbcTimeRepository implements TimeRepository {
 
@@ -45,7 +45,7 @@ public class JdbcTimeRepository implements TimeRepository {
         try {
             return jdbcTemplate.queryForObject(sql, new Object[]{timeId}, new TimeMapper());
         } catch (EmptyResultDataAccessException ex) {
-            throw new ReservationException(NOT_FOUND);
+            throw new TimeException(NOT_FOUND);
         }
     }
 
@@ -55,7 +55,7 @@ public class JdbcTimeRepository implements TimeRepository {
         try {
             return jdbcTemplate.queryForObject(sql, new Object[]{time}, new TimeMapper());
         } catch (EmptyResultDataAccessException ex) {
-            throw new ReservationException(NOT_FOUND);
+            throw new TimeException(NOT_FOUND);
         }
     }
 

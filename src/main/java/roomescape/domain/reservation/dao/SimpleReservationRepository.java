@@ -1,7 +1,7 @@
 package roomescape.domain.reservation.dao;
 
 import static java.util.Collections.unmodifiableList;
-import static roomescape.domain.reservation.exception.ReservationException.ErrorCode.NOT_FOUND;
+import static roomescape.domain.reservation.exception.ReservationException.ReservationErrorCode.NOT_FOUND;
 
 import java.util.ArrayList;
 import java.util.List;
