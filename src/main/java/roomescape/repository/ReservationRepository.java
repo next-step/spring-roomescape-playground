@@ -1,9 +1,11 @@
 package roomescape.repository;
 
+import static roomescape.exception.ExceptionMessage.NOT_EXIST_RESERVATION;
 import static roomescape.query.ReservationQuery.*;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.sql.DataSource;
 
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Repository;
 
 import roomescape.domain.Reservation;
 import roomescape.dto.request.ReservationRequest;
+import roomescape.exception.BaseException;
 
 @Repository
 public class ReservationRepository {
@@ -41,12 +44,18 @@ public class ReservationRepository {
     }
 
     public Reservation findById(Long id) {
-        return jdbcTemplate.queryForObject(FIND_BY_ID.getQuery(),
+        Reservation reservation = jdbcTemplate.queryForObject(FIND_BY_ID.getQuery(),
             ((rs, rowNum) -> new Reservation(rs.getLong("id"), rs.getString("name"),
                 rs.getString("date"), rs.getString("time"))), id);
+
+        if (reservation == null) {
+            throw new BaseException(NOT_EXIST_RESERVATION);
+        }
+        return reservation;
     }
 
     public void delete(Long id) {
+        findById(id);
         jdbcTemplate.update(DELETE.getQuery(), id);
     }
 }

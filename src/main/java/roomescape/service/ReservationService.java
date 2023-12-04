@@ -1,7 +1,5 @@
 package roomescape.service;
 
-import static roomescape.exception.ExceptionMessage.*;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
@@ -38,9 +36,6 @@ public class ReservationService {
     }
 
     public void deleteReservation(Long id) {
-        if (reservationRepository.findById(id) == null) {
-            throw new BaseException(NOT_EXIST_RESERVATION);
-        }
         reservationRepository.delete(id);
     }
 }
