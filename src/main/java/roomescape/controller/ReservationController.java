@@ -36,10 +36,10 @@ public class ReservationController {
 
     @ResponseBody
     @PostMapping("/reservations")
-    public ResponseEntity<ReservationDto> addReservation(@RequestBody ReservationDto reservationDto) throws URISyntaxException {
-        ReservationDto responseReservationDto = reservationService.addReservation(reservationDto);
-        return ResponseEntity.created(new URI("/reservations/" + responseReservationDto.id()))
-            .body(responseReservationDto);
+    public ResponseEntity<ReservationDto> addReservation(@RequestBody ReservationDto request) throws URISyntaxException {
+        ReservationDto response = reservationService.addReservation(request);
+        return ResponseEntity.created(new URI("/reservations/" + response.id()))
+            .body(response);
     }
 
     @DeleteMapping("/reservations/{id}")
