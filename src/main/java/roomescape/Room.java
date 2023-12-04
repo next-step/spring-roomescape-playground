@@ -4,16 +4,20 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class Room {
-	Long id;
-	String name;
-	LocalDate date;
-	LocalTime time;
-
-	public void setId(Long id) {
-		this.id = id;
-	}
+	private final Long id;
+	private final String name;
+	private final LocalDate date;
+	private final LocalTime time;
 
 	public Room(String name, LocalDate date, LocalTime time) {
+		this.id = null;
+		this.name = name;
+		this.date = date;
+		this.time = time;
+	}
+
+	public Room(Long id, String name, LocalDate date, LocalTime time) {
+		this.id = id;
 		this.name = name;
 		this.date = date;
 		this.time = time;
