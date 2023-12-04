@@ -5,7 +5,6 @@ import roomescape.domain.Reservation;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ReservationResponse {
     private final Long id;
@@ -44,6 +43,6 @@ public class ReservationResponse {
     public static List<ReservationResponse> from(final List<Reservation> reservations) {
         return reservations.stream()
                 .map(reservation -> new ReservationResponse(reservation.getId(), reservation.getName(), reservation.getDate(), TimeResponse.from(reservation.getTime())))
-                .collect(Collectors.toList());
+                .toList();
     }
 }
