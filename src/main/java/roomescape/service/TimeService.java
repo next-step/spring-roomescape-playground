@@ -9,7 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import roomescape.domain.Time;
+import roomescape.exception.RoomEscapeException;
 import roomescape.repository.TimeRepository;
+import roomescape.utils.ErrorMessage;
 
 @Service
 @Transactional
@@ -27,5 +29,13 @@ public class TimeService {
                 .created(URI.create("/times/" + newTimeId))
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(time);
+    }
+
+    public ResponseEntity<Void> deleteTime(String id) {
+        int deletedNumber = timeRepository.delete(id);
+        if (deletedNumber <= 0) {
+            throw new RoomEscapeException(ErrorMessage.NON_EXISTING_DATA);
+        }
+        return ResponseEntity.noContent().build();
     }
 }

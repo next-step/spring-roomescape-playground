@@ -29,11 +29,15 @@ public class TimeRepository {
 
     public Long save(Time time) {
         final String sql = "insert into time (time) values (?)";
-       jdbcTemplate.update(connection -> {
-           final PreparedStatement preparedStatement = connection.prepareStatement(sql, new String[]{"id"});
-           preparedStatement.setString(1,time.getTime());
-           return preparedStatement;
-       },keyHolder);
-        return (Long) keyHolder.getKey();
+        jdbcTemplate.update(connection -> {
+            final PreparedStatement preparedStatement = connection.prepareStatement(sql, new String[]{"id"});
+            preparedStatement.setString(1, time.getTime());
+            return preparedStatement;
+        }, keyHolder);
+        return (Long) keyHolder.getKey()+1;
+    }
+
+    public int delete(String id) {
+        return jdbcTemplate.update("delete time where id = ? ", id);
     }
 }
