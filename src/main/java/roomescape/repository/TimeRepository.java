@@ -34,7 +34,7 @@ public class TimeRepository {
             preparedStatement.setString(1, time.getTime());
             return preparedStatement;
         }, keyHolder);
-        return (Long) keyHolder.getKey()+1;
+        return (Long) keyHolder.getKey();
     }
 
     public int delete(String id) {
