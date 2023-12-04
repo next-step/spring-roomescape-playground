@@ -61,13 +61,16 @@ public class ReservationDao {
     }
 
     public void removeReservation(Long id) {
-        validateDeleteReservation(id);
+        if (!hasReservationById(id)) {
+            throw new IdNotExistException();
+        }
         jdbcTemplate.update("DELETE reservation WHERE id = ?", id);
     }
 
-    private void validateDeleteReservation(Long id) {
-        if (getReservationById(id) == null) {
-            throw new IllegalArgumentException("존재하지 않는 id입니다.");
-        }
+    private boolean hasReservationById(Long id) {
+        return Boolean.TRUE.equals(
+            jdbcTemplate.queryForObject("SELECT EXISTS (SELECT 1 FROM reservation WHERE id = " + id + ")",
+                Boolean.class)
+        );
     }
 }
