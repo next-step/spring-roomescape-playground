@@ -12,6 +12,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import roomescape.domain.Reservation;
+import roomescape.exception.IdNotExistException;
 
 @Repository
 public class ReservationDao {
@@ -28,14 +29,14 @@ public class ReservationDao {
             .usingGeneratedKeyColumns("id");
     }
 
-    public Reservation getReservation(Long id) {
+    public Reservation getReservationById(Long id) {
         try {
             return jdbcTemplate.queryForObject(
                 "SELECT * FROM reservation WHERE id = " + id,
                 new BeanPropertyRowMapper<>(Reservation.class)
             );
         } catch (EmptyResultDataAccessException e) {
-            return null;
+            throw new IdNotExistException();
         }
     }
 
@@ -65,7 +66,7 @@ public class ReservationDao {
     }
 
     private void validateDeleteReservation(Long id) {
-        if (getReservation(id) == null) {
+        if (getReservationById(id) == null) {
             throw new IllegalArgumentException("존재하지 않는 id입니다.");
         }
     }
