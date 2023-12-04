@@ -1,5 +1,6 @@
 package roomescape.controller;
 
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,7 @@ public class TimeController {
     }
 
     @PostMapping
-    public ResponseEntity<Time> createTime(@RequestBody Time time) {
+    public ResponseEntity<Time> createTime(@Valid @RequestBody Time time) {
         return timeService.addTime(time);
     }
 
