@@ -37,6 +37,8 @@ public class TimeRepository {
         newTime.setId(id);
         return newTime;
     }
+
+
     public Time findById(Long id){
         String sql = "select id, time from time where id = ?";
 
@@ -48,8 +50,7 @@ public class TimeRepository {
             });
             return time;
         } catch (EmptyResultDataAccessException e) {
-            // 찾는 값이 없을 경우 예외 처리
-            throw new Exception400("존재하지 않는 time입니다."); // Exception400은 예시일 뿐 실제 예외 클래스에 따라서 사용
+            throw new Exception400("존재하지 않는 time입니다.");
         }
     }
 
