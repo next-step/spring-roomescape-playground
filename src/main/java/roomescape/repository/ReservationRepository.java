@@ -26,9 +26,9 @@ public class ReservationRepository {
         final String sql = "insert into reservation (name, date, time_id) values (?, ?, ?)";
         jdbcTemplate.update(connection -> {
                     final PreparedStatement preparedStatement = connection.prepareStatement(sql, new String[]{"id"});
-                    preparedStatement.setString(1, reservation.name());
-                    preparedStatement.setString(2, reservation.date());
-                    preparedStatement.setString(3, String.valueOf(reservation.time()));
+                    preparedStatement.setString(1, reservation.getName());
+                    preparedStatement.setString(2, reservation.getDate());
+                    preparedStatement.setString(3, String.valueOf(reservation.getTime()));
                     return preparedStatement;
                 }, keyHolder);
         return (Long) keyHolder.getKey();

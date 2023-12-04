@@ -23,7 +23,7 @@ function createFormControl(timeData) {
   select.id = 'time-select';
 
   const defaultOption = document.createElement('option');
-  defaultOption.textContent = "시간 선택";
+  defaultOption.textContent;
   select.appendChild(defaultOption);
 
   timeData.forEach(time => {

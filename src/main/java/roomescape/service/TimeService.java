@@ -1,6 +1,8 @@
 package roomescape.service;
 
 
+import static roomescape.utils.ErrorMessage.NO_DATA_ERROR;
+
 import java.net.URI;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import roomescape.domain.Time;
-import roomescape.exception.RoomEscapeException;
+import roomescape.exception.NoDataException;
 import roomescape.repository.TimeRepository;
 import roomescape.utils.ErrorMessage;
 
@@ -34,7 +36,7 @@ public class TimeService {
     public ResponseEntity<Void> deleteTime(String id) {
         int deletedNumber = timeRepository.delete(id);
         if (deletedNumber <= 0) {
-            throw new RoomEscapeException(ErrorMessage.NON_EXISTING_DATA);
+            throw new NoDataException(NO_DATA_ERROR);
         }
         return ResponseEntity.noContent().build();
     }

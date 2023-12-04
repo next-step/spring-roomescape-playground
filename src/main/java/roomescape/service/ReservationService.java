@@ -1,7 +1,6 @@
 package roomescape.service;
 
-import static roomescape.utils.ErrorMessage.NON_EXISTING_DATA;
-import static roomescape.validation.ReservationValidation.validate;
+import static roomescape.utils.ErrorMessage.NO_DATA_ERROR;
 
 import java.net.URI;
 import java.util.List;
@@ -11,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import roomescape.domain.Reservation;
-import roomescape.exception.RoomEscapeException;
+import roomescape.exception.NoDataException;
 import roomescape.repository.ReservationRepository;
 
 @Service
@@ -27,7 +26,7 @@ public class ReservationService {
 
     // 예약 추가
     public ResponseEntity<Reservation> reserve(Reservation reservation) {
-        validate(reservation);
+        //validate(reservation);
 
         Long newReservationId = reservationRepository.save(reservation);
         return ResponseEntity
@@ -47,7 +46,7 @@ public class ReservationService {
     public ResponseEntity<Void> deleteReservation(String id) {
         int deletedNum = reservationRepository.delete(id);
         if (deletedNum <= 0) {
-            throw new RoomEscapeException(NON_EXISTING_DATA);
+            throw new NoDataException(NO_DATA_ERROR);
         }
         return ResponseEntity.noContent().build();
     }

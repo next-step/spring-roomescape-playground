@@ -1,5 +1,7 @@
 package roomescape.domain;
 
+import static roomescape.utils.ErrorMessage.EMPTY_TIME_ERROR;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
@@ -9,7 +11,7 @@ import lombok.NonNull;
 @Getter
 public class Time {
     private final Long id;
-    @NotBlank(message = "시간은 반드시 입력해야 합니다.")
+    @NotBlank(message = EMPTY_TIME_ERROR)
     private final String time;
 
     public Time(long id, String time) {
