@@ -1,8 +1,7 @@
 package roomescape.dao;
 
 import java.util.List;
-
-import javax.sql.DataSource;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -17,13 +16,14 @@ import roomescape.domain.Reservation;
 @Repository
 public class ReservationDao {
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
     private final SimpleJdbcInsert simpleJdbcInsert;
 
-    public ReservationDao(DataSource dataSource) {
-        this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource)
+    @Autowired
+    public ReservationDao(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+        this.simpleJdbcInsert = new SimpleJdbcInsert(Objects.requireNonNull(jdbcTemplate.getDataSource()))
             .withTableName("reservation")
             .usingGeneratedKeyColumns("id");
     }

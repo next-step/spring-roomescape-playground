@@ -20,8 +20,12 @@ import roomescape.service.ReservationService;
 @Controller
 public class ReservationController {
 
+    private final ReservationService reservationService;
+
     @Autowired
-    private ReservationService reservationService;
+    public ReservationController(ReservationService reservationService) {
+        this.reservationService = reservationService;
+    }
 
     @GetMapping("/reservation")
     public String reservation() {
