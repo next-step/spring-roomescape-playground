@@ -5,10 +5,9 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.reservation.domain.Reservation;
-
+import roomescape.time.domain.Time;
 import java.sql.PreparedStatement;
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 @Repository
 public class ReservationUpdateRepository {
@@ -18,16 +17,16 @@ public class ReservationUpdateRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public Reservation insert(String name, LocalDate date, LocalTime time) {
+    public Reservation insert(String name, LocalDate date, Time time) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(
-                    "insert into reservation (name, date, time) values (?, ?, ?)",
+                    "insert into reservation (name, date, time_id) values (?, ?, ?)",
                     new String[]{"id"});
             ps.setString(1, name);
             ps.setDate(2, java.sql.Date.valueOf(date));
-            ps.setTime(3, java.sql.Time.valueOf(time));
+            ps.setLong(3, time.getId());
 
             return ps;
         }, keyHolder);

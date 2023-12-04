@@ -27,4 +27,10 @@ public class TimeQueryRepository {
         String sql = "select id, time FROM time";
         return jdbcTemplate.query(sql, timeRowMapper);
     }
+
+    public Time findById(Long time_id) {
+        String sql = "SELECT * FROM time WHERE id = ?";
+
+        return jdbcTemplate.queryForObject(sql, new Object[]{time_id}, timeRowMapper);
+    }
 }
