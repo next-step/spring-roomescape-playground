@@ -1,6 +1,6 @@
 package roomescape.service;
 
-import static roomescape.utils.ErrorMessage.NON_EXISTING_RESERVATION;
+import static roomescape.utils.ErrorMessage.NON_EXISTING_DATA;
 import static roomescape.validation.ReservationValidation.validate;
 
 import java.net.URI;
@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import roomescape.domain.Reservation;
-import roomescape.exception.NotFoundReservationException;
+import roomescape.exception.RoomEscapeException;
 import roomescape.repository.ReservationRepository;
 
 @Service
@@ -47,7 +47,7 @@ public class ReservationService {
     public ResponseEntity<Void> deleteReservation(String id) {
         int deletedNum = reservationRepository.delete(id);
         if (deletedNum <= 0) {
-            throw new NotFoundReservationException(NON_EXISTING_RESERVATION);
+            throw new RoomEscapeException(NON_EXISTING_DATA);
         }
         return ResponseEntity.noContent().build();
     }
