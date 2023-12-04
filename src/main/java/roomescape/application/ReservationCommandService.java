@@ -3,7 +3,11 @@ package roomescape.application;
 import org.springframework.stereotype.Service;
 import roomescape.application.dto.ReservationCreateRequest;
 import roomescape.application.dto.ReservationResponse;
+import roomescape.domain.Reservation;
+import roomescape.domain.Time;
 import roomescape.domain.repository.ReservationRepository;
+
+import java.time.LocalDate;
 
 @Service
 public class ReservationCommandService {
@@ -15,7 +19,10 @@ public class ReservationCommandService {
 
     public ReservationResponse addReservation(final ReservationCreateRequest request) {
         validateNotEmptyRequest(request);
-        return ReservationResponse.from(jdbcReservationRepository.save(ReservationCreateRequest.from(request)));
+        final Reservation reservation = new Reservation(
+                request.getName(), LocalDate.parse(request.getDate()), new Time(request.getTime())
+        );
+        return ReservationResponse.from(jdbcReservationRepository.save(reservation));
     }
 
     private void validateNotEmptyRequest(final ReservationCreateRequest request) {

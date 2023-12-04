@@ -3,7 +3,10 @@ package roomescape.application;
 import org.springframework.stereotype.Service;
 import roomescape.application.dto.TimeCreateRequest;
 import roomescape.application.dto.TimeResponse;
+import roomescape.domain.Time;
 import roomescape.domain.repository.TimeRepository;
+
+import java.time.LocalTime;
 
 @Service
 public class TimeCommandService {
@@ -14,7 +17,8 @@ public class TimeCommandService {
     }
 
     public TimeResponse addTime(final TimeCreateRequest request) {
-        return TimeResponse.from(jdbcTimeRepository.save(TimeCreateRequest.from(request)));
+        final Time time = new Time(LocalTime.parse(request.getTime()));
+        return TimeResponse.from(jdbcTimeRepository.save(time));
     }
 
     public void removeTime(final Long id) {
