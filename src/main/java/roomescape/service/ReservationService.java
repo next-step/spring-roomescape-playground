@@ -29,10 +29,13 @@ public class ReservationService {
             .toList();
     }
 
-    public ReservationResponse createReservation(ReservationRequest reservationRequest) {
-        Long id = reservationRepository.create(reservationRequest);
+    public ReservationResponse getReservation(Long id) {
         Reservation reservation = reservationRepository.findById(id);
         return ReservationResponse.from(reservation);
+    }
+
+    public Long createReservation(ReservationRequest reservationRequest) {
+        return reservationRepository.create(reservationRequest);
     }
 
     public void deleteReservation(Long id) {

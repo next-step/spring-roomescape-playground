@@ -43,7 +43,8 @@ public class ReservationController {
     public ResponseEntity<ReservationResponse> createReservation(
         @Valid @RequestBody ReservationRequest reservationRequest) throws
         URISyntaxException {
-        ReservationResponse reservationResponse = reservationService.createReservation(reservationRequest);
+        Long id = reservationService.createReservation(reservationRequest);
+        ReservationResponse reservationResponse = reservationService.getReservation(id);
         return ResponseEntity.created(new URI("/reservations/" + reservationResponse.getId()))
             .body(reservationResponse);
     }
