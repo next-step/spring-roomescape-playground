@@ -1,6 +1,7 @@
-package roomescape.domain;
+package roomescape.domain.repository;
 
 import org.springframework.stereotype.Repository;
+import roomescape.domain.Reservation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +16,9 @@ public class SimpleReservationRepository implements ReservationRepository {
 
     @Override
     public Reservation save(final Reservation reservation) {
-        final Reservation savedReservation = new Reservation(index.incrementAndGet(), reservation.getName(), reservation.getDate(), reservation.getTime());
+        final Reservation savedReservation = new Reservation.ReservationBuilder(reservation.getName(), reservation.getDate(), reservation.getTime())
+                .id(index.incrementAndGet())
+                .build();
         reservations.add(savedReservation);
         return savedReservation;
     }

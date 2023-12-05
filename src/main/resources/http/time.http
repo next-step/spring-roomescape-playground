@@ -1,0 +1,13 @@
+### 시간 조회
+GET localhost:8080/times HTTP/1.1
+
+### 시간 추가
+POST localhost:8080/times HTTP/1.1
+content-type: application/json
+
+{
+  "time": "10:00"
+}
+
+### 시간 삭제
+DELETE localhost:8080/times/1 HTTP/1.1
