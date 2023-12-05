@@ -28,10 +28,6 @@ public class Reservation {
     }
 
 
-    public long getId() {
-        return id;
-    }
-
     public void setId(long generatedId) {
         this.id = generatedId;
     }
