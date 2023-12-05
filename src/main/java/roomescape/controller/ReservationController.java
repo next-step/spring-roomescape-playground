@@ -14,14 +14,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import roomescape.dto.Reservation;
+import roomescape.dto.ReservationDto;
 import roomescape.service.ReservationService;
 
 @Controller
 public class ReservationController {
 
+    private final ReservationService reservationService;
+
     @Autowired
-    private ReservationService reservationService;
+    public ReservationController(ReservationService reservationService) {
+        this.reservationService = reservationService;
+    }
 
     @GetMapping("/reservation")
     public String reservation() {
@@ -30,16 +34,16 @@ public class ReservationController {
 
     @ResponseBody
     @GetMapping("/reservations")
-    public List<Reservation> reservations() {
+    public List<ReservationDto> reservations() {
         return reservationService.getAllReservations();
     }
 
     @ResponseBody
     @PostMapping("/reservations")
-    public ResponseEntity<Reservation> addReservation(@RequestBody Reservation reservation) throws URISyntaxException {
-        Reservation responseReservation = reservationService.addReservation(reservation);
-        return ResponseEntity.created(new URI("/reservations/" + responseReservation.id()))
-            .body(responseReservation);
+    public ResponseEntity<ReservationDto> addReservation(@RequestBody ReservationDto request) throws URISyntaxException {
+        ReservationDto response = reservationService.addReservation(request);
+        return ResponseEntity.created(new URI("/reservations/" + response.id()))
+            .body(response);
     }
 
     @DeleteMapping("/reservations/{id}")
