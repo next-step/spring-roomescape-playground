@@ -2,7 +2,7 @@ package roomescape.repository;
 
 import java.sql.PreparedStatement;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -10,17 +10,13 @@ import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
 
 @Repository
+@RequiredArgsConstructor
 public class ReservationRepository {
 
     private final JdbcTemplate jdbcTemplate;
-
-    @Autowired
-    public ReservationRepository(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
+    private final TimeRepository timeRepository;
 
     private final KeyHolder keyHolder = new GeneratedKeyHolder();
-    //private Long index = 1L;
 
     public Long save(Reservation reservation) {
         final String sql = "insert into reservation (name, date, time_id) values (?, ?, ?)";
@@ -28,7 +24,7 @@ public class ReservationRepository {
                     final PreparedStatement preparedStatement = connection.prepareStatement(sql, new String[]{"id"});
                     preparedStatement.setString(1, reservation.getName());
                     preparedStatement.setString(2, reservation.getDate());
-                    preparedStatement.setString(3, String.valueOf(reservation.getTime()));
+                    preparedStatement.setLong(3, reservation.getTime().getId());
                     return preparedStatement;
                 }, keyHolder);
         return (Long) keyHolder.getKey();
@@ -44,10 +40,10 @@ public class ReservationRepository {
                             + " t.time as time_value "
                         + " FROM reservation as r inner join time as t on r.time_id = t.id",
                 (resultSet, rowNum) -> Reservation.of(
-                        resultSet.getLong("id"),
+                        resultSet.getLong("reservation_id"),
                         resultSet.getString("name"),
                         resultSet.getString("date"),
-                        resultSet.getLong("time_id")
+                        timeRepository.find(resultSet.getLong("time_id"))
                 ));
     }
 

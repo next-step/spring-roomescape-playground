@@ -4,7 +4,6 @@ package roomescape.repository;
 import java.sql.PreparedStatement;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -25,6 +24,12 @@ public class TimeRepository {
                         resultSet.getLong("id"),
                         resultSet.getString("time")
                 ));
+    }
+
+    public Time find(Long timeId) {
+        return jdbcTemplate.queryForObject("select * from time where id = ?",new Object[]{timeId},(resultSet, rowNum) -> {
+            return new Time(resultSet.getLong("id"), resultSet.getString("time"));
+        });
     }
 
     public Long save(Time time) {
