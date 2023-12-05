@@ -45,19 +45,6 @@ public class TimeController {
         }
     }
 
-    private void addTimeToDatabase(Time time) {
-        String sql = "INSERT INTO time (time) VALUES (?)"; // 테이블명을 'reservation'에서 'time'으로 변경
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-
-        jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, time.getTime().toString());
-            return ps;
-        }, keyHolder);
-
-        long generatedId = (long) keyHolder.getKey();
-        time.setId(generatedId);
-    }
 
     @GetMapping
     public List<Time> getTime() {
@@ -86,12 +73,29 @@ public class TimeController {
     private static class TimeRowMapper implements RowMapper<Time> {
         @Override
         public Time mapRow(ResultSet rs, int rowNum) throws SQLException {
-            long id = rs.getLong("id"); // int에서 long으로 수정
-            LocalTime time = LocalTime.parse(rs.getString("time"));
+            long id = rs.getLong("id");
+            String timeString = rs.getString("time");
+
+            LocalTime time = Time.parseTime(timeString);
 
             return new Time(id, time);
         }
     }
+
+    private void addTimeToDatabase(Time time) {
+        String sql = "INSERT INTO time (time) VALUES (?)";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, time.getTimeAsString());
+            return ps;
+        }, keyHolder);
+
+        long generatedId = (long) keyHolder.getKey();
+        time.setId(generatedId);
+    }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTime(@PathVariable long id) {

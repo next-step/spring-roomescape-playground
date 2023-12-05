@@ -110,20 +110,44 @@ public class ReservationController {
     }
 
     private void addReservationToDatabase(Reservation reservation) {
-        String sql = "INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)";
-        KeyHolder keyHolder = new GeneratedKeyHolder(); // KeyHolder 생성
+        String sql = "INSERT INTO reservation (name, date, time_id) VALUES (?, ?, ?)";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, reservation.getName());
             ps.setString(2, reservation.getDate().toString());
-            ps.setString(3, reservation.getTime().toString());
+            ps.setLong(3, reservation.getTimeId());
             return ps;
         }, keyHolder);
 
-        // 생성된 ID를 가져와서 Reservation 객체에 설정
         long generatedId = (long) keyHolder.getKey();
         reservation.setId(generatedId);
+
+        String selectSql = "SELECT r.id as reservation_id, r.name, r.date, t.id as time_id, t.time as time_value " +
+                "FROM reservation as r " +
+                "INNER JOIN time as t ON r.time_id = t.id " +
+                "WHERE r.id = ?";
+
+        Reservation updatedReservation = jdbcTemplate.queryForObject(selectSql, new ReservationWithTimeRowMapper(), generatedId);
+
+        if (updatedReservation != null) {
+            reservation.setTimeId(updatedReservation.getTimeId());
+            reservation.setTime(updatedReservation.getTime());
+        }
+    }
+
+    private static class ReservationWithTimeRowMapper implements RowMapper<Reservation> {
+        @Override
+        public Reservation mapRow(ResultSet rs, int rowNum) throws SQLException {
+            long reservationId = rs.getLong("reservation_id");
+            String name = rs.getString("name");
+            LocalDate date = LocalDate.parse(rs.getString("date"));
+            long timeId = rs.getLong("time_id");
+            LocalTime time = LocalTime.parse(rs.getString("time_value"));
+
+            return new Reservation(reservationId, name, date, timeId, time);
+        }
     }
 
 

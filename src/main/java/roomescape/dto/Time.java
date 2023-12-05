@@ -23,4 +23,12 @@ public class Time {
     public void setId(long generatedId) {
         this.id = generatedId;
     }
+
+    public String getTimeAsString() {
+        return time.toString();
+    }
+
+    public static LocalTime parseTime(String timeString) {
+        return LocalTime.parse(timeString);
+    }
 }
