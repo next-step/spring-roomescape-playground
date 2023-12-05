@@ -19,7 +19,10 @@ public class JdbcTimeRepository implements TimeRepository {
     private final RowMapper<Time> rowMapper = (rs, rowNum) -> {
         final Long id = rs.getLong("id");
         final String time = rs.getString("time");
-        return new Time(id, LocalTime.parse(time));
+        return new Time.TimeBuilder()
+                .id(id)
+                .time(LocalTime.parse(time))
+                .build();
     };
 
     private final JdbcTemplate jdbcTemplate;
@@ -37,7 +40,10 @@ public class JdbcTimeRepository implements TimeRepository {
             ps.setString(1, time.getTime().toString());
             return ps;
         }, keyHolder);
-        return new Time(keyHolder.getKey().longValue(), time.getTime());
+        return new Time.TimeBuilder()
+                .id(keyHolder.getKey().longValue())
+                .time(time.getTime())
+                .build();
 
     }
 

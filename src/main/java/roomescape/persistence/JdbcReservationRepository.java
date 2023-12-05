@@ -23,7 +23,15 @@ public class JdbcReservationRepository implements ReservationRepository {
         final String date = rs.getString("date");
         final Long timeId = rs.getLong("time_id");
         final String timeValue = rs.getString("time_value");
-        return new Reservation(reservationId, name, LocalDate.parse(date), new Time(timeId, LocalTime.parse(timeValue)));
+        return new Reservation.ReservationBuilder(
+                name,
+                LocalDate.parse(date),
+                new Time.TimeBuilder()
+                        .id(timeId)
+                        .time(LocalTime.parse(timeValue))
+                        .build())
+                .id(reservationId)
+                .build();
     };
     private final JdbcTemplate jdbcTemplate;
 

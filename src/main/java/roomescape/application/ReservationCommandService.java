@@ -19,9 +19,13 @@ public class ReservationCommandService {
 
     public ReservationResponse addReservation(final ReservationCreateRequest request) {
         validateNotEmptyRequest(request);
-        final Reservation reservation = new Reservation(
-                request.getName(), LocalDate.parse(request.getDate()), new Time(request.getTime())
-        );
+        final Reservation reservation = new Reservation.ReservationBuilder(
+                request.getName(),
+                LocalDate.parse(request.getDate()),
+                new Time.TimeBuilder()
+                        .id(request.getTime())
+                        .build()
+        ).build();
         return ReservationResponse.from(jdbcReservationRepository.save(reservation));
     }
 

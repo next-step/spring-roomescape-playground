@@ -17,7 +17,9 @@ public class TimeCommandService {
     }
 
     public TimeResponse addTime(final TimeCreateRequest request) {
-        final Time time = new Time(LocalTime.parse(request.getTime()));
+        final Time time = new Time.TimeBuilder()
+                .time(LocalTime.parse(request.getTime()))
+                .build();
         return TimeResponse.from(jdbcTimeRepository.save(time));
     }
 

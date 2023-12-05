@@ -6,17 +6,9 @@ public class Time {
     private final Long id;
     private final LocalTime time;
 
-    public Time(final Long id, final LocalTime time) {
-        this.id = id;
-        this.time = time;
-    }
-
-    public Time(final Long id) {
-        this(id, null);
-    }
-
-    public Time(final LocalTime time) {
-        this(null, time);
+    private Time(final TimeBuilder builder) {
+        this.id = builder.id;
+        this.time = builder.time;
     }
 
     public Long getId() {
@@ -25,5 +17,28 @@ public class Time {
 
     public LocalTime getTime() {
         return time;
+    }
+
+    public static class TimeBuilder {
+        private Long id;
+        private LocalTime time;
+
+        public TimeBuilder() {
+        }
+
+        public TimeBuilder id(final Long id) {
+            this.id = id;
+            return this;
+        }
+
+        public TimeBuilder time(final LocalTime time) {
+            this.time = time;
+            return this;
+        }
+
+        public Time build() {
+            return new Time(this);
+        }
+
     }
 }
