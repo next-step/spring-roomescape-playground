@@ -2,8 +2,10 @@ package roomescape.controller;
 
 import static org.springframework.http.HttpStatus.CREATED;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -14,6 +16,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,8 +42,7 @@ public class ReservationController {
                     || reservation.getName().isEmpty()) {
                 throw new IllegalReservationException("Reservation의 항목이 채워지지 않았습니다");
             }
-            addReservationToDatabase(reservation); // database에 추가
-
+            addReservationToDatabase(reservation);
 
             return ResponseEntity
                     .<Reservation>status(CREATED)
@@ -75,6 +78,7 @@ public class ReservationController {
         String sql = "SELECT * FROM reservation WHERE id = ?";
         try {
             return jdbcTemplate.queryForObject(sql, new ReservationRowMapper(), id);
+
         } catch (EmptyResultDataAccessException e) {
             throw new NotFoundReservationException("[ERROR] 예약 아이디: " + id + " 없음");
         }
@@ -95,7 +99,7 @@ public class ReservationController {
     private static class ReservationRowMapper implements RowMapper<Reservation> {
         @Override
         public Reservation mapRow(ResultSet rs, int rowNum) throws SQLException {
-            long id = rs.getLong("id");
+            int id = rs.getInt("id");
             String name = rs.getString("name");
             LocalDate date = LocalDate.parse(rs.getString("date"));
             LocalTime time = LocalTime.parse(rs.getString("time"));
@@ -107,7 +111,20 @@ public class ReservationController {
 
     private void addReservationToDatabase(Reservation reservation) {
         String sql = "INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)";
-        jdbcTemplate.update(sql, reservation.getName(), reservation.getDate(), reservation.getTime());
+        KeyHolder keyHolder = new GeneratedKeyHolder(); // KeyHolder 생성
+
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, reservation.getName());
+            ps.setString(2, reservation.getDate().toString());
+            ps.setString(3, reservation.getTime().toString());
+            return ps;
+        }, keyHolder);
+
+        // 생성된 ID를 가져와서 Reservation 객체에 설정
+        long generatedId = (long) keyHolder.getKey();
+        reservation.setId(generatedId);
     }
+
 
 }

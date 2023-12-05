@@ -16,7 +16,7 @@ public class Reservation {
 
     @JsonCreator
     public Reservation(
-            @JsonProperty("id") long id,
+            @JsonProperty("id") int id,
             @JsonProperty("name") String name,
             @JsonProperty("date") LocalDate date,
             @JsonProperty("time") LocalTime time
@@ -32,4 +32,7 @@ public class Reservation {
         return id;
     }
 
+    public void setId(long generatedId) {
+        this.id = generatedId;
+    }
 }
