@@ -26,16 +26,16 @@ public class ReservationDAO {
 				.usingGeneratedKeyColumns("id");
 	}
 
-	public Long saveV2(Reservation reservation) {
-		SqlParameterSource parameters = new BeanPropertySqlParameterSource(reservation);
-		return simpleJdbcInsert.executeAndReturnKey(parameters).longValue();
-	}
-
 	public Long save(Reservation reservation) {
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("name", reservation.getName());
 		parameters.put("date", reservation.getDate().toString());
 		parameters.put("time_id", reservation.getTime().getId());
+		return simpleJdbcInsert.executeAndReturnKey(parameters).longValue();
+	}
+
+	public Long saveV2(Reservation reservation) {
+		SqlParameterSource parameters = new BeanPropertySqlParameterSource(reservation);
 		return simpleJdbcInsert.executeAndReturnKey(parameters).longValue();
 	}
 
@@ -46,10 +46,9 @@ public class ReservationDAO {
 						FROM reservation as r INNER JOIN time as t ON r.time_id = t.id
 						WHERE r.id = ?
 					""", (rs, rowNum) -> {
-				Time time = new Time(rs.getTime("time_value").toLocalTime());
-				time.setId(rs.getLong("time_id"));
+				Time time = new Time(rs.getLong("time_id"), rs.getTime("time_value").toLocalTime());
 
-				return new Reservation(rs.getLong("reservation_id"), rs.getString("name"), rs.getDate("date").toLocalDate(), time);
+				return new Reservation(id, rs.getString("name"), rs.getDate("date").toLocalDate(), time);
 			}, id);
 		} catch (EmptyResultDataAccessException e) {
 			throw new NotFoundReservationException("해당하는 예약이 없습니다.");
@@ -67,8 +66,7 @@ public class ReservationDAO {
             FROM reservation as r INNER JOIN time as t ON r.time_id = t.id
             """, (rs, rowNum) -> {
 
-			Time time = new Time(rs.getTime("time_value").toLocalTime());
-			time.setId(rs.getLong("time_id"));
+			Time time = new Time(rs.getLong("time_id"), rs.getTime("time_value").toLocalTime());
 
 			return new Reservation(rs.getLong("id"), rs.getString("name"), rs.getDate("date").toLocalDate(),
 					time);

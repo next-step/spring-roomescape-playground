@@ -46,7 +46,7 @@ public class MissionStepTest {
 	@Test
 	void 이단계() {
 		Time time = new Time(LocalTime.now());
-		timeDAO.save(time);
+		time = timeDAO.save(time);
 
 		Reservation reservation1 = new Reservation("박한수", LocalDate.now(), time);
 		Reservation reservation2 = new Reservation("홍길동", LocalDate.now(), time);
@@ -65,7 +65,7 @@ public class MissionStepTest {
 	@Test
 	void 삼단계() {
 		Time time = new Time(LocalTime.of(15, 40));
-		timeDAO.save(time);
+		time = timeDAO.save(time);
 
 		Map<String, String> params = new HashMap<>();
 
@@ -125,7 +125,7 @@ public class MissionStepTest {
 	@Test
 	void 날짜의_형식은_YYYY_MM_DD_형식이어야_한다() {
 		Time time = new Time(LocalTime.of(15, 40));
-		timeDAO.save(time);
+		time = timeDAO.save(time);
 
 		Map<String, String> params = new HashMap<>();
 
@@ -193,7 +193,7 @@ public class MissionStepTest {
 	void 육단계() {
 
 		Time time = new Time(LocalTime.now());
-		timeDAO.save(time);
+		time = timeDAO.save(time);
 
 		jdbcTemplate.update("INSERT INTO reservation (name, date, time_id) VALUES (?, ?, ?)", "브라운", "2023-08-05", time.getId());
 
@@ -211,7 +211,7 @@ public class MissionStepTest {
 	@Test
 	void 칠단계() {
 		Time time = new Time(LocalTime.now());
-		timeDAO.save(time);
+		time = timeDAO.save(time);
 
 		Map<String, String> params = new HashMap<>();
 
@@ -238,6 +238,7 @@ public class MissionStepTest {
 		Integer countAfterDelete = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
 		assertThat(countAfterDelete).isEqualTo(0);
 	}
+
 	@Test
 	void 팔단계() {
 		Map<String, String> params = new HashMap<>();
@@ -264,6 +265,21 @@ public class MissionStepTest {
 	}
 	@Autowired
 	private ReservationController reservationController;
+
+	@Test
+	void 구단계() {
+		Map<String, String> reservation = new HashMap<>();
+		reservation.put("name", "브라운");
+		reservation.put("date", "2023-08-05");
+		reservation.put("time", "10:00");
+
+		RestAssured.given().log().all()
+				.contentType(ContentType.JSON)
+				.body(reservation)
+				.when().post("/reservations")
+				.then().log().all()
+				.statusCode(400);
+	}
 
 	@Test
 	void 십단계() {

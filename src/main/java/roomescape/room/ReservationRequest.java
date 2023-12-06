@@ -12,9 +12,7 @@ public class ReservationRequest {
 	                     @NotNull(message = "시간은 필수 입력값입니다.") Long time) {
 
 		public Reservation toEntity() {
-			Time timeObj = new Time(null);
-			timeObj.setId(time);
-			return new Reservation(name, date, timeObj);
+			return new Reservation(name, date, new Time(time, null));
 		}
 	}
 }

@@ -25,18 +25,12 @@ public class TimeDAO {
 		parameters.put("time", time.getTime().toString());
 
 		long savedId = simpleJdbcInsert.executeAndReturnKey(parameters).longValue();
-		time.setId(savedId);
-
-		return time;
+		return new Time(savedId, time.getTime());
 	}
 
 	public List<Time> findAll() {
-		return jdbcTemplate.query("select * from time", (rs, rowNum) -> {
-			Time time = new Time(rs.getTime("time").toLocalTime());
-			time.setId(rs.getLong("id"));
-
-			return time;
-		});
+		return jdbcTemplate.query("select * from time",
+				(rs, rowNum) -> new Time(rs.getLong("id"), rs.getTime("time").toLocalTime()));
 	}
 
 	public void deleteById(Long id) {
@@ -46,12 +40,8 @@ public class TimeDAO {
 
 	public Time findById(Long id) {
 		try {
-			return jdbcTemplate.queryForObject("select * from time where id = ?", (rs, rowNum) -> {
-				Time time = new Time(rs.getTime("time").toLocalTime());
-				time.setId(rs.getLong("id"));
-
-				return time;
-			}, id);
+			return jdbcTemplate.queryForObject("select * from time where id = ?",
+					(rs, rowNum) -> new Time(id, rs.getTime("time").toLocalTime()), id);
 		} catch (EmptyResultDataAccessException e) {
 			throw new NotFoundTimeException("해당하는 시간이 없습니다.");
 		}

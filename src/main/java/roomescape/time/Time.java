@@ -3,15 +3,17 @@ package roomescape.time;
 import java.time.LocalTime;
 
 public class Time {
-	private Long id;
-	private LocalTime time;
+	private final Long id;
+	private final LocalTime time;
 
-	public Time(LocalTime time) {
+	public Time(Long id, LocalTime time) {
+		this.id = id;
 		this.time = time;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public Time(LocalTime time) {
+		this.id = null;
+		this.time = time;
 	}
 
 	public Long getId() {
