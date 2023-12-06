@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import static roomescape.global.ErrorCode.*;
 
 @Repository
-public class ReservationRepositoryImpl {
+public class ReservationRepositoryPojo {
 
     private static final Map<Long, Reservation> db = new HashMap<>();
 

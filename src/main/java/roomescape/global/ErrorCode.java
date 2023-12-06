@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 public enum ErrorCode {
 
     RESERVATION_NOT_FOUND("해당하는 예약이 없습니다.", HttpStatus.BAD_REQUEST),
+    TIME_NOT_FOUND("해당하는 시간이 없습니다.", HttpStatus.BAD_REQUEST),
     ;
 
     private final String message;

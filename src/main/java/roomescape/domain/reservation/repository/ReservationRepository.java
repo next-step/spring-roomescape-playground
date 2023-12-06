@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface ReservationRepository {
 
-    Reservation save(final String name, final LocalDate date, final LocalTime time) throws SQLException;
+    Reservation save(Reservation reservation) throws SQLException;
 
     List<Reservation> findAll();
 

@@ -23,9 +23,8 @@ public class CreateReservationRequest {
 
     @NotNull(message = "날짜를 입력해 주세요.")
     @JsonFormat(pattern = "yyyy-MM-dd")
-    LocalDate date;
+    private LocalDate date;
 
     @NotNull(message = "날짜를 입력해 주세요.")
-    @JsonFormat(pattern = "HH:mm")
-    LocalTime time;
+    private Long timeId;
 }
