@@ -17,10 +17,10 @@ public class TimeService {
     }
 
     public List<Time> getTimes() {
-        return timeRepository.SelectAll();
+        return timeRepository.selectAll();
     }
 
     public void deleteTimes(Long id) {
-        timeRepository.DeleteById(id);
+        timeRepository.deleteById(id);
     }
 }

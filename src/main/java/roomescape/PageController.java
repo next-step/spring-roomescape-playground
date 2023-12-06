@@ -8,15 +8,15 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping
 public class PageController {
     @GetMapping("/")
-    public String GetHome (){
+    public String goHome (){
         return "home";
     }
 
     @GetMapping("/reservation")
-    public String GetReservation (){
+    public String reservationPage (){
         return "new-reservation";
     }
 
     @GetMapping("/time")
-    public String GetTimePage () { return "time";}
+    public String timePage () { return "time";}
 }

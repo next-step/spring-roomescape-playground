@@ -19,21 +19,19 @@ public class ReservationService {
     }
     @Transactional
     public List<Reservation> getReservations(){
-        return reservationRepository.SelectAll();
+        return reservationRepository.selectAll();
     }
     @Transactional
     public Reservation postReservations(ReservationRequest reservationRequest) {
-
         if (reservationRequest.getDate().isEmpty() || reservationRequest.getName().isEmpty() || reservationRequest.getTime_id()==null){
             throw new Exception400("Name and Date cannot be null");
         }
-
         Time newtime =  timeRepository.findById(reservationRequest.getTime_id());
         return reservationRepository.insertReservation(new Reservation(reservationRequest.getName(), reservationRequest.getDate(), newtime));
     }
 
     @Transactional
     public void deleteReservations(Long id) {
-        reservationRepository.DeleteById(id);
+        reservationRepository.deleteById(id);
     }
 }

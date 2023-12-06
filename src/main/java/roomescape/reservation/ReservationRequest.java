@@ -1,9 +1,5 @@
 package roomescape.reservation;
 
-import error.Exception400;
-import roomescape.Time.Time;
-
-import java.util.function.ObjDoubleConsumer;
 
 public class ReservationRequest {
     private String name;
@@ -28,12 +24,4 @@ public class ReservationRequest {
         return time_id;
     }
 
-    @Override
-    public String toString() {
-        return "ReservationRequest{" +
-                "name='" + name + '\'' +
-                ", date='" + date + '\'' +
-                ", time_id=" + time_id +
-                '}';
-    }
 }

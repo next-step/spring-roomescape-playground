@@ -22,9 +22,7 @@ public class ReservationRepository {
         this.timeRepository = timeRepository;
     }
 
-    public List<Reservation> SelectAll (){
-//        SELECT id, name, date, time FROM reservation
-
+    public List<Reservation> selectAll (){
         String sql = "SELECT \n" +
                 "    r.id as reservation_id, \n" +
                 "    r.name, \n" +
@@ -33,8 +31,7 @@ public class ReservationRepository {
                 "    t.time as time_value \n" +
                 "FROM reservation as r inner join time as t on r.time_id = t.id";
         List<Reservation> reservations1 = jdbcTemplate.query(sql , (resultSet, rowNum) -> {
-            System.out.println("결과값 : "+ resultSet);
-            List<Time> timeList= timeRepository.SelectAll();
+            List<Time> timeList= timeRepository.selectAll();
             Time newTime = new Time(resultSet.getLong("time_id"), timeList.get(rowNum).getTime());
             Reservation reservation = new Reservation(
                     resultSet.getLong("reservation_id"),
@@ -60,12 +57,11 @@ public class ReservationRepository {
         }, keyHolder);
 
         Long id = keyHolder.getKey().longValue();
-        newReservation.setId(id);
-        return newReservation;
+        return new Reservation(id, newReservation.getName(), newReservation.getDate(), newReservation.getTime());
     }
 
 
-    public void DeleteById(Long id) {
+    public void deleteById(Long id) {
         String sql = "DELETE FROM reservation WHERE id = ?";
         int rowNum = jdbcTemplate.update(sql, Long.valueOf(id));
     }

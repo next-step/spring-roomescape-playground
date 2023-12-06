@@ -3,14 +3,12 @@ package roomescape.Time;
 import error.Exception400;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.List;
 
 @Repository
@@ -34,8 +32,7 @@ public class TimeRepository {
         },keyHolder);
 
         Long id = keyHolder.getKey().longValue();
-        newTime.setId(id);
-        return newTime;
+        return new Time (id, newTime.getTime());
     }
 
 
@@ -54,7 +51,7 @@ public class TimeRepository {
         }
     }
 
-    public List<Time> SelectAll() {
+    public List<Time> selectAll() {
         String sql = "select id, time from time";
         List<Time> newTime = jdbcTemplate.query(sql, (rs, rowNum) -> {
             Time time = new Time(
@@ -65,7 +62,7 @@ public class TimeRepository {
         return newTime;
     }
 
-    public void DeleteById(Long id) {
+    public void deleteById(Long id) {
         String sql  = "delete from time where id = ?";
         int num = jdbcTemplate.update(sql, Long.valueOf(id));
     }
