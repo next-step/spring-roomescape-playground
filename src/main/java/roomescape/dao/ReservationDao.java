@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -29,17 +28,6 @@ public class ReservationDao {
             .usingGeneratedKeyColumns("id");
     }
 
-    public Reservation getReservationById(Long id) {
-        try {
-            return jdbcTemplate.queryForObject(
-                "SELECT * FROM reservation WHERE id = " + id,
-                new BeanPropertyRowMapper<>(Reservation.class)
-            );
-        } catch (EmptyResultDataAccessException e) {
-            throw new IdNotExistException();
-        }
-    }
-
     public List<Reservation> getAllReservations() {
         return jdbcTemplate.query("SELECT * FROM reservation",
             new BeanPropertyRowMapper<>(Reservation.class)
@@ -47,14 +35,14 @@ public class ReservationDao {
     }
 
     public Long saveReservation(Reservation reservation) {
-        validateAddReservation(reservation);
+        validateSaveReservation(reservation);
         var parameterSource = new BeanPropertySqlParameterSource(reservation);
         Number id = simpleJdbcInsert.executeAndReturnKey(parameterSource);
         reservation.setId(id.longValue());
         return id.longValue();
     }
 
-    private void validateAddReservation(Reservation reservation) {
+    private void validateSaveReservation(Reservation reservation) {
         if (reservation == null || reservation.getName().isEmpty() || reservation.getDate().isEmpty() || reservation.getTime().isEmpty()) {
             throw new IllegalArgumentException("필수 필드가 비어있습니다.");
         }
