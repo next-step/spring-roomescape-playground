@@ -22,11 +22,11 @@ import static roomescape.global.ErrorCode.*;
 @RequiredArgsConstructor
 public class ReservationService {
 
-    private final ReservationRepositoryJdbc repository;
+    private final ReservationRepositoryJdbc reservationRepositoryJdbc;
     private final TimesRepositoryJdbc timeRepositoryJdbc;
 
     public List<GetReservationResponse> findAllReservations() {
-        return repository.findAll()
+        return reservationRepositoryJdbc.findAll()
                 .stream()
                 .map(GetReservationResponse::from)
                 .toList();
@@ -43,17 +43,17 @@ public class ReservationService {
                 .time(findTime)
                 .build();
 
-        return repository.save(reservation);
+        return reservationRepositoryJdbc.save(reservation);
     }
 
     public Reservation findReservation(final Long id) {
-        return repository.findById(id)
+        return reservationRepositoryJdbc.findById(id)
                 .orElseThrow(() -> new BusinessException(id, "reservationId", RESERVATION_NOT_FOUND));
     }
 
     @Transactional
     public void deleteReservation(final Long id) {
-        repository.deleteById(id);
+        reservationRepositoryJdbc.deleteById(id);
     }
 
     @Transactional
