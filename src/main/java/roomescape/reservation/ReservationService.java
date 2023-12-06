@@ -19,7 +19,7 @@ public class ReservationService {
   private final ReservationRepositoryJdbc reservationRepositoryJdbc;
 
   @Transactional
-  public List<Reservation> getReservationInfo() {
+  public List<Reservation> getAllReservationInfo() {
 //    List<ReservationResponse> reservationResponses = new ArrayList<>();
 //
 //    Reservation reservation1 = Reservation.builder().id(1L).name("브라운").date("2023-01-01").time("10:00").build();

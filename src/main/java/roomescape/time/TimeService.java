@@ -13,7 +13,7 @@ public class TimeService {
   private final TimeRepositoryJdbc timeRepositoryJdbc;
 
   @Transactional
-  public List<Time> getTimeInfo() {
+  public List<Time> getAllTimeInfo() {
     return timeRepositoryJdbc.findAll();
   }
 
