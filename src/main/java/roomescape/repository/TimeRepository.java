@@ -1,6 +1,5 @@
 package roomescape.repository;
 
-import static roomescape.exception.ExceptionMessage.NOT_EXIST_RESERVATION;
 import static roomescape.exception.ExceptionMessage.NOT_EXIST_TIME;
 import static roomescape.query.TimeQuery.*;
 
