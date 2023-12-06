@@ -2,8 +2,10 @@ package roomescape.room;
 
 import java.util.List;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(readOnly = true)
 public class ReservationService {
 	private final ReservationDAO reservationDAO;
 
@@ -11,6 +13,7 @@ public class ReservationService {
 		this.reservationDAO = reservationDAO;
 	}
 
+	@Transactional
 	public ReservationResponse.Create createReservation(ReservationRequest.Create request) {
 		Long savedId = reservationDAO.save(request.toEntity());
 		return ReservationResponse.Create.toDTO(savedId);
@@ -25,6 +28,7 @@ public class ReservationService {
 		reservationDAO.deleteById(id);
 	}
 
+	@Transactional
 	public List<ReservationResponse.Read> getReservations() {
 		List<Reservation> reservations = reservationDAO.findAll();
 		return ReservationResponse.Read.toDTO(reservations);

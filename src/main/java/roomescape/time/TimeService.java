@@ -2,8 +2,10 @@ package roomescape.time;
 
 import java.util.List;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(readOnly = true)
 public class TimeService {
 	private final TimeDAO timeDAO;
 
@@ -11,6 +13,7 @@ public class TimeService {
 		this.timeDAO = timeDAO;
 	}
 
+	@Transactional
 	public TimeResponse.Create create(TimeRequest.Create request) {
 		Time savedTime = timeDAO.save(request.toEntity());
 		return TimeResponse.Create.toDTO(savedTime);
@@ -26,6 +29,7 @@ public class TimeService {
 		return TimeResponse.Read.toDTO(all);
 	}
 
+	@Transactional
 	public void deleteTimeById(Long id) {
 		timeDAO.deleteById(id);
 	}
