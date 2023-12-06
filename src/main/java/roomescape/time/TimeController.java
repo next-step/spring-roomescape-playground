@@ -23,7 +23,7 @@ public class TimeController {
   private final TimeService timeService;
 
   @GetMapping
-  public ResponseEntity<List<Time>> getTimeInfo() {
+  public ResponseEntity<List<Time>> getAllTimeInfo() {
     return ResponseEntity.ok(timeService.getTimeInfo());
   }
 
