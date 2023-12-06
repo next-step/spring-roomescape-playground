@@ -1,12 +1,13 @@
 package roomescape.repository;
 
 import static roomescape.exception.ExceptionMessage.NOT_EXIST_RESERVATION;
-import static roomescape.query.TimeQuery.FIND_ALL;
-import static roomescape.query.TimeQuery.FIND_BY_ID;
+import static roomescape.exception.ExceptionMessage.NOT_EXIST_TIME;
+import static roomescape.query.TimeQuery.*;
 
 import java.util.List;
 import java.util.Objects;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -36,11 +37,12 @@ public class TimeRepository {
     }
 
     public Time findById(Long id) {
-        Time time = jdbcTemplate.queryForObject(FIND_BY_ID.getQuery(),
-            ((rs, rowNum) -> new Time(rs.getLong("id"), rs.getString("time"))), id);
-
-        if (time == null) {
-            throw new BaseException(NOT_EXIST_RESERVATION);
+        Time time;
+        try {
+            time = jdbcTemplate.queryForObject(FIND_BY_ID.getQuery(),
+                ((rs, rowNum) -> new Time(rs.getLong("id"), rs.getString("time"))), id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new BaseException(NOT_EXIST_TIME);
         }
         return time;
     }
@@ -49,5 +51,10 @@ public class TimeRepository {
         return jdbcTemplate.query(FIND_ALL.getQuery(),
             (rs, rowNum) -> new Time(rs.getLong("id"),
                 rs.getString("time")));
+    }
+
+    public void deleteTime(Long id) {
+        findById(id);
+        jdbcTemplate.update(DELETE.getQuery(), id);
     }
 }

@@ -6,6 +6,7 @@ import static roomescape.query.ReservationQuery.*;
 import java.util.List;
 import java.util.Objects;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -41,11 +42,12 @@ public class ReservationRepository {
     }
 
     public Reservation findById(Long id) {
-        Reservation reservation = jdbcTemplate.queryForObject(FIND_BY_ID.getQuery(),
-            ((rs, rowNum) -> new Reservation(rs.getLong("id"), rs.getString("name"),
-                rs.getString("date"), rs.getString("time"))), id);
-
-        if (reservation == null) {
+        Reservation reservation;
+        try {
+            reservation = jdbcTemplate.queryForObject(FIND_BY_ID.getQuery(),
+                ((rs, rowNum) -> new Reservation(rs.getLong("id"), rs.getString("name"),
+                    rs.getString("date"), rs.getString("time"))), id);
+        } catch (EmptyResultDataAccessException e) {
             throw new BaseException(NOT_EXIST_RESERVATION);
         }
         return reservation;
