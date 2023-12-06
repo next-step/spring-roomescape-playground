@@ -24,12 +24,10 @@ public class ReservationService {
 
     private final TimeQueryRepository timeQueryRepository;
 
-    @Transactional
     public List<Reservation> getAllReservations() {
         return queryRepository.getAllReservations();
     }
 
-    @Transactional
     public Reservation createReservation(String name, LocalDate date, Long time_id) {
         if (date == null || name == null || time_id == null ) {
             throw new NotFoundReservationException("빈 값이 존재합니다!");
@@ -38,7 +36,6 @@ public class ReservationService {
         return updateRepository.insert(name, date, time);
     }
 
-    @Transactional
     public void deleteReservation(Long id) {
         updateRepository.delete(id);
     }

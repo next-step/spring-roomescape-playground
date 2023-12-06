@@ -18,20 +18,17 @@ public class TimeService {
     private final TimeQueryRepository timeQueryRepository;
     private final TimeUpdateRepository timeUpdateRepository;
 
-    @Transactional
     public List<Time> getAllTimes() {
         return timeQueryRepository.getAllTimes();
     }
 
-    @Transactional
     public Time createTime(LocalTime time) {
         if (time == null ) {
             throw new NotFoundTimeException("빈 값이 존재합니다!");
         }
         return timeUpdateRepository.insert(time);
     }
-
-    @Transactional
+    
     public void deleteTime(Long id) {
         timeUpdateRepository.delete(id);
     }
