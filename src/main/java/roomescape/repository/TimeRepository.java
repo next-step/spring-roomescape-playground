@@ -9,6 +9,7 @@ import java.util.Objects;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -55,5 +56,22 @@ public class TimeRepository {
     public void deleteTime(Long id) {
         findById(id);
         jdbcTemplate.update(DELETE.getQuery(), id);
+    }
+
+    public Long create(String time) {
+        SqlParameterSource params = new MapSqlParameterSource()
+            .addValue("time", time);
+        return jdbcInsert.executeAndReturnKey(params).longValue();
+    }
+
+    public Time findByTime(String findTime) {
+        Time time;
+        try {
+            time = jdbcTemplate.queryForObject(FIND_BY_TIME.getQuery(),
+                ((rs, rowNum) -> new Time(rs.getLong("id"), rs.getString("time"))), findTime);
+        } catch (EmptyResultDataAccessException e) {
+            throw new BaseException(NOT_EXIST_TIME);
+        }
+        return time;
     }
 }

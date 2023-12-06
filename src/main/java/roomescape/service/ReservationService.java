@@ -2,20 +2,26 @@ package roomescape.service;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import roomescape.domain.Reservation;
+import roomescape.domain.Time;
 import roomescape.dto.request.ReservationRequest;
 import roomescape.dto.response.ReservationResponse;
 import roomescape.repository.ReservationRepository;
+import roomescape.repository.TimeRepository;
 
 @Service
 public class ReservationService {
 
     private final ReservationRepository reservationRepository;
+    private final TimeRepository timeRepository;
 
-    public ReservationService(ReservationRepository reservationRepository) {
+    @Autowired
+    public ReservationService(ReservationRepository reservationRepository, TimeRepository timeRepository) {
         this.reservationRepository = reservationRepository;
+        this.timeRepository = timeRepository;
     }
 
     public List<ReservationResponse> getReservations() {
@@ -30,7 +36,8 @@ public class ReservationService {
     }
 
     public Long createReservation(ReservationRequest reservationRequest) {
-        return reservationRepository.create(reservationRequest);
+        Time time = timeRepository.findByTime(reservationRequest.getTime());
+        return reservationRepository.create(reservationRequest, time.getId());
     }
 
     public void deleteReservation(Long id) {

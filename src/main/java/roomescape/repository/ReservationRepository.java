@@ -9,11 +9,14 @@ import java.util.Objects;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import roomescape.domain.Reservation;
+import roomescape.domain.ReservationTime;
+import roomescape.domain.Time;
 import roomescape.dto.request.ReservationRequest;
 import roomescape.exception.BaseException;
 
@@ -33,11 +36,14 @@ public class ReservationRepository {
     public List<Reservation> findAll() {
         return jdbcTemplate.query(FIND_ALL.getQuery(),
             (rs, rowNum) -> new Reservation(rs.getLong("id"),
-                rs.getString("name"), rs.getString("date"), rs.getString("time")));
+                rs.getString("name"), rs.getString("date"), new Time(rs.getLong("time_id"), rs.getString("times"))));
     }
 
-    public Long create(ReservationRequest reservationRequest) {
-        SqlParameterSource params = new BeanPropertySqlParameterSource(reservationRequest);
+    public Long create(ReservationRequest reservationRequest, Long timeId) {
+        SqlParameterSource params = new MapSqlParameterSource()
+            .addValue("name", reservationRequest.getName())
+            .addValue("date", reservationRequest.getDate())
+            .addValue("time_id", timeId);
         return jdbcInsert.executeAndReturnKey(params).longValue();
     }
 
@@ -46,7 +52,7 @@ public class ReservationRepository {
         try {
             reservation = jdbcTemplate.queryForObject(FIND_BY_ID.getQuery(),
                 ((rs, rowNum) -> new Reservation(rs.getLong("id"), rs.getString("name"),
-                    rs.getString("date"), rs.getString("time"))), id);
+                    rs.getString("date"), new Time(rs.getLong("time_id"), rs.getString("times")))), id);
         } catch (EmptyResultDataAccessException e) {
             throw new BaseException(NOT_EXIST_RESERVATION);
         }
