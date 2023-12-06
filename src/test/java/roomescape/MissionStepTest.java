@@ -119,7 +119,8 @@ class MissionStepTest {
 
     @Test
     void 데이터베이스에_저장된_예약의_개수와_예약조회결과의_개수가_같다() {
-        jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "브라운", "2023-08-05", "15:40");
+        jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "브라운", "2023-08-05",
+            "15:40");
 
         List<Reservation> reservations = RestAssured.given().log().all()
             .when().get("/reservations")
@@ -158,4 +159,30 @@ class MissionStepTest {
         Integer countAfterDelete = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
         assertThat(countAfterDelete).isZero();
     }
+
+    @Test
+    void 시간_정보를_추가_수정_삭제한다() {
+        Map<String, String> params = new HashMap<>();
+        params.put("time", "10:00");
+
+        RestAssured.given().log().all()
+            .contentType(ContentType.JSON)
+            .body(params)
+            .when().post("/times")
+            .then().log().all()
+            .statusCode(201)
+            .header("Location", "/times/1");
+
+        RestAssured.given().log().all()
+            .when().get("/times")
+            .then().log().all()
+            .statusCode(200)
+            .body("size()", is(1));
+
+        RestAssured.given().log().all()
+            .when().delete("/times/1")
+            .then().log().all()
+            .statusCode(204);
+    }
+
 }

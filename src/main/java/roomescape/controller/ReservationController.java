@@ -32,7 +32,7 @@ public class ReservationController {
 
     @GetMapping("/reservations")
     @ResponseBody
-    public List<ReservationResponse> reservations() {
+    public List<ReservationResponse> getAll() {
         return reservationService.findAll().stream()
             .map(ReservationResponse::from)
             .toList();
