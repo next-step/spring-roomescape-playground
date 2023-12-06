@@ -7,7 +7,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import roomescape.dto.Reservation;
+import roomescape.dto.Time;
 import roomescape.exception.IllegalReservationException;
 import roomescape.exception.NotFoundReservationException;
 
@@ -43,7 +43,6 @@ public class ReservationController {
                 throw new IllegalReservationException("Reservation의 항목이 채워지지 않았습니다");
             }
             addReservationToDatabase(reservation);
-
             return ResponseEntity
                     .<Reservation>status(CREATED)
                     .location(java.net.URI.create("/reservations/" + reservation.getId()))
@@ -77,7 +76,7 @@ public class ReservationController {
     private Reservation getReservationFromDatabase(long id) {
         String sql = "SELECT * FROM reservation WHERE id = ?";
         try {
-            return jdbcTemplate.queryForObject(sql, new ReservationRowMapper(), id);
+            return jdbcTemplate.queryForObject(sql, new ReservationWithTimeRowMapper(), id);
 
         } catch (EmptyResultDataAccessException e) {
             throw new NotFoundReservationException("[ERROR] 예약 아이디: " + id + " 없음");
@@ -93,21 +92,9 @@ public class ReservationController {
     @GetMapping("/from-database")
     public List<Reservation> getReservationsFromDatabase() {
         String sql = "SELECT * FROM reservation";
-        return jdbcTemplate.query(sql, new ReservationRowMapper());
+        return jdbcTemplate.query(sql, new ReservationWithTimeRowMapper());
     }
 
-    private static class ReservationRowMapper implements RowMapper<Reservation> {
-        @Override
-        public Reservation mapRow(ResultSet rs, int rowNum) throws SQLException {
-            int id = rs.getInt("id");
-            String name = rs.getString("name");
-            LocalDate date = LocalDate.parse(rs.getString("date"));
-            LocalTime time = LocalTime.parse(rs.getString("time"));
-
-            return new Reservation(id, name, date, time);
-        }
-
-    }
 
     private void addReservationToDatabase(Reservation reservation) {
         String sql = "INSERT INTO reservation (name, date, time_id) VALUES (?, ?, ?)";
@@ -117,12 +104,13 @@ public class ReservationController {
             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, reservation.getName());
             ps.setString(2, reservation.getDate().toString());
-            ps.setLong(3, reservation.getTimeId());
+            ps.setLong(3, reservation.getTime().getId());
             return ps;
         }, keyHolder);
 
         long generatedId = (long) keyHolder.getKey();
         reservation.setId(generatedId);
+
 
         String selectSql = "SELECT r.id as reservation_id, r.name, r.date, t.id as time_id, t.time as time_value " +
                 "FROM reservation as r " +
@@ -130,11 +118,6 @@ public class ReservationController {
                 "WHERE r.id = ?";
 
         Reservation updatedReservation = jdbcTemplate.queryForObject(selectSql, new ReservationWithTimeRowMapper(), generatedId);
-
-        if (updatedReservation != null) {
-            reservation.setTimeId(updatedReservation.getTimeId());
-            reservation.setTime(updatedReservation.getTime());
-        }
     }
 
     private static class ReservationWithTimeRowMapper implements RowMapper<Reservation> {
@@ -143,10 +126,8 @@ public class ReservationController {
             long reservationId = rs.getLong("reservation_id");
             String name = rs.getString("name");
             LocalDate date = LocalDate.parse(rs.getString("date"));
-            long timeId = rs.getLong("time_id");
-            LocalTime time = LocalTime.parse(rs.getString("time_value"));
-
-            return new Reservation(reservationId, name, date, timeId, time);
+            Time time = Time.parseTime(rs.getString("time"));
+            return new Reservation(reservationId, name, date, time);
         }
     }
 
