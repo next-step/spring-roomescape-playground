@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import roomescape.reservation.domain.Reservation;
+import roomescape.reservation.dto.ReservationRequest;
 import roomescape.reservation.service.ReservationService;
 
 import java.net.URI;
@@ -27,8 +28,7 @@ public class ReservationController {
     }
 
     @PostMapping
-    public ResponseEntity<Reservation> create(@RequestBody Reservation request) {
-
+    public ResponseEntity<Reservation> create(@RequestBody ReservationRequest request) {
         Reservation reservation = reservationService.createReservation(request.getName(), request.getDate(), request.getTime());
 
         return ResponseEntity.status(HttpStatus.CREATED)
