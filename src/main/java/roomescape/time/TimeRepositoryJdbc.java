@@ -23,7 +23,7 @@ public class TimeRepositoryJdbc {
   }
 
   public Time save(String time) {
-    String sql = "INSERT INTO TIME (time) VALUES(?)";
+    String sql = "INSERT INTO TIME (time) VALUES (?)";
 
     GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
     jdbcTemplate.update(connection -> {
