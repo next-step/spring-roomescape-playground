@@ -2,6 +2,7 @@ package roomescape.controller;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -34,5 +35,10 @@ public class TimeController {
         Long id = timeService.createTime(timeRequest);
         TimeResponse timeResponse = timeService.getTime(id);
         return ResponseEntity.created(new URI("/times/" + timeResponse.getId())).body(timeResponse);
+    }
+
+    @GetMapping("/times")
+    public ResponseEntity<List<TimeResponse>> getTimes() {
+        return ResponseEntity.ok(timeService.getTimes());
     }
 }
