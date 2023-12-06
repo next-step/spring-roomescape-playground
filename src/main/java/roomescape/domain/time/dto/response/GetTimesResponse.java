@@ -1,8 +1,8 @@
-package roomescape.domain.reservation.dto.response;
+package roomescape.domain.time.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import roomescape.domain.reservation.entity.Time;
+import roomescape.domain.time.entity.Time;
 
 import java.time.LocalTime;
 

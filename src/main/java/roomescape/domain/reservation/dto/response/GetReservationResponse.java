@@ -2,7 +2,7 @@ package roomescape.domain.reservation.dto.response;
 
 import lombok.AllArgsConstructor;
 import roomescape.domain.reservation.entity.Reservation;
-import roomescape.domain.reservation.entity.Time;
+import roomescape.domain.time.entity.Time;
 
 import java.time.LocalDate;
 

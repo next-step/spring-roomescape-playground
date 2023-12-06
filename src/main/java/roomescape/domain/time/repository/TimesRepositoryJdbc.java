@@ -1,4 +1,4 @@
-package roomescape.domain.reservation.repository;
+package roomescape.domain.time.repository;
 
 import lombok.AllArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -10,7 +10,7 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
-import roomescape.domain.reservation.entity.Time;
+import roomescape.domain.time.entity.Time;
 import roomescape.global.BusinessException;
 
 import static roomescape.global.ErrorCode.TIME_NOT_FOUND;

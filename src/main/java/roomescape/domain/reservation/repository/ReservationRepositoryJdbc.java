@@ -5,11 +5,11 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.reservation.entity.Reservation;
+import roomescape.domain.time.repository.TimesRepositoryJdbc;
 import roomescape.global.BusinessException;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
-import java.sql.Time;
 import java.util.List;
 import java.util.Optional;
 
