@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Map;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import roomescape.common.DomainEmptyFieldException;
@@ -31,11 +29,6 @@ public class ReservationDAO {
 		parameters.put("name", reservation.getName());
 		parameters.put("date", reservation.getDate().toString());
 		parameters.put("time_id", reservation.getTime().getId());
-		return simpleJdbcInsert.executeAndReturnKey(parameters).longValue();
-	}
-
-	public Long saveV2(Reservation reservation) {
-		SqlParameterSource parameters = new BeanPropertySqlParameterSource(reservation);
 		return simpleJdbcInsert.executeAndReturnKey(parameters).longValue();
 	}
 
