@@ -25,6 +25,7 @@ public class ReservationService {
 		return ReservationResponse.Read.fromEntity(reservation);
 	}
 
+	@Transactional
 	public void deleteReservationById(Long id) {
 		reservationDAO.deleteById(id);
 	}
