@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/times")
 public class TimeController {
     private final TimeService timeService;

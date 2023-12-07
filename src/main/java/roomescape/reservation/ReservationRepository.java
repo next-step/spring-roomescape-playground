@@ -13,7 +13,6 @@ import java.util.List;
 
 @Repository
 public class ReservationRepository {
-    @Autowired
     private JdbcTemplate jdbcTemplate;
     private final TimeRepository timeRepository;
 

@@ -13,9 +13,8 @@ import java.util.List;
 
 @Repository
 public class TimeRepository {
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
 
+    private JdbcTemplate jdbcTemplate;
     public TimeRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
