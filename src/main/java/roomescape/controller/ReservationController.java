@@ -39,9 +39,10 @@ public class ReservationController {
     }
 
     @PostMapping("/reservations")
-    public ResponseEntity<Reservation> create(@Valid @RequestBody CreateReservation request) {
+    public ResponseEntity<ReservationResponse> create(@Valid @RequestBody CreateReservation request) {
         Reservation reservation = reservationService.create(request);
-        return ResponseEntity.created(URI.create("/reservations/" + reservation.getId())).body(reservation);
+        return ResponseEntity.created(URI.create("/reservations/" + reservation.getId()))
+            .body(ReservationResponse.from(reservation));
     }
 
     @DeleteMapping("/reservations/{id}")

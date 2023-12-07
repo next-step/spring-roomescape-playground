@@ -3,9 +3,7 @@ package roomescape.controller.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import org.springframework.format.annotation.DateTimeFormat;
-import roomescape.domain.Reservation;
 
 public record CreateReservation(
     @NotNull
@@ -13,11 +11,8 @@ public record CreateReservation(
     LocalDate date,
     @NotBlank
     String name,
-    @NotNull @DateTimeFormat(pattern = "hh:mm")
-    LocalTime time
+    @NotNull
+    Long time
 ) {
 
-    public Reservation toReservation() {
-        return new Reservation(null, name, date, time);
-    }
 }

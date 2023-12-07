@@ -5,36 +5,36 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import roomescape.controller.dto.CreateReservationTime;
 import roomescape.controller.dto.ReservationTimeResponse;
-import roomescape.dao.ReservationTimeDao;
-import roomescape.domain.ReservationTime;
+import roomescape.dao.TimeDao;
+import roomescape.domain.Time;
 
 @Service
 @Transactional(readOnly = true)
-public class ReservationTimeService {
+public class TimeService {
 
-    private final ReservationTimeDao reservationTimeDao;
+    private final TimeDao timeDao;
 
-    public ReservationTimeService(ReservationTimeDao reservationTimeDao) {
-        this.reservationTimeDao = reservationTimeDao;
+    public TimeService(TimeDao timeDao) {
+        this.timeDao = timeDao;
     }
 
     public List<ReservationTimeResponse> findAll() {
-        return reservationTimeDao.findAll().stream()
+        return timeDao.findAll().stream()
             .map(ReservationTimeResponse::from)
             .toList();
     }
 
     @Transactional
-    public ReservationTime create(CreateReservationTime request) {
-        ReservationTime reservationTime = request.toReservationTime();
-        return reservationTimeDao.save(reservationTime);
+    public Time create(CreateReservationTime request) {
+        Time time = request.toReservationTime();
+        return timeDao.save(time);
     }
 
     @Transactional
     public void remove(Long id) {
-        if (!reservationTimeDao.existsById(id)) {
+        if (!timeDao.existsById(id)) {
             throw new IllegalArgumentException("예약 시간이 존재하지 않습니다. id: " + id);
         }
-        reservationTimeDao.deleteById(id);
+        timeDao.deleteById(id);
     }
 }
