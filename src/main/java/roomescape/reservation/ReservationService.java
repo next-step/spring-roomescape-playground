@@ -1,6 +1,6 @@
 package roomescape.reservation;
 
-import error.Exception400;
+import error.IllegalArgumentException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import roomescape.Time.Time;
@@ -22,7 +22,7 @@ public class ReservationService {
     }
     public Reservation postReservations(ReservationRequest reservationRequest) {
         if (reservationRequest.getDate().isEmpty() || reservationRequest.getName().isEmpty() || reservationRequest.getTime_id()==null){
-            throw new Exception400("Name and Date cannot be null");
+            throw new IllegalArgumentException("Name and Date cannot be null");
         }
         Time newtime =  timeRepository.findById(reservationRequest.getTime_id());
         return reservationRepository.insertReservation(new Reservation(reservationRequest.getName(), reservationRequest.getDate(), newtime));

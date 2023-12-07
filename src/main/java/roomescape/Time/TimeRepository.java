@@ -1,6 +1,6 @@
 package roomescape.Time;
 
-import error.Exception400;
+import error.IllegalArgumentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -46,7 +46,7 @@ public class TimeRepository {
             });
             return time;
         } catch (EmptyResultDataAccessException e) {
-            throw new Exception400("존재하지 않는 time입니다.");
+            throw new IllegalArgumentException("존재하지 않는 time입니다.");
         }
     }
 

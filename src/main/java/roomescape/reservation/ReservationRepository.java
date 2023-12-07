@@ -30,8 +30,8 @@ public class ReservationRepository {
                 "    t.time as time_value \n" +
                 "FROM reservation as r inner join time as t on r.time_id = t.id";
         List<Reservation> reservations1 = jdbcTemplate.query(sql , (resultSet, rowNum) -> {
-            List<Time> timeList= timeRepository.selectAll();
-            Time newTime = new Time(resultSet.getLong("time_id"), timeList.get(rowNum).getTime());
+//            List<Time> timeList= timeRepository.selectAll();
+            Time newTime = new Time(resultSet.getLong("time_id"),resultSet.getString("time_value"));
             Reservation reservation = new Reservation(
                     resultSet.getLong("reservation_id"),
                     resultSet.getString("name"),
