@@ -14,8 +14,8 @@ import roomescape.time.Time;
 @Repository
 public class ReservationDAO {
 
-	private JdbcTemplate jdbcTemplate;
-	private SimpleJdbcInsert simpleJdbcInsert;
+	private final JdbcTemplate jdbcTemplate;
+	private final SimpleJdbcInsert simpleJdbcInsert;
 
 	public ReservationDAO(JdbcTemplate jdbcTemplate) {
 		this.jdbcTemplate = jdbcTemplate;
