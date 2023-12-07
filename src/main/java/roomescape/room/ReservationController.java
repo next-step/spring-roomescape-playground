@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
 import roomescape.room.ReservationResponse.Read;
 
 @Controller
@@ -36,21 +35,18 @@ public class ReservationController {
 	}
 
 	@DeleteMapping("/reservations/{id}")
-	@ResponseBody
 	public ResponseEntity<Void> deleteRoom(@PathVariable Long id) {
 		reservationService.deleteReservationById(id);
 		return ResponseEntity.noContent().build();
 	}
 
 	@GetMapping("/reservations/{id}")
-	@ResponseBody
 	public ResponseEntity<ReservationResponse.Read> getRoom(@PathVariable Long id) {
 		ReservationResponse.Read response = reservationService.getReservation(id);
 		return ResponseEntity.ok().body(response);
 	}
 
 	@GetMapping("/reservations")
-	@ResponseBody
 	public List<ReservationResponse.Read> getList() {
 		List<Read> response = reservationService.getReservations();
 		return response;
