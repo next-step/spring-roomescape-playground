@@ -34,6 +34,8 @@ public class MissionStepTest {
 	private ReservationDAO reservationDAO;
 	@Autowired
 	private TimeDAO timeDAO;
+	@Autowired
+	private ReservationController reservationController;
 
 	@Test
 	void 일단계() {
