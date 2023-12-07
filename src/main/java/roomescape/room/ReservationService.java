@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(readOnly = true)
 public class ReservationService {
+
 	private final ReservationDAO reservationDAO;
 
 	public ReservationService(ReservationDAO reservationDAO) {

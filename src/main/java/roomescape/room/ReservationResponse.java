@@ -19,7 +19,8 @@ public class ReservationResponse {
 			) {
 
 		public static Read fromEntity(Reservation reservation) {
-			return new Read(reservation.getId(), reservation.getName(), reservation.getDate(), reservation.getTime().getId());
+			return new Read(reservation.getId(), reservation.getName(), reservation.getDate(),
+					reservation.getTime().getId());
 		}
 
 		public static List<Read> fromEntity(List<Reservation> reservations) {

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+
 	private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
 	@ExceptionHandler(DomainEmptyFieldException.class)

@@ -15,6 +15,7 @@ import roomescape.room.ReservationResponse.Read;
 
 @Controller
 public class ReservationController {
+
 	private final ReservationService reservationService;
 
 	public ReservationController(ReservationService reservationService) {
@@ -27,7 +28,8 @@ public class ReservationController {
 	}
 
 	@PostMapping("/reservations")
-	public ResponseEntity<ReservationResponse.Create> createRoom(@Valid @RequestBody ReservationRequest.Create request) {
+	public ResponseEntity<ReservationResponse.Create> createRoom(
+			@Valid @RequestBody ReservationRequest.Create request) {
 		ReservationResponse.Create response = reservationService.createReservation(request);
 		return ResponseEntity.created(URI.create("/reservations/" + response.id()))
 				.body(response);

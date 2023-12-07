@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import roomescape.time.Time;
 
 public class Reservation {
+
 	private final Long id;
 	private final String name;
 	private final LocalDate date;

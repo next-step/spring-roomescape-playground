@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(readOnly = true)
 public class TimeService {
+
 	private final TimeDAO timeDAO;
 
 	public TimeService(TimeDAO timeDAO) {
