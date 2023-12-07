@@ -67,11 +67,11 @@ public class MissionStepTest {
 		Time time = new Time(LocalTime.of(15, 40));
 		time = timeDAO.save(time);
 
-		Map<String, String> params = new HashMap<>();
+		Map<String, Object> params = new HashMap<>();
 
 		params.put("name", "브라운");
 		params.put("date", "2023-08-05");
-		params.put("time", time.getId().toString());
+		params.put("time", time.getId());
 
 		RestAssured.given().log().all()
 				.contentType(ContentType.JSON)
@@ -102,7 +102,7 @@ public class MissionStepTest {
 
 	@Test
 	void 사단계() {
-		Map<String, String> params = new HashMap<>();
+		Map<String, Object> params = new HashMap<>();
 		params.put("name", "브라운");
 		params.put("date", "");
 		params.put("time", "");
@@ -127,11 +127,11 @@ public class MissionStepTest {
 		Time time = new Time(LocalTime.of(15, 40));
 		time = timeDAO.save(time);
 
-		Map<String, String> params = new HashMap<>();
+		Map<String, Object> params = new HashMap<>();
 
 		params.put("name", "브라운");
 		params.put("date", "2023-08-05");
-		params.put("time", time.getId().toString());
+		params.put("time", time.getId());
 
 
 		RestAssured.given().log().all()
@@ -154,7 +154,7 @@ public class MissionStepTest {
 
 	@Test
 	void 시간의_형식은_HH_MM_형식이어야_한다() {
-		Map<String, String> params = new HashMap<>();
+		Map<String, Object> params = new HashMap<>();
 		params.put("time", "15:40");
 
 		RestAssured.given().log().all()
@@ -213,11 +213,11 @@ public class MissionStepTest {
 		Time time = new Time(LocalTime.now());
 		time = timeDAO.save(time);
 
-		Map<String, String> params = new HashMap<>();
+		Map<String, Object> params = new HashMap<>();
 
 		params.put("name", "브라운");
 		params.put("date", "2023-08-05");
-		params.put("time", time.getId().toString());
+		params.put("time", time.getId());
 
 		RestAssured.given().log().all()
 				.contentType(ContentType.JSON)
@@ -241,7 +241,7 @@ public class MissionStepTest {
 
 	@Test
 	void 팔단계() {
-		Map<String, String> params = new HashMap<>();
+		Map<String, Object> params = new HashMap<>();
 		params.put("time", "10:00");
 
 		RestAssured.given().log().all()
@@ -268,7 +268,7 @@ public class MissionStepTest {
 
 	@Test
 	void 구단계() {
-		Map<String, String> reservation = new HashMap<>();
+		Map<String, Object> reservation = new HashMap<>();
 		reservation.put("name", "브라운");
 		reservation.put("date", "2023-08-05");
 		reservation.put("time", "10:00");
