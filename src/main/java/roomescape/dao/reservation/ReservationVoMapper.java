@@ -1,4 +1,4 @@
-package roomescape.dao.vo;
+package roomescape.dao.reservation;
 
 import roomescape.domain.Reservation;
 
@@ -20,11 +20,11 @@ public class ReservationVoMapper {
 
     public static Reservation voToDomain(ReservationVo reservationVo) {
         return new Reservation(
-            reservationVo.getReservation_id(),
-            reservationVo.getName(),
-            reservationVo.getDate(),
-            reservationVo.getTime_id(),
-            reservationVo.getTime_value()
+            reservationVo.reservationId(),
+            reservationVo.name(),
+            reservationVo.date(),
+            reservationVo.timeId(),
+            reservationVo.timeValue()
         );
     }
 

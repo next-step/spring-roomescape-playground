@@ -1,18 +1,16 @@
-package roomescape.dao;
+package roomescape.dao.reservation;
 
 import java.util.List;
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.DataClassRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import roomescape.dao.vo.ReservationVo;
-import roomescape.dao.vo.ReservationVoMapper;
 import roomescape.domain.Reservation;
 import roomescape.exception.IdNotExistException;
 import roomescape.exception.TimeNotExistException;
@@ -41,7 +39,7 @@ public class ReservationDao {
                     t.id as time_id, 
                     t.time as time_value 
                 FROM reservation as r inner join time as t on r.time_id = t.id
-                """, new BeanPropertyRowMapper<>(ReservationVo.class))
+                """, new DataClassRowMapper<>(ReservationVo.class))
             .stream()
             .map(ReservationVoMapper::voToDomain)
             .toList();
