@@ -16,17 +16,17 @@ public class TimeService {
 	@Transactional
 	public TimeResponse.Create create(TimeRequest.Create request) {
 		Time savedTime = timeDAO.save(request.toEntity());
-		return TimeResponse.Create.toDTO(savedTime);
+		return TimeResponse.Create.fromEntity(savedTime);
 	}
 
 	public TimeResponse.Read getTimeById(Long id) {
 		Time time = timeDAO.findById(id);
-		return TimeResponse.Read.toDTO(time);
+		return TimeResponse.Read.fromEntity(time);
 	}
 
 	public List<TimeResponse.Read> getTimes() {
 		List<Time> all = timeDAO.findAll();
-		return TimeResponse.Read.toDTO(all);
+		return TimeResponse.Read.fromEntity(all);
 	}
 
 	@Transactional

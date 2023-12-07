@@ -9,19 +9,19 @@ public class TimeResponse {
 
 	public record Create(Long id, @JsonFormat(pattern = "HH:mm") LocalTime time) {
 
-		public static Create toDTO(Time time) {
+		public static Create fromEntity(Time time) {
 			return new Create(time.getId(), time.getTime());
 		}
 	}
 
 	public record Read(Long id, @JsonFormat(pattern = "HH:mm") LocalTime time) {
 
-		public static Read toDTO(Time time) {
+		public static Read fromEntity(Time time) {
 			return new Read(time.getId(), time.getTime());
 		}
 
-		public static List<Read> toDTO(List<Time> times) {
-			return times.stream().map(Read::toDTO).collect(Collectors.toList());
+		public static List<Read> fromEntity(List<Time> times) {
+			return times.stream().map(Read::fromEntity).collect(Collectors.toList());
 		}
 	}
 }

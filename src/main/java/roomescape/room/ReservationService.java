@@ -16,12 +16,12 @@ public class ReservationService {
 	@Transactional
 	public ReservationResponse.Create createReservation(ReservationRequest.Create request) {
 		Long savedId = reservationDAO.save(request.toEntity());
-		return ReservationResponse.Create.toDTO(savedId);
+		return ReservationResponse.Create.fromEntity(savedId);
 	}
 
 	public ReservationResponse.Read getReservation(Long id) {
 		Reservation reservation = reservationDAO.findById(id);
-		return ReservationResponse.Read.toDTO(reservation);
+		return ReservationResponse.Read.fromEntity(reservation);
 	}
 
 	public void deleteReservationById(Long id) {
@@ -31,6 +31,6 @@ public class ReservationService {
 	@Transactional
 	public List<ReservationResponse.Read> getReservations() {
 		List<Reservation> reservations = reservationDAO.findAll();
-		return ReservationResponse.Read.toDTO(reservations);
+		return ReservationResponse.Read.fromEntity(reservations);
 	}
 }

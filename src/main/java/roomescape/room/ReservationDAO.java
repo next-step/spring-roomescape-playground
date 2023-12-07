@@ -13,7 +13,6 @@ import roomescape.time.Time;
 
 @Repository
 public class ReservationDAO {
-
 	private final JdbcTemplate jdbcTemplate;
 	private final SimpleJdbcInsert simpleJdbcInsert;
 
@@ -49,25 +48,26 @@ public class ReservationDAO {
 	}
 
 	public boolean existsById(Long id) {
-		return jdbcTemplate.queryForObject("select exists(select * from reservation where id = ? limit 1)", Boolean.class, id);
+		return jdbcTemplate.queryForObject("select exists(select * from reservation where id = ? limit 1)",
+				Boolean.class, id);
 	}
 
 	public List<Reservation> findAll() {
 		return jdbcTemplate.query(
-        """
-        select r.id as rservation_id, r.name, r.date, t.id as time_id, t.time as time_value
-            FROM reservation as r INNER JOIN time as t ON r.time_id = t.id
-            """, (rs, rowNum) -> {
+				"""
+						select r.id as rservation_id, r.name, r.date, t.id as time_id, t.time as time_value
+						    FROM reservation as r INNER JOIN time as t ON r.time_id = t.id
+						    """, (rs, rowNum) -> {
 
-			Time time = new Time(rs.getLong("time_id"), rs.getTime("time_value").toLocalTime());
+					Time time = new Time(rs.getLong("time_id"), rs.getTime("time_value").toLocalTime());
 
-			return new Reservation(rs.getLong("id"), rs.getString("name"), rs.getDate("date").toLocalDate(),
-					time);
-		});
+					return new Reservation(rs.getLong("id"), rs.getString("name"), rs.getDate("date").toLocalDate(),
+							time);
+				});
 	}
 
 	public void deleteById(Long id) {
-		if(!existsById(id)) {
+		if (!existsById(id)) {
 			throw new DomainEmptyFieldException("해당하는 예약이 없습니다.");
 		}
 

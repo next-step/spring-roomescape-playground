@@ -265,8 +265,6 @@ public class MissionStepTest {
 				.then().log().all()
 				.statusCode(204);
 	}
-	@Autowired
-	private ReservationController reservationController;
 
 	@Test
 	void 구단계() {
