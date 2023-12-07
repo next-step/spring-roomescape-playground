@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,7 +18,7 @@ import org.springframework.test.annotation.DirtiesContext;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import roomescape.dto.ReservationDto;
+import roomescape.dto.ReservationResponse;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -25,6 +26,18 @@ class MissionStepTest {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+
+    @BeforeEach
+    void init() {
+        Map<String, String> params = new HashMap<>();
+        params.put("time", "09:00");
+
+        RestAssured.given().log().all()
+            .contentType(ContentType.JSON)
+            .body(params)
+            .when().post("/times");
+    }
 
     @Test
     void 일단계() {
@@ -53,7 +66,7 @@ class MissionStepTest {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
         params.put("date", "2023-08-05");
-        params.put("time", "15:40");
+        params.put("time", "1");
 
         RestAssured.given().log().all()
             .contentType(ContentType.JSON)
@@ -117,17 +130,17 @@ class MissionStepTest {
 
     @Test
     void 육단계() {
-        jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "브라운", "2023-08-05", "15:40");
+        jdbcTemplate.update("INSERT INTO reservation (name, date, time_id) VALUES (?, ?, ?)", "브라운", "2023-08-05", "1");
 
-        List<ReservationDto> reservationDtos = RestAssured.given().log().all()
+        List<ReservationResponse> reservationResponses = RestAssured.given().log().all()
             .when().get("/reservations")
             .then().log().all()
             .statusCode(200).extract()
-            .jsonPath().getList(".", ReservationDto.class);
+            .jsonPath().getList(".", ReservationResponse.class);
 
         Integer count = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
 
-        assertThat(reservationDtos.size()).isEqualTo(count);
+        assertThat(reservationResponses.size()).isEqualTo(count);
     }
 
     @Test
@@ -135,7 +148,7 @@ class MissionStepTest {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
         params.put("date", "2023-08-05");
-        params.put("time", "10:00");
+        params.put("time", "1");
 
         RestAssured.given().log().all()
             .contentType(ContentType.JSON)
@@ -160,7 +173,7 @@ class MissionStepTest {
     @Test
     void 팔단계() {
         Map<String, String> params = new HashMap<>();
-        params.put("time", "10:00");
+        params.put("time", "23:00");
 
         RestAssured.given().log().all()
             .contentType(ContentType.JSON)
@@ -168,17 +181,32 @@ class MissionStepTest {
             .when().post("/times")
             .then().log().all()
             .statusCode(201)
-            .header("Location", "/times/1");
+            .header("Location", "/times/2");
 
         RestAssured.given().log().all()
             .when().get("/times")
             .then().log().all()
             .statusCode(200)
-            .body("size()", is(1));
+            .body("size()", is(2));
 
         RestAssured.given().log().all()
             .when().delete("/times/1")
             .then().log().all()
             .statusCode(204);
+    }
+
+    @Test
+    void 구단계() {
+        Map<String, String> reservation = new HashMap<>();
+        reservation.put("name", "브라운");
+        reservation.put("date", "2023-08-05");
+        reservation.put("time", "2");
+
+        RestAssured.given().log().all()
+            .contentType(ContentType.JSON)
+            .body(reservation)
+            .when().post("/reservations")
+            .then().log().all()
+            .statusCode(400);
     }
 }

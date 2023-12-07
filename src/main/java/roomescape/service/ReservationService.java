@@ -7,7 +7,8 @@ import org.springframework.stereotype.Service;
 
 import roomescape.dao.ReservationDao;
 import roomescape.domain.Reservation;
-import roomescape.dto.ReservationDto;
+import roomescape.dto.ReservationRequest;
+import roomescape.dto.ReservationResponse;
 
 @Service
 public class ReservationService {
@@ -19,24 +20,24 @@ public class ReservationService {
         this.reservationDao = reservationDao;
     }
 
-    public List<ReservationDto> getAllReservations() {
+    public List<ReservationResponse> getAllReservations() {
         return reservationDao.getAllReservations().stream()
-            .map(this::convertToDto)
+            .map(this::convertToResponse)
             .toList();
     }
 
-    public ReservationDto addReservation(ReservationDto reservationDto) {
-        Reservation reservation = convertToDomain(reservationDto);
+    public ReservationResponse addReservation(ReservationRequest reservationRequest) {
+        Reservation reservation = convertToDomain(reservationRequest);
         reservationDao.saveReservation(reservation);
-        return convertToDto(reservation);
+        return convertToResponse(reservation);
     }
 
     public void deleteReservation(Long id) {
         reservationDao.removeReservation(id);
     }
 
-    private ReservationDto convertToDto(Reservation reservation) {
-        return new ReservationDto(
+    private ReservationResponse convertToResponse(Reservation reservation) {
+        return new ReservationResponse(
             reservation.getId(),
             reservation.getName(),
             reservation.getDate(),
@@ -44,12 +45,13 @@ public class ReservationService {
         );
     }
 
-    private Reservation convertToDomain(ReservationDto reservationDto) {
+    private Reservation convertToDomain(ReservationRequest reservationRequest) {
         return new Reservation(
-            reservationDto.id(),
-            reservationDto.name(),
-            reservationDto.date(),
-            reservationDto.time()
+            reservationRequest.id(),
+            reservationRequest.name(),
+            reservationRequest.date(),
+            reservationRequest.time(),
+            null
         );
     }
 }

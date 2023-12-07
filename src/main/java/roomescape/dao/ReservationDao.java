@@ -4,14 +4,18 @@ import java.util.List;
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
+import roomescape.dao.vo.ReservationVo;
+import roomescape.dao.vo.ReservationVoMapper;
 import roomescape.domain.Reservation;
 import roomescape.exception.IdNotExistException;
+import roomescape.exception.TimeNotExistException;
 
 @Repository
 public class ReservationDao {
@@ -29,21 +33,48 @@ public class ReservationDao {
     }
 
     public List<Reservation> getAllReservations() {
-        return jdbcTemplate.query("SELECT * FROM reservation",
-            new BeanPropertyRowMapper<>(Reservation.class)
-        );
+        return jdbcTemplate.query("""
+                    SELECT 
+                    r.id as reservation_id, 
+                    r.name, 
+                    r.date, 
+                    t.id as time_id, 
+                    t.time as time_value 
+                FROM reservation as r inner join time as t on r.time_id = t.id
+                """, new BeanPropertyRowMapper<>(ReservationVo.class))
+            .stream()
+            .map(ReservationVoMapper::voToDomain)
+            .toList();
     }
 
     public Long saveReservation(Reservation reservation) {
         validateSaveReservation(reservation);
-        var parameterSource = new BeanPropertySqlParameterSource(reservation);
+        String time = getTime(reservation);
+
+        var parameterSource = new BeanPropertySqlParameterSource(
+            ReservationVoMapper.domainToVo(reservation));
         Number id = simpleJdbcInsert.executeAndReturnKey(parameterSource);
+
         reservation.setId(id.longValue());
+        reservation.setTimeValue(time);
         return id.longValue();
     }
 
+    private String getTime(Reservation reservation) {
+        try {
+            String ret = jdbcTemplate.queryForObject("SELECT time FROM time WHERE id = " + reservation.getTimeId(),
+                String.class);
+            if (ret == null || ret.isEmpty()) {
+                throw new TimeNotExistException();
+            }
+            return ret;
+        } catch (EmptyResultDataAccessException e) {
+            throw new TimeNotExistException();
+        }
+    }
+
     private void validateSaveReservation(Reservation reservation) {
-        if (reservation == null || reservation.getName().isEmpty() || reservation.getDate().isEmpty() || reservation.getTime().isEmpty()) {
+        if (reservation == null || reservation.getName().isEmpty() || reservation.getDate().isEmpty()) {
             throw new IllegalArgumentException("필수 필드가 비어있습니다.");
         }
     }

@@ -14,7 +14,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import roomescape.dto.ReservationDto;
+import roomescape.dto.ReservationRequest;
+import roomescape.dto.ReservationResponse;
 import roomescape.service.ReservationService;
 
 @Controller
@@ -29,19 +30,19 @@ public class ReservationController {
 
     @GetMapping("/reservation")
     public String reservation() {
-        return "reservation";
+        return "new-reservation";
     }
 
     @ResponseBody
     @GetMapping("/reservations")
-    public List<ReservationDto> reservations() {
+    public List<ReservationResponse> reservations() {
         return reservationService.getAllReservations();
     }
 
     @ResponseBody
     @PostMapping("/reservations")
-    public ResponseEntity<ReservationDto> addReservation(@RequestBody ReservationDto request) throws URISyntaxException {
-        ReservationDto response = reservationService.addReservation(request);
+    public ResponseEntity<ReservationResponse> addReservation(@RequestBody ReservationRequest request) throws URISyntaxException {
+        ReservationResponse response = reservationService.addReservation(request);
         return ResponseEntity.created(new URI("/reservations/" + response.id()))
             .body(response);
     }
