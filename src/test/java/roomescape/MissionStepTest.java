@@ -181,7 +181,7 @@ class MissionStepTest {
     }
 
     @Test
-    void 시간_정보를_추가_수정_삭제한다() {
+    void 시간_정보를_추가_삭제한다() {
         Map<String, String> params = new HashMap<>();
         params.put("time", "10:00");
 
