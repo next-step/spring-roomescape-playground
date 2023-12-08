@@ -7,7 +7,7 @@ import roomescape.domain.Time;
 
 public record CreateReservationTime(
     @NotNull
-    @DateTimeFormat(pattern = "hh:mm")
+    @DateTimeFormat(pattern = "HH:mm")
     LocalTime time
 ) {
 
