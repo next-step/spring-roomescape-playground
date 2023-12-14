@@ -39,9 +39,9 @@ public class ReservationDao {
                     t.id as time_id, 
                     t.time as time_value 
                 FROM reservation as r inner join time as t on r.time_id = t.id
-                """, new DataClassRowMapper<>(ReservationVo.class))
+                """, new DataClassRowMapper<>(ReservationResultMap.class))
             .stream()
-            .map(ReservationVoMapper::voToDomain)
+            .map(ReservationResultMapMapper::toDomain)
             .toList();
     }
 
@@ -50,7 +50,7 @@ public class ReservationDao {
         String time = getTime(reservation);
 
         var parameterSource = new BeanPropertySqlParameterSource(
-            ReservationVoMapper.domainToVo(reservation));
+            ReservationResultMapMapper.toResultMap(reservation));
         Number id = simpleJdbcInsert.executeAndReturnKey(parameterSource);
 
         reservation.setId(id.longValue());
