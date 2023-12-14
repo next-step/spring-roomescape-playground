@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import roomescape.dto.ReservationRequest;
 import roomescape.dto.ReservationResponse;
@@ -33,13 +32,12 @@ public class ReservationController {
         return "new-reservation";
     }
 
-    @ResponseBody
     @GetMapping("/reservations")
-    public List<ReservationResponse> reservations() {
-        return reservationService.getAllReservations();
+    public ResponseEntity<List<ReservationResponse>> reservations() {
+        var responses = reservationService.getAllReservations();
+        return ResponseEntity.ok(responses);
     }
 
-    @ResponseBody
     @PostMapping("/reservations")
     public ResponseEntity<ReservationResponse> addReservation(@RequestBody ReservationRequest request) throws URISyntaxException {
         ReservationResponse response = reservationService.addReservation(request);

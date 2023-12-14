@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import roomescape.dto.TimeDto;
 import roomescape.service.TimeService;
@@ -32,20 +31,17 @@ public class TimeController {
         return "time";
     }
 
-    @ResponseBody
     @GetMapping("/times")
     public ResponseEntity<List<TimeDto>> times() {
         return ResponseEntity.ok(timeService.getAllTimes());
     }
 
-    @ResponseBody
     @PostMapping("/times")
     public ResponseEntity<TimeDto> addTime(@RequestBody TimeDto request) throws URISyntaxException {
         var response = timeService.addTime(request);
         return ResponseEntity.created(new URI("/times/" + response.id())).body(response);
     }
 
-    @ResponseBody
     @DeleteMapping("/times/{id}")
     public ResponseEntity<Void> deleteTime(@PathVariable Long id) {
         timeService.deleteTime(id);
