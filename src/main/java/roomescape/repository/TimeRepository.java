@@ -1,7 +1,6 @@
 package roomescape.repository;
 
 import static roomescape.exception.ExceptionMessage.NOT_EXIST_TIME;
-import static roomescape.query.TimeQuery.*;
 
 import java.util.List;
 import java.util.Objects;
@@ -39,7 +38,9 @@ public class TimeRepository {
     public Time findById(Long id) {
         Time time;
         try {
-            time = jdbcTemplate.queryForObject(FIND_BY_ID.getQuery(),
+            time = jdbcTemplate.queryForObject("""
+        SELECT id, time FROM time WHERE id = ?
+        """,
                 ((rs, rowNum) -> new Time(rs.getLong("id"), rs.getString("time"))), id);
         } catch (EmptyResultDataAccessException e) {
             throw new BaseException(NOT_EXIST_TIME);
@@ -48,30 +49,23 @@ public class TimeRepository {
     }
 
     public List<Time> findAll() {
-        return jdbcTemplate.query(FIND_ALL.getQuery(),
+        return jdbcTemplate.query("""
+        SELECT id, time FROM time
+        """,
             (rs, rowNum) -> new Time(rs.getLong("id"),
                 rs.getString("time")));
     }
 
     public void deleteTime(Long id) {
         findById(id);
-        jdbcTemplate.update(DELETE.getQuery(), id);
+        jdbcTemplate.update("""
+        delete from time where id = ?
+        """, id);
     }
 
     public Long create(String time) {
         SqlParameterSource params = new MapSqlParameterSource()
             .addValue("time", time);
         return jdbcInsert.executeAndReturnKey(params).longValue();
-    }
-
-    public Time findByTime(String findTime) {
-        Time time;
-        try {
-            time = jdbcTemplate.queryForObject(FIND_BY_TIME.getQuery(),
-                ((rs, rowNum) -> new Time(rs.getLong("id"), rs.getString("time"))), findTime);
-        } catch (EmptyResultDataAccessException e) {
-            throw new BaseException(NOT_EXIST_TIME);
-        }
-        return time;
     }
 }
