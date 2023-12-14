@@ -6,10 +6,6 @@ public class Reservation {
     private String date;
     private Time time;
 
-    public Reservation() {
-        time = new Time();
-    }
-
     public Reservation(Long id, String name, String date, Long timeId, String timeValue) {
         this.id = id;
         this.name = name;
