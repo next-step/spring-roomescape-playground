@@ -6,11 +6,11 @@ public class Reservation {
     private String date;
     private Time time;
 
-    public Reservation(Long id, String name, String date, Long timeId, String timeValue) {
+    public Reservation(Long id, String name, String date, Time time) {
         this.id = id;
         this.name = name;
         this.date = date;
-        this.time = new Time(timeId, timeValue);
+        this.time = time;
     }
 
     public Long getId() {

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import roomescape.dao.reservation.ReservationDao;
 import roomescape.domain.Reservation;
+import roomescape.domain.Time;
 import roomescape.dto.ReservationRequest;
 import roomescape.dto.ReservationResponse;
 
@@ -50,8 +51,7 @@ public class ReservationService {
             reservationRequest.id(),
             reservationRequest.name(),
             reservationRequest.date(),
-            reservationRequest.time(),
-            null
+            new Time(reservationRequest.time())
         );
     }
 }

@@ -1,6 +1,7 @@
 package roomescape.dao.reservation;
 
 import roomescape.domain.Reservation;
+import roomescape.domain.Time;
 
 public class ReservationResultMapMapper {
 
@@ -23,9 +24,7 @@ public class ReservationResultMapMapper {
             reservationResultMap.reservationId(),
             reservationResultMap.name(),
             reservationResultMap.date(),
-            reservationResultMap.timeId(),
-            reservationResultMap.timeValue()
-        );
+            new Time(reservationResultMap.timeId(), reservationResultMap.timeValue()));
     }
 
 }
