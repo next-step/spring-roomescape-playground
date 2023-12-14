@@ -1,4 +1,4 @@
-package roomescape;
+package roomescape.common;
 
 import java.util.NoSuchElementException;
 
