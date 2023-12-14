@@ -41,10 +41,6 @@ public class Reservation {
         return time.getId();
     }
 
-    public void setTimeId(Long id) {
-        time.setId(id);
-    }
-
     public String getTimeValue() {
         return time.getTime();
     }
