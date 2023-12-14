@@ -22,7 +22,6 @@ public class ReservationDao {
 
     private final SimpleJdbcInsert simpleJdbcInsert;
 
-    @Autowired
     public ReservationDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.simpleJdbcInsert = new SimpleJdbcInsert(Objects.requireNonNull(jdbcTemplate.getDataSource()))

@@ -2,7 +2,6 @@ package roomescape.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import roomescape.dao.TimeDao;
@@ -14,7 +13,6 @@ public class TimeService {
 
     private final TimeDao timeDao;
 
-    @Autowired
     public TimeService(TimeDao timeDao) {
         this.timeDao = timeDao;
     }
