@@ -46,13 +46,13 @@ public class TimeDao {
     }
 
     public void removeTime(Long request) {
-        if (!hasTimeById(request)) {
+        if (!existsById(request)) {
             throw new IdNotExistException();
         }
         jdbcTemplate.update("DELETE time WHERE id = ?", request);
     }
 
-    private boolean hasTimeById(Long id) {
+    private boolean existsById(Long id) {
         return Boolean.TRUE.equals(
             jdbcTemplate.queryForObject("SELECT EXISTS (SELECT 1 FROM time WHERE id = " + id + ")",
             Boolean.class)
