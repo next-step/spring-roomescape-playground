@@ -49,4 +49,10 @@ public class ReservationRepository {
     public void cancel(Long id) {
         template.update("delete from reservation where id = ?", id);
     }
+
+    public boolean existsById(Long id) {
+        String sql = "SELECT COUNT(*) FROM reservations WHERE id = ?";
+        int count = template.queryForObject(sql, Integer.class, id);
+        return count > 0;
+    }
 }
