@@ -48,7 +48,7 @@ public class JdbcReservationRepository {
         return reservation;
     }
 
-    public void cancel(Long id) {
+    public void deleteById(Long id) {
         template.update("delete from reservation where id = ?", id);
     }
 }

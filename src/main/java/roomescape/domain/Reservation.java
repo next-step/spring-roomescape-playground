@@ -8,10 +8,10 @@ public class Reservation {
 
     private Long id;
     private String name;
-    private LocalDate date;
-    private LocalTime time;
+    private String date;
+    private Time time;
 
-    public Reservation(Long id, String name, LocalDate date, LocalTime time) {
+    public Reservation(Long id, String name, String date, Time time) {
         this.id = id;
         this.name = name;
         this.date = date;
@@ -29,11 +29,11 @@ public class Reservation {
         return name;
     }
 
-    public LocalDate getDate() {
+    public String getDate() {
         return date;
     }
 
-    public LocalTime getTime() {
+    public Time getTime() {
         return time;
     }
 }

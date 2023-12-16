@@ -31,7 +31,7 @@ public class ReservationController {
 
     @GetMapping("/reservation")
     public String reservation() {
-        return "reservation";
+        return "new-reservation";
     }
 
     @GetMapping("/reservations")
@@ -58,8 +58,9 @@ public class ReservationController {
     }
 
     @DeleteMapping("reservations/{id}")
+    @ResponseBody
     public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
-        reservationRepository.cancel(id);
+        reservationRepository.deleteById(id);
 
         return ResponseEntity.noContent().build();
     }
