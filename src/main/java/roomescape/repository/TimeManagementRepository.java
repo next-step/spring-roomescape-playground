@@ -1,6 +1,5 @@
 package roomescape.repository;
 
-import com.fasterxml.jackson.databind.deser.impl.BeanPropertyMap;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;

@@ -1,7 +1,5 @@
 package roomescape.domain;
 
-import java.time.LocalTime;
-
 public class Time {
     private Long id;
     private String time;

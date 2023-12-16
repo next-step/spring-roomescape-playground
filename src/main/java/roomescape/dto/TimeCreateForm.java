@@ -2,8 +2,6 @@ package roomescape.dto;
 
 import roomescape.domain.Time;
 
-import java.time.LocalTime;
-
 public class TimeCreateForm {
 
     private String time;

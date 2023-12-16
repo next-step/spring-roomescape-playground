@@ -1,8 +1,6 @@
 package roomescape.domain;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class Reservation {
 
