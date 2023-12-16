@@ -1,6 +1,5 @@
 package roomescape.repository;
 
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -48,7 +47,7 @@ public class JdbcReservationRepository {
         return reservation;
     }
 
-    public void cancel(Long id) {
+    public void delete(Long id) {
         template.update("delete from reservation where id = ?", id);
     }
 }

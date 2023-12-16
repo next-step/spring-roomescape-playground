@@ -16,9 +16,7 @@ import roomescape.dto.ReservationResponseForm;
 import roomescape.repository.JdbcReservationRepository;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Controller
 public class ReservationController {
@@ -37,13 +35,13 @@ public class ReservationController {
     @GetMapping("/reservations")
     @ResponseBody
     public ResponseEntity<List<ReservationResponseForm>> getReservations() {
-        List<Reservation> all = reservationRepository.findAll();
-        ResponseEntity<List<ReservationResponseForm>> body = ResponseEntity.ok().body(reservationRepository
+        List<Reservation> reservations = reservationRepository.findAll();
+        ResponseEntity<List<ReservationResponseForm>> responseReservations = ResponseEntity.ok().body(reservationRepository
                 .findAll()
                 .stream()
                 .map(ReservationResponseForm::new)
                 .toList());
-        return body;
+        return responseReservations;
     }
 
     @PostMapping("/reservations")
@@ -59,7 +57,7 @@ public class ReservationController {
 
     @DeleteMapping("reservations/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
-        reservationRepository.cancel(id);
+        reservationRepository.delete(id);
 
         return ResponseEntity.noContent().build();
     }
