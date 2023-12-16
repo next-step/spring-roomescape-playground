@@ -9,7 +9,7 @@ import java.time.LocalTime;
 public class ReservationCreateForm {
 
     private String name;
-    private String date;
+    private LocalDate date;
     private Time time;
 
     public Reservation toEntity() {
@@ -27,11 +27,11 @@ public class ReservationCreateForm {
         this.name = name;
     }
 
-    public String getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 

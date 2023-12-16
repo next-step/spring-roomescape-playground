@@ -1,5 +1,6 @@
 package roomescape.dto;
 
+import org.springframework.cglib.core.Local;
 import roomescape.domain.Reservation;
 import roomescape.domain.Time;
 
@@ -10,7 +11,7 @@ public class ReservationResponseForm {
 
     private Long id;
     private String name;
-    private String date;
+    private LocalDate date;
     private Time time;
 
     public ReservationResponseForm(Reservation reservation) {
@@ -39,11 +40,11 @@ public class ReservationResponseForm {
         this.name = name;
     }
 
-    public String getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 
