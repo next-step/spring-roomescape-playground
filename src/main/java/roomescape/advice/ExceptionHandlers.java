@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import roomescape.exception.IdNotExistException;
+import roomescape.exception.TimeNotExistException;
 
 @ControllerAdvice("roomescape.controller")
 public class ExceptionHandlers {
@@ -15,6 +16,11 @@ public class ExceptionHandlers {
 
     @ExceptionHandler(IdNotExistException.class)
     public ResponseEntity<String> idNotExistExceptionHandler(IdNotExistException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
+    @ExceptionHandler(TimeNotExistException.class)
+    public ResponseEntity<String> timeNotExistExceptionHandler(TimeNotExistException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 }
