@@ -1,12 +1,11 @@
 package roomescape.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import roomescape.domain.Reservation;
+import roomescape.domain.Time;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 public class ReservationCreateForm {
 
@@ -15,10 +14,10 @@ public class ReservationCreateForm {
     @NotNull(message = "예약날짜는 비워둘 수 없습니다")
     private LocalDate date;
     @NotNull(message = "예약시간는 비워둘 수 없습니다")
-    private LocalTime time;
+    private Long time;
 
     public Reservation toEntity() {
-        return new Reservation(null, this.name, this.date, this.time);
+        return new Reservation(null, this.name, this.date, new Time(this.time, null));
     }
 
     public ReservationCreateForm() {
@@ -40,11 +39,11 @@ public class ReservationCreateForm {
         this.date = date;
     }
 
-    public LocalTime getTime() {
+    public Long getTime() {
         return time;
     }
 
-    public void setTime(LocalTime time) {
+    public void setTime(Long time) {
         this.time = time;
     }
 }

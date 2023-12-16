@@ -11,10 +11,9 @@ public class ReservationRowMapper implements RowMapper<Reservation> {
 
     @Override
     public Reservation mapRow(ResultSet rs, int rowNum) throws SQLException {
-      /*  return new Reservation(rs.getLong("id")
+        return new Reservation(rs.getLong("id")
                 , rs.getString("name")
                 , rs.getDate("date").toLocalDate()
-                , new Time(rs.getTime("time").toLocalTime());*/
-        return null;
+                , new Time(rs.getLong("time_id"), rs.getString("time_value")));
     }
 }
