@@ -79,11 +79,5 @@ public class ReservationRepository {
                 new Time(rs.getLong("time_id"), rs.getString("times"))
         );
     }
-
-    public boolean existsById(Long id) {
-        String sql = "SELECT COUNT(*) FROM reservations WHERE id = ?";
-        int count = template.queryForObject(sql, Integer.class, id);
-        return count > 0;
-    }
 }
 
