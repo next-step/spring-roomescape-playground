@@ -1,54 +1,51 @@
 package roomescape.service;
 
-import org.springframework.dao.EmptyResultDataAccessException;
+
 import org.springframework.stereotype.Service;
 import roomescape.Repository.ReservationRepository;
+import roomescape.Repository.TimeRepository;
 import roomescape.domain.Reservation;
+import roomescape.domain.Time;
 import roomescape.dto.ReservationCreateForm;
 import roomescape.dto.ReservationResponseForm;
 
 import java.util.List;
 
+
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class ReservationService {
 
     private final ReservationRepository reservationRepository;
+    private final TimeRepository timeRepository;
 
-    public ReservationService(ReservationRepository reservationRepository) {
+    public ReservationService(ReservationRepository reservationRepository, TimeRepository timeRepository) {
         this.reservationRepository = reservationRepository;
+        this.timeRepository = timeRepository;
     }
 
-    public List<ReservationResponseForm> getAllReservations() {
-        try {
-            List<Reservation> reservations = reservationRepository.findAll();
-            return reservations.stream()
-                    .map(ReservationResponseForm::new)
-                    .toList();
-        } catch (Exception e) {
-            throw new RuntimeException("예약을 가져올 수 없습니다", e);
-        }
+    public List<ReservationResponseForm> getReservations() {
+        List<Reservation> allReservations = reservationRepository.findAll();
+        return allReservations.stream()
+                .map(ReservationResponseForm::from)
+                .collect(Collectors.toList());
     }
 
-    public ReservationResponseForm createReservation(ReservationCreateForm form) {
-        try {
-            Reservation newReservation = form.toEntity();
-            Long newId = reservationRepository.save(newReservation);
-            Reservation reservation = reservationRepository.findById(newId);
+    public ReservationResponseForm getReservation(Long id) {
+        Reservation reservation = reservationRepository.findById(id);
+        return ReservationResponseForm.from(reservation);
+    }
 
-            return new ReservationResponseForm(reservation);
-        } catch (Exception e) {
-            throw new RuntimeException("예약을 생성할 수 없습니다", e);
-        }
+    public Long createReservation(ReservationCreateForm reservationCreateForm) {
+        Time time = timeRepository.findById(reservationCreateForm.getTime());
+        return reservationRepository.create(reservationCreateForm.getName(), reservationCreateForm.getDate(), time.getId());
     }
 
     public void deleteReservation(Long id) {
-        try {
-            reservationRepository.cancel(id);
-        } catch (EmptyResultDataAccessException e) {
-            throw new IllegalArgumentException("예약된 아이디가 없습니다 id: " + id, e);
-        } catch (Exception e) {
-            throw new RuntimeException("예약을 지울수 없습니다", e);
-        }
+        reservationRepository.delete(id);
     }
 }
+
 

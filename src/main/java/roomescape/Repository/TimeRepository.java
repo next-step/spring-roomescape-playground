@@ -1,17 +1,24 @@
 package roomescape.Repository;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
 import roomescape.domain.Time;
+import roomescape.exception.BaseException;
 
 import javax.sql.DataSource;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
+import java.util.Objects;
 
+import static roomescape.exception.ExceptionMessage.NOT_EXIST_TIME;
 import static roomescape.query.TimeQuery.FIND_ALL;
 import static roomescape.query.TimeQuery.FIND_BY_ID;
 
@@ -19,36 +26,44 @@ import static roomescape.query.TimeQuery.FIND_BY_ID;
 @Repository
 public class TimeRepository {
 
-    private final JdbcTemplate template;
-    private final SimpleJdbcInsert insert;
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert jdbcInsert;
 
-    public TimeRepository(JdbcTemplate template, DataSource source) {
-        this.template = template;
-        this.insert = new SimpleJdbcInsert(source)
-                .withTableName("time")
+    private static final String SELECT_QUERY = """
+            SELECT id, time FROM time
+            """;
+
+    public TimeRepository(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+        this.jdbcInsert = new SimpleJdbcInsert(Objects.requireNonNull(jdbcTemplate.getDataSource()))
+                .withTableName("TIME")
                 .usingGeneratedKeyColumns("id");
     }
 
+    public Time findById(Long id) {
+        try {
+            return jdbcTemplate.queryForObject(SELECT_QUERY + " WHERE id = ?",
+                    (rs, rowNum) -> mapTime(rs), id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new BaseException(NOT_EXIST_TIME);
+        }
+    }
+
     public List<Time> findAll() {
-        return template.query(FIND_ALL.getQuery(),
-                (rs, rowNum) -> new Time(rs.getLong("id"), rs.getTime("time").toLocalTime()));
+        return jdbcTemplate.query(SELECT_QUERY, (rs, rowNum) -> mapTime(rs));
     }
 
-    public roomescape.domain.Time findById(Long id) {
-        return template.queryForObject(FIND_BY_ID.getQuery(),
-                ((rs, rowNum) -> new Time(rs.getLong("id"),rs.getTime("time").toLocalTime())), id);
+    public void deleteTime(Long id) {
+        findById(id);
+        jdbcTemplate.update("DELETE FROM time WHERE id = ?", id);
     }
 
-
-    public Long save(Time newTime) {
-        SqlParameterSource params = new BeanPropertySqlParameterSource(newTime);
-
-        return insert.executeAndReturnKey(params).longValue();
+    public Long create(String time) {
+        SqlParameterSource params = new MapSqlParameterSource().addValue("time", time);
+        return jdbcInsert.executeAndReturnKey(params).longValue();
     }
 
-    public void deleteById(Long id) {
-        String sql = "DELETE FROM TIME WHERE id = ?";
-        template.update(sql, id);
+    private Time mapTime(ResultSet rs) throws SQLException {
+        return new Time(rs.getLong("id"), rs.getString("time"));
     }
-
 }

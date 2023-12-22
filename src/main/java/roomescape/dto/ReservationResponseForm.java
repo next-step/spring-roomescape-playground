@@ -1,55 +1,40 @@
 package roomescape.dto;
 
 import roomescape.domain.Reservation;
-
-import java.time.LocalDate;
-import java.time.LocalTime;
+import roomescape.domain.Time;
 
 public class ReservationResponseForm {
-    private Long id;
-    private String name;
-    private LocalDate date;
-    private LocalTime time;
 
-    public ReservationResponseForm(Reservation reservation) {
-        this.id = reservation.getId();
-        this.name = reservation.getName();
-        this.date = reservation.getDate();
-        this.time = reservation.getTime();
+    private final Long id;
+    private final String name;
+    private final String date;
+    private final Time time;
+
+    private ReservationResponseForm(Long id, String name, String date, Time time) {
+        this.id = id;
+        this.name = name;
+        this.date = date;
+        this.time = time;
     }
 
-    public ReservationResponseForm() {
+    public static ReservationResponseForm from(Reservation reservation) {
+        return new ReservationResponseForm(reservation.getId(), reservation.getName(), reservation.getDate(),
+                reservation.getTime());
     }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public LocalDate getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-
-    public LocalTime getTime() {
+    public Time getTime() {
         return time;
-    }
-
-    public void setTime(LocalTime time) {
-        this.time = time;
     }
 }

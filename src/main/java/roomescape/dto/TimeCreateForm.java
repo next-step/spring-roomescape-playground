@@ -1,23 +1,14 @@
 package roomescape.dto;
 
-import roomescape.domain.Time;
+import jakarta.validation.constraints.NotEmpty;
 
-import java.time.LocalTime;
+public class TimeCreateForm{
 
-public class TimeCreateForm {
 
-    private LocalTime time;
+    private String time;
 
-    public TimeCreateForm() {
-    }
-    public Time toEntity() {
-        return new Time(null, this.time);
-    }
-    public LocalTime getTime() {
+    public String getTime() {
         return time;
-    }
-    public LocalTime setTime(LocalTime time) {
-        return this.time = time;
     }
 }
 

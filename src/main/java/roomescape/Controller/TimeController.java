@@ -15,6 +15,7 @@ import java.util.List;
 import static org.springframework.http.HttpStatus.CREATED;
 
 @Controller
+
 public class TimeController {
     private final TimeService timeService;
 
@@ -23,35 +24,27 @@ public class TimeController {
     }
 
     @GetMapping("/time")
-    public String time(){
+    public String time() {
         return "time";
     }
 
     @GetMapping("/times")
-    @ResponseBody
     public ResponseEntity<List<TimeResponseForm>> getTimes() {
-        List<TimeResponseForm> times = timeService.getAllTimes();
-        return ResponseEntity.ok().body(times);
+        List<TimeResponseForm> times = timeService.getTimes();
+        return ResponseEntity.ok(times);
     }
 
-    @PostMapping("/times")
-    @ResponseBody
-    public ResponseEntity<TimeResponseForm> createTime(@Valid @RequestBody TimeCreateForm form, BindingResult result) {
-        if (result.hasErrors()) {
-            return ResponseEntity.badRequest().body(new TimeResponseForm());
-        }
-
-        TimeResponseForm newTime = timeService.createTime(form);
-
-        return ResponseEntity.created(URI.create("/Times/" + newTime.getId()))
-                .body(newTime);
+    @PostMapping("times")
+    public ResponseEntity<TimeResponseForm> createTime(@Valid @RequestBody TimeCreateForm timeRequest) {
+        Long id = timeService.createTime(timeRequest);
+        TimeResponseForm timeResponse = timeService.getTime(id);
+        return ResponseEntity.created(URI.create("/times/" + timeResponse.getId())).body(timeResponse);
     }
 
-    @DeleteMapping("/times/{id}")
+    @DeleteMapping("times/{id}")
     public ResponseEntity<Void> deleteTime(@PathVariable Long id) {
         timeService.deleteTime(id);
-
         return ResponseEntity.noContent().build();
     }
-
 }
+

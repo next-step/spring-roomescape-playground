@@ -6,8 +6,11 @@ import roomescape.domain.Time;
 import roomescape.dto.TimeCreateForm;
 import roomescape.dto.TimeResponseForm;
 
+import java.util.List;
+
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TimeService {
@@ -18,31 +21,26 @@ public class TimeService {
         this.timeRepository = timeRepository;
     }
 
-    public List<TimeResponseForm> getAllTimes() {
-        try {
-            List<Time> times = timeRepository.findAll();
-            return times.stream()
-                    .map(TimeResponseForm::new)
-                    .toList();
-        } catch (Exception e) {
-            throw new RuntimeException("시간을 가져올 수 없습니다", e);
-        }
+    public Long createTime(TimeCreateForm timeCreateForm) {
+        return timeRepository.create(String.valueOf(timeCreateForm.getTime()));
     }
 
-    public TimeResponseForm createTime(TimeCreateForm form) {
-        try {
-            Time newTime = form.toEntity();
-            Long newId = timeRepository.save(newTime);
-            Time time = timeRepository.findById(newId);
+    public TimeResponseForm getTime(Long id) {
+        Time time = timeRepository.findById(id);
+        return TimeResponseForm.from(time);
+    }
 
-            return new TimeResponseForm(time);
-        } catch (Exception e) {
-            throw new RuntimeException("시간을 생성할 수 없습니다", e);
-        }
+    public List<TimeResponseForm> getTimes() {
+        List<Time> allTimes = timeRepository.findAll();
+        return allTimes.stream()
+                .map(TimeResponseForm::from)
+                .collect(Collectors.toList());
     }
 
     public void deleteTime(Long id) {
-        timeRepository.deleteById(id);
+        timeRepository.deleteTime(id);
     }
 }
+
+
 

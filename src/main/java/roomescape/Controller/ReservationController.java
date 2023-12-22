@@ -31,21 +31,18 @@ public class ReservationController {
     @GetMapping("/reservations")
     @ResponseBody
     public ResponseEntity<List<ReservationResponseForm>> getReservations() {
-        List<ReservationResponseForm> reservations = reservationService.getAllReservations();
+        List<ReservationResponseForm> reservations = reservationService.getReservations();
         return ResponseEntity.ok().body(reservations);
     }
 
-    @PostMapping("/reservations")
     @ResponseBody
-    public ResponseEntity<ReservationResponseForm> createReservation(@Valid @RequestBody ReservationCreateForm form, BindingResult result) {
-        if (result.hasErrors()) {
-            return ResponseEntity.badRequest().body(new ReservationResponseForm());
-        }
-
-        ReservationResponseForm newReservation = reservationService.createReservation(form);
-
-        return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId()))
-                .body(newReservation);
+    @PostMapping("/reservations")
+    public ResponseEntity<ReservationResponseForm> createReservation(
+            @Valid @RequestBody ReservationCreateForm reservationRequest) {
+        Long id = reservationService.createReservation(reservationRequest);
+        ReservationResponseForm reservationResponse = reservationService.getReservation(id);
+        return ResponseEntity.created(URI.create("/reservations/" + reservationResponse.getId()))
+                .body(reservationResponse);
     }
 
     @DeleteMapping("/reservations/{id}")
