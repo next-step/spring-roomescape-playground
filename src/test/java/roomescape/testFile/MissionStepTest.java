@@ -184,6 +184,7 @@ public class MissionStepTest {
                 .then().log().all()
                 .statusCode(204);
     }
+
     @Test
     void 구단계() {
         Map<String, String> reservation = new HashMap<>();
@@ -198,6 +199,7 @@ public class MissionStepTest {
                 .then().log().all()
                 .statusCode(400);
     }
+
     @Test
     void 십단계() {
         boolean isJdbcTemplateInjected = false;
