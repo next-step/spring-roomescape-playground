@@ -1,12 +1,13 @@
-package roomescape.controller;
+package roomescape.Controller;
 
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import roomescape.Dto.ReservationCreateForm;
-import roomescape.Dto.ReservationResponseForm;
-import roomescape.Service.ReservationService;
+import roomescape.dto.ReservationCreateForm;
+import roomescape.dto.ReservationResponseForm;
+import roomescape.service.ReservationService;
 
 import java.net.URI;
 import java.util.List;
@@ -22,25 +23,27 @@ public class ReservationController {
 
     @GetMapping("/reservation")
     public String reservation() {
-        return "new-reservation";
+        return "reservation";
     }
-
 
     @GetMapping("/reservations")
     @ResponseBody
     public ResponseEntity<List<ReservationResponseForm>> getReservations() {
-        List<ReservationResponseForm> reservations = reservationService.getReservations();
+        List<ReservationResponseForm> reservations = reservationService.getAllReservations();
         return ResponseEntity.ok().body(reservations);
     }
 
-    @ResponseBody
     @PostMapping("/reservations")
-    public ResponseEntity<ReservationResponseForm> createReservation(
-            @Valid @RequestBody ReservationCreateForm reservationRequest) {
-        Long id = reservationService.createReservation(reservationRequest);
-        ReservationResponseForm reservationResponse = reservationService.getReservation(id);
-        return ResponseEntity.created(URI.create("/reservations/" + reservationResponse.getId()))
-                .body(reservationResponse);
+    @ResponseBody
+    public ResponseEntity<ReservationResponseForm> createReservation(@Valid @RequestBody ReservationCreateForm form, BindingResult result) {
+        if (result.hasErrors()) {
+            return ResponseEntity.badRequest().body(new ReservationResponseForm());
+        }
+
+        ReservationResponseForm newReservation = reservationService.createReservation(form);
+
+        return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId()))
+                .body(newReservation);
     }
 
     @DeleteMapping("/reservations/{id}")
