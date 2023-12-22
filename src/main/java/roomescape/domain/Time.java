@@ -1,4 +1,4 @@
-package roomescape.Domain;
+package roomescape.domain;
 
 public class Time {
 

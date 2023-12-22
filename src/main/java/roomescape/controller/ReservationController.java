@@ -1,4 +1,4 @@
-package roomescape.Controller;
+package roomescape.controller;
 
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -22,34 +22,29 @@ public class ReservationController {
     }
 
     @GetMapping("/reservation")
-    public String reservation() {
-        return "reservation";
+    public String getReservation() {
+        return "new-reservation";
     }
 
+    @ResponseBody
     @GetMapping("/reservations")
-    @ResponseBody
     public ResponseEntity<List<ReservationResponseForm>> getReservations() {
-        List<ReservationResponseForm> reservations = reservationService.getAllReservations();
-        return ResponseEntity.ok().body(reservations);
+        return ResponseEntity.ok(reservationService.getReservations());
     }
 
-    @PostMapping("/reservations")
     @ResponseBody
-    public ResponseEntity<ReservationResponseForm> createReservation(@Valid @RequestBody ReservationCreateForm form, BindingResult result) {
-        if (result.hasErrors()) {
-            return ResponseEntity.badRequest().body(new ReservationResponseForm());
-        }
-
-        ReservationResponseForm newReservation = reservationService.createReservation(form);
-
-        return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId()))
-                .body(newReservation);
+    @PostMapping("/reservations")
+    public ResponseEntity<ReservationResponseForm> createReservation(
+            @Valid @RequestBody ReservationCreateForm reservationRequest) {
+        Long id = reservationService.createReservation(reservationRequest);
+        ReservationResponseForm reservationResponse = reservationService.getReservation(id);
+        return ResponseEntity.created(URI.create("/reservations/" + reservationResponse.getId()))
+                .body(reservationResponse);
     }
 
     @DeleteMapping("/reservations/{id}")
-    public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
+    public ResponseEntity cancelReservation(@PathVariable Long id) {
         reservationService.deleteReservation(id);
-
         return ResponseEntity.noContent().build();
     }
 }

@@ -1,7 +1,7 @@
-package roomescape.Dto;
+package roomescape.dto;
 
-public class TimeCreateForm{
 
+public class TimeCreateForm {
 
     private String time;
 

@@ -6,15 +6,15 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import roomescape.Domain.Time;
-import roomescape.Exception.BaseException;
+import roomescape.domain.Time;
+import roomescape.exception.BaseException;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
 
-import static roomescape.Exception.ExceptionMessage.NOT_EXIST_TIME;
+import static roomescape.exception.ExceptionMessage.NOT_EXIST_TIME;
 
 
 @Repository
