@@ -1,6 +1,4 @@
-package roomescape.dto;
-
-import jakarta.validation.constraints.NotEmpty;
+package roomescape.Dto;
 
 public class TimeCreateForm{
 

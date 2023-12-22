@@ -1,4 +1,4 @@
-package roomescape.query;
+package roomescape.Query;
 
 public enum TimeQuery {
     FIND_ALL("SELECT id, time FROM time"),

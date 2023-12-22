@@ -1,4 +1,4 @@
-package roomescape.query;
+package roomescape.Query;
 
 public enum ReservationQuery {
     FIND_ALL("SELECT id, name, date, time FROM reservation"),

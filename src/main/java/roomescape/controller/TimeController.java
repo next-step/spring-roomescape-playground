@@ -1,18 +1,15 @@
-package roomescape.Controller;
+package roomescape.controller;
 
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import roomescape.dto.TimeCreateForm;
-import roomescape.dto.TimeResponseForm;
-import roomescape.service.TimeService;
+import roomescape.Dto.TimeCreateForm;
+import roomescape.Dto.TimeResponseForm;
+import roomescape.Service.TimeService;
 
 import java.net.URI;
 import java.util.List;
-
-import static org.springframework.http.HttpStatus.CREATED;
 
 @Controller
 

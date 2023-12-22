@@ -1,7 +1,7 @@
-package roomescape.dto;
+package roomescape.Dto;
 
-import roomescape.domain.Reservation;
-import roomescape.domain.Time;
+import roomescape.Domain.Reservation;
+import roomescape.Domain.Time;
 
 public class ReservationResponseForm {
 

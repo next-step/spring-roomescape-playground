@@ -1,4 +1,4 @@
-package roomescape.domain;
+package roomescape.Domain;
 
 public class Reservation {
 

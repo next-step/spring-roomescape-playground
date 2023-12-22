@@ -1,15 +1,14 @@
-package roomescape.service;
+package roomescape.Service;
 
 import org.springframework.stereotype.Service;
-import roomescape.Repository.TimeRepository;
-import roomescape.domain.Time;
-import roomescape.dto.TimeCreateForm;
-import roomescape.dto.TimeResponseForm;
+import roomescape.repository.TimeRepository;
+import roomescape.Domain.Time;
+import roomescape.Dto.TimeCreateForm;
+import roomescape.Dto.TimeResponseForm;
 
 import java.util.List;
 
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Service

@@ -1,18 +1,17 @@
-package roomescape.service;
+package roomescape.Service;
 
 
 import org.springframework.stereotype.Service;
-import roomescape.Repository.ReservationRepository;
-import roomescape.Repository.TimeRepository;
-import roomescape.domain.Reservation;
-import roomescape.domain.Time;
-import roomescape.dto.ReservationCreateForm;
-import roomescape.dto.ReservationResponseForm;
+import roomescape.repository.ReservationRepository;
+import roomescape.repository.TimeRepository;
+import roomescape.Domain.Reservation;
+import roomescape.Domain.Time;
+import roomescape.Dto.ReservationCreateForm;
+import roomescape.Dto.ReservationResponseForm;
 
 import java.util.List;
 
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Service

@@ -1,26 +1,20 @@
-package roomescape.Repository;
+package roomescape.repository;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import roomescape.domain.Reservation;
-import roomescape.domain.Time;
-import roomescape.exception.BaseException;
-
-import javax.sql.DataSource;
+import roomescape.Domain.Time;
+import roomescape.Exception.BaseException;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
 
-import static roomescape.exception.ExceptionMessage.NOT_EXIST_TIME;
-import static roomescape.query.TimeQuery.FIND_ALL;
-import static roomescape.query.TimeQuery.FIND_BY_ID;
+import static roomescape.Exception.ExceptionMessage.NOT_EXIST_TIME;
 
 
 @Repository

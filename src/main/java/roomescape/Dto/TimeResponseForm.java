@@ -1,6 +1,6 @@
-package roomescape.dto;
+package roomescape.Dto;
 
-import roomescape.domain.Time;
+import roomescape.Domain.Time;
 
 public class TimeResponseForm {
 
