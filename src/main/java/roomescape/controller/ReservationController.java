@@ -35,7 +35,6 @@ public class ReservationController {
     }
 
     @GetMapping("/reservations")
-    @ResponseBody
     public ResponseEntity<List<ReservationResponseForm>> getReservations() {
         List<ReservationResponseForm> responseReservations = reservationService.getReservations();
 
@@ -43,7 +42,6 @@ public class ReservationController {
     }
 
     @PostMapping("/reservations")
-    @ResponseBody
     public ResponseEntity<ReservationResponseForm> createReservation(@Valid @RequestBody ReservationCreateForm form, BindingResult result) {
         if (result.hasErrors()) {
             throw new ValidationException(result);
@@ -57,7 +55,6 @@ public class ReservationController {
     }
 
     @DeleteMapping("reservations/{id}")
-    @ResponseBody
     public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
         reservationService.delete(id);
 
