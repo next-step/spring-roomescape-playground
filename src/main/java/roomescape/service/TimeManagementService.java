@@ -36,5 +36,6 @@ public class TimeManagementService {
     }
 
     public void deleteTime(Long id) {
-        timeManagementRepository.deleteById(id);}
+        timeManagementRepository.deleteById(id);
+    }
 }
