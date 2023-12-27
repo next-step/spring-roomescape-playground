@@ -28,15 +28,17 @@ public class JdbcReservationRepository {
     public List<Reservation> findAll() {
         List<Reservation> reservations;
         try {
-            reservations = template.query("SELECT " +
-                            "r.id as reservation_id" +
-                            ", r.name" +
-                            ", r.date" +
-                            ", t.id as time_id" +
-                            ", t.time as time_value " +
-                            "FROM reservation as r " +
-                            "inner join time as t " +
-                            "on r.time_id = t.id",
+            reservations = template.query("""
+                            SELECT
+                            r.id as reservation_id
+                            , r.name
+                            , r.date
+                            , t.id as time_id
+                            , t.time as time_value
+                            FROM reservation as r
+                            inner join time as t
+                            on r.time_id = t.id
+                            """,
                     new ReservationRowMapper());
         } catch (DataAccessException e) {
             throw new NoSuchElementException(e);
@@ -59,16 +61,17 @@ public class JdbcReservationRepository {
     public Reservation findById(Long id) {
         Reservation reservation;
         try {
-            reservation = template.queryForObject("SELECT " +
-                            "r.id as reservation_id" +
-                            ", r.name" +
-                            ", r.date" +
-                            ", t.id as time_id" +
-                            ", t.time as time_value " +
-                            "FROM reservation as r " +
-                            "inner join time as t " +
-                            "on r.time_id = t.id " +
-                            "where r.id = ?",
+            reservation = template.queryForObject("""
+                            SELECT
+                            r.id as reservation_id
+                            , r.name
+                            , r.date
+                            , t.id as time_id
+                            , t.time as time_value
+                            FROM reservation as r
+                            inner join time as t
+                            on r.time_id = ?
+                            """,
                     new ReservationRowMapper(),
                     id);
         } catch (DataAccessException e) {
