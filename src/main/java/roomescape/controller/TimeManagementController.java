@@ -32,7 +32,6 @@ public class TimeManagementController {
     }
 
     @PostMapping("/times")
-    @ResponseBody
     public ResponseEntity<TimeResponseForm> createTime(@Valid @RequestBody TimeCreateForm form, BindingResult result) {
         Long newId = timeManagementService.create(form);
         TimeResponseForm newTime = timeManagementService.getTime(newId);
@@ -42,7 +41,6 @@ public class TimeManagementController {
     }
 
     @GetMapping("/times")
-    @ResponseBody
     public ResponseEntity<List<TimeResponseForm>> getTimes() {
         List<TimeResponseForm> times = timeManagementService.getTimes();
 
@@ -50,7 +48,6 @@ public class TimeManagementController {
     }
 
     @DeleteMapping("times/{id}")
-    @ResponseBody
     public ResponseEntity<TimeResponseForm> deleteTime(@PathVariable Long id) {
         timeManagementService.deleteTime(id);
 
