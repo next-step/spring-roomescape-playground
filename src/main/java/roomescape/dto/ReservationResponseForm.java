@@ -1,16 +1,16 @@
 package roomescape.dto;
 
 import roomescape.domain.Reservation;
+import roomescape.domain.Time;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 public class ReservationResponseForm {
 
     private Long id;
     private String name;
     private LocalDate date;
-    private LocalTime time;
+    private Time time;
 
     public ReservationResponseForm(Reservation reservation) {
         this.id = reservation.getId();
@@ -46,11 +46,11 @@ public class ReservationResponseForm {
         this.date = date;
     }
 
-    public LocalTime getTime() {
+    public Time getTime() {
         return time;
     }
 
-    public void setTime(LocalTime time) {
+    public void setTime(Time time) {
         this.time = time;
     }
 }

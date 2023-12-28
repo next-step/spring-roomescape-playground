@@ -26,9 +26,9 @@ public class ReservationExceptionHandler {
     @ResponseBody
     public ResponseEntity<Void> handleValidationException(ValidationException e) {
         BindingResult bindingResult = e.getBindingResult();
-        bindingResult.getAllErrors().forEach(error -> {
-            logger.error(error.getDefaultMessage());
-        });
+        bindingResult.getAllErrors().forEach(error ->
+                logger.error(error.getDefaultMessage())
+        );
 
         return ResponseEntity.badRequest().build();
     }

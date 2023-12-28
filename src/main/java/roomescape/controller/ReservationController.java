@@ -15,6 +15,7 @@ import roomescape.dto.ReservationCreateForm;
 import roomescape.dto.ReservationResponseForm;
 import roomescape.exception.ValidationException;
 import roomescape.repository.JdbcReservationRepository;
+import roomescape.service.ReservationService;
 
 import java.net.URI;
 import java.util.List;
@@ -22,39 +23,32 @@ import java.util.List;
 @Controller
 public class ReservationController {
 
-    private final JdbcReservationRepository reservationRepository;
+    private final ReservationService reservationService;
 
-    public ReservationController(JdbcReservationRepository reservationRepository) {
-        this.reservationRepository = reservationRepository;
+    public ReservationController(ReservationService reservationService) {
+        this.reservationService = reservationService;
     }
 
     @GetMapping("/reservation")
     public String reservation() {
-        return "reservation";
+        return "new-reservation";
     }
 
     @GetMapping("/reservations")
-    @ResponseBody
     public ResponseEntity<List<ReservationResponseForm>> getReservations() {
-        List<Reservation> reservations = reservationRepository.findAll();
-        ResponseEntity<List<ReservationResponseForm>> responseReservations = ResponseEntity.ok().body(reservationRepository
-                .findAll()
-                .stream()
-                .map(ReservationResponseForm::new)
-                .toList());
-        return responseReservations;
+        List<ReservationResponseForm> responseReservations = reservationService.getReservations();
+
+        return ResponseEntity.ok().body(responseReservations);
     }
 
     @PostMapping("/reservations")
-    @ResponseBody
     public ResponseEntity<ReservationResponseForm> createReservation(@Valid @RequestBody ReservationCreateForm form, BindingResult result) {
         if (result.hasErrors()) {
             throw new ValidationException(result);
         }
 
-        Reservation newReservation = form.toEntity();
-        Long newId = reservationRepository.save(newReservation);
-        Reservation reservation = reservationRepository.findById(newId);
+        Long newId = reservationService.save(form);
+        Reservation reservation = reservationService.findById(newId);
 
         return ResponseEntity.created(URI.create("/reservations/" + newId))
                 .body(new ReservationResponseForm(reservation));
@@ -62,7 +56,7 @@ public class ReservationController {
 
     @DeleteMapping("reservations/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
-        reservationRepository.delete(id);
+        reservationService.delete(id);
 
         return ResponseEntity.noContent().build();
     }

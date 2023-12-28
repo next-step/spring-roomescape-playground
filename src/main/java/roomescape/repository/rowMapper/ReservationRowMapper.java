@@ -2,6 +2,7 @@ package roomescape.repository.rowMapper;
 
 import org.springframework.jdbc.core.RowMapper;
 import roomescape.domain.Reservation;
+import roomescape.domain.Time;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,6 +14,6 @@ public class ReservationRowMapper implements RowMapper<Reservation> {
         return new Reservation(rs.getLong("id")
                 , rs.getString("name")
                 , rs.getDate("date").toLocalDate()
-                , rs.getTime("time").toLocalTime());
+                , new Time(rs.getLong("time_id"), rs.getString("time_value")));
     }
 }
