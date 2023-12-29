@@ -26,13 +26,11 @@ public class ReservationController {
         return "new-reservation";
     }
 
-    @ResponseBody
     @GetMapping("/reservations")
     public ResponseEntity<List<ReservationResponseForm>> getReservations() {
         return ResponseEntity.ok(reservationService.getReservations());
     }
 
-    @ResponseBody
     @PostMapping("/reservations")
     public ResponseEntity<ReservationResponseForm> createReservation(
             @Valid @RequestBody ReservationCreateForm reservationRequest) {
