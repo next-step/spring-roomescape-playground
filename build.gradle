@@ -1,23 +1,25 @@
 plugins {
-    id 'org.springframework.boot' version '3.1.0'
-    id 'io.spring.dependency-management' version '1.1.0'
+    id 'org.springframework.boot' version '2.7.2'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
 }
 
-group = 'nextstep'
+group = 'com.example'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '17'
+sourceCompatibility = '11'
+targetCompatibility = '11'
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
+    implementation "joda-time:joda-time:2.2"
     implementation 'org.springframework.boot:spring-boot-starter'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'io.rest-assured:rest-assured:5.3.1'
 }
 
-test {
+tasks.named('test') {
     useJUnitPlatform()
 }
+
