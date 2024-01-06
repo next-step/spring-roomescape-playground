@@ -11,16 +11,38 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import roomescape.exception.InvalidReservationException;
+import roomescape.exception.NotFoundReservationException;
 
 @Controller
 public class RoomescapeController {
 
     private final List<Reservation> reservations = new ArrayList<>();
     private final AtomicLong index = new AtomicLong(1);
+
+    private static boolean isValidReservation(Reservation reservation) {
+        if (reservation == null)
+            return false;
+        if (reservation.getName().isEmpty() || reservation.getName().isBlank())
+            return false;
+        if (reservation.getDate() == null)
+            return false;
+        if (reservation.getTime() == null)
+            return false;
+
+        return true;
+    }
+
+    @ExceptionHandler({NotFoundReservationException.class, InvalidReservationException.class})
+    public ResponseEntity handleException(RuntimeException e) {
+        return ResponseEntity.badRequest().build();
+    }
 
     @GetMapping("/")
     public String getHome() {
@@ -44,6 +66,10 @@ public class RoomescapeController {
 
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservation) {
+        if (!isValidReservation(reservation)) {
+            throw new InvalidReservationException();
+        }
+
         Reservation newReservation = Reservation.toEntity(reservation, index.getAndIncrement());
         reservations.add(newReservation);
         return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
@@ -54,7 +80,7 @@ public class RoomescapeController {
         Reservation reservation = reservations.stream()
             .filter(it -> Objects.equals(it.getId(), id))
             .findFirst()
-            .orElseThrow(RuntimeException::new);
+            .orElseThrow(NotFoundReservationException::new);
 
         reservations.remove(reservation);
         return ResponseEntity.noContent().build();
