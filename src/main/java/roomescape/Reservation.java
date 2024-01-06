@@ -3,14 +3,14 @@ package roomescape;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
 
 public class Reservation {
     private Long id;
     private String name;
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "YYYY-MM-dd")
     private LocalDate date;
-    @JsonFormat(pattern = "HH:MM")
+    @DateTimeFormat(pattern = "HH:MM")
     private LocalTime time;
 
     public Reservation(Long id, String name, LocalDate date, LocalTime time) {
