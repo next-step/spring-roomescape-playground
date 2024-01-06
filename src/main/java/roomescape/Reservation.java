@@ -3,10 +3,14 @@ package roomescape;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class Reservation {
     private Long id;
     private String name;
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
+    @JsonFormat(pattern = "HH:MM")
     private LocalTime time;
 
     public Reservation(Long id, String name, LocalDate date, LocalTime time) {
@@ -16,10 +20,8 @@ public class Reservation {
         this.time = time;
     }
 
-    public Reservation(String name, LocalDate date, LocalTime time) {
-        this.name = name;
-        this.date = date;
-        this.time = time;
+    public static Reservation toEntity(Reservation reservation, Long id) {
+        return new Reservation(id, reservation.name, reservation.date, reservation.time);
     }
 
     public Long getId() {
@@ -36,10 +38,6 @@ public class Reservation {
 
     public LocalTime getTime() {
         return time;
-    }
-
-    public static Reservation toEntity(Reservation reservation, Long id) {
-        return new Reservation(id, reservation.name, reservation.date, reservation.time);
     }
 
     public void update(Reservation reservation) {
