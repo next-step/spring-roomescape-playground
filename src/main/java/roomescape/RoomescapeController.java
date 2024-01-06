@@ -1,5 +1,6 @@
 package roomescape;
 
+import java.net.URI;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -9,16 +10,15 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
 public class RoomescapeController {
 
     private final List<Reservation> reservations = new ArrayList<>();
     private final AtomicLong index = new AtomicLong(1);
-
-
 
     @GetMapping("/")
     public String getHome() {
@@ -29,28 +29,26 @@ public class RoomescapeController {
     public String getReservation() {
         return "reservation";
     }
+
     @GetMapping("/reservations")
     public ResponseEntity<List<Reservation>> getReservations() {
-        if (reservations.size() == 0) {
-            for (int i = 0; i < 3; ++i) {
-                Reservation reservation = new Reservation(
-                    1L,
-                    "test" + i,
-                    LocalDate.now(),
-                    LocalTime.now()
-                );
-                reservations.add(reservation);
-            }
+        if (index.get() == 1L) {
+            reservations.add(new Reservation(index.getAndIncrement(), "test" + 1, LocalDate.now(), LocalTime.now()));
+            reservations.add(new Reservation(index.getAndIncrement(), "test" + 2, LocalDate.now(), LocalTime.now()));
+            reservations.add(new Reservation(index.getAndIncrement(), "test" + 3, LocalDate.now(), LocalTime.now()));
         }
-
         return ResponseEntity.ok().body(reservations);
     }
 
     @PostMapping("/reservations")
-    public ResponseEntity<Reservation> createReservation(@RequestParam Reservation newReservation) {
-        Reservation reservation = Reservation.toEntity(newReservation, index.getAndIncrement());
-        reservations.add(reservation);
-        return ResponseEntity.ok().body(reservation);
+    public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservation) {
+        Reservation newReservation = Reservation.toEntity(reservation, index.getAndIncrement());
+        reservations.add(newReservation);
+        return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
     }
 
+    @GetMapping("/reservations/{id}")
+    public ResponseEntity<Void> getReservations(@PathVariable Long id) {
+        return ResponseEntity.ok().build();
+    }
 }
