@@ -1,4 +1,4 @@
-package roomescape;
+package roomescape.controller;
 
 import java.net.URI;
 import java.time.LocalDate;
@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import roomescape.domain.Reservation;
 import roomescape.exception.InvalidReservationException;
 import roomescape.exception.NotFoundReservationException;
 
