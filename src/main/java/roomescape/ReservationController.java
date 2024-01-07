@@ -15,6 +15,7 @@ public class ReservationController {
     private final List<Reservation> reservations = new ArrayList<>();
     private final AtomicLong index = new AtomicLong(1);
 
+    // 생성자 내 주석 코드 - 2단계 테스트를 위한 임의 data 추가(.body("size()", is(3)))
     public ReservationController() {
 //        create(new Reservation("브라운","2023-01-01", "10:00"));
 //        create(new Reservation("브라운","2023-01-02", "11:00"));
@@ -29,9 +30,12 @@ public class ReservationController {
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> create(@RequestBody Reservation reservation) {
         Reservation newReservation = Reservation.toEntity(reservation, index.getAndIncrement());
-        reservations.add(newReservation);
 
-        return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
+        if(Reservation.checkValidity(newReservation)) throw new NoParameterException();
+        else {
+            reservations.add(newReservation);
+            return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
+        }
     }
 
     @GetMapping("/reservations")
@@ -44,7 +48,7 @@ public class ReservationController {
         Reservation reservation = reservations.stream()
                 .filter(it -> Objects.equals(it.getId(), id))
                 .findFirst()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(NotFoundReservationException::new);
 
         reservation.update(newReservation);
         return ResponseEntity.ok().build();
@@ -55,7 +59,7 @@ public class ReservationController {
         Reservation reservation = reservations.stream()
                 .filter(it -> Objects.equals(it.getId(), id))
                 .findFirst()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(NotFoundReservationException::new);
 
         reservations.remove(reservation);
         return ResponseEntity.noContent().build();

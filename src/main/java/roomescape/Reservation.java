@@ -30,6 +30,12 @@ public class Reservation {
         return new Reservation(id, reservation.name, reservation.date, reservation.time);
     }
 
+    public static boolean checkValidity(Reservation reservation) {
+        return (reservation.getName().isEmpty() ||
+                reservation.getDate().isEmpty() ||
+                reservation.getTime().isEmpty());
+    }
+
     public void update(Reservation newReservation) {
         this.name = newReservation.name;
         this.date = newReservation.date;
