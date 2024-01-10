@@ -11,4 +11,8 @@ public class PageController {
         return "home";
     }
 
+    @GetMapping("/reservation")
+    public String showReservationPage() {
+        return "reservation";
+    }
 }
