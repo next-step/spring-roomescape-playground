@@ -13,9 +13,20 @@ repositories {
 }
 
 dependencies {
+    //spring boot
+    implementation 'org.springframework.boot:spring-boot-starter'
+
+    //jdbc
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+
+    //database
+    runtimeOnly 'com.h2database:h2'
+
+    //web
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-    implementation 'org.springframework.boot:spring-boot-starter'
+
+    //test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'io.rest-assured:rest-assured:5.3.1'
 }
