@@ -59,4 +59,10 @@ public class Reservation {
     public static Reservation toEntity(Reservation reservation, Long id) {
         return new Reservation(id, reservation.name, reservation.date, reservation.time);
     }
+
+    public static boolean isInvalid(Reservation reservation) {
+        return (reservation.name == null || reservation.name.isBlank() ||
+                reservation.date == null || reservation.date.isBlank() ||
+                reservation.time == null || reservation.time.isBlank());
+    }
 }
