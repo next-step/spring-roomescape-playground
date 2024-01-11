@@ -1,25 +1,50 @@
 package roomescape.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import roomescape.service.ReservationService;
 
 import java.util.List;
+import java.util.Map;
 
-@RestController
+@Controller
+@RequestMapping("/reservations")
 public class ReservationController {
 
-    private List<ReservationDto> reservations = List.of(
-            new ReservationDto(1, "브라운", "2023-01-01", "10:00"),
-            new ReservationDto(2, "브라운", "2023-01-02", "11:00"),
-            new ReservationDto(3, "브라운", "2023-01-03", "12:00")
-    );
+    private ReservationService reservationService;
 
+    public ReservationController(ReservationService reservationService) {
+        this.reservationService = reservationService;
+    }
 
-    @GetMapping("/reservations")
-    public ResponseEntity<List<ReservationDto>> getReservations() {
+    @GetMapping
+    public ResponseEntity<List<ReservationDto>> getAllReservations() {
+        List<ReservationDto> reservations = reservationService.findAll();
+
         return ResponseEntity.ok()
                 .body(reservations);
     }
 
+    @PostMapping
+    public ResponseEntity<ReservationDto> createReservations(@RequestBody Map<String, String> reservationRequest) {
+        ReservationDto reservation = reservationService.save(reservationRequest);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .header("Location", "/reservations/" + reservation.id())
+                .body(reservation);
+    }
+
+    @DeleteMapping("/{deleteId}")
+    public ResponseEntity<Void> deleteById(@PathVariable long deleteId) {
+        reservationService.deleteById(deleteId);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT)
+                .build();
+    }
 }
