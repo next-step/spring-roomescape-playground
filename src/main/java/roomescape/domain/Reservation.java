@@ -8,6 +8,9 @@ public class Reservation {
     private String date; //WIP
     private String time; //WIP
 
+    public Reservation() {
+
+    }
     public Reservation(Long id, String name, String date, String time) {
         this.id = id;
         this.name = name;
@@ -51,5 +54,9 @@ public class Reservation {
 
     public void setTime(String time) {
         this.time = time;
+    }
+
+    public static Reservation toEntity(Reservation reservation, Long id) {
+        return new Reservation(id, reservation.name, reservation.date, reservation.time);
     }
 }
