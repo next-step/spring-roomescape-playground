@@ -6,7 +6,7 @@
 
 ### 2단계 요구사항
 - [x] /reservation 요청 시 templates/reservation.html 파일 응답
-- [ ] 예약 목록 조회 API 구현
+- [x] 예약 목록 조회 API 구현
 
 ---
 
