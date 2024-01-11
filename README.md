@@ -5,7 +5,7 @@
 - [x] localhost:8080 요청 시 templates/home.html 파일 응답
 
 ### 2단계 요구사항
-- [ ] /reservation 요청 시 templates/reservation.html 파일 응답
+- [x] /reservation 요청 시 templates/reservation.html 파일 응답
 - [ ] 예약 목록 조회 API 구현
 
 ---

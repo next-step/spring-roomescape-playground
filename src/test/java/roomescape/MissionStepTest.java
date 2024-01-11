@@ -19,4 +19,13 @@ class MissionStepTest {
                    .then().log().all()
                    .statusCode(200);
     }
+
+    @Test
+    @DisplayName("예약 관리 페이지를 반환한다")
+    void 이단계_1() {
+        RestAssured.given().log().all()
+                   .when().get("/reservation")
+                   .then().log().all()
+                   .statusCode(200);
+    }
 }
