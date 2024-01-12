@@ -37,12 +37,18 @@ public class ReservationController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Reservation> deleteReservation(@PathVariable long id) throws Exception {
+        Reservation deleteOne = null;
+
         for (Reservation reservation : reservations) {
             if (reservation.getId() == id) {
-                reservations.remove(reservation);
-                idCounter.decrementAndGet();
-                return ResponseEntity.noContent().build();
+                deleteOne = reservation;
+                break;
             }
+        }
+        if(deleteOne != null){
+            reservations.remove(deleteOne);
+//            idCounter.decrementAndGet();
+            return ResponseEntity.noContent().build();
         }
         throw new Exception("ID(" + id + ")가 없습니다");
     }
