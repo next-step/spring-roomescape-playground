@@ -1,15 +1,19 @@
 package roomescape.domain.reservation.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import roomescape.domain.reservation.dto.request.ReservationCreateRequestDto;
 import roomescape.domain.reservation.entity.Reservation;
+import roomescape.exception.custom.BusinessException;
 
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
+
+import static roomescape.exception.ErrorCode.RESERVATION_NOT_FOUND;
 
 @Controller
 public class ReservationController {
@@ -32,7 +36,7 @@ public class ReservationController {
     }
 
     @PostMapping("/reservations")
-    public ResponseEntity<Reservation> createReservation(@RequestBody ReservationCreateRequestDto requestDto) {
+    public ResponseEntity<Reservation> createReservation(@RequestBody @Valid ReservationCreateRequestDto requestDto) {
         Reservation newReservation = requestDto.toEntity(index.incrementAndGet(),
                 requestDto.name(), requestDto.date(), requestDto.time());
         reservations.add(newReservation);
@@ -44,7 +48,7 @@ public class ReservationController {
         Reservation deleteReservation = reservations.stream()
                 .filter(reservation -> reservation.getId().equals(reservationId))
                 .findFirst()
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new BusinessException(RESERVATION_NOT_FOUND));
         reservations.remove(deleteReservation);
         return ResponseEntity.noContent().build();
     }
