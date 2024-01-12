@@ -61,10 +61,4 @@ public class ReservationController {
         reservationList.remove(reservation);
         return ResponseEntity.noContent().build();
     }
-
-    @ExceptionHandler(HttpClientErrorException.BadRequest.class)
-    public ResponseEntity handleException(HttpClientErrorException.BadRequest e) {
-        return ResponseEntity.badRequest().build();
-    }
-
 }

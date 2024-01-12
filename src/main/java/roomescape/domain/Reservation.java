@@ -5,8 +5,8 @@ import java.sql.Time;
 public class Reservation {
     private Long id;
     private String name;
-    private String date; //WIP
-    private String time; //WIP
+    private String date;
+    private String time;
 
     public Reservation() {
 
