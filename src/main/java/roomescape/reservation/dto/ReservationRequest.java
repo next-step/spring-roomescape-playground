@@ -1,4 +1,4 @@
-package roomescape.reservation.domain;
+package roomescape.reservation.dto;
 
 import lombok.Getter;
 import roomescape.time.domain.Time;
@@ -6,17 +6,15 @@ import roomescape.time.domain.Time;
 import java.time.LocalDate;
 
 @Getter
-public class Reservation {
-    private Long id;
+public class ReservationRequest {
     private String name;
     private LocalDate date;
-    private Time time;
+    private Long time;
 
-    public Reservation(){
+    public ReservationRequest(){
     }
 
-    public Reservation(Long id, String name, LocalDate date, Time time){
-        this.id = id;
+    public ReservationRequest(String name, LocalDate date, Long time){
         this.name = name;
         this.date = date;
         this.time = time;

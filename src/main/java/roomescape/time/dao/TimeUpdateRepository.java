@@ -1,43 +1,40 @@
-package roomescape.reservation.dao;
+package roomescape.time.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import roomescape.reservation.domain.Reservation;
+import roomescape.time.domain.Time;
 
 import java.sql.PreparedStatement;
-import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Repository
-public class UpdateRepository {
+public class TimeUpdateRepository {
     private JdbcTemplate jdbcTemplate;
 
-    public UpdateRepository(JdbcTemplate jdbcTemplate) {
+    public TimeUpdateRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public Reservation insert(String name, LocalDate date, LocalTime time) {
+    public Time insert(LocalTime time) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(
-                    "insert into reservation (name, date, time) values (?, ?, ?)",
+                    "insert into time (time) values (?)",
                     new String[]{"id"});
-            ps.setString(1, name);
-            ps.setDate(2, java.sql.Date.valueOf(date));
-            ps.setTime(3, java.sql.Time.valueOf(time));
+            ps.setTime(1, java.sql.Time.valueOf(time));
 
             return ps;
         }, keyHolder);
 
         Long id = keyHolder.getKey().longValue();
-        return new Reservation(id, name, date, time);
+        return new Time(id, time);
     }
 
     public int delete(Long id) {
-        String sql = "delete from reservation where id = ?";
+        String sql = "delete from time where id = ?";
         return jdbcTemplate.update(sql, Long.valueOf(id));
     }
 
