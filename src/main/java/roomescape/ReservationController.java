@@ -1,6 +1,8 @@
 package roomescape;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +16,9 @@ import java.util.concurrent.atomic.AtomicLong;
 public class ReservationController {
     private final List<Reservation> reservations = new ArrayList<>();
     private final AtomicLong index = new AtomicLong(1);
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     // 생성자 내 주석 코드 - 2단계 테스트를 위한 임의 data 추가(.body("size()", is(3)))
     public ReservationController() {
@@ -40,7 +45,8 @@ public class ReservationController {
 
     @GetMapping("/reservations")
     public ResponseEntity<List<Reservation>> read() {
-        return ResponseEntity.ok().body(reservations);
+//        return ResponseEntity.ok().body(reservations);       -- 5단계 이전 코드
+        return ResponseEntity.ok().body(new ReservationDAO(jdbcTemplate).findAllReservations());
     }
 
     @PutMapping("/reservations/{id}")
