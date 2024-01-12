@@ -1,8 +1,11 @@
 package roomescape;
 
+import java.sql.PreparedStatement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -30,9 +33,21 @@ public class ReservationDAO {
         return jdbcTemplate.query(sql, reservationRowMapper);
     }
 
-    public void insertNewReservation(Reservation reservation) {
-        String sql = "INSERT INTO reservation (id, name, date, time) VALUES (?, ?)";
-        jdbcTemplate.update(sql, reservation.getName(), reservation.getDate(), reservation.getTime());
+    public Long insertNewReservation(Reservation reservation) {
+        String sql = "INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
+            ps.setString(1, reservation.getName());
+            ps.setString(2, reservation.getDate());
+            ps.setString(3, reservation.getTime());
+            return ps;
+        }, keyHolder);
+
+        Long id = keyHolder.getKey().longValue();
+
+        return id;
     }
 
     public void deleteReservation(Long id) {

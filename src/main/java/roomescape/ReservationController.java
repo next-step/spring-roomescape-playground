@@ -14,8 +14,9 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @Controller
 public class ReservationController {
-    private final List<Reservation> reservations = new ArrayList<>();
-    private final AtomicLong index = new AtomicLong(1);
+//    주석처리 - 5단계 이전 코드
+//    private final List<Reservation> reservations = new ArrayList<>();
+//    private final AtomicLong index = new AtomicLong(1);
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -34,40 +35,51 @@ public class ReservationController {
 
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> create(@RequestBody Reservation reservation) {
-        Reservation newReservation = Reservation.toEntity(reservation, index.getAndIncrement());
+        ReservationDAO reservationDAO = new ReservationDAO(jdbcTemplate);
 
-        if(Reservation.checkValidity(newReservation)) throw new NoParameterException();
+        if(Reservation.checkValidity(reservation)) throw new NoParameterException();
         else {
-            reservations.add(newReservation);
-            return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
+//            reservations.add(newReservation);
+
+            Long id = reservationDAO.insertNewReservation(reservation);
+            Reservation newReservation = Reservation.toEntity(reservation, id);
+            return ResponseEntity.created(URI.create("/reservations/" + id)).body(newReservation);
         }
     }
 
     @GetMapping("/reservations")
     public ResponseEntity<List<Reservation>> read() {
-//        return ResponseEntity.ok().body(reservations);       -- 5단계 이전 코드
+//        return ResponseEntity.ok().body(reservations);
         return ResponseEntity.ok().body(new ReservationDAO(jdbcTemplate).findAllReservations());
     }
 
     @PutMapping("/reservations/{id}")
     public ResponseEntity<Void> update(@RequestBody Reservation newReservation, @PathVariable Long id) {
-        Reservation reservation = reservations.stream()
+        ReservationDAO reservationDAO = new ReservationDAO(jdbcTemplate);
+
+        Reservation reservation = reservationDAO.findAllReservations().stream()
                 .filter(it -> Objects.equals(it.getId(), id))
                 .findFirst()
                 .orElseThrow(NotFoundReservationException::new);
 
-        reservation.update(newReservation);
+//        reservation.update(newReservation);
+
+        reservationDAO.insertNewReservation(newReservation);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        Reservation reservation = reservations.stream()
+        ReservationDAO reservationDAO = new ReservationDAO(jdbcTemplate);
+
+        Reservation reservation = reservationDAO.findAllReservations().stream()
                 .filter(it -> Objects.equals(it.getId(), id))
                 .findFirst()
                 .orElseThrow(NotFoundReservationException::new);
 
-        reservations.remove(reservation);
+//        reservations.remove(reservation);
+
+        reservationDAO.deleteReservation(id);
         return ResponseEntity.noContent().build();
     }
 }
