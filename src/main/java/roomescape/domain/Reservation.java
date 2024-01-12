@@ -1,24 +1,42 @@
 package roomescape.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.sql.Time;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 public class Reservation {
     private Long id;
+    @NotEmpty
     private String name;
-    private String date;
-    private String time;
+
+    @NotNull
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate date;
+
+    @NotNull
+    @JsonFormat(pattern = "HH:mm")
+    private LocalTime time;
 
     public Reservation() {
 
     }
-    public Reservation(Long id, String name, String date, String time) {
+    public Reservation(Long id, String name, LocalDate date, LocalTime time) {
         this.id = id;
         this.name = name;
         this.date = date;
         this.time = time;
     }
 
-    public Reservation(String name, String date, String time) {
+    public Reservation(String name, LocalDate date, LocalTime time) {
         this.name = name;
         this.date = date;
         this.time = time;
@@ -40,29 +58,23 @@ public class Reservation {
         this.name = name;
     }
 
-    public String getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 
-    public String getTime() {
+    public LocalTime getTime() {
         return time;
     }
 
-    public void setTime(String time) {
+    public void setTime(LocalTime time) {
         this.time = time;
     }
 
     public static Reservation toEntity(Reservation reservation, Long id) {
         return new Reservation(id, reservation.name, reservation.date, reservation.time);
-    }
-
-    public static boolean isInvalid(Reservation reservation) {
-        return (reservation.name == null || reservation.name.isBlank() ||
-                reservation.date == null || reservation.date.isBlank() ||
-                reservation.time == null || reservation.time.isBlank());
     }
 }

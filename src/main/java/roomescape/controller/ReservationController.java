@@ -1,5 +1,6 @@
 package roomescape.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -12,6 +13,8 @@ import roomescape.exception.NotFoundReservationException;
 
 import java.io.FileNotFoundException;
 import java.net.URI;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -25,9 +28,9 @@ public class ReservationController {
 
     // for second-stage testing purposes
 //    {
-//        Reservation test1 = new Reservation(index.getAndIncrement(), "name1", "2023-08-07", "11:00");
-//        Reservation test2 = new Reservation(index.getAndIncrement(), "name2", "2023-08-08", "12:00");
-//        Reservation test3 = new Reservation(index.getAndIncrement(), "name3", "2023-08-09", "13:00");
+//        Reservation test1 = new Reservation(index.getAndIncrement(), "name1", LocalDate.of(2023, 8, 8), LocalTime.of(11, 0));
+//        Reservation test2 = new Reservation(index.getAndIncrement(), "name2", LocalDate.of(2023, 8, 8), LocalTime.of(12, 0));
+//        Reservation test3 = new Reservation(index.getAndIncrement(), "name3", LocalDate.of(2023, 8, 9), LocalTime.of(13, 0));
 //
 //        reservationList.add(test1);
 //        reservationList.add(test2);
@@ -40,11 +43,9 @@ public class ReservationController {
     }
 
     @PostMapping("/reservations")
-    public ResponseEntity<Reservation> addReservation(@RequestBody Reservation newReservation) {
-        if (Reservation.isInvalid(newReservation))
-            throw new BadRequestReservationException();
-
+    public ResponseEntity<Reservation> addReservation(@Valid @RequestBody Reservation newReservation) {
         Reservation reservation = Reservation.toEntity(newReservation, index.getAndIncrement());
+
         reservationList.add(reservation);
         return ResponseEntity
                 .created(URI.create("/reservations/" + reservation.getId()))
@@ -52,7 +53,7 @@ public class ReservationController {
     }
 
     @DeleteMapping("/reservations/{id}")
-    public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteReservation(@PathVariable("id") Long id) {
         Reservation reservation = reservationList.stream()
                 .filter(it -> Objects.equals(it.getId(), id))
                 .findFirst()
