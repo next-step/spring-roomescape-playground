@@ -27,4 +27,13 @@ public class RoomescapeControllerTest {
                 .then().log().all()
                 .statusCode(200);
     }
+
+    @Test
+    @DisplayName("/time 경로로 GET 요청을 보내면 시간 관리 화면을 반환한다.")
+    void time() {
+        RestAssured.given().log().all()
+                .when().get("/time")
+                .then().log().all()
+                .statusCode(200);
+    }
 }
