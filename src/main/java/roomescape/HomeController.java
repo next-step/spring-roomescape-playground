@@ -1,19 +1,23 @@
 package roomescape;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class HomeController {
 
   @GetMapping("/")
-  public String home(Model model) {
+  public String home() {
     return "home";
   }
 
   @GetMapping("/reservation")
-  public String reservation(Model model) {
-    return "reservation";
+  public String reservation() {
+    return "new-reservation";
+  }
+
+  @GetMapping("/time")
+  public String time() {
+    return "time";
   }
 }

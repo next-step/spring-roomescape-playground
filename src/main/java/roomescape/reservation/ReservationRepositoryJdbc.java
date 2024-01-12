@@ -18,7 +18,7 @@ public class ReservationRepositoryJdbc implements ReservationRepository {
   @Autowired
   private JdbcTemplate jdbcTemplate;
 
-  public Reservation save(String name, String date, String time) {
+  public Reservation save(String name, String date, Time time) {
     String sql = "INSERT INTO RESERVATION (name, date, time) VALUES (?, ?, ?)";
 
     GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
@@ -26,7 +26,7 @@ public class ReservationRepositoryJdbc implements ReservationRepository {
       PreparedStatement preparedStatement = connection.prepareStatement(sql, new String[]{"id"});
       preparedStatement.setString(1, name);
       preparedStatement.setString(2, date);
-      preparedStatement.setString(3, time);
+      preparedStatement.setTime(3, time);
       return preparedStatement;
     }, keyHolder);
 
@@ -39,19 +39,25 @@ public class ReservationRepositoryJdbc implements ReservationRepository {
   }
 
   public List<Reservation> findAll() {
-    String sql = "SELECT * FROM RESERVATION";
+    String sql = "SELECT \n"
+        + "    r.id as reservation_id, \n"
+        + "    r.name, \n"
+        + "    r.date, \n"
+        + "    t.id as time_id, \n"
+        + "    t.time as time_value \n"
+        + "FROM reservation as r inner join time as t on r.time_id = t.id";
     return jdbcTemplate.queryForStream(sql, (rs, rowNum) -> Reservation.builder()
             .id(rs.getLong("id"))
             .name(rs.getString("name"))
             .date(rs.getDate("date").toString())
-            .time(rs.getTime("time").toString())
+            .time(rs.getTime("time"))
             .build())
         .toList();
   }
 
-  public void deleteById(final Long id) {
+  public void deleteById(Long id) {
     String sql = "DELETE FROM RESERVATION WHERE id = ?";
-    int rowCount = jdbcTemplate.update(sql, id);
+    jdbcTemplate.update(sql, id);
   }
 }
 
