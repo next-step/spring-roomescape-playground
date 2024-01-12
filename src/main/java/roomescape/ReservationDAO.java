@@ -29,4 +29,14 @@ public class ReservationDAO {
         String sql = "SELECT id, name, date, time FROM reservation";
         return jdbcTemplate.query(sql, reservationRowMapper);
     }
+
+    public void insertNewReservation(Reservation reservation) {
+        String sql = "INSERT INTO reservation (id, name, date, time) VALUES (?, ?)";
+        jdbcTemplate.update(sql, reservation.getName(), reservation.getDate(), reservation.getTime());
+    }
+
+    public void deleteReservation(Long id) {
+        String sql = "DELETE FROM reservation WHERE id = ?";
+        jdbcTemplate.update(sql, Long.valueOf(id));
+    }
 }
