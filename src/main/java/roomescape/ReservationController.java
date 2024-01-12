@@ -1,10 +1,14 @@
 package roomescape;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicLong;
 
 @RestController
@@ -21,6 +25,12 @@ public class ReservationController {
 
     @PostMapping
     public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservation){
+
+        //빈 값 들어왔을 때의 예외 처리
+        if(reservation.getName().isEmpty() || reservation.getDate() == null || reservation.getTime() == null){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+
         Reservation newReservation = new Reservation();
         newReservation.setId(idCounter.incrementAndGet());
         newReservation.setName(reservation.getName());
@@ -39,6 +49,11 @@ public class ReservationController {
     public ResponseEntity<Reservation> deleteReservation(@PathVariable long id) throws Exception {
         Reservation deleteOne = null;
 
+        //예약이 없는 경우
+        if(reservations.isEmpty()){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+
         for (Reservation reservation : reservations) {
             if (reservation.getId() == id) {
                 deleteOne = reservation;
@@ -47,10 +62,10 @@ public class ReservationController {
         }
         if(deleteOne != null){
             reservations.remove(deleteOne);
-//            idCounter.decrementAndGet();
             return ResponseEntity.noContent().build();
         }
-        throw new Exception("ID(" + id + ")가 없습니다");
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
     }
 
 

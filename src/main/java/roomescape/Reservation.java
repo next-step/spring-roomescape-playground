@@ -1,19 +1,26 @@
 package roomescape;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class Reservation {
     private long id;
+    @NotBlank
     private String name;
+    @NotNull
     private LocalDate date;
+    @NotNull
     private LocalTime time;
 
     public Reservation(){}
 
     public Reservation(String name, LocalDate date, LocalTime time) {
         this.id = 0;
+
         this.name = name;
+
         this.date = date;
         this.time = time;
     }
