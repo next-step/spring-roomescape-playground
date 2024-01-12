@@ -2,9 +2,7 @@ package roomescape.domain.reservation.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 import roomescape.domain.reservation.dto.request.ReservationCreateRequestDto;
 import roomescape.domain.reservation.entity.Reservation;
 
@@ -39,5 +37,15 @@ public class ReservationController {
                 requestDto.name(), requestDto.date(), requestDto.time());
         reservations.add(newReservation);
         return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
+    }
+
+    @DeleteMapping("/reservations/{reservationId}")
+    public ResponseEntity<Void> deleteReservation(@PathVariable Long reservationId) {
+        Reservation deleteReservation = reservations.stream()
+                .filter(reservation -> reservation.getId().equals(reservationId))
+                .findFirst()
+                .orElseThrow(IllegalArgumentException::new);
+        reservations.remove(deleteReservation);
+        return ResponseEntity.noContent().build();
     }
 }
