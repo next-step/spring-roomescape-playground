@@ -1,16 +1,14 @@
 package roomescape.domain.reservation.dao;
 
 import static java.util.Collections.unmodifiableList;
-import static roomescape.domain.reservation.exception.ReservationException.ErrorCode.NOT_FOUND;
+import static roomescape.domain.reservation.exception.ReservationException.ReservationErrorCode.NOT_FOUND;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
-import org.springframework.stereotype.Repository;
+import roomescape.domain.reservation.entity.Reservation;
 import roomescape.domain.reservation.exception.ReservationException;
-import roomescape.domain.reservation.model.Reservation;
 
-@Repository
 public class SimpleReservationRepository implements ReservationRepository {
     private static final AtomicLong INDEX = new AtomicLong(0);
 

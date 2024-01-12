@@ -14,7 +14,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import roomescape.RoomescapeApplicationTest;
-import roomescape.domain.reservation.model.Reservation;
+import roomescape.domain.reservation.entity.Reservation;
 
 public class ReservationControllerTest extends RoomescapeApplicationTest {
 
@@ -54,7 +54,11 @@ public class ReservationControllerTest extends RoomescapeApplicationTest {
 
             @BeforeEach
             void setUp() {
-                params = putAllParams("브라운", "2023-08-05", "15:40");
+                Map<String, String> reservation = new HashMap<>();
+                reservation.put("time", "10:00");
+                postMethodTest(reservation, "/times", 201);
+
+                params = putAllParams("브라운", "2023-08-05", "1");
             }
 
             @Test
@@ -101,7 +105,11 @@ public class ReservationControllerTest extends RoomescapeApplicationTest {
 
             @BeforeEach
             void setUp() {
-                params = putAllParams("브라운", "2023-08-05", "15:40");
+                Map<String, String> reservation = new HashMap<>();
+                reservation.put("time", "10:00");
+                postMethodTest(reservation, "/times", 201);
+
+                params = putAllParams("브라운", "2023-08-05", "1");
             }
 
             @Test
@@ -143,12 +151,24 @@ public class ReservationControllerTest extends RoomescapeApplicationTest {
             }
         }
 
-        private Map<String, String> putAllParams(String name, String date, String time) {
+        private Map<String, String> putAllParams(String name, String date, String timeId) {
             Map<String, String> params = new HashMap<>();
             params.put("name", name);
             params.put("date", date);
-            params.put("time", time);
+            params.put("timeId", timeId);
             return params;
         }
+    }
+
+
+    @Test
+    @DisplayName("기존의 방식으로 예약을 생성하는 것은 실패한다.")
+    public void 기존의_방식으로_예약을_생성하는_것은_실패한다() {
+        Map<String, String> reservation = new HashMap<>();
+        reservation.put("name", "브라운");
+        reservation.put("date", "2023-08-05");
+        reservation.put("time", "10:00");
+
+        postMethodTest(reservation, "/reservations", 400);
     }
 }
