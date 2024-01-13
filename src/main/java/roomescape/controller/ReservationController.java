@@ -18,7 +18,7 @@ import java.util.Map;
 @RequestMapping("/reservations")
 public class ReservationController {
 
-    private ReservationService reservationService;
+    private final ReservationService reservationService;
 
     public ReservationController(ReservationService reservationService) {
         this.reservationService = reservationService;
@@ -35,6 +35,7 @@ public class ReservationController {
     @PostMapping
     public ResponseEntity<ReservationDto> createReservations(@RequestBody Map<String, String> reservationRequest) {
         ReservationDto reservation = reservationService.save(reservationRequest);
+
         return ResponseEntity.status(HttpStatus.CREATED)
                 .header("Location", "/reservations/" + reservation.id())
                 .body(reservation);

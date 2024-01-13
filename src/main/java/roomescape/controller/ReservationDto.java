@@ -7,8 +7,7 @@ import java.util.List;
 
 public record ReservationDto(long id, String name, String date, String time) {
 
-
-    public static List<ReservationDto> of(List<Reservation> reservations) {
+    public static List<ReservationDto> from(List<Reservation> reservations) {
         if (reservations == null || reservations.isEmpty()) {
             return Collections.emptyList();
         }

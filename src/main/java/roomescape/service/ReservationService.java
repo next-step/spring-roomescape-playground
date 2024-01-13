@@ -11,9 +11,9 @@ import java.util.concurrent.atomic.AtomicLong;
 @Service
 public class ReservationService {
 
-    private static AtomicLong index = new AtomicLong(0L);
+    private final AtomicLong index = new AtomicLong(0L);
 
-    private List<Reservation> reservations;
+    private final List<Reservation> reservations;
 
     public ReservationService(List<Reservation> reservations) {
         this.reservations = reservations;
@@ -31,10 +31,14 @@ public class ReservationService {
     }
 
     public List<ReservationDto> findAll() {
-        return ReservationDto.of(reservations);
+        return ReservationDto.from(reservations);
     }
 
     public void deleteById(long deleteId) {
-        reservations.remove(Long.valueOf(deleteId).intValue() - 1);
+        try {
+            reservations.remove(Long.valueOf(deleteId).intValue() - 1);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("예약을 삭제할 수 없습니다. 잘못된 예약 id입니다.");
+        }
     }
 }
