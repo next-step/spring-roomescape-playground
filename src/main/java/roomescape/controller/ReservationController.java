@@ -13,7 +13,7 @@ import roomescape.domain.Reservation;
 import roomescape.controller.dto.request.CreateReservationRequest;
 import roomescape.controller.dto.response.CreateReservationResponse;
 import roomescape.controller.dto.response.ReadReservationResponse;
-import roomescape.exception.ReservationNotFoundException;
+import roomescape.controller.exception.ReservationNotFoundException;
 
 import java.net.URI;
 import java.util.ArrayList;

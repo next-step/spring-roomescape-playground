@@ -9,7 +9,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import roomescape.controller.dto.response.ExceptionResponse;
-import roomescape.exception.ReservationNotFoundException;
+import roomescape.controller.exception.ReservationNotFoundException;
 
 import java.util.stream.Collectors;
 
