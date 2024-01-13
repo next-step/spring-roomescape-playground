@@ -33,9 +33,10 @@ public class Reservations {
     }
 
     public void cancel(Long id) {
-        reservations.stream()
+        Reservation reservation = reservations.stream()
                 .filter(it -> it.getId().equals(id))
                 .findFirst()
-                .ifPresent(reservations::remove);
+                .orElseThrow(() -> new IllegalArgumentException("id가 " + id + "인 예약을 찾을 수 없습니다"));
+        reservations.remove(reservation);
     }
 }
