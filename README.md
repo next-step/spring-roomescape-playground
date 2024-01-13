@@ -8,6 +8,10 @@
 - [x] /reservation 요청 시 templates/reservation.html 파일 응답
 - [x] 예약 목록 조회 API 구현
 
+### 3단계 요구사항
+- [ ] 예약 추가 API 구현
+- [ ] 예약 삭제 API 구현
+
 ---
 
 # API 명세
@@ -35,4 +39,40 @@ Content-Type: application/json
         "time": "11:00"
     }
 ]
+```
+
+### 예약 추가
+**Request**
+```json
+POST /reservations HTTP/1.1
+content-type: application/json
+
+{
+    "date": "2023-08-05",
+    "name": "브라운",
+    "time": "15:40"
+}
+```
+**Response**
+```json
+HTTP/1.1 201
+Location: /reservations/1
+Content-Type: application/json
+
+{
+    "id": 1,
+    "name": "브라운",
+    "date": "2023-08-05",
+    "time": "15:40"
+}
+```
+
+### 예약 삭제
+**Request**
+```json
+DELETE /reservations/1 HTTP/1.1
+```
+**Response**
+```json
+HTTP/1.1 204 No Content
 ```
