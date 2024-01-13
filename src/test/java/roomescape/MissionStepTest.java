@@ -103,4 +103,13 @@ class MissionStepTest {
                    .statusCode(200)
                    .body("size()", is(0));
     }
+
+    @Test
+    @DisplayName("예약 삭제 시 삭제할 예약이 없는 경우 Status Code가 400이다")
+    void 사단계() {
+        RestAssured.given().log().all()
+                   .when().delete("/reservations/1")
+                   .then().log().all()
+                   .statusCode(400);
+    }
 }

@@ -12,6 +12,7 @@ import roomescape.domain.Reservation;
 import roomescape.dto.CreateReservationRequest;
 import roomescape.dto.CreateReservationResponse;
 import roomescape.dto.ReadReservationResponse;
+import roomescape.exception.ReservationNotFoundException;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -60,7 +61,7 @@ public class ReservationController {
         final Reservation target = reservations.stream()
                                                .filter(reservation -> Objects.equals(reservation.getId(), id))
                                                .findAny()
-                                               .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 예약입니다."));
+                                               .orElseThrow(() -> new ReservationNotFoundException("존재하지 않는 예약입니다."));
         reservations.remove(target);
 
         return ResponseEntity.noContent()
