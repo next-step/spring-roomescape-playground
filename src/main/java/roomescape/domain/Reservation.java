@@ -2,12 +2,18 @@ package roomescape.domain;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import org.jetbrains.annotations.NotNull;
 
 public class Reservation {
-
     private Long id;
+
+    @NotNull
     private String name;
+
+    @NotNull
     private LocalDate date;
+
+    @NotNull
     private LocalTime time;
 
     public Long getId() {
