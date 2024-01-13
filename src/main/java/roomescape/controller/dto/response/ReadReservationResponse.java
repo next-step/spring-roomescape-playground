@@ -1,4 +1,4 @@
-package roomescape.dto;
+package roomescape.controller.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import roomescape.domain.Reservation;
@@ -6,7 +6,7 @@ import roomescape.domain.Reservation;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-public class CreateReservationResponse {
+public class ReadReservationResponse {
 
     private final Long id;
 
@@ -18,19 +18,19 @@ public class CreateReservationResponse {
     @JsonFormat(pattern = "HH:mm")
     private final LocalTime time;
 
-    private CreateReservationResponse(final Long id, final String name, final LocalDate date, final LocalTime time) {
+    private ReadReservationResponse(final Long id, final String name, final LocalDate date, final LocalTime time) {
         this.id = id;
         this.name = name;
         this.date = date;
         this.time = time;
     }
 
-    public static CreateReservationResponse from(final Reservation newReservation) {
-        return new CreateReservationResponse(
-                newReservation.getId(),
-                newReservation.getName(),
-                newReservation.getDate(),
-                newReservation.getTime()
+    public static ReadReservationResponse from(final Reservation reservation) {
+        return new ReadReservationResponse(
+                reservation.getId(),
+                reservation.getName(),
+                reservation.getDate(),
+                reservation.getTime()
         );
     }
 

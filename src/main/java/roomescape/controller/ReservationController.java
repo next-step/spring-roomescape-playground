@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import roomescape.domain.Reservation;
-import roomescape.dto.CreateReservationRequest;
-import roomescape.dto.CreateReservationResponse;
-import roomescape.dto.ReadReservationResponse;
+import roomescape.controller.dto.request.CreateReservationRequest;
+import roomescape.controller.dto.response.CreateReservationResponse;
+import roomescape.controller.dto.response.ReadReservationResponse;
 import roomescape.exception.ReservationNotFoundException;
 
 import java.net.URI;
