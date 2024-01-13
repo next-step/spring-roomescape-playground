@@ -104,9 +104,27 @@ class MissionStepTest {
                    .body("size()", is(0));
     }
 
+
+
+    @Test
+    @DisplayName("예약 추가 시 필요한 인자가 없는 경우 Status Code가 400이다")
+    void 사단계_1() {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", "브라운");
+        params.put("date", "");
+        params.put("time", "");
+
+        RestAssured.given().log().all()
+                   .contentType(ContentType.JSON)
+                   .body(params)
+                   .when().post("/reservations")
+                   .then().log().all()
+                   .statusCode(400);
+    }
+
     @Test
     @DisplayName("예약 삭제 시 삭제할 예약이 없는 경우 Status Code가 400이다")
-    void 사단계() {
+    void 사단계_2() {
         RestAssured.given().log().all()
                    .when().delete("/reservations/1")
                    .then().log().all()
