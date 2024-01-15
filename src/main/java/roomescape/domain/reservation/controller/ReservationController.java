@@ -20,16 +20,6 @@ public class ReservationController {
     private AtomicLong index = new AtomicLong(0);
     private final List<Reservation> reservations = new ArrayList<>();
 
-    @GetMapping("/")
-    public String home() {
-        return "home";
-    }
-
-    @GetMapping("/reservation")
-    public String reservation() {
-        return "reservation";
-    }
-
     @GetMapping("/reservations")
     public ResponseEntity<List<Reservation>> readReservations() {
         return ResponseEntity.ok().body(reservations);
