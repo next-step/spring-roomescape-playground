@@ -9,6 +9,8 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -24,8 +26,22 @@ import roomescape.exception.NotFoundReservationException;
 @Controller
 public class RoomescapeController {
 
+    private final JdbcTemplate jdbcTemplate;
+
     private final List<Reservation> reservations = new ArrayList<>();
     private final AtomicLong index = new AtomicLong(1);
+    private final RowMapper<Reservation> reservationRawMapper = (resultSet, rowNum) -> {
+        Reservation reservation = new Reservation(
+            resultSet.getLong("id"),
+            resultSet.getString("name"),
+            resultSet.getDate("date").toLocalDate(),
+            resultSet.getTime("time").toLocalTime());
+        return reservation;
+    };
+
+    public RoomescapeController(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     private static boolean isValidReservation(Reservation reservation) {
         if (reservation == null)
@@ -34,10 +50,7 @@ public class RoomescapeController {
             return false;
         if (reservation.getDate() == null)
             return false;
-        if (reservation.getTime() == null)
-            return false;
-
-        return true;
+        return reservation.getTime() != null;
     }
 
     @ExceptionHandler({NotFoundReservationException.class, InvalidReservationException.class})
@@ -62,7 +75,11 @@ public class RoomescapeController {
             reservations.add(new Reservation(index.getAndIncrement(), "test" + 2, LocalDate.now(), LocalTime.now()));
             reservations.add(new Reservation(index.getAndIncrement(), "test" + 3, LocalDate.now(), LocalTime.now()));
         }
-        return ResponseEntity.ok().body(reservations);
+
+        String sql = "SELECT id, name, date, time FROM reservation\n";
+        List<Reservation> reservationList = this.jdbcTemplate.query(sql, reservationRawMapper);
+
+        return ResponseEntity.ok().body(reservationList);
     }
 
     @PostMapping("/reservations")
