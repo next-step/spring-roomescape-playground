@@ -9,8 +9,6 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -22,25 +20,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import roomescape.domain.Reservation;
 import roomescape.exception.InvalidReservationException;
 import roomescape.exception.NotFoundReservationException;
+import roomescape.service.ReservationService;
 
 @Controller
 public class RoomescapeController {
 
-    private final JdbcTemplate jdbcTemplate;
-
+    private final ReservationService reservationService;
     private final List<Reservation> reservations = new ArrayList<>();
     private final AtomicLong index = new AtomicLong(1);
-    private final RowMapper<Reservation> reservationRawMapper = (resultSet, rowNum) -> {
-        Reservation reservation = new Reservation(
-            resultSet.getLong("id"),
-            resultSet.getString("name"),
-            resultSet.getDate("date").toLocalDate(),
-            resultSet.getTime("time").toLocalTime());
-        return reservation;
-    };
 
-    public RoomescapeController(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    public RoomescapeController(ReservationService reservationService) {
+        this.reservationService = reservationService;
     }
 
     private static boolean isValidReservation(Reservation reservation) {
@@ -76,8 +66,7 @@ public class RoomescapeController {
             reservations.add(new Reservation(index.getAndIncrement(), "test" + 3, LocalDate.now(), LocalTime.now()));
         }
 
-        String sql = "SELECT id, name, date, time FROM reservation\n";
-        List<Reservation> reservationList = this.jdbcTemplate.query(sql, reservationRawMapper);
+        List<Reservation> reservationList = reservationService.getAllReservations();
 
         return ResponseEntity.ok().body(reservationList);
     }
