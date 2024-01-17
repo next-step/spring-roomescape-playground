@@ -42,7 +42,7 @@ public class ReservationController {
     }
 
     @DeleteMapping("/{deleteId}")
-    public ResponseEntity<Void> deleteById(@PathVariable long deleteId) {
+    public ResponseEntity<Void> deleteById(@PathVariable(name = "deleteId") long deleteId) {
         reservationRepository.deleteById(deleteId);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT)

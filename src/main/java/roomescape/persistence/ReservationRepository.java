@@ -6,6 +6,9 @@ import roomescape.domain.Reservation;
 
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Component
@@ -13,11 +16,7 @@ public class ReservationRepository {
 
     private final AtomicLong index = new AtomicLong(0L);
 
-    private final List<Reservation> reservations;
-
-    public ReservationRepository(List<Reservation> reservations) {
-        this.reservations = reservations;
-    }
+    private final List<Reservation> reservations = new CopyOnWriteArrayList<>();
 
     public ReservationDto save(Map<String, String> request) {
         Reservation reservation = new Reservation(
@@ -35,10 +34,15 @@ public class ReservationRepository {
     }
 
     public void deleteById(long deleteId) {
-        try {
-            reservations.remove(Long.valueOf(deleteId).intValue() - 1);
-        } catch (Exception e) {
-            throw new IllegalArgumentException("예약을 삭제할 수 없습니다. 잘못된 예약 id입니다.");
-        }
+        Reservation deleted = findById(deleteId).
+                orElseThrow(() -> new NoSuchElementException("예약을 삭제할 수 없습니다. 잘못된 예약 id입니다."));
+
+        reservations.remove(deleted);
+    }
+
+    public Optional<Reservation> findById(long deleteId) {
+        return reservations.stream()
+                .filter(reservation -> reservation.isSameId(deleteId))
+                .findFirst();
     }
 }
