@@ -1,65 +1,59 @@
 package roomescape.controller;
 import roomescape.Entity.Reservation;
+import roomescape.Entity.Reservations;
+import roomescape.Exception.NotFoundReservationException;
+import roomescape.Exception.ValidateReservationDTO;
+import roomescape.DTO.ReservationDTO;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import roomescape.Exception.BadRequestException;
-import roomescape.Exception.NotFoundReservationException;
 
 import java.net.URI;
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
+@RequestMapping("/reservations")
 public class ReservationController {
-        private List<Reservation> reservations = new ArrayList<>();
+        private final Reservations reservations = new Reservations();
         private AtomicLong index = new AtomicLong(1);
 
-        @GetMapping("/reservation")
-        public String Reservation() {
-            return "reservation";
+        @GetMapping
+        public ResponseEntity<List<ReservationDTO>> readReservations() {
+            List<ReservationDTO> reservationDTOs = reservations.getAll().stream()
+                    .map(this::convertToDto)
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok().body(reservationDTOs);
         }
 
-        @GetMapping("/reservations")
-        public ResponseEntity<List<Reservation>> readReservation() {
-            return ResponseEntity.ok().body(reservations);
+        @PostMapping
+        public ResponseEntity<ReservationDTO> createReservation(@RequestBody ReservationDTO reservationDTO) {
+            ValidateReservationDTO.validateReservation(reservationDTO);
+            Reservation reservation = new Reservation(index.getAndIncrement(), reservationDTO.getName(), reservationDTO.getDate(), reservationDTO.getTime());
+            reservations.add(reservation);
+            return ResponseEntity.created(URI.create("/reservations/" + reservation.getId())).body(convertToDto(reservation));
         }
 
-        @PostMapping("/reservations")
-        public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservation) {
-            if (reservation.getName() == "" || reservation.getDate() == "" || reservation.getTime() == "") {
-                throw new BadRequestException("Name, date, and time are required for reservation creation");
-            }
-            Reservation newReservation = Reservation.toEntity(index.getAndIncrement(), reservation);
-            reservations.add(newReservation);
-            URI location = URI.create("/reservations/" + newReservation.getId());
-            return ResponseEntity.created(location).body(newReservation);
-        }
-
-        @PutMapping("/reservations/{id}")
-        public ResponseEntity<Void> updateReservation(@RequestBody Reservation newReservation, @PathVariable Long id) {
-            Reservation member = reservations.stream()
-                    .filter(it -> Objects.equals(it.getId(), id))
-                    .findFirst()
+        @PutMapping("/{id}")
+        public ResponseEntity<Void> updateReservation(@RequestBody Reservation newReservation, @PathVariable long id) {
+            Reservation reservation = reservations.findById(id)
                     .orElseThrow(() -> new NotFoundReservationException("Reservation with id " + id + " not found"));
-
-            member.update(newReservation);
+            reservation.update(newReservation);
             return ResponseEntity.ok().build();
         }
 
-        @DeleteMapping("/reservations/{id}")
-        public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
-            Reservation reservation = reservations.stream()
-                    .filter(it -> Objects.equals(it.getId(), id))
-                    .findFirst()
+        @DeleteMapping("/{id}")
+        public ResponseEntity<Void> deleteReservation(@PathVariable long id) {
+            Reservation reservation = reservations.findById(id)
                     .orElseThrow(() -> new NotFoundReservationException("Reservation with id " + id + " not found"));
-
             reservations.remove(reservation);
-
             return ResponseEntity.noContent().build();
+        }
+
+        private ReservationDTO convertToDto(Reservation reservation) {
+            return new ReservationDTO(reservation.getName(), reservation.getDate(), reservation.getTime());
         }
 
 }
