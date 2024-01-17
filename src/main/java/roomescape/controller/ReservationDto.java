@@ -16,8 +16,8 @@ public record ReservationDto(long id, String name, String date, String time) {
                 .map(res -> new ReservationDto(
                         res.getId(),
                         res.getName(),
-                        res.getDate(),
-                        res.getTime())
+                        res.getDate().toString(),
+                        res.getTime().toString())
                 )
                 .toList();
     }
@@ -26,7 +26,7 @@ public record ReservationDto(long id, String name, String date, String time) {
         return new ReservationDto(
                 reservation.getId(),
                 reservation.getName(),
-                reservation.getDate(),
-                reservation.getTime());
+                reservation.getDate().toString(),
+                reservation.getTime().toString());
     }
 }

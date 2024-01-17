@@ -1,19 +1,22 @@
 package roomescape.domain;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 import static io.micrometer.common.util.StringUtils.isBlank;
 
 public class Reservation {
     private Long id;
     private String name;
-    private String date;
-    private String time;
+    private LocalDate date;
+    private LocalTime time;
 
     public Reservation(Long id, String name, String date, String time) {
+        validate(name, date, time);
         this.id = id;
         this.name = name;
-        this.date = date;
-        this.time = time;
-        validate(name, date, time);
+        this.date = LocalDate.parse(date);
+        this.time = LocalTime.parse(time);
     }
 
     private void validate(String name, String date, String time) {
@@ -30,11 +33,11 @@ public class Reservation {
         return name;
     }
 
-    public String getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public String getTime() {
+    public LocalTime getTime() {
         return time;
     }
 }
