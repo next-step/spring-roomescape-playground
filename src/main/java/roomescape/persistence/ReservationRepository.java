@@ -1,6 +1,6 @@
-package roomescape.service;
+package roomescape.persistence;
 
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import roomescape.controller.ReservationDto;
 import roomescape.domain.Reservation;
 
@@ -8,14 +8,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
-@Service
-public class ReservationService {
+@Component
+public class ReservationRepository {
 
     private final AtomicLong index = new AtomicLong(0L);
 
     private final List<Reservation> reservations;
 
-    public ReservationService(List<Reservation> reservations) {
+    public ReservationRepository(List<Reservation> reservations) {
         this.reservations = reservations;
     }
 
