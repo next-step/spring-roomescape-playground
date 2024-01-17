@@ -64,14 +64,14 @@ public class RoomescapeController {
             throw new InvalidReservationException();
         }
 
-        Long generatedId = reservationService.createReservation(reservation);
+        Long generatedId = reservationService.addReservation(reservation);
         Reservation newReservation = Reservation.toEntity(reservation, generatedId);
         return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
     }
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> getReservations(@PathVariable Long id) {
-        int deleteCount = reservationService.deleteReservation(id);
+        int deleteCount = reservationService.removeReservation(id);
         if (deleteCount == 0) {
             throw new NotFoundReservationException();
         }

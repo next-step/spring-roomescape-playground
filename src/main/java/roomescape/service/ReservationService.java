@@ -16,16 +16,16 @@ public class ReservationService {
     }
 
     public List<Reservation> getAllReservations() {
-        List<Reservation> reservationList = reservationDao.getAllReservations();
+        List<Reservation> reservationList = reservationDao.listAllReservations();
         return reservationList;
     }
 
-    public Long createReservation(Reservation reservation) {
+    public Long addReservation(Reservation reservation) {
         Long generatedId = reservationDao.createReservation(reservation);
         return generatedId;
     }
 
-    public int deleteReservation(Long id) {
+    public int removeReservation(Long id) {
         int deleteCount = reservationDao.deleteReservation(id);
 
         return deleteCount;

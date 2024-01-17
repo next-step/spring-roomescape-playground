@@ -30,7 +30,7 @@ public class ReservationDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public List<Reservation> getAllReservations() {
+    public List<Reservation> listAllReservations() {
         String sql = "SELECT id, name, date, time FROM reservation";
         List<Reservation> reservationList = jdbcTemplate.query(sql, reservationRawMapper);
 
