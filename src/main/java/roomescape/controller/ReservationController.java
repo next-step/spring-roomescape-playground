@@ -57,11 +57,15 @@ public class ReservationController {
 
     @ExceptionHandler(NotFoundReservationException.class)
     public ResponseEntity handleException(NotFoundReservationException e) {
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity
+                .badRequest()
+                .body(e.getMessage());
     }
 
     @ExceptionHandler(InvalidReservationException.class)
     public ResponseEntity handleEmptyFieldException(InvalidReservationException e) {
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity
+                .badRequest()
+                .body(e.getMessage());
     }
 }
