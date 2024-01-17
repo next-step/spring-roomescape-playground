@@ -19,4 +19,15 @@ public class ReservationService {
         List<Reservation> reservationList = reservationDao.getAllReservations();
         return reservationList;
     }
+
+    public Long createReservation(Reservation reservation) {
+        Long generatedId = reservationDao.createReservation(reservation);
+        return generatedId;
+    }
+
+    public int deleteReservation(Long id) {
+        int deleteCount = reservationDao.deleteReservation(id);
+
+        return deleteCount;
+    }
 }
