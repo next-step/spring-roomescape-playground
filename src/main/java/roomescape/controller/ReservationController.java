@@ -38,8 +38,8 @@ public class ReservationController {
         }
         Reservation newReservation = new Reservation(index.incrementAndGet(), reservation.getName(), reservation.getDate(), reservation.getTime());
         reservations.add(newReservation);
-        return ResponseEntity.
-                created(URI.create("/reservations/" + newReservation.getId()))
+        return ResponseEntity
+                .created(URI.create("/reservations/" + newReservation.getId()))
                 .body(newReservation);
     }
 
