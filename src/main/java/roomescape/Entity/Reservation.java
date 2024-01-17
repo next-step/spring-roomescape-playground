@@ -45,10 +45,6 @@ public class Reservation {
         this.time = time;
     }
 
-    public static Reservation toEntity(long id, Reservation reservation) {
-        return new Reservation(id, reservation.name, reservation.date, reservation.time);
-    }
-
     public void update(Reservation newReservation) {
         this.id = newReservation.id;
         this.name = newReservation.name;
