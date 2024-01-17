@@ -45,7 +45,7 @@ public class Reservation {
         this.time = time;
     }
 
-    public static Reservation toEntity(Long id, Reservation reservation) {
+    public static Reservation toEntity(long id, Reservation reservation) {
         return new Reservation(id, reservation.name, reservation.date, reservation.time);
     }
 
@@ -54,5 +54,9 @@ public class Reservation {
         this.name = newReservation.name;
         this.date = newReservation.date;
         this.time = newReservation.time;
+    }
+
+    public boolean isEqualId(long id) {
+        return this.id == id;
     }
 }
