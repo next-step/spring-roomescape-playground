@@ -28,8 +28,6 @@ public class ReservationController {
 
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> create(@RequestBody Reservation reservation) {
-//        ReservationDAO reservationDAO = new ReservationDAO(jdbcTemplate);
-
         if(Reservation.checkValidity(reservation)) throw new NoParameterException();
 
         Long id = reservationDAO.insertNewReservation(reservation);
@@ -40,14 +38,11 @@ public class ReservationController {
     @GetMapping("/reservations")
     public ResponseEntity<List<Reservation>> read() {
         List<Reservation> reservationList = reservationDAO.findAllReservations();
-//        return ResponseEntity.ok().body(new ReservationDAO(jdbcTemplate).findAllReservations());
         return ResponseEntity.ok().body(reservationList);
     }
 
     @PutMapping("/reservations/{id}")
     public ResponseEntity<Void> update(@RequestBody Reservation newReservation, @PathVariable Long id) {
-//        ReservationDAO reservationDAO = new ReservationDAO(jdbcTemplate);
-
         Reservation reservation = reservationDAO.findAllReservations().stream()
                 .filter(it -> Objects.equals(it.getId(), id))
                 .findFirst()
@@ -59,8 +54,6 @@ public class ReservationController {
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-//        ReservationDAO reservationDAO = new ReservationDAO(jdbcTemplate);
-
         Reservation reservation = reservationDAO.findAllReservations().stream()
                 .filter(it -> Objects.equals(it.getId(), id))
                 .findFirst()
