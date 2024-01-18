@@ -49,6 +49,21 @@ public class ReservationDAO {
         return id;
     }
 
+    public Long updateReservation(Reservation reservation, Long id) {
+        String sql = "UPDATE reservation SET name=?, date=?, time=? WHERE id=?";
+
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, reservation.getName());
+            ps.setString(2, reservation.getDate());
+            ps.setString(3, reservation.getTime());
+            ps.setString(4, reservation.getId().toString());
+            return ps;
+        });
+
+        return id;
+    }
+
     public void deleteReservation(Long id) {
         String sql = "DELETE FROM reservation WHERE id = ?";
         jdbcTemplate.update(sql, id);
