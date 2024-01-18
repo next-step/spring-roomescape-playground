@@ -18,7 +18,6 @@ public class ReservationController {
     @Autowired
     private ReservationDAO reservationDAO = new ReservationDAO(jdbcTemplate);
 
-    // 생성자 내 주석 코드 - 2단계 테스트를 위한 임의 data 추가(.body("size()", is(3)))
     public ReservationController() {
     }
 
