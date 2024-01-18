@@ -1,7 +1,6 @@
 package roomescape;
 
 import java.sql.PreparedStatement;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -52,6 +51,6 @@ public class ReservationDAO {
 
     public void deleteReservation(Long id) {
         String sql = "DELETE FROM reservation WHERE id = ?";
-        jdbcTemplate.update(sql, Long.valueOf(id));
+        jdbcTemplate.update(sql, id);
     }
 }
