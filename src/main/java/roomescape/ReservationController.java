@@ -15,6 +15,9 @@ public class ReservationController {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    @Autowired
+    private ReservationDAO reservationDAO = new ReservationDAO(jdbcTemplate);
+
     // 생성자 내 주석 코드 - 2단계 테스트를 위한 임의 data 추가(.body("size()", is(3)))
     public ReservationController() {
     }
@@ -26,7 +29,7 @@ public class ReservationController {
 
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> create(@RequestBody Reservation reservation) {
-        ReservationDAO reservationDAO = new ReservationDAO(jdbcTemplate);
+//        ReservationDAO reservationDAO = new ReservationDAO(jdbcTemplate);
 
         if(Reservation.checkValidity(reservation)) throw new NoParameterException();
 
@@ -37,12 +40,14 @@ public class ReservationController {
 
     @GetMapping("/reservations")
     public ResponseEntity<List<Reservation>> read() {
-        return ResponseEntity.ok().body(new ReservationDAO(jdbcTemplate).findAllReservations());
+        List<Reservation> reservationList = reservationDAO.findAllReservations();
+//        return ResponseEntity.ok().body(new ReservationDAO(jdbcTemplate).findAllReservations());
+        return ResponseEntity.ok().body(reservationList);
     }
 
     @PutMapping("/reservations/{id}")
     public ResponseEntity<Void> update(@RequestBody Reservation newReservation, @PathVariable Long id) {
-        ReservationDAO reservationDAO = new ReservationDAO(jdbcTemplate);
+//        ReservationDAO reservationDAO = new ReservationDAO(jdbcTemplate);
 
         Reservation reservation = reservationDAO.findAllReservations().stream()
                 .filter(it -> Objects.equals(it.getId(), id))
@@ -55,7 +60,7 @@ public class ReservationController {
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        ReservationDAO reservationDAO = new ReservationDAO(jdbcTemplate);
+//        ReservationDAO reservationDAO = new ReservationDAO(jdbcTemplate);
 
         Reservation reservation = reservationDAO.findAllReservations().stream()
                 .filter(it -> Objects.equals(it.getId(), id))
