@@ -28,9 +28,4 @@ public class ReservationUpdatingDAO {
 
         return simpleJdbcInsert.executeAndReturnKey(parameters);
     }
-
-
-
-
-
 }

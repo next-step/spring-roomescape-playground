@@ -56,6 +56,7 @@ public class ReservationController {
 
         //step4~6
         Number newId = reservationUpdatingDAO.save(newReservation);
+        newReservation.setId(newId.longValue());
 
         return ResponseEntity
                 .status(201)
