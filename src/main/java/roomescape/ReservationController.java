@@ -45,7 +45,8 @@ public class ReservationController {
         }
 
         Reservation newReservation = new Reservation();
-        newReservation.setId(idCounter.incrementAndGet());
+
+//      newReservation.setId(idCounter.incrementAndGet());
         newReservation.setName(reservation.getName());
         newReservation.setDate(reservation.getDate());
         newReservation.setTime(reservation.getTime());
@@ -53,9 +54,8 @@ public class ReservationController {
         //step1~3
 //        reservations.add(newReservation);
 
-
         //step4~6
-        reservationUpdatingDAO.save(newReservation);
+        Number newId = reservationUpdatingDAO.save(newReservation);
 
         return ResponseEntity
                 .status(201)
