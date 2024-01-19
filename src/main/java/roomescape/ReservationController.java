@@ -3,10 +3,14 @@ package roomescape;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicLong;
 
 @RestController
@@ -17,6 +21,9 @@ public class ReservationController {
 
     @Autowired
     ReservationQueryingDAO reservationQueryingDAO;
+
+    @Autowired
+    ReservationUpdatingDAO reservationUpdatingDAO;
 
     @GetMapping
     public ResponseEntity<List<Reservation>> getReservation(){
@@ -43,7 +50,12 @@ public class ReservationController {
         newReservation.setDate(reservation.getDate());
         newReservation.setTime(reservation.getTime());
 
-        reservations.add(newReservation);
+        //step1~3
+//        reservations.add(newReservation);
+
+
+        //step4~6
+        reservationUpdatingDAO.save(newReservation);
 
         return ResponseEntity
                 .status(201)
