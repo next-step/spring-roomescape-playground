@@ -1,7 +1,9 @@
 package roomescape;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,9 +19,15 @@ public class ReservationController {
     private static final AtomicLong idCounter = new AtomicLong();
     private final List<Reservation> reservations = new ArrayList<>();
 
+//    @Autowired
+//    private JdbcTemplate jdbcTemplate;
 
     @GetMapping
     public ResponseEntity<List<Reservation>> getReservation(){
+
+//        ReservationQueryingDAO reservationQueryingDAO = ReservationQueryingDAO.getInstance(jdbcTemplate);
+//        List<Reservation> reservations = reservationQueryingDAO.findAllReservations();
+
         return ResponseEntity.ok(reservations);
     }
 
