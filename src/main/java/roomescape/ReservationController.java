@@ -19,16 +19,18 @@ public class ReservationController {
     private static final AtomicLong idCounter = new AtomicLong();
     private final List<Reservation> reservations = new ArrayList<>();
 
-//    @Autowired
-//    private JdbcTemplate jdbcTemplate;
+    @Autowired
+    ReservationQueryDAO reservationQueryDAO;
 
     @GetMapping
     public ResponseEntity<List<Reservation>> getReservation(){
+        //step 1~3
+//        return ResponseEntity.ok(reservations);
 
-//        ReservationQueryingDAO reservationQueryingDAO = ReservationQueryingDAO.getInstance(jdbcTemplate);
-//        List<Reservation> reservations = reservationQueryingDAO.findAllReservations();
+        //step6
+        List<Reservation> reservations = reservationQueryDAO.getAllReservations();
 
-        return ResponseEntity.ok(reservations);
+        return ResponseEntity.ok().body(reservations);
     }
 
     @PostMapping
