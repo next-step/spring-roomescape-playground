@@ -84,8 +84,11 @@ public class ReservationController {
             return ResponseEntity.noContent().build();
         }
 
+        int rows = reservationUpdatingDAO.delete(id);
+        if(rows>0){
+            return ResponseEntity.noContent().build();
+        }
+
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
     }
-
-
 }

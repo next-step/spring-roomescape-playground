@@ -28,4 +28,9 @@ public class ReservationUpdatingDAO {
 
         return simpleJdbcInsert.executeAndReturnKey(parameters);
     }
+
+    public int delete(long id){
+        String sql = "DELETE FROM reservations WHERE id = ?";
+        return jdbcTemplate.update(sql, id);
+    }
 }
