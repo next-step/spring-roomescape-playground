@@ -9,7 +9,7 @@ import java.util.List;
 @Repository
 public class ReservationQueryingDAO {
 //    private static ReservationQueryDAO reservationQuery = null;
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
     private final RowMapper<Reservation> reservationRowMapper = (resultSet, rowNum) -> (
         new Reservation(
