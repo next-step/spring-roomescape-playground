@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public class ReservationQueryDAO {
+public class ReservationQueryingDAO {
 //    private static ReservationQueryDAO reservationQuery = null;
     private JdbcTemplate jdbcTemplate;
 
@@ -18,7 +18,7 @@ public class ReservationQueryDAO {
                 resultSet.getTime("time").toLocalTime()
         ));
 
-    ReservationQueryDAO(JdbcTemplate jdbcTemplate){
+    ReservationQueryingDAO(JdbcTemplate jdbcTemplate){
         this.jdbcTemplate = jdbcTemplate;
     }
 
