@@ -7,20 +7,14 @@ package roomescape;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-//@SpringBootApplication
 public class Reservation {
 
     private long id;
-    @NotBlank
     private String name;
-    @NotNull
     private LocalDate date;
-    @NotNull
     private LocalTime time;
 
     public Reservation(){}
@@ -59,6 +53,5 @@ public class Reservation {
     public void setTime(LocalTime time){
         this.time = time;
     }
-
 }
 

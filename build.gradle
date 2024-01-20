@@ -14,15 +14,13 @@ repositories {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'io.rest-assured:rest-assured:5.3.1'
 
     //web
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 
-    //check exception
-    implementation 'javax.validation:validation-api:2.0.1.Final'
+//    //check exception
+//    implementation 'javax.validation:validation-api:2.0.1.Final'
 
     //h2
     runtimeOnly 'com.h2database:h2'
@@ -31,8 +29,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 
     //assertJ
-    testImplementation "org.assertj:assertj-core:3.20.2"
-
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'io.rest-assured:rest-assured:5.3.1'
 }
 
 test {

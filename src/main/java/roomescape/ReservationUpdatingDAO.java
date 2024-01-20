@@ -9,14 +9,14 @@ import java.util.Map;
 
 @Repository
 public class ReservationUpdatingDAO {
-//    private static ReservationUpdatingDAO reservationUpdatingDAO = null;
+
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert simpleJdbcInsert;
 
-    ReservationUpdatingDAO(JdbcTemplate jdbcTemplate){
+    public ReservationUpdatingDAO(JdbcTemplate jdbcTemplate){
         this.jdbcTemplate = jdbcTemplate;
         this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
-                .withTableName("reservations")
+                .withTableName("reservation")
                 .usingGeneratedKeyColumns("id");
     }
 

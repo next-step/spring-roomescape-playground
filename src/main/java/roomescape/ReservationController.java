@@ -7,14 +7,12 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicLong;
 
 @RestController
-@RequestMapping("/reservations")
 public class ReservationController {
     private static final AtomicLong idCounter = new AtomicLong();
     private final List<Reservation> reservations = new ArrayList<>();
@@ -25,14 +23,10 @@ public class ReservationController {
     @Autowired
     ReservationUpdatingDAO reservationUpdatingDAO;
 
-    @GetMapping
+    @GetMapping("/reservations")
     public ResponseEntity<List<Reservation>> getReservation(){
-        //step 1~3
-//        return ResponseEntity.ok(reservations);
-
         //step6
         List<Reservation> reservations = reservationQueryingDAO.getAllReservations();
-
         return ResponseEntity.ok().body(reservations);
     }
 
@@ -53,6 +47,7 @@ public class ReservationController {
 
         //step1~3
 //        reservations.add(newReservation);
+
 
         //step4~6
         Number newId = reservationUpdatingDAO.save(newReservation);

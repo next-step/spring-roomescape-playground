@@ -11,7 +11,7 @@ public class ViewController {
         return "home";
     }
 
-    @GetMapping("/reservation")
-    public String reservation(){ return "reservation"; }
-
+//    @GetMapping("/reservation")
+//    public String reservation(){ return "reservation"; }
+//
 }
