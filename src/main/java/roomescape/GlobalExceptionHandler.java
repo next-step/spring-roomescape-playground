@@ -16,4 +16,10 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Object> handleValidationExceptions(MethodArgumentNotValidException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
     }
+
+    public static class NotFoundReservationException extends RuntimeException {
+        public NotFoundReservationException(String message) {
+            super(message);
+        }
+    }
 }

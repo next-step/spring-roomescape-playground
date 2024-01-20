@@ -53,33 +53,8 @@ public class ReservationController {
                 .location(java.net.URI.create("/reservations/"+newReservation.getId()))
                 .body(newReservation);
     }
-
-    @DeleteMapping("/{id}")
     public ResponseEntity<Reservation> deleteReservation(@PathVariable long id) throws Exception {
-//        Reservation deleteOne = null;
-//
-//        //예약이 없는 경우
-//        if(reservations.isEmpty()){
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-//        }
-//
-//        for (Reservation reservation : reservations) {
-//            if (reservation.getId() == id) {
-//                deleteOne = reservation;
-//                break;
-//            }
-//        }
-//        if(deleteOne != null){
-//            reservations.remove(deleteOne);
-//            return ResponseEntity.noContent().build();
-//        }
-//
-//        int rows = reservationUpdatingDAO.delete(id);
-//        if(rows>0){
-//            return ResponseEntity.noContent().build();
-//        }
-//
-//        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+
         int row = reservationUpdatingDAO.delete(id);
 
         if(row>0){
