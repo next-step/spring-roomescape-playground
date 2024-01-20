@@ -30,7 +30,7 @@ public class ReservationController {
         return ResponseEntity.ok().body(reservations);
     }
 
-    @PostMapping
+    @PostMapping("/reservations")
     public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservation){
 
         //빈 값 들어왔을 때의 예외 처리
@@ -40,14 +40,9 @@ public class ReservationController {
 
         Reservation newReservation = new Reservation();
 
-//      newReservation.setId(idCounter.incrementAndGet());
         newReservation.setName(reservation.getName());
         newReservation.setDate(reservation.getDate());
         newReservation.setTime(reservation.getTime());
-
-        //step1~3
-//        reservations.add(newReservation);
-
 
         //step4~6
         Number newId = reservationUpdatingDAO.save(newReservation);
@@ -61,29 +56,37 @@ public class ReservationController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Reservation> deleteReservation(@PathVariable long id) throws Exception {
-        Reservation deleteOne = null;
+//        Reservation deleteOne = null;
+//
+//        //예약이 없는 경우
+//        if(reservations.isEmpty()){
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+//        }
+//
+//        for (Reservation reservation : reservations) {
+//            if (reservation.getId() == id) {
+//                deleteOne = reservation;
+//                break;
+//            }
+//        }
+//        if(deleteOne != null){
+//            reservations.remove(deleteOne);
+//            return ResponseEntity.noContent().build();
+//        }
+//
+//        int rows = reservationUpdatingDAO.delete(id);
+//        if(rows>0){
+//            return ResponseEntity.noContent().build();
+//        }
+//
+//        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        int row = reservationUpdatingDAO.delete(id);
 
-        //예약이 없는 경우
-        if(reservations.isEmpty()){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-        }
-
-        for (Reservation reservation : reservations) {
-            if (reservation.getId() == id) {
-                deleteOne = reservation;
-                break;
-            }
-        }
-        if(deleteOne != null){
-            reservations.remove(deleteOne);
+        if(row>0){
             return ResponseEntity.noContent().build();
         }
-
-        int rows = reservationUpdatingDAO.delete(id);
-        if(rows>0){
-            return ResponseEntity.noContent().build();
-        }
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
+
+
 }

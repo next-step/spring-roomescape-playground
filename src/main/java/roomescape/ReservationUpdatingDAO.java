@@ -30,7 +30,7 @@ public class ReservationUpdatingDAO {
     }
 
     public int delete(long id){
-        String sql = "DELETE FROM reservations WHERE id = ?";
+        String sql = "DELETE FROM reservation WHERE id = ?";
         return jdbcTemplate.update(sql, id);
     }
 }
