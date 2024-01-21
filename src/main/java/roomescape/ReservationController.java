@@ -53,6 +53,7 @@ public class ReservationController {
                 .location(java.net.URI.create("/reservations/"+newReservation.getId()))
                 .body(newReservation);
     }
+    @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Reservation> deleteReservation(@PathVariable long id) throws Exception {
 
         int row = reservationUpdatingDAO.delete(id);
