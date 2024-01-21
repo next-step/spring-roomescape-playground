@@ -26,4 +26,14 @@ public class TimeUpdatingDAO {
         return simpleJdbcInsert.executeAndReturnKey(parameters);
     }
 
+    public int delete(long id){
+        String sql = "DELETE FROM time WHERE id = ?";
+        int num = jdbcTemplate.update(sql, id);
+
+        if(num == 0){
+            throw new GlobalExceptionHandler.NotFoundReservationException("Time is not found with id: " + id);
+        }
+
+        return num;
+    }
 }
