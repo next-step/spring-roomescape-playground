@@ -16,4 +16,8 @@ public class Time {
     public void setId(long id){this.id = id;}
 
     public void setTime(String time){this.time = time;}
+
+    public boolean isInvalid() {
+        return time.matches("^([01]\\d|2[0-3]):([0-5]\\d)$");
+    }
 }

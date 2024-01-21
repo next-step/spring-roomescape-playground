@@ -34,15 +34,21 @@ public class ReservationController {
     public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservation){
 
         //빈 값 들어왔을 때의 예외 처리
-        if(reservation.getName().isEmpty() || reservation.getDate() == null || reservation.getTime() == null){
+        if(reservation.getName() == null || reservation.getName().isEmpty() || reservation.getDate() == null || reservation.getTime() == null){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
+
+        // 'time' 필드가 'Time' 객체가 아닐 때의 예외 처리
+        if(reservation.getTime().isInvalid()){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+
 
         Reservation newReservation = new Reservation();
 
         newReservation.setName(reservation.getName());
         newReservation.setDate(reservation.getDate());
-        newReservation.setTime(reservation.getTime());
+        newReservation.setTime(new Time(reservation.getTime().getTime()));
 
         //step4~6
         Number newId = reservationUpdatingDAO.save(newReservation);

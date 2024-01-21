@@ -8,18 +8,17 @@ package roomescape;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 public class Reservation {
 
     private long id;
     private String name;
     private LocalDate date;
-    private LocalTime time;
+    private Time time;
 
     public Reservation(){}
 
-    public Reservation(String name, LocalDate date, LocalTime time) {
+    public Reservation(String name, LocalDate date, Time time) {
         this.id = 0;
 
         this.name = name;
@@ -37,7 +36,7 @@ public class Reservation {
     public LocalDate getDate(){
         return date;
     }
-    public LocalTime getTime(){
+    public Time getTime(){
         return time;
     }
 
@@ -50,7 +49,7 @@ public class Reservation {
     public void setDate(LocalDate date){
         this.date = date;
     }
-    public void setTime(LocalTime time){
+    public void setTime(Time time){
         this.time = time;
     }
 }
