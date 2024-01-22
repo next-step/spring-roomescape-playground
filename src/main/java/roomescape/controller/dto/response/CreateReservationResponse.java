@@ -1,7 +1,7 @@
 package roomescape.controller.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import roomescape.domain.Reservation;
+import roomescape.application.dto.CreateInfoReservationDto;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -25,12 +25,12 @@ public class CreateReservationResponse {
         this.time = time;
     }
 
-    public static CreateReservationResponse from(final Reservation newReservation) {
+    public static CreateReservationResponse from(final CreateInfoReservationDto createInfoReservationDto) {
         return new CreateReservationResponse(
-                newReservation.getId(),
-                newReservation.getName(),
-                newReservation.getDate(),
-                newReservation.getTime()
+                createInfoReservationDto.getId(),
+                createInfoReservationDto.getName(),
+                createInfoReservationDto.getDate(),
+                createInfoReservationDto.getTime()
         );
     }
 

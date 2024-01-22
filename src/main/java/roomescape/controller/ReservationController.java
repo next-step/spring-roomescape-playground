@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import roomescape.application.ReservationService;
+import roomescape.application.dto.CreateInfoReservationDto;
+import roomescape.application.dto.CreateReservationDto;
 import roomescape.application.dto.ReadReservationDto;
 import roomescape.domain.Reservation;
 import roomescape.controller.dto.request.CreateReservationRequest;
@@ -21,13 +23,11 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Controller
 public class ReservationController {
 
     private List<Reservation> reservations = new ArrayList<>();
-    private AtomicLong index = new AtomicLong(0);
     private final ReservationService reservationService;
 
     public ReservationController(final ReservationService reservationService) {
@@ -53,16 +53,16 @@ public class ReservationController {
     @PostMapping("/reservations")
     @ResponseBody
     public ResponseEntity<CreateReservationResponse> create(@RequestBody @Valid final CreateReservationRequest request) {
-        final Reservation newReservation = new Reservation(
-                index.incrementAndGet(),
+        final CreateReservationDto createReservationDto = new CreateReservationDto(
                 request.getName(),
                 request.getDate(),
                 request.getTime()
         );
-        reservations.add(newReservation);
+        final CreateInfoReservationDto createInfoReservationDto = reservationService.create(createReservationDto);
+        final CreateReservationResponse response = CreateReservationResponse.from(createInfoReservationDto);
 
-        return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId()))
-                             .body(CreateReservationResponse.from(newReservation));
+        return ResponseEntity.created(URI.create("/reservations/" + createInfoReservationDto.getId()))
+                             .body(response);
     }
 
     @DeleteMapping("/reservations/{id}")

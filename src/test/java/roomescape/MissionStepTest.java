@@ -58,7 +58,6 @@ class MissionStepTest {
 
     @Test
     @DisplayName("예약을 추가한다")
-    @Disabled
     void 삼단계_1() {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
@@ -170,5 +169,25 @@ class MissionStepTest {
         Integer count = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
 
         assertThat(reservations).hasSize(count);
+    }
+
+    @Test
+    @DisplayName("예약 추가 API 처리 로직에서 데이터베이스를 활용한다")
+    void 칠단계_1() {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", "브라운");
+        params.put("date", "2023-08-05");
+        params.put("time", "10:00");
+
+        RestAssured.given().log().all()
+                   .contentType(ContentType.JSON)
+                   .body(params)
+                   .when().post("/reservations")
+                   .then().log().all()
+                   .statusCode(201)
+                   .header("Location", "/reservations/1");
+
+        Integer count = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
+        assertThat(count).isEqualTo(1);
     }
 }
