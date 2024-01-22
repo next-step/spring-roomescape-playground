@@ -48,7 +48,6 @@ public class ReservationController {
                 .findFirst()
                 .orElseThrow(NotFoundReservationException::new);
 
-//        reservationDAO.insertNewReservation(newReservation, reservation.getId());
         reservationDAO.updateReservation(newReservation, reservation.getId());
         return ResponseEntity.ok().build();
     }
