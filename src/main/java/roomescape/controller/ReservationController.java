@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import roomescape.domain.JdbcReservations;
 import roomescape.domain.Reservation;
-import roomescape.domain.Reservations;
 
 import java.net.URI;
 import java.util.List;
@@ -18,7 +18,11 @@ import java.util.List;
 @RequestMapping("/reservations")
 public class ReservationController {
 
-    private final Reservations reservations = new Reservations();
+    private final JdbcReservations reservations;
+
+    public ReservationController(JdbcReservations reservations) {
+        this.reservations = reservations;
+    }
 
     @GetMapping
     public List<Reservation> showReservations() {
