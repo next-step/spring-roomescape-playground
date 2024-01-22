@@ -2,7 +2,6 @@ package roomescape;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,7 +81,6 @@ class MissionStepTest {
 
     @Test
     @DisplayName("예약을 삭제한다")
-    @Disabled
     void 삼단계_2() {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
@@ -189,5 +187,33 @@ class MissionStepTest {
 
         Integer count = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
         assertThat(count).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("예약 취소 API 처리 로직에서 데이터베이스를 활용한다")
+    void 칠단계_2() {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", "브라운");
+        params.put("date", "2023-08-05");
+        params.put("time", "10:00");
+
+        RestAssured.given().log().all()
+                   .contentType(ContentType.JSON)
+                   .body(params)
+                   .when().post("/reservations")
+                   .then().log().all()
+                   .statusCode(201)
+                   .header("Location", "/reservations/1");
+
+        Integer count = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
+        assertThat(count).isEqualTo(1);
+
+        RestAssured.given().log().all()
+                   .when().delete("/reservations/1")
+                   .then().log().all()
+                   .statusCode(204);
+
+        Integer countAfterDelete = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
+        assertThat(countAfterDelete).isZero();
     }
 }

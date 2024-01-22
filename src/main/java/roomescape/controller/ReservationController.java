@@ -13,21 +13,16 @@ import roomescape.application.ReservationService;
 import roomescape.application.dto.CreateInfoReservationDto;
 import roomescape.application.dto.CreateReservationDto;
 import roomescape.application.dto.ReadReservationDto;
-import roomescape.domain.Reservation;
 import roomescape.controller.dto.request.CreateReservationRequest;
 import roomescape.controller.dto.response.CreateReservationResponse;
 import roomescape.controller.dto.response.ReadReservationResponse;
-import roomescape.controller.exception.ReservationNotFoundException;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Controller
 public class ReservationController {
 
-    private List<Reservation> reservations = new ArrayList<>();
     private final ReservationService reservationService;
 
     public ReservationController(final ReservationService reservationService) {
@@ -67,11 +62,7 @@ public class ReservationController {
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> delete(@PathVariable final Long id) {
-        final Reservation target = reservations.stream()
-                                               .filter(reservation -> Objects.equals(reservation.getId(), id))
-                                               .findAny()
-                                               .orElseThrow(() -> new ReservationNotFoundException("존재하지 않는 예약입니다."));
-        reservations.remove(target);
+        reservationService.deleteById(id);
 
         return ResponseEntity.noContent()
                              .build();

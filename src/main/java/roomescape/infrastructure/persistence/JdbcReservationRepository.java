@@ -42,6 +42,20 @@ public class JdbcReservationRepository implements ReservationRepository {
         return new Reservation(insertedId, reservation.getName(), reservation.getDate(), reservation.getTime());
     }
 
+    @Override
+    public boolean existsById(final Long id) {
+        final String sql = "SELECT COUNT(*) FROM reservation WHERE id = ?";
+        final Long count = jdbcTemplate.queryForObject(sql, Long.class, id);
+
+        return count != null && count > 0;
+    }
+
+    @Override
+    public void deleteById(final Long id) {
+        final String sql = "DELETE FROM reservation WHERE id = ?";
+        jdbcTemplate.update(sql, id);
+    }
+
 
     private static RowMapper<Reservation> getReservationRowMapper() {
         return (rs, rowNum) -> new Reservation(
