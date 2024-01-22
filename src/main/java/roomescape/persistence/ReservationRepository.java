@@ -1,5 +1,6 @@
 package roomescape.persistence;
 
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import roomescape.controller.ReservationDto;
 import roomescape.domain.Reservation;
@@ -13,6 +14,12 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @Component
 public class ReservationRepository {
+
+    private final JdbcTemplate jdbcTemplate;
+
+    public ReservationRepository(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     private final AtomicLong index = new AtomicLong(0L);
 
@@ -30,6 +37,15 @@ public class ReservationRepository {
     }
 
     public List<ReservationDto> findAll() {
+        List<Reservation> reservations = jdbcTemplate.query(
+                "select id, name, date, time from reservation",
+                (resultSet, rowNum) -> new Reservation(
+                        resultSet.getLong("id"),
+                        resultSet.getString("name"),
+                        resultSet.getString("date"),
+                        resultSet.getString("time")
+                ));
+
         return ReservationDto.from(reservations);
     }
 
