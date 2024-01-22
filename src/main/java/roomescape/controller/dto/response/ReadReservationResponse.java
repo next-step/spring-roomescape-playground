@@ -12,7 +12,7 @@ public class ReadReservationResponse {
 
     private final String name;
 
-    @JsonFormat(pattern = "YYYY-MM-DD")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private final LocalDate date;
 
     @JsonFormat(pattern = "HH:mm")
