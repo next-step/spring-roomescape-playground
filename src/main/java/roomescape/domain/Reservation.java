@@ -19,6 +19,10 @@ public class Reservation {
         this.time = LocalTime.parse(time);
     }
 
+    public Reservation(String name, String date, String time) {
+        this(null, name, date, time);
+    }
+
     private void validate(String name, String date, String time) {
         if (isBlank(name) || isBlank(date) || isBlank(time)) {
             throw new IllegalArgumentException("예약을 생성할 수 없습니다. 에약자, 날짜, 시간이 모두 필요합니다.");
