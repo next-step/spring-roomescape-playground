@@ -1,28 +1,32 @@
 package roomescape.domain.reservation.controller;
 
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import roomescape.domain.reservation.dto.request.ReservationCreateRequestDto;
 import roomescape.domain.reservation.entity.Reservation;
+import roomescape.domain.reservation.repository.ReservationDao;
 import roomescape.exception.custom.BusinessException;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 import static roomescape.exception.ErrorCode.RESERVATION_NOT_FOUND;
 
 @Controller
 public class ReservationController {
-    private AtomicLong index = new AtomicLong(0);
-    private final List<Reservation> reservations = new ArrayList<>();
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private final ReservationDao reservationDao = new ReservationDao(jdbcTemplate);
 
     @GetMapping("/reservations")
     public ResponseEntity<List<Reservation>> readReservations() {
-        return ResponseEntity.ok().body(reservations);
+        return ResponseEntity.ok().body(reservationDao.findAllReservations());
     }
 
     @PostMapping("/reservations")
