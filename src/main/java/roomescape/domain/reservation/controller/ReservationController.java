@@ -31,18 +31,18 @@ public class ReservationController {
 
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> createReservation(@RequestBody @Valid ReservationCreateRequestDto requestDto) {
-        Reservation newReservation = requestDto.toEntity(index.incrementAndGet());
-        reservations.add(newReservation);
-        return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
+        Long reservationId = reservationDao.insert(requestDto);
+        return ResponseEntity.created(URI.create("/reservations/" + reservationId)).body(reservationDao.findReservationById(reservationId));
     }
 
     @DeleteMapping("/reservations/{reservationId}")
     public ResponseEntity<Void> deleteReservation(@PathVariable Long reservationId) {
-        Reservation deleteReservation = reservations.stream()
+        reservationDao.findAllReservations().stream()
                 .filter(reservation -> reservation.getId().equals(reservationId))
                 .findFirst()
                 .orElseThrow(() -> new BusinessException(RESERVATION_NOT_FOUND));
-        reservations.remove(deleteReservation);
+
+        reservationDao.deleteReservationById(reservationId);
         return ResponseEntity.noContent().build();
     }
 }
