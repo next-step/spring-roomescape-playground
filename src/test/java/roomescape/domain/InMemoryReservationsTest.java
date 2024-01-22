@@ -10,9 +10,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-class ReservationsTest {
+class InMemoryReservationsTest {
 
-    private final Reservations reservations = new Reservations();
+    private final InMemoryReservations reservations = new InMemoryReservations();
 
     @Test
     void 예약을_추가한다() {
