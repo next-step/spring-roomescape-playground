@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
+import roomescape.application.ReservationService;
+import roomescape.application.dto.ReadReservationDto;
 import roomescape.domain.Reservation;
 import roomescape.controller.dto.request.CreateReservationRequest;
 import roomescape.controller.dto.response.CreateReservationResponse;
@@ -26,6 +28,11 @@ public class ReservationController {
 
     private List<Reservation> reservations = new ArrayList<>();
     private AtomicLong index = new AtomicLong(0);
+    private final ReservationService reservationService;
+
+    public ReservationController(final ReservationService reservationService) {
+        this.reservationService = reservationService;
+    }
 
     @GetMapping("/reservation")
     public String reservation() {
@@ -35,9 +42,10 @@ public class ReservationController {
     @GetMapping("/reservations")
     @ResponseBody
     public ResponseEntity<List<ReadReservationResponse>> readAll() {
-        final List<ReadReservationResponse> responses = reservations.stream()
-                                                                    .map(ReadReservationResponse::from)
-                                                                    .toList();
+        final List<ReadReservationDto> readReservationDtos = reservationService.readAll();
+        final List<ReadReservationResponse> responses = readReservationDtos.stream()
+                                                                           .map(ReadReservationResponse::from)
+                                                                           .toList();
 
         return ResponseEntity.ok(responses);
     }
