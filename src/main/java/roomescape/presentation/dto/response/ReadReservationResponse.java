@@ -1,4 +1,4 @@
-package roomescape.controller.dto.response;
+package roomescape.presentation.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import roomescape.application.dto.ReadReservationDto;

@@ -1,4 +1,4 @@
-package roomescape.controller;
+package roomescape.presentation;
 
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -13,9 +13,9 @@ import roomescape.application.ReservationService;
 import roomescape.application.dto.CreateInfoReservationDto;
 import roomescape.application.dto.CreateReservationDto;
 import roomescape.application.dto.ReadReservationDto;
-import roomescape.controller.dto.request.CreateReservationRequest;
-import roomescape.controller.dto.response.CreateReservationResponse;
-import roomescape.controller.dto.response.ReadReservationResponse;
+import roomescape.presentation.dto.request.CreateReservationRequest;
+import roomescape.presentation.dto.response.CreateReservationResponse;
+import roomescape.presentation.dto.response.ReadReservationResponse;
 
 import java.net.URI;
 import java.util.List;
