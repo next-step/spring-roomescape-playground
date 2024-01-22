@@ -1,30 +1,31 @@
 package roomescape.domain;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Component
 public class JdbcReservations {
 
-    private final AtomicLong ids;
-    private final List<Reservation> reservations;
     private final JdbcTemplate jdbcTemplate;
-
+    private final SimpleJdbcInsert simpleJdbcInsert;
 
     public JdbcReservations(JdbcTemplate jdbcTemplate) {
-        this.ids = new AtomicLong();
-        this.reservations = new ArrayList<>();
         this.jdbcTemplate = jdbcTemplate;
+        this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("reservation")
+                .usingGeneratedKeyColumns("id");
     }
 
     public Reservation add(Reservation reservation) {
-        Reservation saved = reservation.with(ids.incrementAndGet());
-        reservations.add(saved);
-        return saved;
+        SqlParameterSource parameterSource = new BeanPropertySqlParameterSource(reservation);
+        Long id = simpleJdbcInsert.executeAndReturnKey(parameterSource).longValue();
+        return reservation.with(id);
     }
 
     public List<Reservation> add(Reservation... reservations) {
@@ -48,10 +49,9 @@ public class JdbcReservations {
     }
 
     public void cancel(Long id) {
-        Reservation reservation = reservations.stream()
-                .filter(it -> it.getId().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("id가 " + id + "인 예약을 찾을 수 없습니다"));
-        reservations.remove(reservation);
+        int affectedCount = jdbcTemplate.update("DELETE FROM reservation WHERE id = ?", id);
+        if (affectedCount == 0) {
+            throw new IllegalArgumentException("id가 " + id + "인 예약을 찾을 수 없습니다");
+        }
     }
 }
