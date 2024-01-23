@@ -1,59 +1,53 @@
 package roomescape.controller;
-import roomescape.Entity.Reservation;
-import roomescape.Entity.Reservations;
-import roomescape.Exception.NotFoundReservationException;
-import roomescape.Exception.ValidateReservationDTO;
-import roomescape.DTO.ReservationDTO;
+import org.springframework.beans.factory.annotation.Autowired;
+import roomescape.domain.Reservation;
+import roomescape.exception.NotFoundReservationException;
+import roomescape.exception.ValidateReservationDTO;
+import roomescape.dto.ReservationDto;
+import roomescape.repository.ReservationRepository;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/reservations")
 public class ReservationController {
-        private final Reservations reservations = new Reservations();
-        private AtomicLong index = new AtomicLong(1);
+
+        @Autowired
+        private ReservationRepository reservationRepository;
 
         @GetMapping
-        public ResponseEntity<List<ReservationDTO>> readReservations() {
-            List<ReservationDTO> reservationDTOs = reservations.getAll().stream()
+        public ResponseEntity<List<ReservationDto>> readReservations() {
+            List<ReservationDto> reservationDtos = reservationRepository.findAllReservations().stream()
                     .map(this::convertToDto)
                     .collect(Collectors.toList());
-            return ResponseEntity.ok().body(reservationDTOs);
+            return ResponseEntity.ok().body(reservationDtos);
         }
 
         @PostMapping
-        public ResponseEntity<ReservationDTO> createReservation(@RequestBody ReservationDTO reservationDTO) {
+        public ResponseEntity<Reservation> createReservation(@RequestBody ReservationDto reservationDTO) {
             ValidateReservationDTO.validateReservation(reservationDTO);
-            Reservation reservation = new Reservation(index.getAndIncrement(), reservationDTO.getName(), reservationDTO.getDate(), reservationDTO.getTime());
-            reservations.add(reservation);
-            return ResponseEntity.created(URI.create("/reservations/" + reservation.getId())).body(convertToDto(reservation));
+            long newId = reservationRepository.insertWithKeyHolder(reservationDTO);
+            Reservation reservation = new Reservation(newId, reservationDTO.getName(), reservationDTO.getDate(), reservationDTO.getTime());
+            return ResponseEntity.created(URI.create("/reservations/" + newId)).body(reservation);
         }
 
-        @PutMapping("/{id}")
-        public ResponseEntity<Void> updateReservation(@RequestBody Reservation newReservation, @PathVariable long id) {
-            Reservation reservation = reservations.findById(id)
-                    .orElseThrow(() -> new NotFoundReservationException("Reservation with id " + id + " not found"));
-            reservation.update(newReservation);
-            return ResponseEntity.ok().build();
-        }
 
         @DeleteMapping("/{id}")
         public ResponseEntity<Void> deleteReservation(@PathVariable long id) {
-            Reservation reservation = reservations.findById(id)
+            Reservation reservation = reservationRepository.findReservationById(id)
                     .orElseThrow(() -> new NotFoundReservationException("Reservation with id " + id + " not found"));
-            reservations.remove(reservation);
+            reservationRepository.delete(id);
             return ResponseEntity.noContent().build();
         }
 
-        private ReservationDTO convertToDto(Reservation reservation) {
-            return new ReservationDTO(reservation.getName(), reservation.getDate(), reservation.getTime());
+        private ReservationDto convertToDto(Reservation reservation) {
+            return new ReservationDto(reservation.getName(), reservation.getDate(), reservation.getTime());
         }
 
 }

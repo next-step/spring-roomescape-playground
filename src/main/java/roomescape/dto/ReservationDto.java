@@ -1,11 +1,11 @@
-package roomescape.DTO;
+package roomescape.dto;
 
-public class ReservationDTO {
+public class ReservationDto {
     private String name;
     private String date;
     private String time;
 
-    public ReservationDTO(String name, String date, String time) {
+    public ReservationDto(String name, String date, String time) {
         this.name = name;
         this.date = date;
         this.time = time;
