@@ -1,9 +1,7 @@
 package roomescape.domain.reservation.controller;
 
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import roomescape.domain.reservation.dto.request.ReservationCreateRequestDto;
@@ -18,11 +16,11 @@ import static roomescape.exception.ErrorCode.RESERVATION_NOT_FOUND;
 
 @Controller
 public class ReservationController {
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private final ReservationDao reservationDao;
 
-    @Autowired
-    private final ReservationDao reservationDao = new ReservationDao(jdbcTemplate);
+    public ReservationController(ReservationDao reservationDao) {
+        this.reservationDao = reservationDao;
+    }
 
     @GetMapping("/reservations")
     public ResponseEntity<List<Reservation>> readReservations() {
