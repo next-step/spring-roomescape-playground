@@ -13,6 +13,9 @@ public class Time {
         this.id = id;
         this.time = time;
     }
+    public static Time toEntity(Time time, Long id) {
+        return new Time(id, time.time);
+    }
 
     public Long getId() {
         return id;
