@@ -1,27 +1,26 @@
 package hello.controller;
 
-import hello.domain.Reservation;
+import hello.controller.dto.CreateReservationDto;
 import hello.exceptions.NotFoundReservationException;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
+import hello.repository.ReservationRepository;
+import hello.repository.dto.ReservationDto;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Controller
 public class ReservationController {
 
-    private final List<Reservation> reservations = new ArrayList<>();
-    private final AtomicLong index = new AtomicLong(0);
+    private final ReservationRepository reservationRepository;
+
+    public ReservationController(ReservationRepository reservationRepository) {
+        this.reservationRepository = reservationRepository;
+    }
 
     @GetMapping("/reservation")
     public String reservation() {
@@ -30,50 +29,29 @@ public class ReservationController {
 
     @ResponseBody
     @GetMapping("/reservations")
-    public List<Reservation> reservationList() {
-        return reservations;
+    public List<ReservationDto> reservationList() {
+        return reservationRepository.findAllReservations();
     }
 
     @PostMapping("/reservations")
-    public ResponseEntity<Reservation> addReservation(@Validated @RequestBody createReservationDto dto) {
+    public ResponseEntity<ReservationDto> addReservation(@Validated @RequestBody CreateReservationDto dto) {
 
-        Reservation newReservation = Reservation.create(index.incrementAndGet(), dto.getName(), dto.getDate(), dto.getTime());
-        reservations.add(newReservation);
+        Long savedId = reservationRepository.save(dto);
+        ReservationDto reservation = reservationRepository.findById(savedId);
 
-        return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
-    }
-
-    static class createReservationDto {
-
-        @NotEmpty
-        private String name;
-        @NotNull
-        private LocalDate date;
-        @NotNull
-        private LocalTime time;
-
-        public String getName() {
-            return name;
-        }
-
-        public LocalDate getDate() {
-            return date;
-        }
-
-        public LocalTime getTime() {
-            return time;
-        }
+        return ResponseEntity.created(URI.create("/reservations/" + savedId)).body(reservation);
     }
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> removeReservation(@PathVariable("id") Long id) {
 
-        Reservation reservation = reservations.stream()
-                .filter(item -> Objects.equals(item.getId(), id))
-                .findFirst()
-                .orElseThrow(NotFoundReservationException::new);
+        try {
+            reservationRepository.findById(id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new NotFoundReservationException();
+        }
 
-        reservations.remove(reservation);
+        reservationRepository.delete(id);
         return ResponseEntity.noContent().build();
     }
 }
