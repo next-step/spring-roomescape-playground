@@ -127,6 +127,7 @@ public class MissionStepTest {
     private JdbcTemplate jdbcTemplate;
 
     @Test
+    @DisplayName("데이터베이스 적용하기")
     void 오단계() {
         try (Connection connection = jdbcTemplate.getDataSource().getConnection()) {
             assertThat(connection).isNotNull();
