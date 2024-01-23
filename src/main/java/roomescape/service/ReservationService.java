@@ -5,14 +5,18 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import roomescape.dao.ReservationDao;
+import roomescape.dao.TimeDao;
 import roomescape.domain.Reservation;
+import roomescape.domain.Time;
 
 @Service
 public class ReservationService {
     private final ReservationDao reservationDao;
+    private final TimeDao timeDao;
 
-    public ReservationService(ReservationDao reservationDao) {
+    public ReservationService(ReservationDao reservationDao, TimeDao timeDao) {
         this.reservationDao = reservationDao;
+        this.timeDao = timeDao;
     }
 
     public List<Reservation> getAllReservations() {
@@ -25,5 +29,9 @@ public class ReservationService {
 
     public int removeReservation(Long id) {
         return reservationDao.deleteReservation(id);
+    }
+
+    public Long addTime(Time time) {
+        return timeDao.createTime(time);
     }
 }
