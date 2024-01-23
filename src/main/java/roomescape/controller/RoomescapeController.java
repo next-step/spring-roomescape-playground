@@ -16,6 +16,7 @@ import roomescape.domain.Reservation;
 import roomescape.domain.Time;
 import roomescape.exception.InvalidReservationException;
 import roomescape.exception.NotFoundReservationException;
+import roomescape.exception.NotFoundTimeException;
 import roomescape.service.ReservationService;
 
 @Controller
@@ -92,5 +93,15 @@ public class RoomescapeController {
         Long generatedId = reservationService.addTime(time);
         Time newTime = Time.toEntity(time, generatedId);
         return ResponseEntity.created(URI.create("/times/" + newTime.getId())).body(newTime);
+    }
+
+    @DeleteMapping("/times/{id}")
+    public ResponseEntity<Void> deleteTime(@PathVariable Long id) {
+        int deleteCount = reservationService.removeTime(id);
+        if (deleteCount == 0) {
+            throw new NotFoundTimeException();
+        }
+
+        return ResponseEntity.noContent().build();
     }
 }

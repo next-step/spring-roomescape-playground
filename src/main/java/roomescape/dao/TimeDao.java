@@ -9,19 +9,15 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import roomescape.domain.Reservation;
 import roomescape.domain.Time;
 
 @Repository
 public class TimeDao {
     private final JdbcTemplate jdbcTemplate;
 
-    private final RowMapper<Time> timeRawMapper = (resultSet, rowNum) -> {
-        Time time = new Time(
-            resultSet.getLong("id"),
+    private final RowMapper<Time> timeRawMapper = (resultSet, rowNum) ->
+        new Time(resultSet.getLong("id"),
             resultSet.getTime("time").toLocalTime());
-        return time;
-    };
 
     public TimeDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -34,8 +30,7 @@ public class TimeDao {
     }
 
     public Long createTime(Time time) {
-        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
-            .withTableName("time")
+        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("time")
             .usingColumns("time")
             .usingGeneratedKeyColumns("id");
 
@@ -45,4 +40,9 @@ public class TimeDao {
         return key.longValue();
     }
 
+    public int deleteTime(Long id) {
+        String sql = "DELETE FROM time where id = ?";
+
+        return jdbcTemplate.update(sql, id);
+    }
 }
