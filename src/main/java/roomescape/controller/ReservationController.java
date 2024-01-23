@@ -1,11 +1,13 @@
 package roomescape.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import roomescape.domain.repository.ReservationDao;
 import roomescape.exception.InvalidReservationException;
 import roomescape.exception.NotFoundReservationException;
-import roomescape.model.Reservation;
+import roomescape.domain.Reservation;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -25,10 +27,13 @@ public class ReservationController {
         return "reservation.html";
     }
 
+    @Autowired
+    private ReservationDao reservationDao;
+
     @ResponseBody
     @GetMapping("/reservations")
-    public List<Reservation> read() {
-        return reservations;
+    public ResponseEntity<List<Reservation>> read() {
+        return ResponseEntity.ok(reservationDao.findAllReservations());
     }
 
     @PostMapping("/reservations")
