@@ -50,8 +50,8 @@ public class ReservationRepository {
     }
 
     public void deleteById(long deleteId) {
-        int updated = jdbcTemplate.update("delete from reservation where id = ?", deleteId);
-        if (updated == 0) {
+        int updatedCount = jdbcTemplate.update("delete from reservation where id = ?", deleteId);
+        if (updatedCount == 0) {
             throw new NoSuchElementException("예약을 취소할 수 없습니다. 존재하지 않는 예약입니다.");
         }
     }
