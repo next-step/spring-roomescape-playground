@@ -42,18 +42,11 @@ public class ReservationController {
 
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> createReservation(@Valid @RequestBody ReservationRequest reservationRequest) {
-
-        Reservation reservation = new Reservation(index.getAndIncrement(),
-                reservationRequest.getName(),
-                reservationRequest.getDate(),
-                reservationRequest.getTime());
-
-        reservations.add(reservation);
-
+        Long reservationId = reservationRepository.saveReservation(reservationRequest);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .header("Location", "/reservations/" + reservation.getId())
-                .body(reservation);
+                .header("Location", "/reservations/" + reservationId)
+                .body(reservationRepository.findReservationById(reservationId));
     }
 
     @DeleteMapping("/reservations/{id}")

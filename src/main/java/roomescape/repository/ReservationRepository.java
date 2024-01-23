@@ -51,4 +51,9 @@ public class ReservationRepository {
 
         return key.longValue();
     }
+
+    public Reservation findReservationById(Long id) {
+        String sql = "select id, name, date, time from reservation where id = ?";
+        return jdbcTemplate.queryForObject(sql, reservationRowMapper(), id);
+    }
 }
