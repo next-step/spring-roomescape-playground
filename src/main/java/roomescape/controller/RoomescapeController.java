@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import roomescape.domain.Reservation;
+import roomescape.domain.Time;
 import roomescape.exception.InvalidReservationException;
 import roomescape.exception.NotFoundReservationException;
 import roomescape.service.ReservationService;
@@ -77,5 +78,12 @@ public class RoomescapeController {
         }
 
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/times")
+    public ResponseEntity<Time> createTime(@RequestBody Time time) {
+        Long generatedId = reservationService.addTime(time);
+        Time newTime = Time.toEntity(time, generatedId);
+        return ResponseEntity.created(URI.create("/times/" + newTime.getId())).body(newTime);
     }
 }
