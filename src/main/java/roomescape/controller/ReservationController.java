@@ -13,14 +13,12 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicLong;
 
 
 @Controller
 public class ReservationController {
 
     private final List<Reservation> reservations = new ArrayList<>();
-    private final AtomicLong index = new AtomicLong(0);
 
     @GetMapping("/reservation")
     String reservation() {
@@ -41,21 +39,20 @@ public class ReservationController {
         if (reservation.getName() == null || reservation.getDate() == null || reservation.getTime() == null) {
             throw new InvalidReservationException();
         }
-        Reservation newReservation = new Reservation(index.incrementAndGet(), reservation.getName(), reservation.getDate(), reservation.getTime());
-        reservations.add(newReservation);
+        Long reservationId = reservationDao.insert(reservation);
         return ResponseEntity
-                .created(URI.create("/reservations/" + newReservation.getId()))
-                .body(newReservation);
+                .created(URI.create("/reservations/" + reservationId))
+                .body(reservationDao.findReservationById(reservationId));
     }
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        Reservation reservation = reservations.stream()
+        reservationDao.findAllReservations().stream()
                 .filter(it -> Objects.equals(it.getId(), id))
                 .findFirst()
                 .orElseThrow(NotFoundReservationException::new);
 
-        reservations.remove(reservation);
+        reservationDao.delete(id);
 
         return ResponseEntity.noContent().build();
     }
