@@ -32,9 +32,8 @@ public class ReservationDao {
 
     public List<Reservation> listAllReservations() {
         String sql = "SELECT id, name, date, time FROM reservation";
-        List<Reservation> reservationList = jdbcTemplate.query(sql, reservationRawMapper);
 
-        return reservationList;
+        return jdbcTemplate.query(sql, reservationRawMapper);
     }
 
     public Long createReservation(Reservation reservation) {
@@ -51,14 +50,12 @@ public class ReservationDao {
             return ps;
         }, keyHolder);
 
-        Long generatedId = keyHolder.getKey().longValue();
-        return generatedId;
+        return keyHolder.getKey().longValue();
     }
 
     public int deleteReservation(Long id) {
         String sql = "DELETE FROM reservation where id = ?";
-        int deleteCount = jdbcTemplate.update(sql, id);
 
-        return deleteCount;
+        return jdbcTemplate.update(sql, id);
     }
 }
