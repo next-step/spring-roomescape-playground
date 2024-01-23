@@ -80,6 +80,13 @@ public class RoomescapeController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/times")
+    public ResponseEntity<List<Time>> getAllTimes() {
+        List<Time> timeList = reservationService.getAllTimes();
+
+        return ResponseEntity.ok().body(timeList);
+    }
+
     @PostMapping("/times")
     public ResponseEntity<Time> createTime(@RequestBody Time time) {
         Long generatedId = reservationService.addTime(time);

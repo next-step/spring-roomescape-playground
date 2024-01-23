@@ -31,7 +31,12 @@ public class ReservationService {
         return reservationDao.deleteReservation(id);
     }
 
+    public List<Time> getAllTimes() {
+        return timeDao.listAllTimes();
+    }
+
     public Long addTime(Time time) {
         return timeDao.createTime(time);
     }
+
 }
