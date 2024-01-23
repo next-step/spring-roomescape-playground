@@ -4,10 +4,13 @@ import java.time.LocalDate;
 
 public class Reservation {
 
-    private final Long id;
-    private final String name;
-    private final LocalDate date;
-    private final String time;
+    private Long id;
+    private String name;
+    private LocalDate date;
+    private String time;
+
+    protected Reservation() {
+    }
 
     public Reservation(String name, LocalDate date, String time) {
         this.id = null;
