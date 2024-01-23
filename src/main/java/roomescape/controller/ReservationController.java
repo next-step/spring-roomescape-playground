@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicLong;
 public class ReservationController {
 
     private final List<Reservation> reservations = new ArrayList<>();
-    private AtomicLong index = new AtomicLong(0);
+    private final AtomicLong index = new AtomicLong(0);
 
     @GetMapping("/reservation")
     String reservation() {
