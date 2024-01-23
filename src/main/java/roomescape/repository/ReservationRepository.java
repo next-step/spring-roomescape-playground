@@ -4,7 +4,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import roomescape.controller.ReservationDto;
+import roomescape.controller.dto.ReservationDto;
 import roomescape.domain.Reservation;
 
 import java.sql.PreparedStatement;
@@ -52,7 +52,7 @@ public class ReservationRepository {
     public void deleteById(long deleteId) {
         int updated = jdbcTemplate.update("delete from reservation where id = ?", deleteId);
         if (updated == 0) {
-            throw new NoSuchElementException("취소할 수 없습니다. 존재하지 않는 예약입니다.");
+            throw new NoSuchElementException("예약을 취소할 수 없습니다. 존재하지 않는 예약입니다.");
         }
     }
 }
