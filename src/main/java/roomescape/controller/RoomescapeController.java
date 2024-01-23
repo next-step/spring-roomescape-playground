@@ -54,7 +54,7 @@ public class RoomescapeController {
     }
 
     @GetMapping("/reservations")
-    public ResponseEntity<List<Reservation>> getReservations() {
+    public ResponseEntity<List<Reservation>> getAllReservations() {
         List<Reservation> reservationList = reservationService.getAllReservations();
 
         return ResponseEntity.ok().body(reservationList);
@@ -72,7 +72,7 @@ public class RoomescapeController {
     }
 
     @DeleteMapping("/reservations/{id}")
-    public ResponseEntity<Void> getReservations(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
         int deleteCount = reservationService.removeReservation(id);
         if (deleteCount == 0) {
             throw new NotFoundReservationException();
