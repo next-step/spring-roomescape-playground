@@ -1,5 +1,6 @@
 package roomescape.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -16,17 +17,16 @@ import java.util.Objects;
 
 
 @Controller
+@RequiredArgsConstructor
 public class ReservationController {
 
     private final List<Reservation> reservations = new ArrayList<>();
+    private final ReservationDao reservationDao;
 
     @GetMapping("/reservation")
     String reservation() {
         return "reservation.html";
     }
-
-    @Autowired
-    private ReservationDao reservationDao;
 
     @ResponseBody
     @GetMapping("/reservations")
