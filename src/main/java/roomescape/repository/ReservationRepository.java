@@ -56,4 +56,9 @@ public class ReservationRepository {
         String sql = "select id, name, date, time from reservation where id = ?";
         return jdbcTemplate.queryForObject(sql, reservationRowMapper(), id);
     }
+
+    public void deleteReservationById(Long id) {
+        String sql = "DELETE FROM reservation WHERE id = ?";
+        jdbcTemplate.update(sql, id);
+    }
 }

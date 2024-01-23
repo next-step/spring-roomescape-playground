@@ -21,8 +21,6 @@ import roomescape.repository.ReservationRepository;
 @Controller
 public class ReservationController {
 
-    private AtomicLong index = new AtomicLong(1);
-    private final List<Reservation> reservations = new ArrayList<>();
     private final ReservationRepository reservationRepository;
 
     public ReservationController(ReservationRepository reservationRepository) {
@@ -51,12 +49,7 @@ public class ReservationController {
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
-        Reservation reservation = reservations.stream()
-                .filter(r -> r.getId().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new ReservationNotFoundException(ReservationNotFoundException.RESERVATION_NOT_FOUND_MESSAGE));
-
-        reservations.remove(reservation);
+        reservationRepository.deleteReservationById(id);
 
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
