@@ -10,6 +10,7 @@ import roomescape.dao.TimeQueryingDao;
 import roomescape.dao.TimeUpdatingDao;
 import roomescape.domain.Reservation;
 import roomescape.domain.Time;
+import roomescape.domain.dto.ReservationAddRequest;
 import roomescape.exception.InvalidReservationException;
 import roomescape.exception.InvalidTimeException;
 import roomescape.exception.NotFoundReservationException;
@@ -31,14 +32,15 @@ public class ReservationService {
         this.timeUpdatingDao = timeUpdatingDao;
     }
 
-    private static boolean isValidReservation(Reservation reservation) {
-        if (reservation == null)
+    private static boolean isValidReservation(ReservationAddRequest reservationAddRequest) {
+        if (reservationAddRequest == null)
             return false;
-        if (reservation.getName().isEmpty() || reservation.getName().isBlank())
+        if (reservationAddRequest.getName().isEmpty() || reservationAddRequest.getName().isBlank())
             return false;
-        if (reservation.getDate() == null)
+        if (reservationAddRequest.getDate() == null)
             return false;
-        return reservation.getTime() != null;
+
+        return reservationAddRequest.getTime() != null;
     }
 
     private static boolean isValidTime(Time time) {
@@ -53,14 +55,21 @@ public class ReservationService {
         return reservationQueryingDao.listAllReservations();
     }
 
-    public Reservation addReservation(Reservation reservation) {
-        if (!isValidReservation(reservation)) {
+    public Reservation addReservation(ReservationAddRequest reservationAddRequest) {
+        if (!isValidReservation(reservationAddRequest)) {
             throw new InvalidReservationException();
         }
 
-        Long generatedId = reservationUpdatingDao.createReservation(reservation);
-        Reservation newReservation = Reservation.toEntity(reservation, generatedId);
-        return newReservation;
+        Time registeredTime = timeQueryingDao.getTime(reservationAddRequest.getTime()).get(0);
+        Long generatedId = reservationUpdatingDao.createReservation(reservationAddRequest);
+
+        return new Reservation(
+            generatedId,
+            reservationAddRequest.getName(),
+            reservationAddRequest.getDate(),
+            registeredTime.getId(),
+            registeredTime.getTime()
+        );
     }
 
     public void removeReservation(Long id) {
