@@ -11,11 +11,11 @@ public class ReservationAddRequest {
     private LocalDate date;
     private Long time;
 
-    public ReservationAddRequest(Long id, String name, LocalDate date, Long timeId) {
+    public ReservationAddRequest(Long id, String name, LocalDate date, Long time) {
         this.id = id;
         this.name = name;
         this.date = date;
-        this.time = timeId;
+        this.time = time;
     }
 
     public Long getId() {
@@ -30,7 +30,7 @@ public class ReservationAddRequest {
         return date;
     }
 
-    public Long getTimeId() {
+    public Long getTime() {
         return time;
     }
 }
