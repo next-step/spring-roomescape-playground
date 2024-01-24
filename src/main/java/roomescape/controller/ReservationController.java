@@ -33,8 +33,8 @@ public class ReservationController {
     }
 
     @PostMapping("/reservations")
-    public ResponseEntity<Reservation> createReservation(@RequestBody ReservationAddRequest ReservationAddRequest) {
-        Reservation newReservation = reservationService.addReservation(ReservationAddRequest);
+    public ResponseEntity<Reservation> createReservation(@RequestBody ReservationAddRequest reservationAddRequest) {
+        Reservation newReservation = reservationService.addReservation(reservationAddRequest);
 
         return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
     }
