@@ -16,9 +16,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 @Controller
 public class TimeController {
     @Autowired
-    private JdbcTemplate jdbcTemplate;
-
-    @Autowired
     private TimeDAO timeDAO;
 
     public TimeController() {

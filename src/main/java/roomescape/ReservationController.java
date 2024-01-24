@@ -13,9 +13,6 @@ import java.util.Objects;
 @Controller
 public class ReservationController {
     @Autowired
-    private JdbcTemplate jdbcTemplate;
-
-    @Autowired
     private TimeDAO timeDAO;
 
     @Autowired
