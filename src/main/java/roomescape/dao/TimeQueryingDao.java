@@ -4,9 +4,6 @@ import java.util.List;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import roomescape.domain.Time;
@@ -27,5 +24,11 @@ public class TimeQueryingDao {
         String sql = "SELECT id, time FROM time";
 
         return jdbcTemplate.query(sql, timeRawMapper);
+    }
+
+    public List<Time> getTime(Long id) {
+        String sql = "SELECT id, time FROM time WHERE id = ?";
+
+        return jdbcTemplate.query(sql, timeRawMapper, id);
     }
 }
