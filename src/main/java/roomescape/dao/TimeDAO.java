@@ -1,4 +1,4 @@
-package roomescape;
+package roomescape.dao;
 
 import java.sql.PreparedStatement;
 import java.util.List;
@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import roomescape.domain.Time;
 
 @Repository
 public class TimeDAO {

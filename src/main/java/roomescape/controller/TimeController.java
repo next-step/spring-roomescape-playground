@@ -1,4 +1,4 @@
-package roomescape;
+package roomescape.controller;
 
 import java.net.URI;
 import java.util.List;
@@ -11,6 +11,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import roomescape.exception.NoParameterException;
+import roomescape.exception.NotFoundTimeException;
+import roomescape.domain.Time;
+import roomescape.dao.TimeDAO;
 
 @Controller
 public class TimeController {

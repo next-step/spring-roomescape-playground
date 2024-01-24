@@ -1,4 +1,4 @@
-package roomescape;
+package roomescape.domain;
 
 public class Time {
     private Long id;

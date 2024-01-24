@@ -1,4 +1,4 @@
-package roomescape;
+package roomescape.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -8,6 +8,12 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.util.List;
 import java.util.Objects;
+import roomescape.exception.NoParameterException;
+import roomescape.exception.NotFoundReservationException;
+import roomescape.domain.Reservation;
+import roomescape.dao.ReservationDAO;
+import roomescape.domain.Time;
+import roomescape.dao.TimeDAO;
 
 @Controller
 public class ReservationController {
