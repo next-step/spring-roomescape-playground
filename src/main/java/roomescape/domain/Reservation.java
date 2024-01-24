@@ -10,18 +10,18 @@ public class Reservation {
     private String name;
     @DateTimeFormat(pattern = "YYYY-MM-dd")
     private LocalDate date;
-    @DateTimeFormat(pattern = "HH:MM")
-    private LocalTime time;
+    private Time time;
 
-    public Reservation(Long id, String name, LocalDate date, LocalTime time) {
+    public Reservation(Long id, String name, LocalDate date, Long timeId, LocalTime timeValue) {
         this.id = id;
         this.name = name;
         this.date = date;
-        this.time = time;
+        this.time = new Time(timeId, timeValue);
     }
 
     public static Reservation toEntity(Reservation reservation, Long id) {
-        return new Reservation(id, reservation.name, reservation.date, reservation.time);
+        return new Reservation(id, reservation.name, reservation.date, reservation.time.getId(),
+            reservation.time.getTime());
     }
 
     public Long getId() {
@@ -36,7 +36,7 @@ public class Reservation {
         return date;
     }
 
-    public LocalTime getTime() {
+    public Time getTime() {
         return time;
     }
 
