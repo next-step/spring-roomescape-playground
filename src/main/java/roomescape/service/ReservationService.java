@@ -4,31 +4,35 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import roomescape.dao.ReservationDao;
+import roomescape.dao.ReservationQueryingDao;
+import roomescape.dao.ReservationUpdatingDao;
 import roomescape.dao.TimeDao;
 import roomescape.domain.Reservation;
 import roomescape.domain.Time;
 
 @Service
 public class ReservationService {
-    private final ReservationDao reservationDao;
+    private final ReservationQueryingDao reservationQueryingDao;
+    private final ReservationUpdatingDao reservationUpdatingDao;
     private final TimeDao timeDao;
 
-    public ReservationService(ReservationDao reservationDao, TimeDao timeDao) {
-        this.reservationDao = reservationDao;
+    public ReservationService(ReservationQueryingDao reservationDao, ReservationUpdatingDao reservationUpdatingDao,
+        TimeDao timeDao) {
+        this.reservationQueryingDao = reservationDao;
+        this.reservationUpdatingDao = reservationUpdatingDao;
         this.timeDao = timeDao;
     }
 
     public List<Reservation> getAllReservations() {
-        return reservationDao.listAllReservations();
+        return reservationQueryingDao.listAllReservations();
     }
 
     public Long addReservation(Reservation reservation) {
-        return reservationDao.createReservation(reservation);
+        return reservationUpdatingDao.createReservation(reservation);
     }
 
     public int removeReservation(Long id) {
-        return reservationDao.deleteReservation(id);
+        return reservationUpdatingDao.deleteReservation(id);
     }
 
     public List<Time> getAllTimes() {
