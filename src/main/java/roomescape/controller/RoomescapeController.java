@@ -16,7 +16,6 @@ import roomescape.domain.Reservation;
 import roomescape.domain.Time;
 import roomescape.exception.InvalidReservationException;
 import roomescape.exception.NotFoundReservationException;
-import roomescape.exception.NotFoundTimeException;
 import roomescape.service.ReservationService;
 
 @Controller
@@ -26,16 +25,6 @@ public class RoomescapeController {
 
     public RoomescapeController(ReservationService reservationService) {
         this.reservationService = reservationService;
-    }
-
-    private static boolean isValidReservation(Reservation reservation) {
-        if (reservation == null)
-            return false;
-        if (reservation.getName().isEmpty() || reservation.getName().isBlank())
-            return false;
-        if (reservation.getDate() == null)
-            return false;
-        return reservation.getTime() != null;
     }
 
     @ExceptionHandler({NotFoundReservationException.class, InvalidReservationException.class})
@@ -67,21 +56,14 @@ public class RoomescapeController {
 
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservation) {
-        if (!isValidReservation(reservation)) {
-            throw new InvalidReservationException();
-        }
+        Reservation newReservation = reservationService.addReservation(reservation);
 
-        Long generatedId = reservationService.addReservation(reservation);
-        Reservation newReservation = Reservation.toEntity(reservation, generatedId);
         return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
     }
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
-        int deleteCount = reservationService.removeReservation(id);
-        if (deleteCount == 0) {
-            throw new NotFoundReservationException();
-        }
+        reservationService.removeReservation(id);
 
         return ResponseEntity.noContent().build();
     }
@@ -95,17 +77,14 @@ public class RoomescapeController {
 
     @PostMapping("/times")
     public ResponseEntity<Time> createTime(@RequestBody Time time) {
-        Long generatedId = reservationService.addTime(time);
-        Time newTime = Time.toEntity(time, generatedId);
+        Time newTime = reservationService.addTime(time);
+
         return ResponseEntity.created(URI.create("/times/" + newTime.getId())).body(newTime);
     }
 
     @DeleteMapping("/times/{id}")
     public ResponseEntity<Void> deleteTime(@PathVariable Long id) {
-        int deleteCount = reservationService.removeTime(id);
-        if (deleteCount == 0) {
-            throw new NotFoundTimeException();
-        }
+        reservationService.removeTime(id);
 
         return ResponseEntity.noContent().build();
     }
