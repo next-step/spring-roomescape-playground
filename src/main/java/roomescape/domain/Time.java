@@ -21,6 +21,6 @@ public class Time {
     }
 
     public static boolean checkValidity(Time time) {
-        return (time.getTime().isEmpty() && time.getId() == null);
+        return (time.getTime().isEmpty() || time.getId() == null);
     }
 }
