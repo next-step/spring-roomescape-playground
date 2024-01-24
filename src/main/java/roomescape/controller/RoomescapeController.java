@@ -27,7 +27,7 @@ public class RoomescapeController {
         this.reservationService = reservationService;
     }
 
-    @ExceptionHandler({NotFoundReservationException.class, InvalidReservationException.class})
+    @ExceptionHandler(RuntimeException.class)
     public ResponseEntity handleException(RuntimeException e) {
         return ResponseEntity.badRequest().build();
     }

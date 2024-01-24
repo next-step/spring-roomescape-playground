@@ -11,6 +11,7 @@ import roomescape.dao.TimeUpdatingDao;
 import roomescape.domain.Reservation;
 import roomescape.domain.Time;
 import roomescape.exception.InvalidReservationException;
+import roomescape.exception.InvalidTimeException;
 import roomescape.exception.NotFoundReservationException;
 import roomescape.exception.NotFoundTimeException;
 
@@ -40,6 +41,14 @@ public class ReservationService {
         return reservation.getTime() != null;
     }
 
+    private static boolean isValidTime(Time time) {
+        if (time == null)
+            return false;
+        if (time.getTime() == null)
+            return false;
+        return true;
+    }
+
     public List<Reservation> getAllReservations() {
         return reservationQueryingDao.listAllReservations();
     }
@@ -66,6 +75,10 @@ public class ReservationService {
     }
 
     public Time addTime(Time time) {
+        if (!isValidTime(time)) {
+            throw new InvalidTimeException();
+        }
+
         Long generatedId = timeUpdatingDao.createTime(time);
         Time newTime = Time.toEntity(time, generatedId);
         return newTime;
