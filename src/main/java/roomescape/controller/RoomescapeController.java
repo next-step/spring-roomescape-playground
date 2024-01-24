@@ -50,7 +50,7 @@ public class RoomescapeController {
 
     @GetMapping("/reservation")
     public String getReservation() {
-        return "reservation";
+        return "new-reservation";
     }
 
     @GetMapping("/reservations")
