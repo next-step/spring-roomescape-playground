@@ -16,7 +16,10 @@ public class ReservationController {
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    private ReservationDAO reservationDAO = new ReservationDAO(jdbcTemplate);
+    private TimeDAO timeDAO;
+
+    @Autowired
+    private ReservationDAO reservationDAO;
 
     public ReservationController() {
     }
@@ -29,6 +32,13 @@ public class ReservationController {
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> create(@RequestBody Reservation reservation) {
         if(Reservation.checkValidity(reservation)) throw new NoParameterException();
+
+        Time timeWithValue = timeDAO.findSpecificTime(reservation.getTime().getId());
+        reservation = new Reservation(
+                reservation.getName(),
+                reservation.getDate(),
+                timeWithValue
+        );
 
         Long id = reservationDAO.insertNewReservation(reservation);
         Reservation newReservation = Reservation.toEntity(reservation, id);

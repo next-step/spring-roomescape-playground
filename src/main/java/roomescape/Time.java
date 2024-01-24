@@ -6,7 +6,7 @@ public class Time {
 
     public Time() { }
 
-    public Time(String time) { this.time = time; }
+    public Time(Long id) { this.id = id; }
 
     public Time(Long id, String time) {
         this.id = id;
@@ -21,6 +21,6 @@ public class Time {
     }
 
     public static boolean checkValidity(Time time) {
-        return (time.getTime().isEmpty());
+        return (time.getTime().isEmpty() && time.getId() == null);
     }
 }

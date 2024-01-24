@@ -14,11 +14,16 @@ public class ReservationDAO {
     private final JdbcTemplate jdbcTemplate;
 
     private final RowMapper<Reservation> reservationRowMapper = (resultSet, rowNum) -> {
+        Time time = new Time(
+                resultSet.getLong("time_id"),
+                resultSet.getString("time_value")
+        );
+
         Reservation reservation = new Reservation(
                 resultSet.getLong("id"),
                 resultSet.getString("name"),
                 resultSet.getString("date"),
-                resultSet.getString("time")
+                time
         );
         return reservation;
     };
@@ -28,19 +33,21 @@ public class ReservationDAO {
     }
 
     public List<Reservation> findAllReservations() {
-        String sql = "SELECT id, name, date, time FROM reservation";
+        String sql = "SELECT r.id AS reservation_id, r.name, r.date, t.id AS time_id, t.time AS time_value "
+                + "FROM reservation AS r INNER JOIN time AS t "
+                + "ON r.time_id = t.id";
         return jdbcTemplate.query(sql, reservationRowMapper);
     }
 
     public Long insertNewReservation(Reservation reservation) {
-        String sql = "INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO reservation (name, date, time_id) VALUES (?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
             ps.setString(1, reservation.getName());
             ps.setString(2, reservation.getDate());
-            ps.setString(3, reservation.getTime());
+            ps.setLong(3, reservation.getTime().getId());
             return ps;
         }, keyHolder);
 
@@ -56,7 +63,7 @@ public class ReservationDAO {
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setString(1, reservation.getName());
             ps.setString(2, reservation.getDate());
-            ps.setString(3, reservation.getTime());
+            ps.setString(3, reservation.getTime().getTime());
             ps.setString(4, reservation.getId().toString());
             return ps;
         });

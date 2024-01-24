@@ -19,7 +19,7 @@ public class TimeController {
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    private TimeDAO timeDAO = new TimeDAO(jdbcTemplate);
+    private TimeDAO timeDAO;
 
     public TimeController() {
     }

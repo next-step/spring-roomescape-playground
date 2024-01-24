@@ -20,11 +20,23 @@ public class TimeDAO {
         return time;
     };
 
-    public TimeDAO(JdbcTemplate jdbcTemplate) { this.jdbcTemplate = jdbcTemplate; }
+    public TimeDAO(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+
+        //예약관리 페이지 구현을 위한 Time 테스트 데이터 생성(8단계 테스트 시 삭제)
+        insertNewTime(new Time(1L, "10:00"));
+        insertNewTime(new Time(2L, "13:00"));
+        insertNewTime(new Time(3L, "17:00"));
+    }
 
     public List<Time> findAllTimes() {
         String sql = "SELECT id, time FROM time";
         return jdbcTemplate.query(sql, timeRowMapper);
+    }
+
+    public Time findSpecificTime(Long time_id) {
+        String sql = "SELECT id, time FROM time WHERE id=" + time_id;
+        return jdbcTemplate.queryForObject(sql, timeRowMapper);
     }
 
     public Long insertNewTime(Time time) {
@@ -37,9 +49,7 @@ public class TimeDAO {
             return ps;
         }, keyHolder);
 
-        Long id = keyHolder.getKey().longValue();
-
-        return id;
+        return keyHolder.getKey().longValue();   // time_id
     }
 
     public Long updateTime(Time time, Long id) {
