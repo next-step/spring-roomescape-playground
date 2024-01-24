@@ -221,6 +221,6 @@ public class MissionStepTest {
             .body(reservation)
             .when().post("/reservations")
             .then().log().all()
-            .statusCode(200);
+            .statusCode(201);
     }
 }
