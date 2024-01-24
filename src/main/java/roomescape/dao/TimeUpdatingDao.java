@@ -12,21 +12,15 @@ import org.springframework.stereotype.Repository;
 import roomescape.domain.Time;
 
 @Repository
-public class TimeDao {
+public class TimeUpdatingDao {
     private final JdbcTemplate jdbcTemplate;
 
     private final RowMapper<Time> timeRawMapper = (resultSet, rowNum) ->
         new Time(resultSet.getLong("id"),
             resultSet.getTime("time").toLocalTime());
 
-    public TimeDao(JdbcTemplate jdbcTemplate) {
+    public TimeUpdatingDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-    }
-
-    public List<Time> listAllTimes() {
-        String sql = "SELECT id, time FROM time";
-
-        return jdbcTemplate.query(sql, timeRawMapper);
     }
 
     public Long createTime(Time time) {

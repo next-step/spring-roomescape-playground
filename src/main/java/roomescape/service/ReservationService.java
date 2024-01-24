@@ -6,7 +6,8 @@ import org.springframework.stereotype.Service;
 
 import roomescape.dao.ReservationQueryingDao;
 import roomescape.dao.ReservationUpdatingDao;
-import roomescape.dao.TimeDao;
+import roomescape.dao.TimeQueryingDao;
+import roomescape.dao.TimeUpdatingDao;
 import roomescape.domain.Reservation;
 import roomescape.domain.Time;
 
@@ -14,13 +15,15 @@ import roomescape.domain.Time;
 public class ReservationService {
     private final ReservationQueryingDao reservationQueryingDao;
     private final ReservationUpdatingDao reservationUpdatingDao;
-    private final TimeDao timeDao;
+    private final TimeQueryingDao timeQueryingDao;
+    private final TimeUpdatingDao timeUpdatingDao;
 
-    public ReservationService(ReservationQueryingDao reservationDao, ReservationUpdatingDao reservationUpdatingDao,
-        TimeDao timeDao) {
-        this.reservationQueryingDao = reservationDao;
+    public ReservationService(ReservationQueryingDao reservationQueryingDao, ReservationUpdatingDao reservationUpdatingDao,
+        TimeQueryingDao timeQueryingDao, TimeUpdatingDao timeUpdatingDao) {
+        this.reservationQueryingDao = reservationQueryingDao;
         this.reservationUpdatingDao = reservationUpdatingDao;
-        this.timeDao = timeDao;
+        this.timeQueryingDao = timeQueryingDao;
+        this.timeUpdatingDao = timeUpdatingDao;
     }
 
     public List<Reservation> getAllReservations() {
@@ -36,14 +39,14 @@ public class ReservationService {
     }
 
     public List<Time> getAllTimes() {
-        return timeDao.listAllTimes();
+        return timeQueryingDao.listAllTimes();
     }
 
     public Long addTime(Time time) {
-        return timeDao.createTime(time);
+        return timeUpdatingDao.createTime(time);
     }
 
     public int removeTime(Long id) {
-        return timeDao.deleteTime(id);
+        return timeUpdatingDao.deleteTime(id);
     }
 }
