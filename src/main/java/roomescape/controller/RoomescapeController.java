@@ -49,8 +49,13 @@ public class RoomescapeController {
     }
 
     @GetMapping("/reservation")
-    public String getReservation() {
+    public String getReservationHtml() {
         return "new-reservation";
+    }
+
+    @GetMapping("/time")
+    public String getTimeHtml() {
+        return "time";
     }
 
     @GetMapping("/reservations")
