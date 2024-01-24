@@ -1,29 +1,20 @@
 package roomescape.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Objects;
-import roomescape.exception.NoParameterException;
-import roomescape.exception.NotFoundReservationException;
 import roomescape.domain.Reservation;
-import roomescape.dao.ReservationDAO;
-import roomescape.domain.Time;
-import roomescape.dao.TimeDAO;
+import roomescape.service.ReservationService;
 
 @Controller
 public class ReservationController {
-    @Autowired
-    private TimeDAO timeDAO;
+    private final ReservationService reservationService;
 
-    @Autowired
-    private ReservationDAO reservationDAO;
-
-    public ReservationController() {
+    public ReservationController(ReservationService reservationService) {
+        this.reservationService = reservationService;
     }
 
     @GetMapping("/reservation")
@@ -33,45 +24,25 @@ public class ReservationController {
 
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> create(@RequestBody Reservation reservation) {
-        if(Reservation.checkValidity(reservation)) throw new NoParameterException();
-
-        Time timeWithValue = timeDAO.findSpecificTime(reservation.getTime().getId());
-        reservation = new Reservation(
-                reservation.getName(),
-                reservation.getDate(),
-                timeWithValue
-        );
-
-        Long id = reservationDAO.insertNewReservation(reservation);
-        Reservation newReservation = Reservation.toEntity(reservation, id);
-        return ResponseEntity.created(URI.create("/reservations/" + id)).body(newReservation);
+        Reservation newReservation = reservationService.insertNewReservation(reservation);
+        return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
     }
 
     @GetMapping("/reservations")
     public ResponseEntity<List<Reservation>> read() {
-        List<Reservation> reservationList = reservationDAO.findAllReservations();
+        List<Reservation> reservationList = reservationService.findAllReservations();
         return ResponseEntity.ok().body(reservationList);
     }
 
     @PutMapping("/reservations/{id}")
     public ResponseEntity<Void> update(@RequestBody Reservation newReservation, @PathVariable Long id) {
-        Reservation reservation = reservationDAO.findAllReservations().stream()
-                .filter(it -> Objects.equals(it.getId(), id))
-                .findFirst()
-                .orElseThrow(NotFoundReservationException::new);
-
-        reservationDAO.updateReservation(newReservation, reservation.getId());
+        reservationService.updateReservation(newReservation, id);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        Reservation reservation = reservationDAO.findAllReservations().stream()
-                .filter(it -> Objects.equals(it.getId(), id))
-                .findFirst()
-                .orElseThrow(NotFoundReservationException::new);
-
-        reservationDAO.deleteReservation(id);
+        reservationService.deleteReservation(id);
         return ResponseEntity.noContent().build();
     }
 }
