@@ -24,7 +24,8 @@ public class TimeUpdatingDao {
     }
 
     public Long createTime(Time time) {
-        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("time")
+        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+            .withTableName("time")
             .usingColumns("time")
             .usingGeneratedKeyColumns("id");
 
