@@ -8,7 +8,7 @@ public class Time {
     @DateTimeFormat(pattern = "HH:MM")
     private LocalTime time;
 
-    public Time() { }
+    public Time(Long id) { this.id = id; }
 
     public Time(Long id, LocalTime time) {
         this.id = id;
