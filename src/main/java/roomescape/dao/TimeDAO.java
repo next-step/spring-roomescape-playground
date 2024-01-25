@@ -16,7 +16,7 @@ public class TimeDAO {
     private final RowMapper<Time> timeRowMapper = (resultSet, rowNum) -> {
         Time time = new Time(
                 resultSet.getLong("id"),
-                resultSet.getString("time")
+                resultSet.getTime("time").toLocalTime()
         );
         return time;
     };
@@ -25,9 +25,9 @@ public class TimeDAO {
         this.jdbcTemplate = jdbcTemplate;
 
         //예약관리 페이지 구현을 위한 Time 테스트 데이터 생성(8단계 테스트 시 삭제)
-        insertNewTime(new Time(1L, "10:00"));
-        insertNewTime(new Time(2L, "13:00"));
-        insertNewTime(new Time(3L, "17:00"));
+//        insertNewTime(new Time(1L, "10:00"));
+//        insertNewTime(new Time(2L, "13:00"));
+//        insertNewTime(new Time(3L, "17:00"));
     }
 
     public List<Time> findAllTimes() {
@@ -44,9 +44,11 @@ public class TimeDAO {
         String sql = "INSERT INTO time (time) VALUES (?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
+        System.out.println(time.getId() + " " + time.getTime());
+
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
-            ps.setString(1, time.getTime());
+            ps.setString(1, time.getTime().toString());
             return ps;
         }, keyHolder);
 
@@ -58,7 +60,7 @@ public class TimeDAO {
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql);
-            ps.setString(1, time.getTime());
+            ps.setString(1, time.getTime().toString());
             ps.setString(2, time.getId().toString());
             return ps;
         });
