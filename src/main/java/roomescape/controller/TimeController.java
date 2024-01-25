@@ -31,7 +31,6 @@ public class TimeController {
 
     @PostMapping("/times")
     public ResponseEntity<Time> create(@RequestBody Time time) {
-        System.out.println("In Controller: " + time.getId() + " " + time.getTime());
         Time newTime = timeService.insertNewTime(time);
         return ResponseEntity.created(URI.create("/times/" + newTime.getId())).body(newTime);
     }

@@ -44,8 +44,6 @@ public class TimeDAO {
         String sql = "INSERT INTO time (time) VALUES (?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
-        System.out.println(time.getId() + " " + time.getTime());
-
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
             ps.setString(1, time.getTime().toString());
