@@ -18,7 +18,7 @@ public class ReservationDAO {
     private final RowMapper<Reservation> reservationRowMapper = (resultSet, rowNum) -> {
         Time time = new Time(
                 resultSet.getLong("time_id"),
-                resultSet.getString("time_value")
+                resultSet.getTime("time_value").toLocalTime()
         );
 
         Reservation reservation = new Reservation(
@@ -27,6 +27,7 @@ public class ReservationDAO {
                 resultSet.getString("date"),
                 time
         );
+
         return reservation;
     };
 
@@ -38,6 +39,7 @@ public class ReservationDAO {
         String sql = "SELECT r.id AS reservation_id, r.name, r.date, t.id AS time_id, t.time AS time_value "
                 + "FROM reservation AS r INNER JOIN time AS t "
                 + "ON r.time_id = t.id";
+
         return jdbcTemplate.query(sql, reservationRowMapper);
     }
 
@@ -53,9 +55,7 @@ public class ReservationDAO {
             return ps;
         }, keyHolder);
 
-        Long id = keyHolder.getKey().longValue();
-
-        return id;
+        return keyHolder.getKey().longValue();
     }
 
     public Long updateReservation(Reservation reservation, Long id) {
@@ -65,7 +65,7 @@ public class ReservationDAO {
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setString(1, reservation.getName());
             ps.setString(2, reservation.getDate());
-            ps.setString(3, reservation.getTime().getTime());
+            ps.setString(3, reservation.getTime().getTime().toString());
             ps.setString(4, reservation.getId().toString());
             return ps;
         });
