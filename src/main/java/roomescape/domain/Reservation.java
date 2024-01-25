@@ -32,7 +32,8 @@ public class Reservation {
 
     public static boolean checkValidity(Reservation reservation) {
         return (reservation.getName().isEmpty() ||
-                reservation.getDate().isEmpty());
+                reservation.getDate().isEmpty() ||
+                reservation.getTime().getId() == null);
     }
 
     public void update(Reservation newReservation) {
