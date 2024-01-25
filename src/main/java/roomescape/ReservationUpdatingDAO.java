@@ -24,10 +24,10 @@ public class ReservationUpdatingDAO {
     }
 
     public Number save(Reservation reservation){
-        Map<String, Object> parameters = new HashMap<String, Object>();
+        Map<String, Object> parameters = new HashMap<>();
         parameters.put("name", reservation.getName());
         parameters.put("date", reservation.getDate());
-        parameters.put("time", reservation.getTime());
+        parameters.put("time_id", reservation.getTime().getTime());
 
         return simpleJdbcInsert.executeAndReturnKey(parameters);
     }
