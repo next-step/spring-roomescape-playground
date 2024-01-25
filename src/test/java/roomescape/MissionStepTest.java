@@ -54,10 +54,21 @@ public class MissionStepTest {
 
     @Test
     void 삼단계() {
+        Map<String, String> timeParams = new HashMap<>();
+        timeParams.put("time", "10:00");
+
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
         params.put("date", "2023-08-05");
-        params.put("time", "15:40");
+        params.put("time", "1");
+
+        RestAssured.given().log().all()
+            .contentType(ContentType.JSON)
+            .body(timeParams)
+            .when().post("/times")
+            .then().log().all()
+            .statusCode(201)
+            .header("Location", "/times/1");;
 
         RestAssured.given().log().all()
             .contentType(ContentType.JSON)
