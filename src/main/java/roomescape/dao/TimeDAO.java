@@ -4,8 +4,9 @@ import java.sql.PreparedStatement;
 import java.util.List;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Time;
 
@@ -36,16 +37,15 @@ public class TimeDAO {
     }
 
     public Long insertNewTime(Time time) {
-        String sql = "INSERT INTO time (time) VALUES (?)";
-        KeyHolder keyHolder = new GeneratedKeyHolder();
+        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("time")
+                .usingColumns("time")
+                .usingGeneratedKeyColumns("id");
 
-        jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
-            ps.setString(1, time.getTime().toString());
-            return ps;
-        }, keyHolder);
+        SqlParameterSource sqlParameterSource = new BeanPropertySqlParameterSource(time);
+        Number key = simpleJdbcInsert.executeAndReturnKey(sqlParameterSource);
 
-        return keyHolder.getKey().longValue();
+        return key.longValue();
     }
 
     public Long updateTime(Time time, Long id) {
