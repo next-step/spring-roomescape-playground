@@ -1,4 +1,4 @@
-package roomescape;
+package roomescape.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -6,6 +6,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
+import roomescape.domain.Time;
+import roomescape.exception.GlobalExceptionHandler;
 
 @Component
 public class TimeUpdatingDAO {

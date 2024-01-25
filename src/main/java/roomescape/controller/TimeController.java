@@ -1,4 +1,4 @@
-package roomescape;
+package roomescape.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -6,6 +6,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import roomescape.dao.TimeQueryingDAO;
+import roomescape.dao.TimeUpdatingDAO;
+import roomescape.domain.Time;
 
 @RestController
 public class TimeController {
