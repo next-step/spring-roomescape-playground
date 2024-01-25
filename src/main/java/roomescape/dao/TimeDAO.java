@@ -23,11 +23,6 @@ public class TimeDAO {
 
     public TimeDAO(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-
-        //예약관리 페이지 구현을 위한 Time 테스트 데이터 생성(8단계 테스트 시 삭제)
-//        insertNewTime(new Time(1L, "10:00"));
-//        insertNewTime(new Time(2L, "13:00"));
-//        insertNewTime(new Time(3L, "17:00"));
     }
 
     public List<Time> findAllTimes() {
@@ -50,7 +45,7 @@ public class TimeDAO {
             return ps;
         }, keyHolder);
 
-        return keyHolder.getKey().longValue();   // time_id
+        return keyHolder.getKey().longValue();
     }
 
     public Long updateTime(Time time, Long id) {
