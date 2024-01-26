@@ -1,4 +1,4 @@
-package roomescape.domain;
+package roomescape.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotEmpty;
