@@ -7,7 +7,7 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import roomescape.entity.Reservation;
+import roomescape.model.entity.Reservation;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -51,7 +51,7 @@ public class ReservationRepository {
         SqlParameterSource params = new BeanPropertySqlParameterSource(reservation);
         Long id = simpleJdbcInsert.executeAndReturnKey(params).longValue();
 
-        return Reservation.toEntity(reservation, id);
+        return new Reservation(id, reservation.getName(), reservation.getDate(), reservation.getTime());
     }
 
     public int delete(Long id) {

@@ -1,4 +1,4 @@
-package roomescape.entity;
+package roomescape.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotEmpty;
@@ -9,15 +9,8 @@ import java.time.LocalTime;
 
 public class Reservation {
     private Long id;
-    @NotEmpty
     private String name;
-
-    @NotNull
-    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
-
-    @NotNull
-    @JsonFormat(pattern = "HH:mm")
     private LocalTime time;
 
     public Reservation() {
@@ -40,35 +33,15 @@ public class Reservation {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-
     public LocalTime getTime() {
         return time;
-    }
-
-    public void setTime(LocalTime time) {
-        this.time = time;
-    }
-
-    public static Reservation toEntity(Reservation reservation, Long id) {
-        return new Reservation(id, reservation.name, reservation.date, reservation.time);
     }
 }

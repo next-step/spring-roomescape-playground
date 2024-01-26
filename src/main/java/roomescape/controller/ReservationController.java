@@ -6,8 +6,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import roomescape.exception.BadRequestReservationException;
+import roomescape.model.dto.ReservationDto;
 import roomescape.repository.ReservationRepository;
-import roomescape.entity.Reservation;
+import roomescape.model.entity.Reservation;
 
 
 import java.net.URI;
@@ -29,8 +30,8 @@ public class ReservationController {
     }
 
     @PostMapping("/reservations")
-    public ResponseEntity<Reservation> addReservation(@Valid @RequestBody Reservation newReservation) {
-        Reservation reservation = reservationRepository.save(newReservation);
+    public ResponseEntity<Reservation> addReservation(@Valid @RequestBody ReservationDto reservationDto) {
+        Reservation reservation = reservationRepository.save(reservationDto.toEntity());
         return ResponseEntity
                 .created(URI.create("/reservations/" + reservation.getId()))
                 .body(reservation);
