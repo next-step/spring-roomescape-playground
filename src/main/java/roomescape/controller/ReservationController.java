@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import roomescape.exception.BadRequestReservationException;
 import roomescape.repository.ReservationRepository;
 import roomescape.entity.Reservation;
 
@@ -33,7 +34,8 @@ public class ReservationController {
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable("id") Long id) {
-        reservationRepository.delete(id);
+        if (reservationRepository.delete(id) == 0)
+            throw new BadRequestReservationException();
         return ResponseEntity.noContent().build();
     }
 }
