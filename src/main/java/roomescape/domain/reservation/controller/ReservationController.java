@@ -30,7 +30,7 @@ public class ReservationController {
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> createReservation(@RequestBody @Valid ReservationCreateRequestDto requestDto) {
         Long reservationId = reservationDao.insert(requestDto);
-        return ResponseEntity.created(URI.create("/reservations/" + reservationId)).body(reservationDao.findReservationById(reservationId));
+        return ResponseEntity.created(URI.create("/reservations/" + reservationId)).body(requestDto.toEntity(reservationId));
     }
 
     @DeleteMapping("/reservations/{reservationId}")
