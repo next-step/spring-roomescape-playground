@@ -37,14 +37,14 @@ public class ReservationRepository {
         return jdbcTemplate.query("select * from reservation", reservationRowMapper());
     }
 
-    public Long saveReservation(ReservationRequest reservationRequest) {
+    public Long saveReservation(Reservation reservation) {
         SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         jdbcInsert.withTableName("reservation").usingGeneratedKeyColumns("id");
 
         Map<String, Object> parameters = Map.of(
-                "name", reservationRequest.getName(),
-                "date", reservationRequest.getDate(),
-                "time", reservationRequest.getTime()
+                "name", reservation.getName(),
+                "date", reservation.getDate(),
+                "time", reservation.getTime()
         );
 
         Number key = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
