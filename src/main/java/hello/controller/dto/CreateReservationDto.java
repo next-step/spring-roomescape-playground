@@ -1,7 +1,6 @@
 package hello.controller.dto;
 
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -10,10 +9,10 @@ public class CreateReservationDto {
 
     @NotEmpty
     private String name;
-    @NotNull
-    private LocalDate date;
-    @NotNull
-    private LocalTime time;
+    @NotEmpty
+    private String date;
+    @NotEmpty
+    private String time;
 
     public CreateReservationDto() {}
 
@@ -22,10 +21,10 @@ public class CreateReservationDto {
     }
 
     public LocalDate getDate() {
-        return date;
+        return LocalDate.parse(date);
     }
 
     public LocalTime getTime() {
-        return time;
+        return LocalTime.parse(time);
     }
 }

@@ -2,15 +2,16 @@ package hello.repository;
 
 import hello.controller.dto.CreateReservationDto;
 import hello.domain.Reservation;
-import hello.repository.dto.ReservationDto;
+import hello.exceptions.NotFoundReservationException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @Repository
@@ -33,42 +34,29 @@ public class ReservationRepository {
             rs.getTime("time").toLocalTime()
     );
 
-    public List<ReservationDto> findAllReservations() {
+    public List<Reservation> findAllReservations() {
         String sql = "select id, name, date, time from reservation";
-        List<Reservation> reservations = template.query(sql, reservationRowMapper);
-
-        return reservations.stream()
-                .map(this::convertToDto)
-                .toList();
+        return template.query(sql, reservationRowMapper);
     }
 
-    public ReservationDto findById(Long id) {
-        String sql = "select id, name, date, time from reservation where id = ?";
+    public Reservation save(CreateReservationDto dto) {
 
-        Reservation reservation = template.queryForObject(sql, reservationRowMapper, id);
-        return convertToDto(reservation);
+        Map<String, Object> params = new HashMap<>();
+        params.put("name", dto.getName());
+        params.put("date", dto.getDate());
+        params.put("time", dto.getTime());
 
-    }
+        Number key = jdbcInsert.executeAndReturnKey(params);
+        long savedId = Objects.requireNonNull(key).longValue();
 
-    public Long save(CreateReservationDto dto) {
-
-        MapSqlParameterSource param = new MapSqlParameterSource()
-                .addValue("name", dto.getName())
-                .addValue("date", dto.getDate())
-                .addValue("time", dto.getTime());
-
-        Number key = jdbcInsert.executeAndReturnKey(param);
-
-        return Objects.requireNonNull(key).longValue();
+        return new Reservation(savedId, dto.getName(), dto.getDate(), dto.getTime());
     }
 
     public void delete(Long id) {
         String sql = "delete from reservation where id = ?";
-        template.update(sql, id);
+        int count = template.update(sql, id);
+
+        if(count==0) throw new NotFoundReservationException();
     }
 
-    private ReservationDto convertToDto(Reservation reservation) {
-        return new ReservationDto(reservation.getId(),
-                reservation.getName(), reservation.getDate(), reservation.getTime());
-    }
 }

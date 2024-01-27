@@ -30,4 +30,5 @@ public class Reservation {
     }
 
     public LocalTime getTime() { return time; }
+
 }

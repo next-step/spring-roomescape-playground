@@ -1,6 +1,7 @@
-package hello.repository.dto;
+package hello.controller.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import hello.domain.Reservation;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -39,5 +40,10 @@ public class ReservationDto {
 
     public LocalTime getTime() {
         return time;
+    }
+
+    public static ReservationDto toDto(Reservation reservation) {
+        return new ReservationDto(reservation.getId(),
+                reservation.getName(), reservation.getDate(), reservation.getTime());
     }
 }
