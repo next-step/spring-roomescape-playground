@@ -4,7 +4,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import roomescape.controller.dto.ReservationDto;
 import roomescape.domain.Reservation;
 
 import java.sql.PreparedStatement;
@@ -36,8 +35,8 @@ public class ReservationRepository {
         return keyHolder.getKey().longValue();
     }
 
-    public List<ReservationDto> findAll() {
-        List<Reservation> reservations = jdbcTemplate.query(
+    public List<Reservation> findAll() {
+        return jdbcTemplate.query(
                 "select id, name, date, time from reservation",
                 (resultSet, rowNum) -> new Reservation(
                         resultSet.getLong("id"),
@@ -45,8 +44,6 @@ public class ReservationRepository {
                         resultSet.getString("date"),
                         resultSet.getString("time")
                 ));
-
-        return ReservationDto.from(reservations);
     }
 
     public void deleteById(long deleteId) {

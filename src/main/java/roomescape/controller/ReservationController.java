@@ -29,10 +29,10 @@ public class ReservationController {
 
     @GetMapping
     public ResponseEntity<List<ReservationDto>> getAllReservations() {
-        List<ReservationDto> reservations = this.reservationRepository.findAll();
-
+        List<Reservation> reservations = reservationRepository.findAll();
+        
         return ResponseEntity.ok()
-                .body(reservations);
+                .body(ReservationDto.from(reservations));
     }
 
     @PostMapping
