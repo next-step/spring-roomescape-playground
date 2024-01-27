@@ -17,14 +17,15 @@ import roomescape.domain.Reservation;
 import roomescape.dto.reservation.ReservationRequest;
 import roomescape.exception.ReservationNotFoundException;
 import roomescape.repository.ReservationRepository;
+import roomescape.service.ReservationService;
 
 @Controller
 public class ReservationController {
 
-    private final ReservationRepository reservationRepository;
+    private final ReservationService reservationService;
 
-    public ReservationController(ReservationRepository reservationRepository) {
-        this.reservationRepository = reservationRepository;
+    public ReservationController(ReservationService reservationService) {
+        this.reservationService = reservationService;
     }
 
     @GetMapping("/reservation")
@@ -35,21 +36,21 @@ public class ReservationController {
     @GetMapping("/reservations")
     @ResponseBody
     public List<Reservation> getReservations() {
-        return reservationRepository.findAllReservation();
+        return reservationService.findAllReservation();
     }
 
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> createReservation(@Valid @RequestBody ReservationRequest reservationRequest) {
-        Long reservationId = reservationRepository.saveReservation(reservationRequest);
+        Long reservationId = reservationService.saveReservation(reservationRequest);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .header("Location", "/reservations/" + reservationId)
-                .body(reservationRepository.findReservationById(reservationId));
+                .body(reservationService.findReservationById(reservationId));
     }
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
-        reservationRepository.deleteReservationById(id);
+        reservationService.deleteReservationById(id);
 
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
