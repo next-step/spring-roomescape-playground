@@ -4,6 +4,9 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -15,8 +18,10 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
@@ -114,22 +119,80 @@ class MissionStepTest {
                    .body("size()", is(0));
     }
 
-
-
-    @Test
-    @DisplayName("예약 추가 시 필요한 인자가 없는 경우 Status Code가 400이다")
-    void 사단계_1() {
+    @ParameterizedTest(name = "이름이 {0}이고 예약 날짜가 {1}이고 예약 시간이 {2}일 때 예외메시지는 \"{3}\"이다.")
+    @MethodSource("invalidInput")
+    void 사단계_12(String name, String date, String time, String message) {
         Map<String, String> params = new HashMap<>();
-        params.put("name", "브라운");
-        params.put("date", "");
-        params.put("time", "");
+        params.put("name", name);
+        params.put("date", date);
+        params.put("time", time);
 
         RestAssured.given().log().all()
                    .contentType(ContentType.JSON)
                    .body(params)
                    .when().post("/reservations")
                    .then().log().all()
-                   .statusCode(400);
+                   .statusCode(400)
+                   .body(containsString(message));
+    }
+
+    private static Stream<Arguments> invalidInput() {
+        return Stream.of(
+                Arguments.of(
+                        null,
+                        "2024-01-28",
+                        "12:34",
+                        "예약자 이름을 입력해주세요."
+                ),
+                Arguments.of(
+                        "",
+                        "2024-01-28",
+                        "12:34",
+                        "예약자 이름을 입력해주세요."
+                ),
+                Arguments.of(
+                        "    ",
+                        "2024-01-28",
+                        "12:34",
+                        "예약자 이름을 입력해주세요."
+                ),
+                Arguments.of(
+                        "브라운",
+                        null,
+                        "12:34",
+                        "예약 날짜를 입력해주세요."
+                ),
+                Arguments.of(
+                        "브라운",
+                        "",
+                        "12:34",
+                        "날짜 형식이 올바르지 않습니다."
+                ),
+                Arguments.of(
+                        "브라운",
+                        "invalid-date",
+                        "12:34",
+                        "날짜 형식이 올바르지 않습니다."
+                ),
+                Arguments.of(
+                        "브라운",
+                        "2024-01-28",
+                        null,
+                        "예약 시간을 입력해주세요."
+                ),
+                Arguments.of(
+                        "브라운",
+                        "2024-01-28",
+                        "",
+                        "시간 형식이 올바르지 않습니다."
+                ),
+                Arguments.of(
+                        "브라운",
+                        "2024-01-28",
+                        "invalid-time",
+                        "시간 형식이 올바르지 않습니다."
+                )
+        );
     }
 
     @Test
