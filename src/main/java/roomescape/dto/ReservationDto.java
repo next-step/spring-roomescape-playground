@@ -1,5 +1,7 @@
 package roomescape.dto;
 
+import roomescape.domain.Reservation;
+
 public class ReservationDto {
     private String name;
     private String date;
@@ -33,5 +35,9 @@ public class ReservationDto {
 
     public void setTime(String time) {
         this.time = time;
+    }
+
+    public static ReservationDto convertToDto(Reservation reservation) {
+        return new ReservationDto(reservation.getName(), reservation.getDate(), reservation.getTime());
     }
 }

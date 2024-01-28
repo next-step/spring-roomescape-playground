@@ -24,7 +24,7 @@ public class ReservationController {
         @GetMapping
         public ResponseEntity<List<ReservationDto>> readReservations() {
             List<ReservationDto> reservationDtos = reservationRepository.findAllReservations().stream()
-                    .map(this::convertToDto)
+                    .map(ReservationDto::convertToDto)
                     .collect(Collectors.toList());
             return ResponseEntity.ok().body(reservationDtos);
         }
@@ -46,8 +46,5 @@ public class ReservationController {
             return ResponseEntity.noContent().build();
         }
 
-        private ReservationDto convertToDto(Reservation reservation) {
-            return new ReservationDto(reservation.getName(), reservation.getDate(), reservation.getTime());
-        }
 
 }

@@ -48,7 +48,7 @@ public class ReservationRepository {
 
     public int delete(long id) {
         String sql = "delete from reservation where id = ?";
-        return jdbcTemplate.update(sql, Long.valueOf(id));
+        return jdbcTemplate.update(sql, id);
     }
 
     public long insertWithKeyHolder(ReservationDto reservationDto) {
