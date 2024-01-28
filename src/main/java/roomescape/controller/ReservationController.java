@@ -3,7 +3,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import roomescape.domain.Reservation;
 import roomescape.exception.NotFoundReservationException;
 import roomescape.exception.ValidateReservationDTO;
-import roomescape.dto.ReservationDto;
+import roomescape.dto.ReservationRequestDto;
 import roomescape.repository.ReservationRepository;
 
 import org.springframework.http.ResponseEntity;
@@ -22,15 +22,15 @@ public class ReservationController {
         private ReservationRepository reservationRepository;
 
         @GetMapping
-        public ResponseEntity<List<ReservationDto>> readReservations() {
-            List<ReservationDto> reservationDtos = reservationRepository.findAllReservations().stream()
-                    .map(ReservationDto::convertToDto)
+        public ResponseEntity<List<ReservationRequestDto>> readReservations() {
+            List<ReservationRequestDto> reservationDtos = reservationRepository.findAllReservations().stream()
+                    .map(ReservationRequestDto::convertToDto)
                     .collect(Collectors.toList());
             return ResponseEntity.ok().body(reservationDtos);
         }
 
         @PostMapping
-        public ResponseEntity<Reservation> createReservation(@RequestBody ReservationDto reservationDTO) {
+        public ResponseEntity<Reservation> createReservation(@RequestBody ReservationRequestDto reservationDTO) {
             ValidateReservationDTO.validateReservation(reservationDTO);
             long newId = reservationRepository.insertWithKeyHolder(reservationDTO);
             return ResponseEntity.created(URI.create("/reservations/" + newId)).body(reservationDTO.toEntity(newId));

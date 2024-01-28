@@ -2,12 +2,12 @@ package roomescape.dto;
 
 import roomescape.domain.Reservation;
 
-public class ReservationDto {
+public class ReservationRequestDto {
     private String name;
     private String date;
     private String time;
 
-    public ReservationDto(String name, String date, String time) {
+    public ReservationRequestDto(String name, String date, String time) {
         this.name = name;
         this.date = date;
         this.time = time;
@@ -37,8 +37,8 @@ public class ReservationDto {
         this.time = time;
     }
 
-    public static ReservationDto convertToDto(Reservation reservation) {
-        return new ReservationDto(reservation.getName(), reservation.getDate(), reservation.getTime());
+    public static ReservationRequestDto convertToDto(Reservation reservation) {
+        return new ReservationRequestDto(reservation.getName(), reservation.getDate(), reservation.getTime());
     }
 
     public Reservation toEntity(Long id) {

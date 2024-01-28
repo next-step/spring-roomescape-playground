@@ -7,7 +7,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
-import roomescape.dto.ReservationDto;
+import roomescape.dto.ReservationRequestDto;
 
 import java.sql.PreparedStatement;
 import java.util.List;
@@ -51,7 +51,7 @@ public class ReservationRepository {
         return jdbcTemplate.update(sql, id);
     }
 
-    public long insertWithKeyHolder(ReservationDto reservationDto) {
+    public long insertWithKeyHolder(ReservationRequestDto reservationDto) {
         String sql = "insert into reservation (name, date, time) values (?, ?, ?)";
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
