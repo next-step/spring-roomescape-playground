@@ -21,6 +21,6 @@ public record ReservationRequest(
 ) {
 
     public Reservation toEntity() {
-        return new Reservation(id, name.toString(), date, time.toString());
+        return new Reservation(id, name.toString(), date, time);
     }
 }

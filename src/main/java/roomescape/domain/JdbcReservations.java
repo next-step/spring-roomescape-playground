@@ -43,7 +43,7 @@ public class JdbcReservations implements Reservations {
                         rs.getLong("id"),
                         rs.getString("name"),
                         rs.getDate("date").toLocalDate(),
-                        rs.getString("time")
+                        rs.getTime("time").toLocalTime()
                 )
         ).toList();
     }
