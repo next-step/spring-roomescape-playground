@@ -1,6 +1,6 @@
 package roomescape.presentation.dto.request;
 
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import roomescape.configuration.ValidateDateFormat;
 import roomescape.configuration.ValidateTimeFormat;
@@ -18,7 +18,7 @@ public class CreateReservationRequest {
     @ValidateDateFormat(message = "날짜 형식이 올바르지 않습니다.", pattern = DATE_FORMAT_PATTERN)
     private String date;
 
-    @NotEmpty(message = "예약자 이름을 입력해주세요.")
+    @NotBlank(message = "예약자 이름을 입력해주세요.")
     private String name;
 
     @NotNull(message = "예약 시간을 입력해주세요.")
