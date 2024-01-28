@@ -33,8 +33,7 @@ public class ReservationController {
         public ResponseEntity<Reservation> createReservation(@RequestBody ReservationDto reservationDTO) {
             ValidateReservationDTO.validateReservation(reservationDTO);
             long newId = reservationRepository.insertWithKeyHolder(reservationDTO);
-            Reservation reservation = new Reservation(newId, reservationDTO.getName(), reservationDTO.getDate(), reservationDTO.getTime());
-            return ResponseEntity.created(URI.create("/reservations/" + newId)).body(reservation);
+            return ResponseEntity.created(URI.create("/reservations/" + newId)).body(reservationDTO.toEntity(newId));
         }
 
 

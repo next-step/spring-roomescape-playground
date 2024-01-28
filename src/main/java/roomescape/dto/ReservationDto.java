@@ -40,4 +40,8 @@ public class ReservationDto {
     public static ReservationDto convertToDto(Reservation reservation) {
         return new ReservationDto(reservation.getName(), reservation.getDate(), reservation.getTime());
     }
+
+    public Reservation toEntity(Long id) {
+        return new Reservation(id, name, date, time);
+    }
 }
