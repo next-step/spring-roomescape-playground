@@ -18,8 +18,12 @@ import java.util.stream.Collectors;
 @RequestMapping("/reservations")
 public class ReservationController {
 
+        private final ReservationRepository reservationRepository;
+
         @Autowired
-        private ReservationRepository reservationRepository;
+        public ReservationController(ReservationRepository reservationRepository) {
+            this.reservationRepository = reservationRepository;
+        }
 
         @GetMapping
         public ResponseEntity<List<ReservationRequestDto>> readReservations() {
