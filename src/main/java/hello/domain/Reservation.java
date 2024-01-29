@@ -2,7 +2,6 @@ package hello.domain;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 
 public class Reservation {
 
@@ -18,10 +17,6 @@ public class Reservation {
         this.time = time;
     }
 
-    public static Reservation create(Long id, String name, LocalDate date, LocalTime time) {
-        return new Reservation(id, name, date, time);
-    }
-
     public Long getId() {
         return id;
     }
@@ -34,7 +29,6 @@ public class Reservation {
         return date;
     }
 
-    public String getTime() {
-        return time.format(DateTimeFormatter.ofPattern("HH:mm"));
-    }
+    public LocalTime getTime() { return time; }
+
 }
