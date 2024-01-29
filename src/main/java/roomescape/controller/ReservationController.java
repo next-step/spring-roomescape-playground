@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import roomescape.domain.ReservationRepository;
 import roomescape.dto.ReservationDto;
 import roomescape.domain.Reservation;
+import roomescape.exception.NotFindReservationException;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -32,17 +33,21 @@ public class ReservationController {
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> createReservation(@Validated @RequestBody ReservationDto reservationdto) {
         Reservation reservation = new Reservation(index.getAndIncrement(),reservationdto.getName(), reservationdto.getDate(),reservationdto.getTime());
-        reservationRepository.save(reservation);
+        reservationRepository.save(reservationdto);
         return ResponseEntity.created(URI.create("/reservations/" + reservation.getId())).build();
     }
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> delete(@PathVariable int id) {
-        Reservation reservation = reservationRepository.getReservationById(id);
-        if (reservation == null) {
-             return ResponseEntity.notFound().build();
+        try {
+            Reservation reservation = reservationRepository.getReservationById(id);
+            if (reservation == null) {
+                return ResponseEntity.notFound().build();
+            }
+            reservationRepository.deleteReservationById(id);
+            return ResponseEntity.noContent().build();
+        } catch(NotFindReservationException e){
+            return ResponseEntity.notFound().build();
         }
-        reservationRepository.deleteReservationById(id);
-        return ResponseEntity.noContent().build();
     }
 }

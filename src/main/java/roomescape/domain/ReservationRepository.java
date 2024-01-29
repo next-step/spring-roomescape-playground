@@ -3,9 +3,12 @@ package roomescape.domain;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.dto.ReservationDto;
 
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -21,8 +24,8 @@ public class ReservationRepository {
             -> new Reservation(
             ResultSet.getInt("id"),
             ResultSet.getString("name"),
-            ResultSet.getDate("date").toLocalDate(),
-            ResultSet.getTime("time").toLocalTime()
+            ResultSet.getString("date"),
+            ResultSet.getString("time")
     );
 
     public List<Reservation> getAllReservations() {
@@ -38,9 +41,18 @@ public class ReservationRepository {
         String sql = "DELETE FROM reservation WHERE id = ?";
         jdbcTemplate.update(sql, id);
     }
-    public Reservation save(Reservation reservation) {
-        String sql = "INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)";
-        jdbcTemplate.update(sql, reservation.getName(), reservation.getDate(), reservation.getTime());
-        return reservation;
+    public long save(ReservationDto reservationDto){
+        String sql = "insert into customers (first_name, last_name) values (?, ?)";
+
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(
+                    sql, new String[]{"id"});
+            ps.setString(1,reservationDto.getName());
+            ps.setString(2,reservationDto.getDate());
+            ps.setString(3,reservationDto.getTime());
+            return ps;
+        }, keyHolder);
+        return keyHolder.getKey().longValue();
     }
 }

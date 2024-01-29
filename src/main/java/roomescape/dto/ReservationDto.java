@@ -7,15 +7,16 @@ import java.time.LocalTime;
 
 public class ReservationDto {
     @NonNull
-    private LocalDate date;
-    @NonNull
-    private LocalTime time;
-    @NonNull
     private String name;
-    public LocalDate getDate() {
+    @NonNull
+    private String date;
+    @NonNull
+    private String time;
+   ;
+    public String getDate() {
         return date;
     }
-    public LocalTime getTime() {
+    public String getTime() {
         return time;
     }
     public String getName() {

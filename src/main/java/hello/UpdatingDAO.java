@@ -15,16 +15,6 @@ public class UpdatingDAO {
     public UpdatingDAO(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
-
-    private final RowMapper<Customer> actorRowMapper = (resultSet, rowNum) -> {
-        Customer customer = new Customer(
-                resultSet.getLong("id"),
-                resultSet.getString("first_name"),
-                resultSet.getString("last_name")
-        );
-        return customer;
-    };
-
     public void insert(Customer customer) {
         String sql = "insert into customers (first_name, last_name) values (?, ?)";
         jdbcTemplate.update(sql, customer.getFirstName(), customer.getLastName());

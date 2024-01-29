@@ -10,22 +10,22 @@ public class Reservation {
     @NonNull
     private String name;
     @NonNull
-    private LocalDate date;
+    private String date;
     @NonNull
-    private LocalTime time;
+    private String time;
     public int getId() {
         return id;
     }
     public String getName() {
         return name;
     }
-    public LocalDate getDate() {
+    public String getDate() {
         return date;
     }
-    public LocalTime getTime(){
+    public String getTime(){
         return time;
     }
-    public Reservation(int id,String name, LocalDate date, LocalTime time) {
+    public Reservation(int id,String name, String date, String time) {
         this.id = id;
         this.name = name;
         this.date = date;
