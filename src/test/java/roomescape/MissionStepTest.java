@@ -2,13 +2,21 @@ package roomescape;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
+import roomescape.domain.Reservation;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
@@ -16,6 +24,7 @@ import static org.hamcrest.Matchers.is;
 public class MissionStepTest {
 
     @Test
+    @DisplayName("메인 페이지 반환하기")
     void 일단계() {
         RestAssured.given().log().all()
                 .when().get("/")
@@ -24,12 +33,17 @@ public class MissionStepTest {
     }
 
     @Test
-    void 이단계() {
+    @DisplayName("예약 관리 페이지 반환하기")
+    void 이단계_1() {
         RestAssured.given().log().all()
                 .when().get("/reservation")
                 .then().log().all()
                 .statusCode(200);
+    }
 
+    @Test
+    @DisplayName("예약 목록 조회하기")
+    void 이단계_2() {
         RestAssured.given().log().all()
                 .when().get("/reservations")
                 .then().log().all()
@@ -38,7 +52,8 @@ public class MissionStepTest {
     }
 
     @Test
-    void 삼단계() {
+    @DisplayName("예약 추가하기")
+    void 삼단계_1() {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
         params.put("date", "2023-08-05");
@@ -58,6 +73,15 @@ public class MissionStepTest {
                 .then().log().all()
                 .statusCode(200)
                 .body("size()", is(1));
+    }
+
+    @Test
+    @DisplayName("예약 삭제하기")
+    void 삼단계_2() {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", "브라운");
+        params.put("date", "2023-08-05");
+        params.put("time", "15:40");
 
         RestAssured.given().log().all()
                 .when().delete("/reservations/1")
@@ -72,24 +96,92 @@ public class MissionStepTest {
     }
 
     @Test
-    void 사단계() {
+    @DisplayName("예약 추가시 필요한 인자가 없는 경우 (Status Code == 400)")
+    void 사단계_1() {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
         params.put("date", "");
         params.put("time", "");
 
-        // 필요한 인자가 없는 경우
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(params)
                 .when().post("/reservations")
                 .then().log().all()
                 .statusCode(400);
+    }
 
-        // 삭제할 예약이 없는 경우
+    @Test
+    @DisplayName("예약 삭제시 삭제할 예약이 없는 경우 (StatusCode == 400)")
+    void 사단계_2() {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", "브라운");
+        params.put("date", "");
+        params.put("time", "");
+
         RestAssured.given().log().all()
                 .when().delete("/reservations/1")
                 .then().log().all()
                 .statusCode(400);
     }
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    @Test
+    @DisplayName("데이터베이스 적용하기")
+    void 오단계() {
+        try (Connection connection = jdbcTemplate.getDataSource().getConnection()) {
+            assertThat(connection).isNotNull();
+            assertThat(connection.getCatalog()).isEqualTo("DATABASE");
+            assertThat(connection.getMetaData().getTables(null, null, "RESERVATION", null).next()).isTrue();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test
+    @DisplayName("DB 쿼리를 통한 조회와 예약 조회 API 결과가 같은지 비교하는 테스트")
+    void 육단계() {
+        jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "브라운", "2023-08-05", "15:40");
+
+        List<Reservation> reservations = RestAssured.given().log().all()
+                .when().get("/reservations")
+                .then().log().all()
+                .statusCode(200).extract()
+                .jsonPath().getList(".", Reservation.class);
+
+        Integer count = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
+
+        assertThat(reservations.size()).isEqualTo(count);
+    }
+
+    @Test
+    @DisplayName("DB 활용 : 데이터 추가/삭제하기")
+    void 칠단계() {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", "브라운");
+        params.put("date", "2023-08-05");
+        params.put("time", "10:00");
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(201)
+                .header("Location", "/reservations/1");
+
+        Integer count = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
+        assertThat(count).isEqualTo(1);
+
+        RestAssured.given().log().all()
+                .when().delete("/reservations/1")
+                .then().log().all()
+                .statusCode(204);
+
+        Integer countAfterDelete = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
+        assertThat(countAfterDelete).isEqualTo(0);
+    }
+
 }
