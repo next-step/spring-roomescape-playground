@@ -6,7 +6,7 @@ public class Reservation {
     private String date;
     private Time time;
 
-    public Reservation() { }
+    private Reservation() { }
 
     public Reservation(Long id, String name, String date, Time time) {
         this.id = id;
