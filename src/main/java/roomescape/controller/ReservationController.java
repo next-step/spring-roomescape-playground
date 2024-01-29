@@ -16,12 +16,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import roomescape.domain.Reservation;
 import roomescape.dto.reservation.ReservationRequest;
 import roomescape.exception.ReservationNotFoundException;
+import roomescape.repository.ReservationRepository;
+import roomescape.service.ReservationService;
 
 @Controller
 public class ReservationController {
 
-    private AtomicLong index = new AtomicLong(1);
-    private List<Reservation> reservations = new ArrayList<>();
+    private final ReservationService reservationService;
+
+    public ReservationController(ReservationService reservationService) {
+        this.reservationService = reservationService;
+    }
 
     @GetMapping("/reservation")
     public String reservation() {
@@ -31,33 +36,21 @@ public class ReservationController {
     @GetMapping("/reservations")
     @ResponseBody
     public List<Reservation> getReservations() {
-        return reservations;
+        return reservationService.findAllReservation();
     }
 
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> createReservation(@Valid @RequestBody ReservationRequest reservationRequest) {
-
-        Reservation reservation = new Reservation(index.getAndIncrement(),
-                reservationRequest.getName(),
-                reservationRequest.getDate(),
-                reservationRequest.getTime());
-
-        reservations.add(reservation);
-
+        Long reservationId = reservationService.saveReservation(reservationRequest);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .header("Location", "/reservations/" + reservation.getId())
-                .body(reservation);
+                .header("Location", "/reservations/" + reservationId)
+                .body(reservationService.findReservationById(reservationId));
     }
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
-        Reservation reservation = reservations.stream()
-                .filter(r -> r.getId().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new ReservationNotFoundException(ReservationNotFoundException.RESERVATION_NOT_FOUND_MESSAGE));
-
-        reservations.remove(reservation);
+        reservationService.deleteReservationById(id);
 
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)

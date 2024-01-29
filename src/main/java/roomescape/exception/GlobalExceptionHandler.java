@@ -7,18 +7,17 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
-
-    @ExceptionHandler(InvalidReservationException.class)
-    public ResponseEntity<String> handleInvalidRequest() {
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(InvalidReservationException.INVALID_RESERVATION_MESSAGE);
-    }
-
     @ExceptionHandler(ReservationNotFoundException.class)
-    public ResponseEntity<String> handleNotFoundReservation() {
+    public ResponseEntity<String> handleNotFoundReservation(ReservationNotFoundException exception) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(ReservationNotFoundException.RESERVATION_NOT_FOUND_MESSAGE);
+                .body(exception.getMessage());
     }
+    @ExceptionHandler(InvalidReservationException.class)
+    public ResponseEntity<String> handleInvalidReservation(InvalidReservationException exception) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(exception.getMessage());
+    }
+
 }
