@@ -1,4 +1,4 @@
-package roomescape.Entity;
+package roomescape.domain;
 
 public class Reservation {
         private long id;
@@ -43,13 +43,6 @@ public class Reservation {
 
     public void setTime(String time) {
         this.time = time;
-    }
-
-    public void update(Reservation newReservation) {
-        this.id = newReservation.id;
-        this.name = newReservation.name;
-        this.date = newReservation.date;
-        this.time = newReservation.time;
     }
 
     public boolean isEqualId(long id) {

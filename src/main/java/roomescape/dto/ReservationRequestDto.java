@@ -1,11 +1,13 @@
-package roomescape.DTO;
+package roomescape.dto;
 
-public class ReservationDTO {
+import roomescape.domain.Reservation;
+
+public class ReservationRequestDto {
     private String name;
     private String date;
     private String time;
 
-    public ReservationDTO(String name, String date, String time) {
+    public ReservationRequestDto(String name, String date, String time) {
         this.name = name;
         this.date = date;
         this.time = time;
@@ -33,5 +35,13 @@ public class ReservationDTO {
 
     public void setTime(String time) {
         this.time = time;
+    }
+
+    public static ReservationRequestDto convertToDto(Reservation reservation) {
+        return new ReservationRequestDto(reservation.getName(), reservation.getDate(), reservation.getTime());
+    }
+
+    public Reservation toEntity(Long id) {
+        return new Reservation(id, name, date, time);
     }
 }
