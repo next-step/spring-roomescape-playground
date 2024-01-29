@@ -1,4 +1,4 @@
-package roomescape.controller.exception;
+package roomescape.application.exception;
 
 public class ReservationNotFoundException extends IllegalArgumentException {
 

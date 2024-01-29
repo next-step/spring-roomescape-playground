@@ -1,4 +1,4 @@
-package roomescape.controller.dto.response;
+package roomescape.presentation.dto.response;
 
 public class ExceptionResponse {
 
