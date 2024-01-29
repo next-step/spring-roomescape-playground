@@ -31,8 +31,8 @@ public class TimeDAO {
         return jdbcTemplate.query(sql, timeRowMapper);
     }
 
-    public Time findSpecificTime(Long time_id) {
-        String sql = "SELECT id, time FROM time WHERE id=" + time_id;
+    public Time findSpecificTime(Long timeId) {
+        String sql = "SELECT id, time FROM time WHERE id=" + timeId;
         return jdbcTemplate.queryForObject(sql, timeRowMapper);
     }
 
