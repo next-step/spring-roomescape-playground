@@ -1,30 +1,28 @@
 package roomescape.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import roomescape.domain.Reservation;
-import roomescape.dao.ReservationQueryingDAO;
-import roomescape.dao.ReservationUpdatingDAO;
-import roomescape.domain.Time;
+import roomescape.service.ReservationService;
 
 @RestController
 public class ReservationController {
 
-    @Autowired
-    ReservationQueryingDAO reservationQueryingDAO;
+    private final ReservationService reservationService;
 
-    @Autowired
-    ReservationUpdatingDAO reservationUpdatingDAO;
+    public ReservationController(final ReservationService reservationService){
+        this.reservationService = reservationService;
+    }
 
     @GetMapping("/reservations")
     public ResponseEntity<List<Reservation>> getReservation(){
-        //step6
-        List<Reservation> reservations = reservationQueryingDAO.getAllReservations();
+
+        List<Reservation> reservations = reservationService.findAllReservations();
         return ResponseEntity.ok().body(reservations);
+
     }
 
     @PostMapping("/reservations")
@@ -40,26 +38,18 @@ public class ReservationController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
 
-
-        Reservation newReservation = new Reservation();
-
-        newReservation.setName(reservation.getName());
-        newReservation.setDate(reservation.getDate());
-        newReservation.setTime(new Time(reservation.getTime().getTime()));
-
-        //step4~6
-        Number newId = reservationUpdatingDAO.save(newReservation);
-        newReservation.setId(newId.longValue());
+        Reservation newReservation = reservationService.bookReservation(reservation);
 
         return ResponseEntity
                 .status(201)
                 .location(java.net.URI.create("/reservations/"+newReservation.getId()))
                 .body(newReservation);
     }
+
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Reservation> deleteReservation(@PathVariable long id) throws Exception {
 
-        int row = reservationUpdatingDAO.delete(id);
+        int row = reservationService.delete(id);
 
         if(row>0){
             return ResponseEntity.noContent().build();
