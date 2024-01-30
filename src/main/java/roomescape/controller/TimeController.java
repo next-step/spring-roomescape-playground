@@ -9,15 +9,16 @@ import java.util.List;
 import roomescape.dao.TimeQueryingDAO;
 import roomescape.dao.TimeUpdatingDAO;
 import roomescape.domain.Time;
+import roomescape.service.TimeService;
 
 @RestController
 public class TimeController {
 
-    @Autowired
-    TimeUpdatingDAO timeUpdatingDAO;
+    TimeService timeservice;
 
-    @Autowired
-    TimeQueryingDAO timeQueryingDAO;
+    public TimeController(TimeService timeservice){
+        this.timeservice = timeservice;
+    }
 
     @PostMapping("/times")
     public ResponseEntity<Time> createTime(@RequestBody Time time){
@@ -25,12 +26,7 @@ public class TimeController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
 
-        Time newTime = new Time();
-
-        newTime.setTime(time.getTime());
-
-        Number newId = timeUpdatingDAO.save(newTime);
-        newTime.setId(newId.longValue());
+        Time newTime = timeservice.save(time);
 
         return ResponseEntity
                 .status(201)
@@ -40,19 +36,21 @@ public class TimeController {
 
     @GetMapping("/times")
     public ResponseEntity<List<Time>> getTimes(){
-        List<Time> times = timeQueryingDAO.getAllTimes();
+
+        List<Time> times = timeservice.findAllTimes();
+
         return ResponseEntity.ok().body(times);
     }
 
     @DeleteMapping("/times/{id}")
     public ResponseEntity<Time> deleteTime(@PathVariable long id) {
 
-        int row = timeUpdatingDAO.delete(id);
+        int row = timeservice.delete(id);
 
         if(row>0){
             return ResponseEntity.noContent().build();
         }
+
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
-
 }
