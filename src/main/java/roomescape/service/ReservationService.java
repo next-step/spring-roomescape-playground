@@ -51,7 +51,7 @@ public class ReservationService {
         return true;
     }
 
-    public List<Reservation> getAllReservations() {
+    public List<Reservation> findReservationList() {
         return reservationQueryingDao.listAllReservations();
     }
 
@@ -79,7 +79,7 @@ public class ReservationService {
         }
     }
 
-    public List<Time> getAllTimes() {
+    public List<Time> findTimeList() {
         return timeQueryingDao.listAllTimes();
     }
 

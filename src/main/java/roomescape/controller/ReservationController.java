@@ -27,7 +27,7 @@ public class ReservationController {
 
     @GetMapping("/reservations")
     public ResponseEntity<List<Reservation>> getAllReservations() {
-        List<Reservation> reservationList = reservationService.getAllReservations();
+        List<Reservation> reservationList = reservationService.findReservationList();
 
         return ResponseEntity.ok().body(reservationList);
     }
@@ -48,7 +48,7 @@ public class ReservationController {
 
     @GetMapping("/times")
     public ResponseEntity<List<Time>> getAllTimes() {
-        List<Time> timeList = reservationService.getAllTimes();
+        List<Time> timeList = reservationService.findTimeList();
 
         return ResponseEntity.ok().body(timeList);
     }
