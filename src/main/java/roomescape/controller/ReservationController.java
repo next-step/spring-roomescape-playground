@@ -1,10 +1,9 @@
 package roomescape.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jmx.export.annotation.ManagedOperation;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
 import roomescape.domain.Reservation;
 
 import java.net.URI;
@@ -27,12 +26,13 @@ public class ReservationController {
 
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> reserve(@RequestBody Reservation reservation) throws NotFoundReservationException {
+        log.info("이전 예약자 {}", reservation);
         Reservation newReservation = Reservation.toEntity(reservation, index.getAndIncrement());
 
         log.info("예약자 {}", newReservation);
         log.info("예약자 아이디 {}",newReservation.getId());
 
-        if(newReservation.getDate().isEmpty() || newReservation.getTime().isEmpty() || newReservation.getId()==null) {
+        if(newReservation.getDate() == null || newReservation.getTime() == null || newReservation.getId()==null) {
             throw new NotFoundReservationException();
         }
         reservations.add(newReservation);
