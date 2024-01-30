@@ -26,42 +26,42 @@ public class ReservationController {
     }
 
     @GetMapping("/reservations")
-    public ResponseEntity<List<Reservation>> getAllReservations() {
+    public ResponseEntity<List<Reservation>> reservationList() {
         List<Reservation> reservationList = reservationService.findReservationList();
 
         return ResponseEntity.ok().body(reservationList);
     }
 
     @PostMapping("/reservations")
-    public ResponseEntity<Reservation> createReservation(@RequestBody ReservationAddRequest reservationAddRequest) {
+    public ResponseEntity<Reservation> reservationSave(@RequestBody ReservationAddRequest reservationAddRequest) {
         Reservation newReservation = reservationService.addReservation(reservationAddRequest);
 
         return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
     }
 
     @DeleteMapping("/reservations/{id}")
-    public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
+    public ResponseEntity<Void> reservationRemove(@PathVariable Long id) {
         reservationService.removeReservation(id);
 
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/times")
-    public ResponseEntity<List<Time>> getAllTimes() {
+    public ResponseEntity<List<Time>> timeList() {
         List<Time> timeList = reservationService.findTimeList();
 
         return ResponseEntity.ok().body(timeList);
     }
 
     @PostMapping("/times")
-    public ResponseEntity<Time> createTime(@RequestBody Time time) {
+    public ResponseEntity<Time> timeSave(@RequestBody Time time) {
         Time newTime = reservationService.addTime(time);
 
         return ResponseEntity.created(URI.create("/times/" + newTime.getId())).body(newTime);
     }
 
     @DeleteMapping("/times/{id}")
-    public ResponseEntity<Void> deleteTime(@PathVariable Long id) {
+    public ResponseEntity<Void> timeRemove(@PathVariable Long id) {
         reservationService.removeTime(id);
 
         return ResponseEntity.noContent().build();

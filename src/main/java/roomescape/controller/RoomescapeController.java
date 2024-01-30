@@ -7,17 +7,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class RoomescapeController {
 
     @GetMapping("/")
-    public String getHome() {
+    public String homePage() {
         return "home";
     }
 
     @GetMapping("/reservation")
-    public String getReservationHtml() {
+    public String reservationPage() {
         return "new-reservation";
     }
 
     @GetMapping("/time")
-    public String getTimeHtml() {
+    public String timePage() {
         return "time";
     }
 
