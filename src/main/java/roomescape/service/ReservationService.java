@@ -1,9 +1,6 @@
 package roomescape.service;
 
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import roomescape.dao.ReservationQueryingDAO;
 import roomescape.dao.ReservationUpdatingDAO;
@@ -14,10 +11,8 @@ import roomescape.domain.Time;
 
 @Service
 public class ReservationService {
-//    @Autowired
     ReservationQueryingDAO reservationQueryingDAO;
 
-//    @Autowired
     ReservationUpdatingDAO reservationUpdatingDAO;
 
 
