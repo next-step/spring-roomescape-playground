@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import roomescape.dao.TimeQueryingDAO;
 import roomescape.dao.TimeUpdatingDAO;
 import roomescape.domain.Time;
+import roomescape.dto.TimeAddRequest;
 
 @Service
 public class TimeService {
@@ -18,7 +19,7 @@ public class TimeService {
     }
 
 
-    public Time save(Time time) {
+    public Time save(TimeAddRequest time) {
         Time newTime = new Time(time.getTime());
         Number timeId = timeUpdatingDAO.save(newTime);
         newTime.setId(timeId.longValue());

@@ -10,7 +10,6 @@ import roomescape.domain.Time;
 
 @Repository
 public class ReservationQueryingDAO {
-//    private static ReservationQueryDAO reservationQuery = null;
 
     private final RowMapper<Reservation> reservationRowMapper = (resultSet, rowNum) -> {
         final Long id = resultSet.getLong("id");

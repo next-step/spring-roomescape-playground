@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import roomescape.domain.Reservation;
+import roomescape.dto.ReservationAddRequest;
 import roomescape.service.ReservationService;
 
 @RestController
@@ -26,19 +27,19 @@ public class ReservationController {
     }
 
     @PostMapping("/reservations")
-    public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservation){
+    public ResponseEntity<Reservation> createReservation(@RequestBody ReservationAddRequest reservationAddRequest){
 
         //빈 값 들어왔을 때의 예외 처리
-        if(reservation.getName() == null || reservation.getName().isEmpty() || reservation.getDate() == null || reservation.getTime() == null){
+        if(reservationAddRequest.getName() == null || reservationAddRequest.getName().isEmpty() || reservationAddRequest.getDate() == null || reservationAddRequest.getTime() == null){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
 
         // 'time' 필드가 'Time' 객체가 아닐 때의 예외 처리
-        if(reservation.getTime().isInvalid()){
+        if(reservationAddRequest.getTime().isInvalid()){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
 
-        Reservation newReservation = reservationService.bookReservation(reservation);
+        Reservation newReservation = reservationService.bookReservation(reservationAddRequest);
 
         return ResponseEntity
                 .status(201)

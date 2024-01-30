@@ -9,6 +9,7 @@ import java.util.List;
 import roomescape.dao.TimeQueryingDAO;
 import roomescape.dao.TimeUpdatingDAO;
 import roomescape.domain.Time;
+import roomescape.dto.TimeAddRequest;
 import roomescape.service.TimeService;
 
 @RestController
@@ -21,7 +22,7 @@ public class TimeController {
     }
 
     @PostMapping("/times")
-    public ResponseEntity<Time> createTime(@RequestBody Time time){
+    public ResponseEntity<Time> createTime(@RequestBody TimeAddRequest time){
         if(time.getTime().isEmpty()||time.getTime()==null){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }

@@ -8,6 +8,7 @@ import roomescape.dao.TimeQueryingDAO;
 import roomescape.dao.TimeUpdatingDAO;
 import roomescape.domain.Reservation;
 import roomescape.domain.Time;
+import roomescape.dto.ReservationAddRequest;
 
 @Service
 public class ReservationService {
@@ -16,7 +17,8 @@ public class ReservationService {
     ReservationUpdatingDAO reservationUpdatingDAO;
 
 
-    public ReservationService(final ReservationQueryingDAO reservationQueryingDAO, final ReservationUpdatingDAO reservationUpdatingDAO, TimeQueryingDAO timeQueryingDAO, TimeUpdatingDAO timeUpdatingDAO){
+    public ReservationService(final ReservationQueryingDAO reservationQueryingDAO, final ReservationUpdatingDAO reservationUpdatingDAO){
+
         this.reservationQueryingDAO = reservationQueryingDAO;
         this.reservationUpdatingDAO = reservationUpdatingDAO;
 
@@ -27,7 +29,7 @@ public class ReservationService {
         return reservationQueryingDAO.getAllReservations();
     }
 
-    public Reservation bookReservation(Reservation reservation) {
+    public Reservation bookReservation(ReservationAddRequest reservation) {
 
         Reservation newReservation = new Reservation();
 
@@ -38,7 +40,6 @@ public class ReservationService {
         Number reservationId = reservationUpdatingDAO.save(newReservation);
 
         return Reservation.toEntity(reservationId.longValue(), newReservation);
-
 
     }
 
