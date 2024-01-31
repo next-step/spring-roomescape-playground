@@ -1,28 +1,28 @@
 package roomescape.dao;
 
-import java.sql.Date;
-import java.sql.PreparedStatement;
 import java.util.List;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import roomescape.domain.Reservation;
+import roomescape.domain.Time;
 
 @Repository
 public class ReservationQueryingDao {
     private final JdbcTemplate jdbcTemplate;
 
     private final RowMapper<Reservation> reservationRawMapper = (resultSet, rowNum) -> {
+        final Time time = new Time(
+            resultSet.getLong("time_id"),
+            resultSet.getTime("time_value").toLocalTime());
+
         Reservation reservation = new Reservation(
             resultSet.getLong("id"),
             resultSet.getString("name"),
             resultSet.getDate("date").toLocalDate(),
-            resultSet.getLong("time_id"),
-            resultSet.getTime("time_value").toLocalTime());
+            time);
         return reservation;
     };
 
@@ -30,7 +30,7 @@ public class ReservationQueryingDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public List<Reservation> listAllReservations() {
+    public List<Reservation> selectListReservation() {
         String sql = "SELECT \n"
             + "    r.id as reservation_id, \n"
             + "    r.name, \n"

@@ -20,15 +20,15 @@ public class TimeQueryingDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public List<Time> listAllTimes() {
+    public List<Time> selectListTime() {
         String sql = "SELECT id, time FROM time";
 
         return jdbcTemplate.query(sql, timeRawMapper);
     }
 
-    public List<Time> getTime(Long id) {
+    public Time selectTimeById(Long id) {
         String sql = "SELECT id, time FROM time WHERE id = ?";
 
-        return jdbcTemplate.query(sql, timeRawMapper, id);
+        return jdbcTemplate.queryForObject(sql, timeRawMapper, id);
     }
 }
