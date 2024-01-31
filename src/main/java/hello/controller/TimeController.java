@@ -11,6 +11,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
+@RequestMapping("/times")
 public class TimeController {
 
     private final TimeRepository timeRepository;
@@ -19,7 +20,7 @@ public class TimeController {
         this.timeRepository = timeRepository;
     }
 
-    @GetMapping("/times")
+    @GetMapping
     public ResponseEntity<List<TimeDto>> timeList() {
 
         List<TimeDto> Times = timeRepository.findAllTimes()
@@ -30,14 +31,14 @@ public class TimeController {
         return ResponseEntity.ok(Times);
     }
 
-    @PostMapping("/times")
+    @PostMapping
     public ResponseEntity<TimeDto> addTime(@Validated @RequestBody CreateTimeDto dto) {
 
         TimeDto savedTime = TimeDto.toDto(timeRepository.save(dto));
         return ResponseEntity.created(URI.create("/times/" + savedTime.getId())).body(savedTime);
     }
 
-    @DeleteMapping("/times/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> removeTime(@PathVariable("id") Long id) {
 
         timeRepository.delete(id);

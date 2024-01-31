@@ -11,6 +11,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
+@RequestMapping("/reservations")
 public class ReservationController {
 
     private final ReservationRepository reservationRepository;
@@ -19,7 +20,7 @@ public class ReservationController {
         this.reservationRepository = reservationRepository;
     }
 
-    @GetMapping("/reservations")
+    @GetMapping
     public ResponseEntity<List<ReservationDto>> reservationList() {
 
         List<ReservationDto> Reservations = reservationRepository.findAllReservations()
@@ -30,14 +31,14 @@ public class ReservationController {
         return ResponseEntity.ok(Reservations);
     }
 
-    @PostMapping("/reservations")
+    @PostMapping
     public ResponseEntity<ReservationDto> addReservation(@Validated @RequestBody CreateReservationDto dto) {
 
         ReservationDto savedReservation = ReservationDto.toDto(reservationRepository.save(dto));
         return ResponseEntity.created(URI.create("/reservations/" + savedReservation.getId())).body(savedReservation);
     }
 
-    @DeleteMapping("/reservations/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> removeReservation(@PathVariable("id") Long id) {
 
         reservationRepository.delete(id);
