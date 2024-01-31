@@ -12,4 +12,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Void> handleException() {
         return ResponseEntity.badRequest().build();
     }
+
+    @ExceptionHandler(NotFoundTimeException.class)
+    public ResponseEntity<Void> handleTimeException() { return ResponseEntity.notFound().build(); }
 }

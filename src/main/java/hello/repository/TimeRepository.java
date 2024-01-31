@@ -1,8 +1,8 @@
 package hello.repository;
 
 import hello.controller.dto.CreateTimeDto;
-import hello.domain.Reservation;
 import hello.domain.Time;
+import hello.exceptions.NotFoundTimeException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -17,11 +17,11 @@ import java.util.Objects;
 @Repository
 public class TimeRepository {
 
-    private final JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate template;
     private final SimpleJdbcInsert jdbcInsert;
 
     public TimeRepository(DataSource dataSource) {
-        this.jdbcTemplate = new JdbcTemplate(dataSource);
+        this.template = new JdbcTemplate(dataSource);
         this.jdbcInsert = new SimpleJdbcInsert(dataSource)
                 .withTableName("time")
                 .usingGeneratedKeyColumns("id");
@@ -34,7 +34,7 @@ public class TimeRepository {
 
     public List<Time> findAllTimes() {
         String sql = "select id, time from time";
-        return jdbcTemplate.query(sql, timeRowMapper);
+        return template.query(sql, timeRowMapper);
     }
 
     public Time save(CreateTimeDto dto) {
@@ -48,5 +48,11 @@ public class TimeRepository {
         return new Time(savedId, dto.getTime());
     }
 
+    public void delete(Long id) {
 
+        String sql = "delete from time where id = ?";
+        int count = template.update(sql, id);
+
+        if (count ==0) throw new NotFoundTimeException();
+    }
 }
