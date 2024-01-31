@@ -11,6 +11,7 @@ import roomescape.dto.reservation.ReservationRequest;
 import roomescape.dto.time.TimeRequest;
 import roomescape.exception.InvalidReservationException;
 import roomescape.exception.ReservationNotFoundException;
+import roomescape.exception.TimeNotFoundException;
 import roomescape.repository.ReservationRepository;
 import roomescape.repository.TimeDao;
 
@@ -51,6 +52,11 @@ public class ReservationService {
             throw new ReservationNotFoundException("해당 id의 예약을 찾을 수 없습니다");
         }
     }
+
+    public Time findTimeById(Long id) {
+        return timeDao.findTimeById(id);
+    }
+
     public Long saveTime(TimeRequest timeRequest) {
         if(timeRequest.getTime() == null) {
             throw new InvalidReservationException("");
@@ -62,4 +68,12 @@ public class ReservationService {
         return timeDao.saveTime(time);
     }
 
+    public void deleteTime(Long id) {
+        try {
+            timeDao.findTimeById(id);
+            timeDao.deleteTimeById(id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new TimeNotFoundException("헤당 시간을 찾을 수 없습니다");
+        }
+    }
 }
