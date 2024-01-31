@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -26,6 +27,16 @@ public class TimeRepository {
                 .usingGeneratedKeyColumns("id");
     }
 
+    private final RowMapper<Time> timeRowMapper = (rs, rn) -> new Time(
+            rs.getLong("id"),
+            rs.getTime("time").toLocalTime()
+    );
+
+    public List<Time> findAllTimes() {
+        String sql = "select id, time from time";
+        return jdbcTemplate.query(sql, timeRowMapper);
+    }
+
     public Time save(CreateTimeDto dto) {
 
         Map<String, Object> params = new HashMap<>();
@@ -36,4 +47,6 @@ public class TimeRepository {
 
         return new Time(savedId, dto.getTime());
     }
+
+
 }
