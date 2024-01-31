@@ -1,27 +1,29 @@
 package roomescape.domain;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
 public class Reservation {
-    private Long id;
-    private String name;
+    private final Long id;
+    private final String name;
     @DateTimeFormat(pattern = "YYYY-MM-dd")
-    private LocalDate date;
-    private Time time;
+    private final LocalDate date;
+    private final Time time;
 
-    public Reservation(Long id, String name, LocalDate date, Long timeId, LocalTime timeValue) {
+    public Reservation(final Long id, final String name, final LocalDate date, final Time time) {
         this.id = id;
         this.name = name;
         this.date = date;
-        this.time = new Time(timeId, timeValue);
+        this.time = time;
     }
 
-    public static Reservation toEntity(Reservation reservation, Long id) {
-        return new Reservation(id, reservation.name, reservation.date, reservation.time.getId(),
-            reservation.time.getTime());
+    public Reservation(final String name, final LocalDate date, final Time time) {
+        this(null, name, date, time);
+    }
+
+    public static Reservation toEntity(final Long id, final Reservation reservation) {
+        return new Reservation(id, reservation.name, reservation.date, reservation.time);
     }
 
     public Long getId() {
@@ -38,12 +40,6 @@ public class Reservation {
 
     public Time getTime() {
         return time;
-    }
-
-    public void update(Reservation reservation) {
-        this.name = reservation.name;
-        this.date = reservation.date;
-        this.time = reservation.time;
     }
 }
 

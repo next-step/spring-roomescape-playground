@@ -5,15 +5,20 @@ import java.time.LocalTime;
 import org.springframework.format.annotation.DateTimeFormat;
 
 public class Time {
-    private Long id;
+    private final Long id;
     @DateTimeFormat(pattern = "HH:MM")
-    private LocalTime time;
+    private final LocalTime time;
 
-    public Time(Long id, LocalTime time) {
+    public Time(final Long id, final LocalTime time) {
         this.id = id;
         this.time = time;
     }
-    public static Time toEntity(Time time, Long id) {
+
+    public Time(final LocalTime time) {
+        this(null, time);
+    }
+
+    public static Time toEntity(final Time time, final Long id) {
         return new Time(id, time.time);
     }
 
