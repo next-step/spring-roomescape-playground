@@ -58,5 +58,4 @@ public class ReservationRepository {
 
         if(count==0) throw new NotFoundReservationException();
     }
-
 }

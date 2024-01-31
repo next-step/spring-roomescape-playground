@@ -163,6 +163,12 @@ public class MissionStepTest {
         Map<String, String> params = new HashMap<>();
         params.put("time", "10:00");
 
-
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/times")
+                .then().log().all()
+                .statusCode(201)
+                .header("Location", "/times/1");
     }
 }
