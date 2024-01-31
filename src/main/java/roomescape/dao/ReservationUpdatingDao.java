@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
+import roomescape.domain.Reservation;
 import roomescape.domain.dto.ReservationAddRequest;
 
 @Repository
@@ -17,23 +18,23 @@ public class ReservationUpdatingDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public Long createReservation(ReservationAddRequest reservationAddRequest) {
+    public Long createReservation(final Reservation reservation) {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
             .withTableName("reservation")
             .usingColumns("name", "date", "time_id")
             .usingGeneratedKeyColumns("id");
 
         SqlParameterSource parameterSource = new MapSqlParameterSource()
-            .addValue("name", reservationAddRequest.getName())
-            .addValue("date", reservationAddRequest.getDate())
-            .addValue("time_id", Long.valueOf(reservationAddRequest.getTime()));
+            .addValue("name", reservation.getName())
+            .addValue("date", reservation.getDate())
+            .addValue("time_id", Long.valueOf(reservation.getTime().getId()));
         Number key = simpleJdbcInsert.executeAndReturnKey(parameterSource);
 
         return key.longValue();
     }
 
-    public int deleteReservation(Long id) {
-        String sql = "DELETE FROM reservation where id = ?";
+    public int deleteReservation(final Long id) {
+        final String sql = "DELETE FROM reservation where id = ?";
 
         return jdbcTemplate.update(sql, id);
     }

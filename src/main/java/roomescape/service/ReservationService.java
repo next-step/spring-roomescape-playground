@@ -11,6 +11,7 @@ import roomescape.dao.TimeUpdatingDao;
 import roomescape.domain.Reservation;
 import roomescape.domain.Time;
 import roomescape.domain.dto.ReservationAddRequest;
+import roomescape.domain.dto.TimeAddRequest;
 import roomescape.exception.InvalidReservationException;
 import roomescape.exception.InvalidTimeException;
 import roomescape.exception.NotFoundReservationException;
@@ -32,18 +33,18 @@ public class ReservationService {
         this.timeUpdatingDao = timeUpdatingDao;
     }
 
-    private static boolean isValidReservation(ReservationAddRequest reservationAddRequest) {
-        if (reservationAddRequest == null)
+    private static boolean isValidReservation(final ReservationAddRequest reservation) {
+        if (reservation == null)
             return false;
-        if (reservationAddRequest.getName().isEmpty() || reservationAddRequest.getName().isBlank())
+        if (reservation.getName().isEmpty() || reservation.getName().isBlank())
             return false;
-        if (reservationAddRequest.getDate() == null)
+        if (reservation.getDate() == null)
             return false;
 
-        return reservationAddRequest.getTime() != null;
+        return reservation.getTime() != null;
     }
 
-    private static boolean isValidTime(Time time) {
+    private static boolean isValidTime(final TimeAddRequest time) {
         if (time == null)
             return false;
         if (time.getTime() == null)
@@ -52,27 +53,24 @@ public class ReservationService {
     }
 
     public List<Reservation> findReservationList() {
-        return reservationQueryingDao.listAllReservations();
+        return reservationQueryingDao.selectListReservation();
     }
 
-    public Reservation addReservation(ReservationAddRequest reservationAddRequest) {
-        if (!isValidReservation(reservationAddRequest)) {
+    public Reservation addReservation(final ReservationAddRequest request) {
+        if (!isValidReservation(request)) {
             throw new InvalidReservationException();
         }
 
-        Time registeredTime = timeQueryingDao.getTime(reservationAddRequest.getTime()).get(0);
-        Long generatedId = reservationUpdatingDao.createReservation(reservationAddRequest);
+        final Long timeId = request.getTime();
+        final Time time = timeQueryingDao.selectTimeById(timeId);
 
-        return new Reservation(
-            generatedId,
-            reservationAddRequest.getName(),
-            reservationAddRequest.getDate(),
-            registeredTime.getId(),
-            registeredTime.getTime()
-        );
+        final Reservation reservation = new Reservation(request.getName(), request.getDate(), time);
+        final Long reservationId = reservationUpdatingDao.createReservation(reservation);
+
+        return Reservation.toEntity(reservationId, reservation);
     }
 
-    public void removeReservation(Long id) {
+    public void removeReservation(final Long id) {
         int deleteCount = reservationUpdatingDao.deleteReservation(id);
         if (deleteCount == 0) {
             throw new NotFoundReservationException();
@@ -80,20 +78,21 @@ public class ReservationService {
     }
 
     public List<Time> findTimeList() {
-        return timeQueryingDao.listAllTimes();
+        return timeQueryingDao.selectListTime();
     }
 
-    public Time addTime(Time time) {
-        if (!isValidTime(time)) {
+    public Time addTime(TimeAddRequest request) {
+        if (!isValidTime(request)) {
             throw new InvalidTimeException();
         }
 
-        Long generatedId = timeUpdatingDao.createTime(time);
-        Time newTime = Time.toEntity(time, generatedId);
-        return newTime;
+        final Time time = new Time(request.getTime());
+        final Long id = timeUpdatingDao.createTime(time);
+
+        return Time.toEntity(id, time);
     }
 
-    public void removeTime(Long id) {
+    public void removeTime(final Long id) {
         int deleteCount = timeUpdatingDao.deleteTime(id);
         if (deleteCount == 0) {
             throw new NotFoundTimeException();

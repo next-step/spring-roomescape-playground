@@ -18,7 +18,7 @@ public class Time {
         this(null, time);
     }
 
-    public static Time toEntity(final Time time, final Long id) {
+    public static Time toEntity(final Long id, final Time time) {
         return new Time(id, time.time);
     }
 
