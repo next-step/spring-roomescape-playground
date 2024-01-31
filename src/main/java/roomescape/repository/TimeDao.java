@@ -24,7 +24,13 @@ public class TimeDao {
             return time;
         };
     }
+
     public List<Time> findAllTime() {
         return jdbcTemplate.query("select * from time", timeRowMapper());
+    }
+
+    public Time findTimeById(Long id) {
+        String sql = "select id, time from time where id = ?";
+        return jdbcTemplate.queryForObject(sql, timeRowMapper(), id);
     }
 }
