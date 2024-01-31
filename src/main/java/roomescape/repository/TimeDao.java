@@ -2,8 +2,11 @@ package roomescape.repository;
 
 
 import java.util.List;
+import java.util.Map;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Time;
 
@@ -32,5 +35,17 @@ public class TimeDao {
     public Time findTimeById(Long id) {
         String sql = "select id, time from time where id = ?";
         return jdbcTemplate.queryForObject(sql, timeRowMapper(), id);
+    }
+
+    public Long saveTime(Time time) {
+        SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
+        jdbcInsert.withTableName("time").usingGeneratedKeyColumns("id");
+
+        Map<String, Object> parameters = Map.of(
+                "time", time.getTime()
+        );
+        Number key = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
+
+        return key.longValue();
     }
 }
