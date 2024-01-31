@@ -30,26 +30,96 @@ public class MissionStepTest {
     @Autowired
     private ReservationController reservationController;
 
-    @Test
-    void 일단계() {
+    private static void 메인_페이지_호출() {
         RestAssured.given().log().all()
             .when().get("/")
             .then().log().all()
             .statusCode(200);
     }
 
-    @Test
-    void 이단계() {
-        RestAssured.given().log().all()
-            .when().get("/reservation")
-            .then().log().all()
-            .statusCode(200);
-
+    private static void 예약_조회_값_사이즈_비교_로직(int reservationSize) {
         RestAssured.given().log().all()
             .when().get("/reservations")
             .then().log().all()
             .statusCode(200)
-            .body("size()", is(0)); // 아직 생성 요청이 없으니 Controller에서 임의로 넣어준 Reservation 갯수 만큼 검증하거나 0개임을 확인하세요.
+            .body("size()", is(reservationSize));
+    }
+
+    private static void 예약_페이지_호출() {
+        RestAssured.given().log().all()
+            .when().get("/reservation")
+            .then().log().all()
+            .statusCode(200);
+    }
+
+    private static void 예약_삭제_성공_로직(int id) {
+        RestAssured.given().log().all()
+            .when().delete("/reservations/" + id)
+            .then().log().all()
+            .statusCode(204);
+    }
+
+    private static void 예약_저장_성공_로직(Map<String, String> params) {
+        RestAssured.given().log().all()
+            .contentType(ContentType.JSON)
+            .body(params)
+            .when().post("/reservations")
+            .then().log().all()
+            .statusCode(201)
+            .header("Location", "/reservations/1")
+            .body("id", is(1));
+    }
+
+    private static void 시간_저장_성공_로직(Map<String, String> timeParams) {
+        RestAssured.given().log().all()
+            .contentType(ContentType.JSON)
+            .body(timeParams)
+            .when().post("/times")
+            .then().log().all()
+            .statusCode(201)
+            .header("Location", "/times/1");
+    }
+
+    private static void 예약_삭제_실패_로직(int id) {
+        RestAssured.given().log().all()
+            .when().delete("/reservations/" + id)
+            .then().log().all()
+            .statusCode(400);
+    }
+
+    private static void 예약_저장_실패_로직(Map<String, String> params) {
+        RestAssured.given().log().all()
+            .contentType(ContentType.JSON)
+            .body(params)
+            .when().post("/reservations")
+            .then().log().all()
+            .statusCode(400);
+    }
+
+    private static void 시간_삭제_성공_로직(int id) {
+        RestAssured.given().log().all()
+            .when().delete("/times/" + id)
+            .then().log().all()
+            .statusCode(204);
+    }
+
+    private static void 시간_조회_값_사이즈_비교_로직(int timeSize) {
+        RestAssured.given().log().all()
+            .when().get("/times")
+            .then().log().all()
+            .statusCode(200)
+            .body("size()", is(timeSize));
+    }
+
+    @Test
+    void 일단계() {
+        메인_페이지_호출();
+    }
+
+    @Test
+    void 이단계() {
+        예약_페이지_호출();
+        예약_조회_값_사이즈_비교_로직(0);
     }
 
     @Test
@@ -62,39 +132,11 @@ public class MissionStepTest {
         params.put("date", "2023-08-05");
         params.put("time", "1");
 
-        RestAssured.given().log().all()
-            .contentType(ContentType.JSON)
-            .body(timeParams)
-            .when().post("/times")
-            .then().log().all()
-            .statusCode(201)
-            .header("Location", "/times/1");
-
-        RestAssured.given().log().all()
-            .contentType(ContentType.JSON)
-            .body(params)
-            .when().post("/reservations")
-            .then().log().all()
-            .statusCode(201)
-            .header("Location", "/reservations/1")
-            .body("id", is(1));
-
-        RestAssured.given().log().all()
-            .when().get("/reservations")
-            .then().log().all()
-            .statusCode(200)
-            .body("size()", is(1));
-
-        RestAssured.given().log().all()
-            .when().delete("/reservations/1")
-            .then().log().all()
-            .statusCode(204);
-
-        RestAssured.given().log().all()
-            .when().get("/reservations")
-            .then().log().all()
-            .statusCode(200)
-            .body("size()", is(0));
+        시간_저장_성공_로직(timeParams);
+        예약_저장_성공_로직(params);
+        예약_조회_값_사이즈_비교_로직(1);
+        예약_삭제_성공_로직(1);
+        예약_조회_값_사이즈_비교_로직(0);
     }
 
     @Test
@@ -105,18 +147,9 @@ public class MissionStepTest {
         params.put("time", "");
 
         // 필요한 인자가 없는 경우
-        RestAssured.given().log().all()
-            .contentType(ContentType.JSON)
-            .body(params)
-            .when().post("/reservations")
-            .then().log().all()
-            .statusCode(400);
 
-        // 삭제할 예약이 없는 경우
-        RestAssured.given().log().all()
-            .when().delete("/reservations/1")
-            .then().log().all()
-            .statusCode(400);
+        예약_저장_실패_로직(params);
+        예약_삭제_실패_로직(1);
     }
 
     @Test
@@ -157,29 +190,13 @@ public class MissionStepTest {
         params.put("date", "2023-08-05");
         params.put("time", "1");
 
-        RestAssured.given().log().all()
-            .contentType(ContentType.JSON)
-            .body(timeParams)
-            .when().post("/times")
-            .then().log().all()
-            .statusCode(201)
-            .header("Location", "/times/1");
-
-        RestAssured.given().log().all()
-            .contentType(ContentType.JSON)
-            .body(params)
-            .when().post("/reservations")
-            .then().log().all()
-            .statusCode(201)
-            .header("Location", "/reservations/1");
+        시간_저장_성공_로직(timeParams);
+        예약_저장_성공_로직(params);
 
         Integer count = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
         assertThat(count).isEqualTo(1);
 
-        RestAssured.given().log().all()
-            .when().delete("/reservations/1")
-            .then().log().all()
-            .statusCode(204);
+        예약_삭제_성공_로직(1);
 
         Integer countAfterDelete = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
         assertThat(countAfterDelete).isEqualTo(0);
@@ -190,24 +207,9 @@ public class MissionStepTest {
         Map<String, String> params = new HashMap<>();
         params.put("time", "10:00");
 
-        RestAssured.given().log().all()
-            .contentType(ContentType.JSON)
-            .body(params)
-            .when().post("/times")
-            .then().log().all()
-            .statusCode(201)
-            .header("Location", "/times/1");
-
-        RestAssured.given().log().all()
-            .when().get("/times")
-            .then().log().all()
-            .statusCode(200)
-            .body("size()", is(1));
-
-        RestAssured.given().log().all()
-            .when().delete("/times/1")
-            .then().log().all()
-            .statusCode(204);
+        시간_저장_성공_로직(params);
+        시간_조회_값_사이즈_비교_로직(1);
+        시간_삭제_성공_로직(1);
     }
 
     @Test
@@ -217,12 +219,7 @@ public class MissionStepTest {
         reservation.put("date", "2023-08-05");
         reservation.put("time", "10:00");
 
-        RestAssured.given().log().all()
-            .contentType(ContentType.JSON)
-            .body(reservation)
-            .when().post("/reservations")
-            .then().log().all()
-            .statusCode(400);
+        예약_저장_실패_로직(reservation);
     }
 
     @Test
@@ -230,25 +227,13 @@ public class MissionStepTest {
         Map<String, String> timeParams = new HashMap<>();
         timeParams.put("time", "10:00");
 
-        RestAssured.given().log().all()
-            .contentType(ContentType.JSON)
-            .body(timeParams)
-            .when().post("/times")
-            .then().log().all()
-            .statusCode(201)
-            .header("Location", "/times/1");
-
         Map<String, String> reservation = new HashMap<>();
         reservation.put("name", "브라운");
         reservation.put("date", "2023-08-05");
         reservation.put("time", "1");
 
-        RestAssured.given().log().all()
-            .contentType(ContentType.JSON)
-            .body(reservation)
-            .when().post("/reservations")
-            .then().log().all()
-            .statusCode(201);
+        시간_저장_성공_로직(timeParams);
+        예약_저장_성공_로직(reservation);
     }
 
     @Test
@@ -261,8 +246,6 @@ public class MissionStepTest {
                 break;
             }
         }
-
         assertThat(isJdbcTemplateInjected).isFalse();
     }
-
 }
