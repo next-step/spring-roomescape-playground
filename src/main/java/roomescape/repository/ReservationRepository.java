@@ -43,7 +43,7 @@ public class ReservationRepository {
     }
 
     public Reservation findById(Long id) {
-        String sql = "select * from reservation where ?";
+        String sql = "select * from reservation where id = ?";
         return jdbcTemplate.queryForObject(sql, reservationRowMapper, id);
     }
 

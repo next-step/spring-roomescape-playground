@@ -4,9 +4,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import roomescape.controller.ReservationController;
+import roomescape.controller.TimeController;
 
-@ControllerAdvice(assignableTypes = ReservationController.class)
-public class ReservationExceptionHandler {
+@ControllerAdvice(assignableTypes = {ReservationController.class, TimeController.class})
+public class RoomescapeExceptionHandler {
     @ExceptionHandler(BadRequestReservationException.class)
     public ResponseEntity<Void> handleBadRequestReservationException() {
         return ResponseEntity.badRequest().build();

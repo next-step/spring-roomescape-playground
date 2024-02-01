@@ -26,12 +26,12 @@ public class ReservationController {
 
     @GetMapping("/reservations")
     public ResponseEntity<List<Reservation>> getReservations() {
-        return ResponseEntity.ok(reservationRepository.findAll());
+        return ResponseEntity.ok(this.reservationRepository.findAll());
     }
 
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> addReservation(@Valid @RequestBody ReservationDto reservationDto) {
-        Reservation reservation = reservationRepository.save(reservationDto.toEntity());
+        Reservation reservation = this.reservationRepository.save(reservationDto.toEntity());
         return ResponseEntity
                 .created(URI.create("/reservations/" + reservation.getId()))
                 .body(reservation);
@@ -39,7 +39,7 @@ public class ReservationController {
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable("id") Long id) {
-        if (reservationRepository.delete(id) == 0)
+        if (this.reservationRepository.delete(id) == 0)
             throw new BadRequestReservationException();
         return ResponseEntity.noContent().build();
     }
