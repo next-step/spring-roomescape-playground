@@ -7,8 +7,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import roomescape.exception.BadRequestReservationException;
 import roomescape.model.dto.ReservationDto;
+import roomescape.model.entity.Time;
 import roomescape.repository.ReservationRepository;
 import roomescape.model.entity.Reservation;
+import roomescape.repository.TimeRepository;
 
 
 import java.net.URI;
@@ -18,10 +20,12 @@ import java.util.List;
 public class ReservationController {
 
     private final ReservationRepository reservationRepository;
+    private final TimeRepository timeRepository;
 
     @Autowired
-    public ReservationController(ReservationRepository reservationRepository) {
+    public ReservationController(ReservationRepository reservationRepository, TimeRepository timeRepository) {
         this.reservationRepository = reservationRepository;
+        this.timeRepository = timeRepository;
     }
 
     @GetMapping("/reservations")
@@ -31,7 +35,8 @@ public class ReservationController {
 
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> addReservation(@Valid @RequestBody ReservationDto reservationDto) {
-        Reservation reservation = this.reservationRepository.save(reservationDto.toEntity());
+        Time time = this.timeRepository.findById(reservationDto.timeId());
+        Reservation reservation = this.reservationRepository.save(reservationDto.toEntity(time));
         return ResponseEntity
                 .created(URI.create("/reservations/" + reservation.getId()))
                 .body(reservation);

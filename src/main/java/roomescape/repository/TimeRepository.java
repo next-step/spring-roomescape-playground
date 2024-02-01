@@ -40,9 +40,9 @@ public class TimeRepository {
         return jdbcTemplate.query(sql, timeRowMapper);
     }
 
-    public List<Time> findById(Long id) {
+    public Time findById(Long id) {
         String sql = "select * from time where id = ?";
-        return jdbcTemplate.query(sql, timeRowMapper, id);
+        return jdbcTemplate.queryForObject(sql, timeRowMapper, id);
     }
 
     public Time save(Time time) {
