@@ -196,4 +196,21 @@ public class MissionStepTest {
                 .then().log().all()
                 .statusCode(400);
     }
+
+    @Autowired
+    private ReservationController reservationController;
+
+    @Test
+    void 십단계() {
+        boolean isJdbcTemplateInjected = false;
+
+        for (Field field : reservationController.getClass().getDeclaredFields()) {
+            if (field.getType().equals(JdbcTemplate.class)) {
+                isJdbcTemplateInjected = true;
+                break;
+            }
+        }
+
+        assertThat(isJdbcTemplateInjected).isFalse();
+    }
 }
