@@ -12,16 +12,16 @@ import roomescape.dto.time.TimeRequest;
 import roomescape.exception.InvalidReservationException;
 import roomescape.exception.ReservationNotFoundException;
 import roomescape.exception.TimeNotFoundException;
-import roomescape.repository.ReservationRepository;
+import roomescape.repository.ReservationDao;
 import roomescape.repository.TimeDao;
 
 @Service
 public class ReservationService {
-    private final ReservationRepository reservationRepository;
+    private final ReservationDao reservationDao;
     private final TimeDao timeDao;
 
-    public ReservationService(ReservationRepository reservationRepository, TimeDao timeDao) {
-        this.reservationRepository = reservationRepository;
+    public ReservationService(ReservationDao reservationDao, TimeDao timeDao) {
+        this.reservationDao = reservationDao;
         this.timeDao = timeDao;
     }
 
@@ -33,21 +33,21 @@ public class ReservationService {
                 reservationRequest.getName(),
                 reservationRequest.getDate(),
                 reservationRequest.getTime());
-        return reservationRepository.saveReservation(reservation);
+        return reservationDao.saveReservation(reservation);
     }
 
     public Reservation findReservationById(Long id) {
-        return reservationRepository.findReservationById(id);
+        return reservationDao.findReservationById(id);
     }
 
     public List<Reservation> findAllReservation() {
-        return reservationRepository.findAllReservation();
+        return reservationDao.findAllReservation();
     }
 
     public void deleteReservationById(Long id) {
         try {
-            reservationRepository.findReservationById(id);
-            reservationRepository.deleteReservationById(id);
+            reservationDao.findReservationById(id);
+            reservationDao.deleteReservationById(id);
         } catch (EmptyResultDataAccessException e) {
             throw new ReservationNotFoundException("해당 id의 예약을 찾을 수 없습니다");
         }
@@ -75,5 +75,9 @@ public class ReservationService {
         } catch (EmptyResultDataAccessException e) {
             throw new TimeNotFoundException("헤당 시간을 찾을 수 없습니다");
         }
+    }
+
+    public List<Time> findAllTime() {
+        return timeDao.findAllTime();
     }
 }
