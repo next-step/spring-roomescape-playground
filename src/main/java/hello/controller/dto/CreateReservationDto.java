@@ -26,7 +26,7 @@ public class CreateReservationDto {
         return LocalDate.parse(date);
     }
 
-    public Long getTime_id() {
-        return Long.parseLong(time_id);
+    public String getTime_id() {
+        return time_id;
     }
 }

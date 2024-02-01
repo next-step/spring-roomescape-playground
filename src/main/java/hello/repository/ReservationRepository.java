@@ -4,6 +4,7 @@ import hello.controller.dto.CreateReservationDto;
 import hello.domain.Reservation;
 import hello.domain.Time;
 import hello.exceptions.NotFoundReservationException;
+import hello.exceptions.NotSelectTimeException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -54,6 +55,10 @@ public class ReservationRepository {
 
     public Reservation save(CreateReservationDto dto) {
 
+        String dtoTime_id = dto.getTime_id();
+        if (dtoTime_id.equals("시간 선택")) throw new NotSelectTimeException();
+
+        Long timeId = Long.parseLong(dtoTime_id);
         Map<String, Object> params = new HashMap<>();
         params.put("name", dto.getName());
         params.put("date", dto.getDate());
@@ -62,7 +67,8 @@ public class ReservationRepository {
         Number key = jdbcInsert.executeAndReturnKey(params);
         long savedId = Objects.requireNonNull(key).longValue();
 
-        return new Reservation(savedId, dto.getName(), dto.getDate(), timeRepository.findById(dto.getTime_id()));
+        return new Reservation(savedId, dto.getName(), dto.getDate(), timeRepository.findById(timeId));
+
     }
 
     public void delete(Long id) {

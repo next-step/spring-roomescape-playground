@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler({MethodArgumentNotValidException.class, NotFoundReservationException.class})
+    @ExceptionHandler({MethodArgumentNotValidException.class, NotFoundReservationException.class, NotSelectTimeException.class})
     public ResponseEntity<Void> handleException() {
         return ResponseEntity.badRequest().build();
     }
