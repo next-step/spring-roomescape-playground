@@ -11,6 +11,7 @@ import roomescape.model.entity.Time;
 import roomescape.repository.ReservationRepository;
 import roomescape.model.entity.Reservation;
 import roomescape.repository.TimeRepository;
+import roomescape.service.ReservationService;
 
 
 import java.net.URI;
@@ -19,24 +20,21 @@ import java.util.List;
 @Controller
 public class ReservationController {
 
-    private final ReservationRepository reservationRepository;
-    private final TimeRepository timeRepository;
+    private final ReservationService reservationService;
 
     @Autowired
-    public ReservationController(ReservationRepository reservationRepository, TimeRepository timeRepository) {
-        this.reservationRepository = reservationRepository;
-        this.timeRepository = timeRepository;
+    public ReservationController(ReservationService reservationService) {
+        this.reservationService = reservationService;
     }
 
     @GetMapping("/reservations")
     public ResponseEntity<List<Reservation>> getReservations() {
-        return ResponseEntity.ok(this.reservationRepository.findAll());
+        return ResponseEntity.ok(this.reservationService.findReservations());
     }
 
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> addReservation(@Valid @RequestBody ReservationDto reservationDto) {
-        Time time = this.timeRepository.findById(reservationDto.timeId());
-        Reservation reservation = this.reservationRepository.save(reservationDto.toEntity(time));
+        Reservation reservation = this.reservationService.join(reservationDto);
         return ResponseEntity
                 .created(URI.create("/reservations/" + reservation.getId()))
                 .body(reservation);
@@ -44,8 +42,7 @@ public class ReservationController {
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable("id") Long id) {
-        if (this.reservationRepository.delete(id) == 0)
-            throw new BadRequestReservationException();
+        this.reservationService.remove(id);
         return ResponseEntity.noContent().build();
     }
 }
