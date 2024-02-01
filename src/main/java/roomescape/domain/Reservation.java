@@ -11,6 +11,7 @@ public class Reservation {
     }
 
     public Reservation(Long id, String name, String date, String time) {
+        validateParams(id, name, date, time);
         this.id = id;
         this.name = name;
         this.date = date;
@@ -39,14 +40,13 @@ public class Reservation {
         return time;
     }
 
-    // getter 보다 밑??
     public static Reservation toEntity(Reservation reservation, Long id) {
         return new Reservation(id, reservation.name, reservation.date, reservation.time);
     }
 
-    public void update(Reservation reservation) {
-        this.name = reservation.name;
-        this.date = reservation.date;
-        this.time = reservation.time;
+    private void validateParams(Long id, String name, String date, String time) {
+        if (date.isBlank() || time.isBlank()) {
+            throw new NotFoundReservationException();
+        }
     }
 }
