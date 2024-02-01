@@ -1,9 +1,9 @@
 package hello.controller.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotEmpty;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 public class CreateReservationDto {
 
@@ -11,8 +11,10 @@ public class CreateReservationDto {
     private String name;
     @NotEmpty
     private String date;
+
     @NotEmpty
-    private String time;
+    @JsonProperty("time")
+    private String time_id;
 
     public CreateReservationDto() {}
 
@@ -24,7 +26,7 @@ public class CreateReservationDto {
         return LocalDate.parse(date);
     }
 
-    public LocalTime getTime() {
-        return LocalTime.parse(time);
+    public Long getTime_id() {
+        return Long.parseLong(time_id);
     }
 }

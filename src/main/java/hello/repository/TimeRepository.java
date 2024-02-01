@@ -37,6 +37,11 @@ public class TimeRepository {
         return template.query(sql, timeRowMapper);
     }
 
+    public Time findById(Long id) {
+        String sql = "select id, time from time where id = ?";
+        return template.queryForObject(sql, timeRowMapper, id);
+    }
+
     public Time save(CreateTimeDto dto) {
 
         Map<String, Object> params = new HashMap<>();
@@ -53,6 +58,6 @@ public class TimeRepository {
         String sql = "delete from time where id = ?";
         int count = template.update(sql, id);
 
-        if (count ==0) throw new NotFoundTimeException();
+        if (count == 0) throw new NotFoundTimeException();
     }
 }

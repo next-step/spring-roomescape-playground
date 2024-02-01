@@ -2,9 +2,9 @@ package hello.controller.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import hello.domain.Reservation;
+import hello.domain.Time;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 public class ReservationDto {
 
@@ -14,12 +14,11 @@ public class ReservationDto {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
 
-    @JsonFormat(pattern = "HH:mm")
-    private LocalTime time;
+    private Time time;
 
     public ReservationDto(){}
 
-    public ReservationDto(Long id, String name, LocalDate date, LocalTime time) {
+    public ReservationDto(Long id, String name, LocalDate date, Time time) {
         this.id = id;
         this.name = name;
         this.date = date;
@@ -38,7 +37,7 @@ public class ReservationDto {
         return date;
     }
 
-    public LocalTime getTime() {
+    public Time getTime() {
         return time;
     }
 
