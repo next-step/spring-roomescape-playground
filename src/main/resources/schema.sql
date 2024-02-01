@@ -1,13 +1,3 @@
-drop table if exists reservation CASCADE;
-CREATE TABLE reservation
-(
-    id      BIGINT       NOT NULL AUTO_INCREMENT,
-    name    VARCHAR(255) NOT NULL,
-    date    VARCHAR(255) NOT NULL,
-    time    VARCHAR(255) NOT NULL,
-    PRIMARY KEY (id)
-);
-
 drop table if exists time CASCADE;
 CREATE TABLE time
 (
@@ -15,3 +5,15 @@ CREATE TABLE time
     time VARCHAR(255) NOT NULL,
     PRIMARY KEY (id)
 );
+
+drop table if exists reservation CASCADE;
+CREATE TABLE reservation
+(
+    id      BIGINT       NOT NULL AUTO_INCREMENT,
+    name    VARCHAR(255) NOT NULL,
+    date    VARCHAR(255) NOT NULL,
+    time_id BIGINT       NOT NULL,
+    PRIMARY KEY (id)
+    FOREIGN KEY (time_id) REFERENCES time (id)
+);
+
