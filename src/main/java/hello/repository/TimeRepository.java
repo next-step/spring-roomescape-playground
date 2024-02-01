@@ -3,6 +3,8 @@ package hello.repository;
 import hello.controller.dto.CreateTimeDto;
 import hello.domain.Time;
 import hello.exceptions.NotFoundTimeException;
+import hello.exceptions.ReferencedTimeException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -55,9 +57,15 @@ public class TimeRepository {
 
     public void delete(Long id) {
 
-        String sql = "delete from time where id = ?";
-        int count = template.update(sql, id);
-
-        if (count == 0) throw new NotFoundTimeException();
+        try {
+            String sql = "delete from time where id = ?";
+            int count = template.update(sql, id);
+            if (count == 0) {
+                throw new NotFoundTimeException();
+            }
+        } catch (DataIntegrityViolationException e) {
+            // 참조하는 레코드가 있을 때의 예외 처리
+            throw new ReferencedTimeException();
+        }
     }
 }

@@ -56,19 +56,20 @@ public class ReservationRepository {
     public Reservation save(CreateReservationDto dto) {
 
         String dtoTime_id = dto.getTime_id();
-        if (dtoTime_id.equals("시간 선택")) throw new NotSelectTimeException();
+        try {
+            Long timeId = Long.parseLong(dtoTime_id);
+            Map<String, Object> params = new HashMap<>();
+            params.put("name", dto.getName());
+            params.put("date", dto.getDate());
+            params.put("time_id", dto.getTime_id());
 
-        Long timeId = Long.parseLong(dtoTime_id);
-        Map<String, Object> params = new HashMap<>();
-        params.put("name", dto.getName());
-        params.put("date", dto.getDate());
-        params.put("time_id", dto.getTime_id());
+            Number key = jdbcInsert.executeAndReturnKey(params);
+            long savedId = Objects.requireNonNull(key).longValue();
 
-        Number key = jdbcInsert.executeAndReturnKey(params);
-        long savedId = Objects.requireNonNull(key).longValue();
-
-        return new Reservation(savedId, dto.getName(), dto.getDate(), timeRepository.findById(timeId));
-
+            return new Reservation(savedId, dto.getName(), dto.getDate(), timeRepository.findById(timeId));
+        } catch (NumberFormatException e) {
+            throw new NotSelectTimeException();
+        }
     }
 
     public void delete(Long id) {
