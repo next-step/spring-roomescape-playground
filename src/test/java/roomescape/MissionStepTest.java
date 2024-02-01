@@ -6,6 +6,7 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import java.util.HashMap;
 import java.util.Map;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
@@ -15,6 +16,7 @@ import org.springframework.test.annotation.DirtiesContext;
 public class MissionStepTest {
 
     @Test
+    @DisplayName("홈 화면")
     void Step1() {
         RestAssured.given().log().all()
                 .when().get("/")
@@ -23,6 +25,7 @@ public class MissionStepTest {
     }
 
     @Test
+    @DisplayName("예약 조회")
     void Step2() {
         RestAssured.given().log().all()
                 .when().get("/reservation")
@@ -37,6 +40,7 @@ public class MissionStepTest {
     }
 
     @Test
+    @DisplayName("예약 추가 / 취소")
     void Step3() {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
@@ -71,6 +75,7 @@ public class MissionStepTest {
     }
 
     @Test
+    @DisplayName("필요 인자가 없는 경우 / 삭제할 예약이 없는 경우")
     void Step4() {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
