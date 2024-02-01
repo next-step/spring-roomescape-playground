@@ -7,7 +7,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 public class Time {
 
     private Long id;
-    @DateTimeFormat(pattern = "HH:MM")
+    @DateTimeFormat(pattern = "HH:mm")
     @NotNull
     private LocalTime time;
 
