@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import roomescape.controller.dto.TimeDto;
 import roomescape.controller.dto.TimeSaveRequestDto;
 import roomescape.domain.ReservationTime;
-import roomescape.repository.ReservationTimeRepository;
+import roomescape.service.ReservationTimeService;
 
 import java.util.List;
 
@@ -21,15 +21,15 @@ import java.util.List;
 @Controller
 public class ReservationTimeController {
 
-    private final ReservationTimeRepository timeRepository;
+    private final ReservationTimeService reservationTimeService;
 
-    public ReservationTimeController(ReservationTimeRepository timeRepository) {
-        this.timeRepository = timeRepository;
+    public ReservationTimeController(ReservationTimeService reservationTimeService) {
+        this.reservationTimeService = reservationTimeService;
     }
 
     @GetMapping
     public ResponseEntity<List<TimeDto>> getAllTimes() {
-        List<ReservationTime> times = timeRepository.findAll();
+        List<ReservationTime> times = reservationTimeService.findAll();
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(TimeDto.from(times));
@@ -37,7 +37,7 @@ public class ReservationTimeController {
 
     @PostMapping
     public ResponseEntity<String> createTimes(@RequestBody TimeSaveRequestDto timeRequest) {
-        long id = timeRepository.save(new ReservationTime(timeRequest.time()));
+        long id = reservationTimeService.save(new ReservationTime(timeRequest.time()));
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .header("Location", "/times/" + id)
@@ -46,7 +46,7 @@ public class ReservationTimeController {
 
     @DeleteMapping("/{deleteId}")
     public ResponseEntity<Void> deleteTime(@PathVariable(name = "deleteId") long deleteId) {
-        timeRepository.deleteById(deleteId);
+        reservationTimeService.deleteById(deleteId);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
                 .build();
