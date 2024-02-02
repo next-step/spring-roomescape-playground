@@ -10,6 +10,8 @@ import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import static java.util.Objects.requireNonNull;
+
 @Repository
 public class ReservationRepository {
 
@@ -32,7 +34,7 @@ public class ReservationRepository {
             return ps;
         }, keyHolder);
 
-        return keyHolder.getKey().longValue();
+        return requireNonNull(keyHolder.getKey(), "예약 생성에 실패했습니다. 예약 id가 존재하지 않습니다.").longValue();
     }
 
     public List<Reservation> findAll() {

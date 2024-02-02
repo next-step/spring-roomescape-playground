@@ -30,7 +30,7 @@ public class ReservationController {
     @GetMapping
     public ResponseEntity<List<ReservationDto>> getAllReservations() {
         List<Reservation> reservations = reservationRepository.findAll();
-        
+
         return ResponseEntity.ok()
                 .body(ReservationDto.from(reservations));
     }
