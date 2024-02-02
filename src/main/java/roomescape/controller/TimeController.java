@@ -14,6 +14,7 @@ import java.net.URI;
 import java.util.List;
 
 @Controller
+@RequestMapping("/times")
 public class TimeController {
     private final TimeDao timeDao;
 
@@ -21,13 +22,13 @@ public class TimeController {
         this.timeDao = timeDao;
     }
 
-    @PostMapping("/times")
+    @PostMapping
     public ResponseEntity<TimeDto> addTime(@Validated @RequestBody CreateTimeDto dto) {
         TimeDto savedTime = TimeDto.toDto(timeDao.save(dto));
         return ResponseEntity.created(URI.create("/times/" + savedTime.getId())).body(savedTime);
     }
 
-    @GetMapping("times")
+    @GetMapping
     public ResponseEntity<List<TimeDto>> timeList() {
         List<TimeDto> times = timeDao.findAllTimes()
                 .stream()
@@ -37,9 +38,9 @@ public class TimeController {
         return ResponseEntity.ok(times);
     }
 
-    @DeleteMapping("/times/{id}")
-    public ResponseEntity removeTime(@PathVariable("id") Long id) {
-        timeDao.delete(id);
+    @DeleteMapping("/{timeId}")
+    public ResponseEntity removeTime(@PathVariable("timeId") Long timeId) {
+        timeDao.delete(timeId);
         return ResponseEntity.noContent().build();
     }
     

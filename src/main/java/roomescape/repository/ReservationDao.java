@@ -7,10 +7,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
 
-
-import java.sql.Date;
 import java.sql.PreparedStatement;
-import java.sql.Time;
 import java.util.List;
 import java.util.Objects;
 
@@ -49,11 +46,6 @@ public class ReservationDao {
         }, keyHolder);
 
         return Objects.requireNonNull(keyHolder.getKey()).longValue();
-    }
-
-    public Reservation findReservationById(Long id) {
-        String sql = "select id, name, date, time from reservation where id = ?";
-        return jdbcTemplate.queryForObject(sql, reservationRowMapper, id);
     }
 
     public void delete(Long id) {

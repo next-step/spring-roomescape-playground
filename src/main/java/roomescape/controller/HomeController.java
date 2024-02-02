@@ -17,6 +17,6 @@ public class HomeController {
 
     @GetMapping("/time")
     String time() {
-        return "/time.html";
+        return "time.html";
     }
 }

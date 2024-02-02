@@ -2,11 +2,9 @@ package roomescape.controller.dto;
 
 import roomescape.domain.Time;
 
-import java.time.LocalTime;
-
 public class TimeDto {
-    private Long id;
-    private LocalTime time;
+    private final Long id;
+    private final String time;
 
     TimeDto(Long id, LocalTime time) {
         this.id = id;

@@ -16,8 +16,6 @@ import java.util.Objects;
 
 @Controller
 public class ReservationController {
-
-    private final List<Reservation> reservations = new ArrayList<>();
     private final ReservationDao reservationDao;
 
     ReservationController(ReservationDao reservationDao) {
@@ -31,8 +29,8 @@ public class ReservationController {
     }
 
     @PostMapping("/reservations")
-    public ResponseEntity<Reservation> create(@RequestBody Reservation reservation) {
-        if (reservation.getName() == null || reservation.getDate() == null || reservation.getTime() == null) {
+    public ResponseEntity<Reservation> create(@RequestBody @Valid ReservationCreateRequestDto reservation) {
+        if (reservation.name() == null || reservation.date() == null || reservation.timeId() == null) {
             throw new InvalidReservationException();
         }
         Long reservationId = reservationDao.insert(reservation);
@@ -44,7 +42,7 @@ public class ReservationController {
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         reservationDao.findAllReservations().stream()
-                .filter(it -> Objects.equals(it.getId(), id))
+                .filter(it -> Objects.equals(it.id(), id))
                 .findFirst()
                 .orElseThrow(NotFoundReservationException::new);
 
