@@ -1,14 +1,14 @@
-package roomescape.controller;
+package roomescape.domain.time.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import roomescape.controller.dto.CreateTimeDto;
-import roomescape.controller.dto.TimeDto;
+import roomescape.domain.time.dto.CreateTimeRequestDto;
+import roomescape.domain.time.dto.TimeDto;
+import roomescape.domain.time.service.TimeService;
 import roomescape.exception.NotFoundTimeException;
-import roomescape.repository.TimeDao;
 
 import java.net.URI;
 import java.util.List;
@@ -16,31 +16,27 @@ import java.util.List;
 @Controller
 @RequestMapping("/times")
 public class TimeController {
-    private final TimeDao timeDao;
+    private final TimeService timeService;
 
-    TimeController(TimeDao timeDao) {
-        this.timeDao = timeDao;
+    TimeController(TimeService timeService) {
+        this.timeService = timeService;
     }
 
     @PostMapping
-    public ResponseEntity<TimeDto> addTime(@Validated @RequestBody CreateTimeDto dto) {
-        TimeDto savedTime = TimeDto.toDto(timeDao.save(dto));
-        return ResponseEntity.created(URI.create("/times/" + savedTime.getId())).body(savedTime);
+    public ResponseEntity<TimeDto> addTime(@RequestBody @Valid CreateTimeRequestDto requestDto) {
+        TimeDto time = timeService.saveTime(requestDto);
+        return ResponseEntity.created(URI.create("/times/" + time.getId())).body(time);
     }
 
     @GetMapping
     public ResponseEntity<List<TimeDto>> timeList() {
-        List<TimeDto> times = timeDao.findAllTimes()
-                .stream()
-                .map(TimeDto::toDto)
-                .toList();
-
+        List<TimeDto> times = timeService.getTimes();
         return ResponseEntity.ok(times);
     }
 
     @DeleteMapping("/{timeId}")
     public ResponseEntity removeTime(@PathVariable("timeId") Long timeId) {
-        timeDao.delete(timeId);
+        timeService.removeTime(timeId);
         return ResponseEntity.noContent().build();
     }
     

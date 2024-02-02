@@ -4,9 +4,8 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import roomescape.controller.dto.request.ReservationCreateRequestDto;
-import roomescape.domain.Time;
-import roomescape.repository.ReservationDao;
+import roomescape.domain.reservation.dto.request.ReservationCreateRequestDto;
+import roomescape.domain.reservation.service.ReservationService;
 import roomescape.exception.InvalidReservationException;
 import roomescape.exception.NotFoundReservationException;
 import roomescape.domain.reservation.entity.Reservation;
@@ -18,41 +17,31 @@ import java.util.List;
 
 @Controller
 public class ReservationController {
-    private final ReservationDao reservationDao;
-    private final TimeDao timeDao;
+    private final ReservationService reservationService;
 
-    public ReservationController(ReservationDao reservationDao, TimeDao timeDao) {
-        this.reservationDao = reservationDao;
-        this.timeDao = timeDao;
+    public ReservationController(ReservationService reservationService) {
+        this.reservationService = reservationService;
     }
 
     @ResponseBody
     @GetMapping("/reservations")
     public ResponseEntity<List<Reservation>> read() {
-        return ResponseEntity.ok(reservationDao.findAllReservations());
+        List<Reservation> reservations = reservationService.getReservations();
+        return ResponseEntity.ok().body(reservations);
     }
 
     @PostMapping("/reservations")
-    public ResponseEntity<Reservation> create(@RequestBody @Valid ReservationCreateRequestDto reservation) {
-        if (reservation.name() == null || reservation.date() == null || reservation.timeId() == null) {
+    public ResponseEntity<Reservation> create(@RequestBody @Valid ReservationCreateRequestDto requestDto) {
+        if (requestDto.name() == null || requestDto.date() == null || requestDto.timeId() == null) {
             throw new InvalidReservationException();
         }
-        Long reservationId = reservationDao.insert(reservation);
-        Time findTime = timeDao.findTimeById(Long.parseLong(reservation.timeId()));
-        return ResponseEntity
-                .created(URI.create("/reservations/" + reservationId))
-                .body(reservation.toEntity(reservationId, findTime));
+        Reservation reservation = reservationService.saveReservation(requestDto);
+        return ResponseEntity.created(URI.create("/reservations/" + reservation.id())).body(reservation);
     }
 
     @DeleteMapping("/reservations/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        reservationDao.findAllReservations().stream()
-                .filter(it -> Objects.equals(it.id(), id))
-                .findFirst()
-                .orElseThrow(NotFoundReservationException::new);
-
-        reservationDao.delete(id);
-
+    public ResponseEntity<Void> delete(@PathVariable Long reservationId) {
+        reservationService.deleteReservation(reservationId);
         return ResponseEntity.noContent().build();
     }
 
