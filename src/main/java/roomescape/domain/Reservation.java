@@ -3,6 +3,7 @@ package roomescape.domain;
 import java.time.LocalDate;
 
 import static io.micrometer.common.util.StringUtils.isBlank;
+import static java.util.Objects.isNull;
 
 public class Reservation {
     private Long id;
@@ -15,14 +16,19 @@ public class Reservation {
         this.name = name;
         this.date = date;
         this.time = time;
-        validate(name, time);
+        validate(name, date, time);
     }
 
-    private void validate(String name, ReservationTime time) {
+    private void validate(String name, LocalDate date, ReservationTime time) {
         if (isBlank(name)) {
-            throw new IllegalArgumentException("예약을 생성할 수 없습니다. 에약자, 날짜가 모두 필요합니다.");
+            throw new IllegalArgumentException("예약을 생성할 수 없습니다. 존재하지 않는 예약자명입니다.");
         }
-        if (time == null || time.getId() == null) {
+
+        if (isNull(date)) {
+            throw new IllegalArgumentException("예약을 생성할 수 없습니다. 존재하지 않는 예약날짜입니다.");
+        }
+
+        if (isNull(time) || isNull(time.getId())) {
             throw new IllegalArgumentException("예약을 생성할 수 없습니다. 존재하지 않는 예약시간입니다.");
         }
     }
