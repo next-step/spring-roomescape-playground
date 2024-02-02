@@ -36,7 +36,7 @@ public class ReservationTimeController {
     }
 
     @PostMapping
-    public ResponseEntity<String> createTimes(@RequestBody TimeSaveRequestDto timeRequest) {
+    public ResponseEntity<String> createTime(@RequestBody TimeSaveRequestDto timeRequest) {
         long id = reservationTimeService.save(new ReservationTime(timeRequest.time()));
 
         return ResponseEntity.status(HttpStatus.CREATED)

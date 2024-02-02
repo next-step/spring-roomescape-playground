@@ -13,7 +13,7 @@ public class GlobalControllerAdvice {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handle(Exception e) {
-        return ResponseEntity.internalServerError().body("내부 에러 발생");
+        return ResponseEntity.internalServerError().body("서버 내부 에러 발생");
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
@@ -27,7 +27,7 @@ public class GlobalControllerAdvice {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<String> dtoValidation(final MethodArgumentNotValidException e) {
+    public ResponseEntity<String> handleDtoValidation(final MethodArgumentNotValidException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 }

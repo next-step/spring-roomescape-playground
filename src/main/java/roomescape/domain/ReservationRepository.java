@@ -1,11 +1,9 @@
-package roomescape.repository;
+package roomescape.domain;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import roomescape.domain.Reservation;
-import roomescape.domain.ReservationTime;
 
 import java.sql.PreparedStatement;
 import java.util.List;
@@ -41,12 +39,12 @@ public class ReservationRepository {
     public List<Reservation> findAll() {
         return jdbcTemplate.query(
                 """
-                        SELECT 
+                        SELECT
                             r.id as reservation_id,
                             r.name,
                             r.date,
                             t.id as time_id,
-                            t.time as time_value 
+                            t.time as time_value
                         FROM reservation as r inner join time as t on r.time_id = t.id
                         """,
                 (resultSet, rowNum) -> new Reservation(
