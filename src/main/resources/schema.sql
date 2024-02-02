@@ -6,3 +6,10 @@ CREATE TABLE reservation
     time    TIME         NOT NULL,
     PRIMARY KEY (id)
 );
+
+CREATE TABLE time
+(
+    id   BIGINT     NOT NULL    AUTO_INCREMENT,
+    time TIME       NOT NULL    UNIQUE,
+    PRIMARY KEY (id)
+);
