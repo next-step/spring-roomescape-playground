@@ -1,4 +1,4 @@
-package roomescape.Exception;
+package roomescape.exception;
 
 public class NotFindReservationException extends RuntimeException{
     public NotFindReservationException(){

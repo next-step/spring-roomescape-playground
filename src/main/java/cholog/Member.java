@@ -4,10 +4,8 @@ public class Member {
     private Long id;
     private String name;
     private int age;
-
     public Member() {
     }
-
     public Member(Long id, String name, int age) {
         this.id = id;
         this.name = name;

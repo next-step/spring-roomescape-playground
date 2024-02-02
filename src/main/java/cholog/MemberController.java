@@ -17,7 +17,6 @@ public class MemberController {
         model.addAttribute("name",name);
         return "hello";
     }
-
     @GetMapping("/json")
     @ResponseBody
     public Person json() {
