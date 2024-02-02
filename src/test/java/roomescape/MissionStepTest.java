@@ -321,4 +321,30 @@ class MissionStepTest {
                    .statusCode(200)
                    .body("size()", is(1));
     }
+
+    @Test
+    @DisplayName("시간을 삭제한다")
+    void 팔단계_3() {
+        Map<String, String> params = new HashMap<>();
+        params.put("time", "10:00");
+
+        RestAssured.given().log().all()
+                   .contentType(ContentType.JSON)
+                   .body(params)
+                   .when().post("/times")
+                   .then().log().all()
+                   .statusCode(201)
+                   .header("Location", "/times/1");
+
+        RestAssured.given().log().all()
+                   .when().delete("/times/1")
+                   .then().log().all()
+                   .statusCode(204);
+
+        RestAssured.given().log().all()
+                   .when().get("/times")
+                   .then().log().all()
+                   .statusCode(200)
+                   .body("size()", is(0));
+    }
 }

@@ -40,6 +40,20 @@ public class JdbcTimeRepository implements TimeRepository {
         return jdbcTemplate.query(sql, getTimeRowMapper());
     }
 
+    @Override
+    public boolean existsById(final Long id) {
+        final String sql = "SELECT COUNT(*) FROM time WHERE id = ?";
+        final Long count = jdbcTemplate.queryForObject(sql, Long.class, id);
+
+        return count != null && count > 0;
+    }
+
+    @Override
+    public void deleteById(final Long id) {
+        final String sql = "DELETE FROM time WHERE id = ?";
+        jdbcTemplate.update(sql, id);
+    }
+
     private static RowMapper<Time> getTimeRowMapper() {
         return (rs, rowNum) -> new Time(rs.getLong("id"), rs.getTime("time").toLocalTime());
     }

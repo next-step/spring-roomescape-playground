@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 import roomescape.application.dto.CreateInfoTimeDto;
 import roomescape.application.dto.CreateTimeDto;
 import roomescape.application.dto.ReadTimeDto;
+import roomescape.application.exception.TimeNotFoundException;
 import roomescape.domain.Time;
 import roomescape.domain.repository.TimeRepository;
 
@@ -34,5 +35,13 @@ public class TimeService {
         return times.stream()
                     .map(ReadTimeDto::from)
                     .toList();
+    }
+
+    public void deleteById(final Long id) {
+        if (!timeRepository.existsById(id)) {
+            throw new TimeNotFoundException("존재하지 않는 시간입니다.");
+        }
+
+        timeRepository.deleteById(id);
     }
 }
