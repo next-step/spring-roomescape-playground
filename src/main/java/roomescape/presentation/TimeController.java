@@ -1,0 +1,36 @@
+package roomescape.presentation;
+
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
+import roomescape.application.TimeService;
+import roomescape.application.dto.CreateInfoTimeDto;
+import roomescape.application.dto.CreateTimeDto;
+import roomescape.presentation.dto.request.CreateTimeRequest;
+import roomescape.presentation.dto.response.CreateTimeResponse;
+
+import java.net.URI;
+
+@Controller
+public class TimeController {
+
+    private final TimeService timeService;
+
+    public TimeController(final TimeService timeService) {
+        this.timeService = timeService;
+    }
+
+    @PostMapping("/times")
+    @ResponseBody
+    public ResponseEntity<CreateTimeResponse> create(@RequestBody @Valid final CreateTimeRequest request) {
+        final CreateTimeDto createTimeDto = new CreateTimeDto(request.getTime());
+        final CreateInfoTimeDto createInfoTimeDto = timeService.create(createTimeDto);
+        final CreateTimeResponse response = CreateTimeResponse.from(createInfoTimeDto);
+
+        return ResponseEntity.created(URI.create("/times/" + createInfoTimeDto.getId()))
+                             .body(response);
+    }
+}

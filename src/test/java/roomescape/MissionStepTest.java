@@ -279,4 +279,19 @@ class MissionStepTest {
         Integer countAfterDelete = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
         assertThat(countAfterDelete).isZero();
     }
+
+    @Test
+    @DisplayName("시간을 추가한다")
+    void 팔단계_1() {
+        Map<String, String> params = new HashMap<>();
+        params.put("time", "10:00");
+
+        RestAssured.given().log().all()
+                   .contentType(ContentType.JSON)
+                   .body(params)
+                   .when().post("/times")
+                   .then().log().all()
+                   .statusCode(201)
+                   .header("Location", "/times/1");
+    }
 }
