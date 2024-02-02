@@ -1,6 +1,7 @@
 package roomescape.repository;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import roomescape.controller.dto.CreateTimeDto;
@@ -8,6 +9,7 @@ import roomescape.domain.Time;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -21,6 +23,16 @@ public class TimeDao {
         this.jdbcInsert = new SimpleJdbcInsert(dataSource)
                 .withTableName("time")
                 .usingGeneratedKeyColumns("id");
+    }
+
+    private final RowMapper<Time> timeRowMapper = (rs, rn) -> new Time(
+            rs.getLong("id"),
+            rs.getTime("time").toLocalTime()
+    );
+
+    public List<Time> findAllTimes() {
+        String sql = "select id, time from time";
+        return jdbcTemplate.query(sql, timeRowMapper);
     }
 
     public Time save(CreateTimeDto dto) {
