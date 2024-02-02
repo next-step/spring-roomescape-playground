@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
+import roomescape.domain.Time;
 import roomescape.domain.repository.ReservationRepository;
 
 import java.util.HashMap;
@@ -25,7 +26,15 @@ public class JdbcReservationRepository implements ReservationRepository {
 
     @Override
     public List<Reservation> findAll() {
-        final String sql = "SELECT id, name, date, time FROM reservation";
+        final String sql = "SELECT " +
+                "r.id as reservation_id, " +
+                "r.name as reservation_name, " +
+                "r.date as reservation_date, " +
+                "t.id as time_id, " +
+                "t.time as time_value " +
+                "FROM reservation as r " +
+                "inner join time as t " +
+                "on r.time_id = t.id";
 
         return jdbcTemplate.query(sql, getReservationRowMapper());
     }
@@ -56,12 +65,12 @@ public class JdbcReservationRepository implements ReservationRepository {
         jdbcTemplate.update(sql, id);
     }
 
-
     private static RowMapper<Reservation> getReservationRowMapper() {
         return (rs, rowNum) -> new Reservation(
-                rs.getLong("id"),
-                rs.getString("name"),
-                rs.getDate("date").toLocalDate(),
-                rs.getTime("time").toLocalTime());
+                rs.getLong("reservation_id"),
+                rs.getString("reservation_name"),
+                rs.getDate("reservation_date").toLocalDate(),
+                new Time(rs.getLong("time_id"), rs.getTime("time_id").toLocalTime())
+        );
     }
 }

@@ -10,6 +10,7 @@ import roomescape.domain.repository.TimeRepository;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Repository
 public class JdbcTimeRepository implements TimeRepository {
@@ -38,6 +39,15 @@ public class JdbcTimeRepository implements TimeRepository {
         final String sql = "SELECT id, time FROM time";
 
         return jdbcTemplate.query(sql, getTimeRowMapper());
+    }
+
+    @Override
+    public Optional<Time> findById(final Long timeId) {
+        final String sql = "SELECT id, time FROM time WHERE id = ?";
+
+        return jdbcTemplate.query(sql, getTimeRowMapper(), timeId)
+                           .stream()
+                           .findAny();
     }
 
     @Override

@@ -10,12 +10,14 @@ public class CreateInfoReservationDto {
     private final Long id;
     private final String name;
     private final LocalDate date;
+    private final Long timeId;
     private final LocalTime time;
 
-    private CreateInfoReservationDto(final Long id, final String name, final LocalDate date, final LocalTime time) {
+    private CreateInfoReservationDto(final Long id, final String name, final LocalDate date, final Long timeId, LocalTime time) {
         this.id = id;
         this.name = name;
         this.date = date;
+        this.timeId = timeId;
         this.time = time;
     }
 
@@ -24,7 +26,8 @@ public class CreateInfoReservationDto {
                 reservation.getId(),
                 reservation.getName(),
                 reservation.getDate(),
-                reservation.getTime()
+                reservation.getTime().getId(),
+                reservation.getTime().getTime()
         );
     }
 
@@ -38,6 +41,10 @@ public class CreateInfoReservationDto {
 
     public LocalDate getDate() {
         return date;
+    }
+
+    public Long getTimeId() {
+        return timeId;
     }
 
     public LocalTime getTime() {

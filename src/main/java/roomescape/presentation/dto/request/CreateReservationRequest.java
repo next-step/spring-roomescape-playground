@@ -1,18 +1,16 @@
 package roomescape.presentation.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import roomescape.configuration.ValidateDateFormat;
-import roomescape.configuration.ValidateTimeFormat;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 public class CreateReservationRequest {
 
     private static final String DATE_FORMAT_PATTERN = "yyyy-MM-dd";
-    private static final String TIME_FORMAT_PATTERN = "HH:mm";
 
     @NotNull(message = "예약 날짜를 입력해주세요.")
     @ValidateDateFormat(message = "날짜 형식이 올바르지 않습니다.", pattern = DATE_FORMAT_PATTERN)
@@ -22,13 +20,13 @@ public class CreateReservationRequest {
     private String name;
 
     @NotNull(message = "예약 시간을 입력해주세요.")
-    @ValidateTimeFormat(message = "시간 형식이 올바르지 않습니다.", pattern = TIME_FORMAT_PATTERN)
-    private String time;
+    @JsonProperty("time")
+    private Long timeId;
 
-    public CreateReservationRequest(final String date, final String name, final String time) {
+    public CreateReservationRequest(final String date, final String name, final Long timeId) {
         this.date = date;
         this.name = name;
-        this.time = time;
+        this.timeId = timeId;
     }
 
     public LocalDate getDate() {
@@ -39,7 +37,7 @@ public class CreateReservationRequest {
         return name;
     }
 
-    public LocalTime getTime() {
-        return LocalTime.parse(time, DateTimeFormatter.ofPattern(TIME_FORMAT_PATTERN));
+    public Long getTimeId() {
+        return timeId;
     }
 }

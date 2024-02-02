@@ -51,7 +51,7 @@ public class ReservationController {
         final CreateReservationDto createReservationDto = new CreateReservationDto(
                 request.getName(),
                 request.getDate(),
-                request.getTime()
+                request.getTimeId()
         );
         final CreateInfoReservationDto createInfoReservationDto = reservationService.create(createReservationDto);
         final CreateReservationResponse response = CreateReservationResponse.from(createInfoReservationDto);
