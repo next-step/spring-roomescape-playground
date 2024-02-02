@@ -29,9 +29,16 @@
 - [x] 예약 추가 API 처리 로직에서 데이터베이스를 활용하도록 수정
 - [x] 예약 취소 API 처리 로직에서 데이터베이스를 활용하도록 수정
 
+### 8단계 요구사항
+- [ ] 시간 관리 API 구현
+  - [ ] 시간 추가 API 구현
+  - [ ] 시간 조회 API 구현
+  - [ ] 시간 삭제 API 구현
+
 ---
 
 # API 명세
+## 예약 관리 기능
 ### 예약 목록 조회
 **Request**
 ```
@@ -88,6 +95,57 @@ Content-Type: application/json
 **Request**
 ```json
 DELETE /reservations/1 HTTP/1.1
+```
+**Response**
+```json
+HTTP/1.1 204 No Content
+```
+
+## 시간 관리 기능
+### 시간 추가
+**Request**
+```json
+POST /times HTTP/1.1
+content-type: application/json
+
+{
+    "time": "10:00"
+}
+```
+**Response**
+```json
+HTTP/1.1 201 Created
+Content-Type: application/json
+Location: /times/1
+
+{
+    "id": 1,
+    "time": "10:00"
+}
+```
+
+### 시간 조회
+**Request**
+```
+GET /times HTTP/1.1
+```
+**Response**
+```json
+HTTP/1.1 200
+Content-Type: application/json
+
+[
+    {
+        "id": 1,
+        "time": "10:00"
+    }
+]
+```
+
+### 시간 삭제
+**Request**
+```json
+DELETE /times/1 HTTP/1.1
 ```
 **Response**
 ```json
