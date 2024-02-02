@@ -1,5 +1,4 @@
 package roomescape.controller;
-import org.springframework.beans.factory.annotation.Autowired;
 import roomescape.domain.Reservation;
 import roomescape.exception.NotFoundReservationException;
 import roomescape.exception.ValidateReservationDTO;
@@ -20,7 +19,6 @@ public class ReservationController {
 
         private final ReservationRepository reservationRepository;
 
-        @Autowired
         public ReservationController(ReservationRepository reservationRepository) {
             this.reservationRepository = reservationRepository;
         }
