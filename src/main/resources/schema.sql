@@ -1,3 +1,4 @@
+
 CREATE TABLE time
 (
     id   BIGINT       NOT NULL AUTO_INCREMENT,
@@ -14,4 +15,3 @@ CREATE TABLE reservation
     time_id BIGINT,
     PRIMARY KEY (id),
     FOREIGN KEY (time_id) REFERENCES time(id)
-);
