@@ -1,14 +1,14 @@
-package roomescape.presentation;
+package roomescape.presentation.api;
 
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import roomescape.application.TimeService;
 import roomescape.application.dto.CreateInfoTimeDto;
 import roomescape.application.dto.CreateTimeDto;
@@ -20,7 +20,8 @@ import roomescape.presentation.dto.response.ReadTimeResponse;
 import java.net.URI;
 import java.util.List;
 
-@Controller
+@RestController
+@RequestMapping("/times")
 public class TimeController {
 
     private final TimeService timeService;
@@ -29,13 +30,7 @@ public class TimeController {
         this.timeService = timeService;
     }
 
-    @GetMapping("/time")
-    public String time() {
-        return "time.html";
-    }
-
-    @PostMapping("/times")
-    @ResponseBody
+    @PostMapping
     public ResponseEntity<CreateTimeResponse> create(@RequestBody @Valid final CreateTimeRequest request) {
         final CreateTimeDto createTimeDto = new CreateTimeDto(request.getTime());
         final CreateInfoTimeDto createInfoTimeDto = timeService.create(createTimeDto);
@@ -45,8 +40,7 @@ public class TimeController {
                              .body(response);
     }
 
-    @GetMapping("/times")
-    @ResponseBody
+    @GetMapping
     public ResponseEntity<List<ReadTimeResponse>> readAll() {
         final List<ReadTimeDto> readTimeDtos = timeService.readAll();
         final List<ReadTimeResponse> responses = readTimeDtos.stream()
@@ -56,8 +50,7 @@ public class TimeController {
         return ResponseEntity.ok(responses);
     }
 
-    @DeleteMapping("/times/{id}")
-    @ResponseBody
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable final Long id) {
         timeService.deleteById(id);
 

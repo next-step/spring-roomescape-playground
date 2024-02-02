@@ -10,4 +10,14 @@ public class HomeController {
     public String index() {
         return "home.html";
     }
+
+    @GetMapping("/reservation")
+    public String reservation() {
+        return "new-reservation.html";
+    }
+
+    @GetMapping("/time")
+    public String time() {
+        return "time.html";
+    }
 }
