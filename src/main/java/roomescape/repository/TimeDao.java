@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import roomescape.controller.dto.CreateTimeDto;
 import roomescape.domain.Time;
+import roomescape.exception.NotFoundTimeException;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
@@ -43,5 +44,12 @@ public class TimeDao {
         long savedId = Objects.requireNonNull(key).longValue();
 
         return new Time(savedId, dto.getTime());
+    }
+
+    public void delete(Long id) {
+        String sql = "delete from time where id = ?";
+        int count = jdbcTemplate.update(sql, id);
+
+        if (count == 0) throw new NotFoundTimeException();
     }
 }

@@ -1,13 +1,13 @@
 package roomescape.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 import roomescape.controller.dto.CreateTimeDto;
 import roomescape.controller.dto.TimeDto;
+import roomescape.exception.NotFoundTimeException;
 import roomescape.repository.TimeDao;
 
 import java.net.URI;
@@ -35,5 +35,18 @@ public class TimeController {
                 .toList();
 
         return ResponseEntity.ok(times);
+    }
+
+    @DeleteMapping("/times/{id}")
+    public ResponseEntity removeTime(@PathVariable("id") Long id) {
+        timeDao.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+    
+    @ExceptionHandler(NotFoundTimeException.class)
+    public ResponseEntity handleTimeException(NotFoundTimeException e) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(e.getMessage());
     }
 }
