@@ -49,7 +49,7 @@ public class TimeRepository {
         }
     }
 
-    public int delete(long id) {
+    public int delete(Long id) {
         String sql = "delete from time where id = ?";
         return jdbcTemplate.update(sql, id);
     }

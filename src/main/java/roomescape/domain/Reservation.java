@@ -1,5 +1,9 @@
 package roomescape.domain;
 
+import roomescape.exception.BadRequestException;
+
+import static io.micrometer.common.util.StringUtils.isBlank;
+
 public class Reservation {
         private Long time_id;
         private String name;
@@ -11,6 +15,7 @@ public class Reservation {
         this.name = name;
         this.date = date;
         this.time = time;
+        validateReservation(name, date, time);
     }
 
     public Long getId() {
@@ -45,7 +50,9 @@ public class Reservation {
         this.time = time;
     }
 
-    public boolean isEqualId(Long id) {
-        return this.time_id == id;
+    private void validateReservation(String name, String date, Time time) {
+        if (isBlank(name) || isBlank(date) || time == null) {
+            throw new BadRequestException("Name, date, and time are required for reservation creation");
+        }
     }
 }
