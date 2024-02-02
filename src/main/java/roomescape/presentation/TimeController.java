@@ -3,16 +3,20 @@ package roomescape.presentation;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import roomescape.application.TimeService;
 import roomescape.application.dto.CreateInfoTimeDto;
 import roomescape.application.dto.CreateTimeDto;
+import roomescape.application.dto.ReadTimeDto;
 import roomescape.presentation.dto.request.CreateTimeRequest;
 import roomescape.presentation.dto.response.CreateTimeResponse;
+import roomescape.presentation.dto.response.ReadTimeResponse;
 
 import java.net.URI;
+import java.util.List;
 
 @Controller
 public class TimeController {
@@ -32,5 +36,16 @@ public class TimeController {
 
         return ResponseEntity.created(URI.create("/times/" + createInfoTimeDto.getId()))
                              .body(response);
+    }
+
+    @GetMapping("/times")
+    @ResponseBody
+    public ResponseEntity<List<ReadTimeResponse>> readAll() {
+        final List<ReadTimeDto> readTimeDtos = timeService.readAll();
+        final List<ReadTimeResponse> responses = readTimeDtos.stream()
+                                                             .map(ReadTimeResponse::from)
+                                                             .toList();
+
+        return ResponseEntity.ok(responses);
     }
 }

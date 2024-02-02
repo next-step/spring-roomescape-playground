@@ -293,5 +293,32 @@ class MissionStepTest {
                    .then().log().all()
                    .statusCode(201)
                    .header("Location", "/times/1");
+
+        RestAssured.given().log().all()
+                   .when().get("/times")
+                   .then().log().all()
+                   .statusCode(200)
+                   .body("size()", is(1));
+    }
+
+    @Test
+    @DisplayName("시간을 조회한다")
+    void 팔단계_2() {
+        Map<String, String> params = new HashMap<>();
+        params.put("time", "10:00");
+
+        RestAssured.given().log().all()
+                   .contentType(ContentType.JSON)
+                   .body(params)
+                   .when().post("/times")
+                   .then().log().all()
+                   .statusCode(201)
+                   .header("Location", "/times/1");
+
+        RestAssured.given().log().all()
+                   .when().get("/times")
+                   .then().log().all()
+                   .statusCode(200)
+                   .body("size()", is(1));
     }
 }
