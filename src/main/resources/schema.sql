@@ -16,4 +16,3 @@ CREATE TABLE reservation
     PRIMARY KEY (id),
     FOREIGN KEY (time_id) REFERENCES time (id)
 );
-

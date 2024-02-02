@@ -1,8 +1,6 @@
 package hello.controller.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import hello.domain.Reservation;
-import hello.domain.Time;
 import jakarta.validation.constraints.NotEmpty;
 
 import java.time.LocalDate;
