@@ -29,6 +29,11 @@ public class TimeController {
         this.timeService = timeService;
     }
 
+    @GetMapping("/time")
+    public String time() {
+        return "time.html";
+    }
+
     @PostMapping("/times")
     @ResponseBody
     public ResponseEntity<CreateTimeResponse> create(@RequestBody @Valid final CreateTimeRequest request) {
