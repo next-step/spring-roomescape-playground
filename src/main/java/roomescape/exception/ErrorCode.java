@@ -3,7 +3,8 @@ package roomescape.exception;
 import org.springframework.http.HttpStatus;
 
 public enum ErrorCode {
-    RESERVATION_NOT_FOUND(HttpStatus.BAD_REQUEST, "존재하지 않는 예약입니다.");
+    RESERVATION_NOT_FOUND(HttpStatus.BAD_REQUEST, "존재하지 않는 예약입니다."),
+    TIME_NOT_FOUND(HttpStatus.BAD_REQUEST, "존재하지 않는 시간입니다.");
     private final int code;
     private final String message;
 
