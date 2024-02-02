@@ -3,22 +3,27 @@ package roomescape.repository;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Time;
 import roomescape.dto.TimeRequestDto;
 
-import java.sql.PreparedStatement;
+import javax.sql.DataSource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Repository
 public class TimeRepository {
     private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert jdbcInsert;
 
-    public TimeRepository(JdbcTemplate jdbcTemplate) {
+    public TimeRepository(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
+        this.jdbcInsert = new SimpleJdbcInsert(dataSource)
+                .withTableName("time")
+                .usingGeneratedKeyColumns("id");
     }
 
     private final RowMapper<Time> timeRowMapper = (resultSet, rowNum) -> {
@@ -50,19 +55,11 @@ public class TimeRepository {
     }
 
     public long insertWithKeyHolder(TimeRequestDto timeDto) {
-        String sql = "insert into time (time) values (?)";
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("time", timeDto.time());
 
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(
-                    "insert into time (time) values (?)",
-                    new String[]{"id"});
-            ps.setString(1, timeDto.time());
-            return ps;
-        }, keyHolder);
+        Number newId = jdbcInsert.executeAndReturnKey(new HashMap<>(parameters));
 
-        long id = keyHolder.getKey().longValue();
-
-        return id;
+        return newId.longValue();
     }
 }
