@@ -28,13 +28,19 @@ public class TimeDao {
 
     private final RowMapper<Time> timeRowMapper = (rs, rn) -> new Time(
             rs.getLong("id"),
-            rs.getTime("time").toLocalTime()
+            rs.getString("time")
     );
 
     public List<Time> findAllTimes() {
         String sql = "select id, time from time";
         return jdbcTemplate.query(sql, timeRowMapper);
     }
+
+    public Time findTimeById(Long id) {
+        String sql = "select id, time from time where id = ?";
+        return jdbcTemplate.queryForObject(sql, timeRowMapper, id);
+    }
+
 
     public Time save(CreateTimeDto dto) {
         Map<String, Object> params = new HashMap<>();

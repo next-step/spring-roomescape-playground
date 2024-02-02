@@ -1,15 +1,18 @@
 package roomescape.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import roomescape.controller.dto.request.ReservationCreateRequestDto;
+import roomescape.domain.Time;
 import roomescape.repository.ReservationDao;
 import roomescape.exception.InvalidReservationException;
 import roomescape.exception.NotFoundReservationException;
 import roomescape.domain.Reservation;
+import roomescape.repository.TimeDao;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -17,9 +20,11 @@ import java.util.Objects;
 @Controller
 public class ReservationController {
     private final ReservationDao reservationDao;
+    private final TimeDao timeDao;
 
-    ReservationController(ReservationDao reservationDao) {
+    public ReservationController(ReservationDao reservationDao, TimeDao timeDao) {
         this.reservationDao = reservationDao;
+        this.timeDao = timeDao;
     }
 
     @ResponseBody
@@ -34,9 +39,10 @@ public class ReservationController {
             throw new InvalidReservationException();
         }
         Long reservationId = reservationDao.insert(reservation);
+        Time findTime = timeDao.findTimeById(Long.parseLong(reservation.timeId()));
         return ResponseEntity
                 .created(URI.create("/reservations/" + reservationId))
-                .body(reservationDao.findReservationById(reservationId));
+                .body(reservation.toEntity(reservationId, findTime));
     }
 
     @DeleteMapping("/reservations/{id}")

@@ -6,7 +6,7 @@ public class TimeDto {
     private final Long id;
     private final String time;
 
-    TimeDto(Long id, LocalTime time) {
+    TimeDto(Long id, String time) {
         this.id = id;
         this.time = time;
     }
@@ -15,11 +15,11 @@ public class TimeDto {
         return id;
     }
 
-    public LocalTime getTime() {
+    public String getTime() {
         return time;
     }
 
     public static TimeDto toDto(Time time) {
-        return new TimeDto(time.getId(), time.getTime());
+        return new TimeDto(time.id(), time.time());
     }
 }

@@ -7,7 +7,7 @@ public class CreateTimeDto {
     @NotEmpty
     String time;
 
-    public LocalTime getTime() {
-        return LocalTime.parse(time);
+    public String getTime() {
+        return time;
     }
 }
