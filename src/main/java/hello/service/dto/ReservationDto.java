@@ -1,4 +1,4 @@
-package hello.controller.dto;
+package hello.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import hello.domain.Reservation;
@@ -41,7 +41,7 @@ public class ReservationDto {
         return time;
     }
 
-    public static ReservationDto toDto(Reservation reservation) {
+    public static ReservationDto from(Reservation reservation) {
         return new ReservationDto(reservation.getId(),
                 reservation.getName(), reservation.getDate(), reservation.getTime());
     }

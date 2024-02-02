@@ -1,4 +1,4 @@
-package hello.controller.dto;
+package hello.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import hello.domain.Time;
@@ -28,7 +28,7 @@ public class TimeDto {
         return time;
     }
 
-    public static TimeDto toDto(Time time) {
+    public static TimeDto from(Time time) {
         return new TimeDto(time.getId(), time.getTime());
     }
 }

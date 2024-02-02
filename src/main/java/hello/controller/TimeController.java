@@ -1,8 +1,8 @@
 package hello.controller;
 
 import hello.controller.dto.CreateTimeDto;
-import hello.controller.dto.TimeDto;
-import hello.repository.TimeRepository;
+import hello.service.TimeService;
+import hello.service.dto.TimeDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -14,34 +14,27 @@ import java.util.List;
 @RequestMapping("/times")
 public class TimeController {
 
-    private final TimeRepository timeRepository;
+    private final TimeService timeService;
 
-    public TimeController(TimeRepository timeRepository) {
-        this.timeRepository = timeRepository;
+    public TimeController(TimeService timeService) {
+        this.timeService = timeService;
     }
 
     @GetMapping
     public ResponseEntity<List<TimeDto>> timeList() {
-
-        List<TimeDto> Times = timeRepository.findAllTimes()
-                .stream()
-                .map(TimeDto::toDto)
-                .toList();
-
-        return ResponseEntity.ok(Times);
+        List<TimeDto> times = timeService.getTimeList();
+        return ResponseEntity.ok(times);
     }
 
     @PostMapping
     public ResponseEntity<TimeDto> addTime(@Validated @RequestBody CreateTimeDto dto) {
-
-        TimeDto savedTime = TimeDto.toDto(timeRepository.save(dto));
+        TimeDto savedTime = timeService.save(dto);
         return ResponseEntity.created(URI.create("/times/" + savedTime.getId())).body(savedTime);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> removeTime(@PathVariable("id") Long id) {
-
-        timeRepository.delete(id);
+        timeService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 }

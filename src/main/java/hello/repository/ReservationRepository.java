@@ -1,16 +1,14 @@
 package hello.repository;
 
-import hello.controller.dto.CreateReservationDto;
 import hello.domain.Reservation;
 import hello.domain.Time;
-import hello.exceptions.NotFoundReservationException;
-import hello.exceptions.NotSelectTimeException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,29 +51,22 @@ public class ReservationRepository {
         return template.query(sql, reservationRowMapper);
     }
 
-    public Reservation save(CreateReservationDto dto) {
+    public Reservation save(String name, LocalDate date, Long timeId) {
 
-        String dtoTime_id = dto.getTime_id();
-        try {
-            Long timeId = Long.parseLong(dtoTime_id);
-            Map<String, Object> params = new HashMap<>();
-            params.put("name", dto.getName());
-            params.put("date", dto.getDate());
-            params.put("time_id", dto.getTime_id());
+        Map<String, Object> params = new HashMap<>();
+        params.put("name", name);
+        params.put("date", date);
+        params.put("time_id", timeId);
 
-            Number key = jdbcInsert.executeAndReturnKey(params);
-            long savedId = Objects.requireNonNull(key).longValue();
+        Number key = jdbcInsert.executeAndReturnKey(params);
+        long savedId = Objects.requireNonNull(key).longValue();
 
-            return new Reservation(savedId, dto.getName(), dto.getDate(), timeRepository.findById(timeId));
-        } catch (NumberFormatException e) {
-            throw new NotSelectTimeException();
-        }
+        return new Reservation(savedId, name, date, timeRepository.findById(timeId));
+
     }
 
-    public void delete(Long id) {
+    public int delete(Long id) {
         String sql = "delete from reservation where id = ?";
-        int count = template.update(sql, id);
-
-        if (count == 0) throw new NotFoundReservationException();
+        return template.update(sql, id);
     }
 }

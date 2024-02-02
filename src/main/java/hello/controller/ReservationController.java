@@ -1,8 +1,8 @@
 package hello.controller;
 
 import hello.controller.dto.CreateReservationDto;
-import hello.repository.ReservationRepository;
-import hello.controller.dto.ReservationDto;
+import hello.service.ReservationService;
+import hello.service.dto.ReservationDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -14,33 +14,27 @@ import java.util.List;
 @RequestMapping("/reservations")
 public class ReservationController {
 
-    private final ReservationRepository reservationRepository;
+    private final ReservationService reservationService;
 
-    public ReservationController(ReservationRepository reservationRepository) {
-        this.reservationRepository = reservationRepository;
+    public ReservationController(ReservationService reservationService) {
+        this.reservationService = reservationService;
     }
 
     @GetMapping
     public ResponseEntity<List<ReservationDto>> reservationList() {
-
-        List<ReservationDto> Reservations = reservationRepository.findAllReservations()
-                .stream()
-                .map(ReservationDto::toDto)
-                .toList();
-
-        return ResponseEntity.ok(Reservations);
+        List<ReservationDto> reservations = reservationService.getReservationList();
+        return ResponseEntity.ok(reservations);
     }
 
     @PostMapping
     public ResponseEntity<ReservationDto> addReservation(@Validated @RequestBody CreateReservationDto dto) {
-        ReservationDto savedReservation = ReservationDto.toDto(reservationRepository.save(dto));
+        ReservationDto savedReservation = reservationService.save(dto);
         return ResponseEntity.created(URI.create("/reservations/" + savedReservation.getId())).body(savedReservation);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> removeReservation(@PathVariable("id") Long id) {
-
-        reservationRepository.delete(id);
+        reservationService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 }

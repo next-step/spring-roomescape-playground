@@ -9,10 +9,10 @@ public class CreateTimeDto {
     @NotEmpty
     public String time;
 
-    public CreateTimeDto() {
-    }
+    public CreateTimeDto() {}
 
     public LocalTime getTime() {
         return LocalTime.parse(time);
     }
+
 }

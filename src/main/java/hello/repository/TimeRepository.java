@@ -1,8 +1,6 @@
 package hello.repository;
 
-import hello.controller.dto.CreateTimeDto;
 import hello.domain.Time;
-import hello.exceptions.NotFoundTimeException;
 import hello.exceptions.ReferencedTimeException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -44,25 +42,21 @@ public class TimeRepository {
         return template.queryForObject(sql, timeRowMapper, id);
     }
 
-    public Time save(CreateTimeDto dto) {
+    public Time save(Time time) {
 
         Map<String, Object> params = new HashMap<>();
-        params.put("time", dto.getTime());
+        params.put("time", time.getTime());
 
         Number key = jdbcInsert.executeAndReturnKey(params);
         long savedId = Objects.requireNonNull(key).longValue();
 
-        return new Time(savedId, dto.getTime());
+        return new Time(savedId, time.getTime());
     }
 
-    public void delete(Long id) {
-
+    public int delete(Long id) {
         try {
             String sql = "delete from time where id = ?";
-            int count = template.update(sql, id);
-            if (count == 0) {
-                throw new NotFoundTimeException();
-            }
+            return template.update(sql, id);
         } catch (DataIntegrityViolationException e) {
             // 참조하는 레코드가 있을 때의 예외 처리
             throw new ReferencedTimeException();
