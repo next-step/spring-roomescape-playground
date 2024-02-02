@@ -34,12 +34,12 @@ public class TimeController {
     @PostMapping
     public ResponseEntity<Time> createTime(@RequestBody TimeRequestDto timeDTO) {
         ValidateTimeDTO.validateTime(timeDTO);
-        long newId = timeRepository.insertWithKeyHolder(timeDTO);
+        Long newId = timeRepository.insertTimeId(timeDTO);
         return ResponseEntity.created(URI.create("/times/" + newId)).body(timeDTO.toEntity(newId));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTime(@PathVariable long id) {
+    public ResponseEntity<Void> deleteTime(@PathVariable Long id) {
         Time time = timeRepository.findTimeById(id)
                 .orElseThrow(() -> new NotFoundTimeException("Time with id " + id + " not found"));
         timeRepository.delete(id);

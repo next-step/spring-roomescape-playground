@@ -35,12 +35,12 @@ public class TimeRepository {
     };
 
     public List<Time> findAllTimes() {
-        String sql = "SELECT id, time FROM time";
+        String sql = "select * from time";
         return jdbcTemplate.query(sql, timeRowMapper);
     }
 
-    public Optional<Time> findTimeById(long id) {
-        String sql = "SELECT id, time FROM time WHERE id = ?";
+    public Optional<Time> findTimeById(Long id) {
+        String sql = "select * from time where id = ?";
         try {
             Time time= jdbcTemplate.queryForObject(sql, timeRowMapper, id);
             return Optional.ofNullable(time);
@@ -54,7 +54,7 @@ public class TimeRepository {
         return jdbcTemplate.update(sql, id);
     }
 
-    public long insertWithKeyHolder(TimeRequestDto timeDto) {
+    public Long insertTimeId(TimeRequestDto timeDto) {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("time", timeDto.time());
 

@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
+import roomescape.domain.Time;
 import roomescape.dto.ReservationRequestDto;
 
 import javax.sql.DataSource;
@@ -27,22 +28,33 @@ public class ReservationRepository {
     }
 
     private final RowMapper<Reservation> reservationRowMapper = (resultSet, rowNum) -> {
+        Time time = new Time(
+                resultSet.getLong("time_id"),
+                resultSet.getString("time_value")
+        );
+
         Reservation reservation = new Reservation(
                 resultSet.getLong("id"),
                 resultSet.getString("name"),
                 resultSet.getString("date"),
-                resultSet.getString("time")
+                time
         );
         return reservation;
     };
 
     public List<Reservation> findAllReservations() {
-        String sql = "SELECT id, name, date, time FROM reservation";
+        String sql = "SELECT " +
+                "r.id as reservation_id, " +
+                "r.name, " +
+                "r.date, " +
+                "t.id as time_id, " +
+                "t.time as time_value " +
+                "FROM reservation as r inner join time as t on r.time_id = t.id";
         return jdbcTemplate.query(sql, reservationRowMapper);
     }
 
-    public Optional<Reservation> findReservationById(long id) {
-        String sql = "SELECT id, name, date, time FROM reservation WHERE id = ?";
+    public Optional<Reservation> findReservationById(Long id) {
+        String sql = "SELECT id, name, date, time_id FROM reservation WHERE id = ?";
         try {
             Reservation reservation = jdbcTemplate.queryForObject(sql, reservationRowMapper, id);
             return Optional.ofNullable(reservation);
@@ -51,18 +63,18 @@ public class ReservationRepository {
         }
     }
 
-    public int delete(long id) {
+    public int delete(Long id) {
         String sql = "delete from reservation where id = ?";
         return jdbcTemplate.update(sql, id);
     }
 
-    public long insertWithKeyHolder(ReservationRequestDto reservationDto) {
+    public Long insertReservationId(ReservationRequestDto reservationDto) {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("name", reservationDto.name());
         parameters.put("date", reservationDto.date());
-        parameters.put("time", reservationDto.time());
+        parameters.put("time_id", reservationDto.timeId());
 
-        Number newId = jdbcInsert.executeAndReturnKey(new HashMap<>(parameters));
+        Number newId = jdbcInsert.executeAndReturnKey(parameters);
 
         return newId.longValue();
     }

@@ -8,7 +8,7 @@ public record TimeRequestDto(String time) {
         return new TimeRequestDto(time.getTime());
     }
 
-    public Time toEntity(long id) {
+    public Time toEntity(Long id) {
         return new Time(id, time);
     }
 }

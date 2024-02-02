@@ -1,15 +1,15 @@
 package roomescape.domain;
 
 public class Time {
-    private final long id;
+    private final Long id;
     private final String time;
 
-    public Time(long id, String time) {
+    public Time(Long id, String time) {
         this.id = id;
         this.time = time;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 

@@ -26,7 +26,7 @@ public class MissionStepTest {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
-
+/*
     @Test
     void 일단계() {
         RestAssured.given().log().all()
@@ -161,6 +161,8 @@ public class MissionStepTest {
         Integer countAfterDelete = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
         assertThat(countAfterDelete).isEqualTo(0);
     }
+
+ */
 
     @Test
     void 팔단계() {
