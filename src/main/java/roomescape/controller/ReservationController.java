@@ -17,11 +17,14 @@ import java.util.Objects;
 
 
 @Controller
-@RequiredArgsConstructor
 public class ReservationController {
 
     private final List<Reservation> reservations = new ArrayList<>();
     private final ReservationDao reservationDao;
+
+    ReservationController(ReservationDao reservationDao) {
+        this.reservationDao = reservationDao;
+    }
 
     @GetMapping("/reservation")
     String reservation() {
