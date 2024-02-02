@@ -24,16 +24,6 @@ public class ReservationController {
         this.reservationDao = reservationDao;
     }
 
-    @GetMapping("/reservation")
-    String reservation() {
-        return "new-reservation.html";
-    }
-
-    @GetMapping("/time")
-    String time() {
-        return "/time.html";
-    }
-
     @ResponseBody
     @GetMapping("/reservations")
     public ResponseEntity<List<Reservation>> read() {
