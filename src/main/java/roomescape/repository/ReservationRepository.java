@@ -5,6 +5,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
+import roomescape.domain.ReservationTime;
 
 import java.sql.PreparedStatement;
 import java.util.List;
@@ -26,11 +27,11 @@ public class ReservationRepository {
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(
-                    "insert into reservation (name, date, time) values (?, ?, ?)",
+                    "insert into reservation (name, date, time_id) values (?, ?, ?)",
                     new String[]{"id"});
             ps.setString(1, reservation.getName());
             ps.setString(2, reservation.getDate().toString());
-            ps.setString(3, reservation.getTime().toString());
+            ps.setLong(3, reservation.getTimeId());
             return ps;
         }, keyHolder);
 
@@ -39,12 +40,20 @@ public class ReservationRepository {
 
     public List<Reservation> findAll() {
         return jdbcTemplate.query(
-                "select id, name, date, time from reservation",
+                """
+                        SELECT 
+                            r.id as reservation_id,
+                            r.name,
+                            r.date,
+                            t.id as time_id,
+                            t.time as time_value 
+                        FROM reservation as r inner join time as t on r.time_id = t.id
+                        """,
                 (resultSet, rowNum) -> new Reservation(
-                        resultSet.getLong("id"),
+                        resultSet.getLong("reservation_id"),
                         resultSet.getString("name"),
                         resultSet.getString("date"),
-                        resultSet.getString("time")
+                        new ReservationTime(resultSet.getLong("time_id"), resultSet.getString("time_value"))
                 ));
     }
 

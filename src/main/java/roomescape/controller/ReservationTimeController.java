@@ -10,20 +10,20 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import roomescape.controller.dto.TimeDto;
-import roomescape.controller.dto.TimeRequestDto;
+import roomescape.controller.dto.TimeSaveRequestDto;
 import roomescape.domain.ReservationTime;
-import roomescape.repository.TimeRepository;
+import roomescape.repository.ReservationTimeRepository;
 
 import java.util.List;
 
 
 @RequestMapping("/times")
 @Controller
-public class TimeController {
+public class ReservationTimeController {
 
-    private final TimeRepository timeRepository;
+    private final ReservationTimeRepository timeRepository;
 
-    public TimeController(TimeRepository timeRepository) {
+    public ReservationTimeController(ReservationTimeRepository timeRepository) {
         this.timeRepository = timeRepository;
     }
 
@@ -36,7 +36,7 @@ public class TimeController {
     }
 
     @PostMapping
-    public ResponseEntity<String> createTimes(@RequestBody TimeRequestDto timeRequest) {
+    public ResponseEntity<String> createTimes(@RequestBody TimeSaveRequestDto timeRequest) {
         long id = timeRepository.save(new ReservationTime(timeRequest.time()));
 
         return ResponseEntity.status(HttpStatus.CREATED)

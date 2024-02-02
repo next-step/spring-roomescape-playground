@@ -14,19 +14,24 @@ import java.util.NoSuchElementException;
 import static java.util.Objects.requireNonNull;
 
 @Repository
-public class TimeRepository {
+public class ReservationTimeRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public TimeRepository(JdbcTemplate jdbcTemplate) {
+    public ReservationTimeRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
     public List<ReservationTime> findAll() {
         return jdbcTemplate.query("select id,time from time",
-                (resultSet, rowNum) -> new ReservationTime(
-                        resultSet.getLong("id"),
-                        resultSet.getString("time"))
+                (resultSet, rowNum) -> new ReservationTime(resultSet.getLong("id"), resultSet.getString("time"))
+        );
+    }
+
+    public ReservationTime findById(long id) {
+        return jdbcTemplate.queryForObject("select id,time from time where id = ?",
+                (resultSet, rowNum) -> new ReservationTime(resultSet.getLong("id"), resultSet.getString("time")),
+                id
         );
     }
 
@@ -47,7 +52,7 @@ public class TimeRepository {
     public void deleteById(long id) {
         int updated = jdbcTemplate.update("delete from time where id = ?", id);
         if (updated == 0) {
-            throw new NoSuchElementException("예약시간을 삭제할 수 없습니다. 존재하지 않는 id입니다.");
+            throw new NoSuchElementException("예약시간을 삭제할 수 없습니다. 존재하지 않는 예약 시간입니다.");
         }
     }
 }

@@ -1,7 +1,6 @@
 package roomescape.domain;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 import static io.micrometer.common.util.StringUtils.isBlank;
 
@@ -9,28 +8,31 @@ public class Reservation {
     private Long id;
     private String name;
     private LocalDate date;
-    private LocalTime time;
+    private ReservationTime time;
 
-    public Reservation(Long id, String name, String date, String time) {
-        validate(name, date, time);
+    public Reservation(Long id, String name, LocalDate date, ReservationTime time) {
         this.id = id;
         this.name = name;
-        this.date = LocalDate.parse(date);
-        this.time = LocalTime.parse(time);
+        this.date = date;
+        this.time = time;
+        validate(name, time);
     }
 
-    public Reservation(String name, String date, String time) {
-        this(null, name, date, time);
-    }
-
-    private void validate(String name, String date, String time) {
-        if (isBlank(name) || isBlank(date) || isBlank(time)) {
-            throw new IllegalArgumentException("예약을 생성할 수 없습니다. 에약자, 날짜, 시간이 모두 필요합니다.");
+    private void validate(String name, ReservationTime time) {
+        if (isBlank(name)) {
+            throw new IllegalArgumentException("예약을 생성할 수 없습니다. 에약자, 날짜가 모두 필요합니다.");
+        }
+        if (time == null || time.getId() == null) {
+            throw new IllegalArgumentException("예약을 생성할 수 없습니다. 존재하지 않는 예약시간입니다.");
         }
     }
 
-    public boolean isSameId(long id) {
-        return this.id == id;
+    public Reservation(Long id, String name, String date, ReservationTime time) {
+        this(id, name, LocalDate.parse(date), time);
+    }
+
+    public Reservation(String name, String date, ReservationTime time) {
+        this(null, name, date, time);
     }
 
     public long getId() {
@@ -45,7 +47,11 @@ public class Reservation {
         return date;
     }
 
-    public LocalTime getTime() {
+    public ReservationTime getTime() {
         return time;
+    }
+
+    public Long getTimeId() {
+        return time.getId();
     }
 }
