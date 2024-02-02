@@ -1,4 +1,4 @@
-package roomescape.controller;
+package roomescape.domain.reservation.controller;
 
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -9,12 +9,11 @@ import roomescape.domain.Time;
 import roomescape.repository.ReservationDao;
 import roomescape.exception.InvalidReservationException;
 import roomescape.exception.NotFoundReservationException;
-import roomescape.domain.Reservation;
-import roomescape.repository.TimeDao;
+import roomescape.domain.reservation.entity.Reservation;
+
 
 import java.net.URI;
 import java.util.List;
-import java.util.Objects;
 
 
 @Controller

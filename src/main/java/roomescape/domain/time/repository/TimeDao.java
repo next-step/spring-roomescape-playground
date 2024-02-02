@@ -1,11 +1,11 @@
-package roomescape.repository;
+package roomescape.domain.time.repository;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import roomescape.controller.dto.CreateTimeDto;
-import roomescape.domain.Time;
+import roomescape.domain.time.dto.CreateTimeRequestDto;
+import roomescape.domain.time.entity.Time;
 import roomescape.exception.NotFoundTimeException;
 
 import javax.sql.DataSource;
@@ -42,7 +42,7 @@ public class TimeDao {
     }
 
 
-    public Time save(CreateTimeDto dto) {
+    public Time save(CreateTimeRequestDto dto) {
         Map<String, Object> params = new HashMap<>();
         params.put("time", dto.getTime());
 

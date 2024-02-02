@@ -1,13 +1,13 @@
-package roomescape.repository;
+package roomescape.domain.reservation.repository;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import roomescape.controller.dto.request.ReservationCreateRequestDto;
-import roomescape.domain.Reservation;
-import roomescape.domain.Time;
+import roomescape.domain.reservation.dto.request.ReservationCreateRequestDto;
+import roomescape.domain.reservation.entity.Reservation;
+import roomescape.domain.time.entity.Time;
 
 import java.sql.PreparedStatement;
 import java.util.List;

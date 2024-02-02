@@ -1,6 +1,6 @@
-package roomescape.controller.dto;
+package roomescape.domain.time.dto;
 
-import roomescape.domain.Time;
+import roomescape.domain.time.entity.Time;
 
 public class TimeDto {
     private final Long id;

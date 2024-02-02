@@ -1,8 +1,8 @@
-package roomescape.controller.dto;
+package roomescape.domain.time.dto;
 
 import jakarta.validation.constraints.NotEmpty;
 
-public class CreateTimeDto {
+public class CreateTimeRequestDto {
 
     @NotEmpty
     String time;
