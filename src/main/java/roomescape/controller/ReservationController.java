@@ -29,6 +29,11 @@ public class ReservationController {
         return "new-reservation";
     }
 
+    @GetMapping("/time")
+    public String time() {
+        return "time";
+    }
+
     @GetMapping("/reservations")
     @ResponseBody
     public List<Reservation> getReservations() {
