@@ -10,6 +10,7 @@ import roomescape.domain.Time;
 import roomescape.dto.reservation.ReservationRequest;
 import roomescape.dto.time.TimeRequest;
 import roomescape.exception.InvalidReservationException;
+import roomescape.exception.InvalidTimeException;
 import roomescape.exception.ReservationNotFoundException;
 import roomescape.exception.TimeNotFoundException;
 import roomescape.repository.ReservationDao;
@@ -29,10 +30,12 @@ public class ReservationService {
         if(isBlank(reservationRequest.getName()) || reservationRequest.getDate() == null || reservationRequest.getTime() == null) {
             throw new InvalidReservationException("이름, 날짜, 시간은 입력해야합니다.");
         }
+        Long timeId = reservationRequest.getTime();
+        Time time = timeDao.findTimeById(timeId);
         Reservation reservation = new Reservation(null,
                 reservationRequest.getName(),
                 reservationRequest.getDate(),
-                reservationRequest.getTime());
+                time);
         return reservationDao.saveReservation(reservation);
     }
 
@@ -59,7 +62,7 @@ public class ReservationService {
 
     public Long saveTime(TimeRequest timeRequest) {
         if(timeRequest.getTime() == null) {
-            throw new InvalidReservationException("");
+            throw new InvalidTimeException("시간을 입력하셔야합니다.");
         }
         Time time = new Time(
                 null,
