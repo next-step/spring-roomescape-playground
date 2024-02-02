@@ -1,46 +1,40 @@
 package roomescape.domain.time.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import roomescape.domain.time.dto.request.TimeCreateRequestDto;
 import roomescape.domain.time.entity.Time;
-import roomescape.domain.time.repository.TimeDao;
-import roomescape.exception.custom.BusinessException;
+import roomescape.domain.time.service.TimeService;
 
 import java.net.URI;
 import java.util.List;
 
-import static roomescape.exception.ErrorCode.*;
-
 @Controller
 @RequestMapping("/times")
 public class TimeController {
-    private final TimeDao timeDao;
+    private final TimeService timeService;
 
-    public TimeController(TimeDao timeDao) {
-        this.timeDao = timeDao;
+    public TimeController(TimeService timeService) {
+        this.timeService = timeService;
     }
 
     @PostMapping
-    public ResponseEntity<Time> createTime(@RequestBody TimeCreateRequestDto requestDto) {
-        Long timeId = timeDao.insert(requestDto);
-        return ResponseEntity.created(URI.create("/times/" + timeId)).body(requestDto.toEntity(timeId));
+    public ResponseEntity<Time> createTime(@RequestBody @Valid TimeCreateRequestDto requestDto) {
+        Time time = timeService.saveTime(requestDto);
+        return ResponseEntity.created(URI.create("/times/" + time.getId())).body(time);
     }
 
     @GetMapping
     public ResponseEntity<List<Time>> readTime() {
-        return ResponseEntity.ok().body(timeDao.findAllTimes());
+        List<Time> times = timeService.getTimes();
+        return ResponseEntity.ok().body(times);
     }
 
     @DeleteMapping("/{timeId}")
     public ResponseEntity<Void> deleteTime(@PathVariable Long timeId) {
-        timeDao.findAllTimes().stream()
-                .filter(time -> time.getId().equals(timeId))
-                .findFirst()
-                .orElseThrow(() -> new BusinessException(TIME_NOT_FOUND));
-
-        timeDao.deleteTimeById(timeId);
+        timeService.deleteTime(timeId);
         return ResponseEntity.noContent().build();
     }
 }
