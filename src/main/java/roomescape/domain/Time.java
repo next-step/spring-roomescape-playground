@@ -21,6 +21,10 @@ public class Time {
         return new Time(id, time);
     }
 
+    public Time with(String time) {
+        return new Time(id, time);
+    }
+
     public Long getId() {
         return id;
     }

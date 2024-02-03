@@ -38,6 +38,17 @@ public class TimeDao {
         ).toList();
     }
 
+    public Time getById(Long id) {
+        return jdbcTemplate.queryForObject(
+                "SELECT id, time FROM time where id = ?",
+                (rs, rowNum) -> new Time(
+                        rs.getLong("id"),
+                        rs.getString("time")
+                ),
+                id
+        );
+    }
+
     public void delete(Long id) {
         int affectedCount = jdbcTemplate.update("DELETE FROM time WHERE id = ?", id);
         if (affectedCount == 0) {
