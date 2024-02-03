@@ -7,12 +7,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class ViewController {
 
     @GetMapping("/")
-    public String mainPage() {
+    public String mainView() {
         return "home";
     }
 
     @GetMapping("/reservation")
     public String reservationView() {
         return "reservation";
+    }
+
+    @GetMapping("/time")
+    public String timeView() {
+        return "time";
     }
 }

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import roomescape.controller.dto.ReservationRequest;
-import roomescape.domain.JdbcReservations;
+import roomescape.dao.ReservationDao;
 import roomescape.domain.Reservation;
 import roomescape.domain.Reservations;
 
@@ -23,7 +23,7 @@ public class ReservationController {
 
     private final Reservations reservations;
 
-    public ReservationController(JdbcReservations reservations) {
+    public ReservationController(ReservationDao reservations) {
         this.reservations = reservations;
     }
 
