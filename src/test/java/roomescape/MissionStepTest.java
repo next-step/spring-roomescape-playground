@@ -33,7 +33,7 @@ public class MissionStepTest {
                 .when().get("/reservations")
                 .then().log().all()
                 .statusCode(200)
-                .body("size()", is(0)); // 아직 생성 요청이 없으니 Controller에서 임의로 넣어준 Reservation 갯수 만큼 검증하거나 0개임을 확인하세요.
+                .body("size()", is(0));
     }
 
     @Test
@@ -77,7 +77,6 @@ public class MissionStepTest {
         params.put("date", "");
         params.put("time", "");
 
-        // 필요한 인자가 없는 경우
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(params)
@@ -85,7 +84,6 @@ public class MissionStepTest {
                 .then().log().all()
                 .statusCode(400);
 
-        // 삭제할 예약이 없는 경우
         RestAssured.given().log().all()
                 .when().delete("/reservations/1")
                 .then().log().all()
