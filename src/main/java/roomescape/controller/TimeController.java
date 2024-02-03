@@ -26,10 +26,10 @@ public class TimeController {
     }
 
     @PostMapping("/times")
-    public ResponseEntity<Void> createTime(@Valid @RequestBody TimeRequest request) throws URISyntaxException {
+    public ResponseEntity<Time> createTime(@Valid @RequestBody TimeRequest request) throws URISyntaxException {
         Time saved = timeDao.add(new Time(request.time()));
         return ResponseEntity.created(new URI("/times/" + saved.getId()))
-                .build();
+                .body(saved);
     }
 
     @GetMapping("/times")
