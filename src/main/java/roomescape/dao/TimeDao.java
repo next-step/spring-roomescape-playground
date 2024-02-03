@@ -1,6 +1,7 @@
 package roomescape.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -11,6 +12,11 @@ import java.util.List;
 
 @Component
 public class TimeDao {
+
+    public static final RowMapper<Time> TIME_ROW_MAPPER = (rs, rowNum) -> new Time(
+            rs.getLong("time.id"),
+            rs.getString("time")
+    );
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert simpleJdbcInsert;
@@ -31,20 +37,14 @@ public class TimeDao {
     public List<Time> getAll() {
         return jdbcTemplate.queryForStream(
                 "SELECT id, time FROM time",
-                (rs, rowNum) -> new Time(
-                        rs.getLong("id"),
-                        rs.getString("time")
-                )
+                TIME_ROW_MAPPER
         ).toList();
     }
 
     public Time getById(Long id) {
         return jdbcTemplate.queryForObject(
                 "SELECT id, time FROM time where id = ?",
-                (rs, rowNum) -> new Time(
-                        rs.getLong("id"),
-                        rs.getString("time")
-                ),
+                TIME_ROW_MAPPER,
                 id
         );
     }

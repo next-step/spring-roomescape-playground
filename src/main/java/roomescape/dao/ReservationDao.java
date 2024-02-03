@@ -6,7 +6,6 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
 import roomescape.domain.Reservation;
-import roomescape.domain.Time;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,12 +44,15 @@ public class ReservationDao {
 
     public List<Reservation> getAll() {
         return jdbcTemplate.queryForStream(
-                "SELECT id, name, date, time_id FROM reservation",
+                """
+                        SELECT reservation.id, name, date, time.id, time
+                        FROM reservation left join time 
+                        on time_id = time.id""",
                 (rs, rowNum) -> new Reservation(
                         rs.getLong("id"),
                         rs.getString("name"),
                         rs.getDate("date").toLocalDate(),
-                        new Time(rs.getLong("time_id"), null)
+                        TimeDao.TIME_ROW_MAPPER.mapRow(rs, rowNum)
                 )
         ).toList();
     }

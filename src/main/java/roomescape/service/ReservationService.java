@@ -27,10 +27,7 @@ public class ReservationService {
     }
 
     public List<Reservation> getAll() {
-        return reservationDao.getAll().stream()
-                .map(it -> it.with(
-                        timeDao.getById(it.getTime().getId())
-                )).toList();
+        return reservationDao.getAll();
     }
 
     public void cancel(Long id) {
