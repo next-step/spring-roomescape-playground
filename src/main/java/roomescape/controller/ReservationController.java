@@ -4,7 +4,6 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import roomescape.domain.Reservation;
 import roomescape.valid.ErrorCode;
@@ -48,13 +47,12 @@ public class ReservationController {
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> rejectReserve(@PathVariable Long id) throws NotFoundReservationException {
-        Optional<Reservation> reservation = reservations.stream()
+        Reservation reservation = reservations.stream()
                 .filter(it -> Objects.equals(it.getId(), id))
-                .findFirst();
-        if(reservation.isEmpty()) {
-            throw new NotFoundReservationException(ErrorCode.RESERVATION_NO_FOUND);
-        }
-        reservations.remove(reservation.get());
+                .findFirst()
+                .orElseThrow(() -> new NotFoundReservationException(ErrorCode.RESERVATION_NO_FOUND));
+
+        reservations.remove(reservation);
         return ResponseEntity.noContent().build();
     }
 
