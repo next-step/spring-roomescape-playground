@@ -5,14 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import roomescape.exception.BadRequestReservationException;
 import roomescape.model.dto.ReservationDto;
-import roomescape.model.entity.Time;
-import roomescape.repository.ReservationRepository;
 import roomescape.model.entity.Reservation;
-import roomescape.repository.TimeRepository;
 import roomescape.service.ReservationService;
-
 
 import java.net.URI;
 import java.util.List;

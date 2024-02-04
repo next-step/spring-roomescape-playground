@@ -1,11 +1,6 @@
 package roomescape.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 public class Reservation {
     private Long id;
@@ -13,9 +8,6 @@ public class Reservation {
     private LocalDate date;
     private Time time;
 
-    public Reservation() {
-
-    }
     public Reservation(Long id, String name, LocalDate date, Time time) {
         this.id = id;
         this.name = name;

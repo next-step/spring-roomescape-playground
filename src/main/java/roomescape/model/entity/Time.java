@@ -7,9 +7,6 @@ public class Time {
     private Long id;
     private LocalTime time;
 
-    public Time() {
-    }
-
     public Time(LocalTime time) {
         this.time = time;
     }

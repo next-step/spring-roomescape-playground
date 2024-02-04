@@ -3,7 +3,6 @@ package roomescape.repository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -20,7 +19,6 @@ public class ReservationRepository {
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert simpleJdbcInsert;
-
 
     @Autowired
     public ReservationRepository(JdbcTemplate jdbcTemplate, DataSource dataSource) {
@@ -42,7 +40,6 @@ public class ReservationRepository {
             };
 
     public List<Reservation> findAll() {
-//        String sql = "select * from reservation";
         String sql = "SELECT " +
                         "r.id as reservation_id, " +
                         "r.name, " +
