@@ -1,38 +1,24 @@
 package roomescape.domain;
 
+import lombok.Data;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+
+@Data
 public class Reservation {
-    private long id;
+    private Long id;
     private String name;
-    private String date;
-    private String time;
+    private LocalDate date;
+    private LocalTime time;
 
     public Reservation(){
     }
 
-    public Reservation(long id, String name, String date, String time) {
+    public Reservation(Long id, String name, LocalDate date, LocalTime time) {
         this.id = id;
         this.name = name;
         this.date = date;
         this.time = time;
-    }
-
-    public void updateId(long id) {
-        this.id = id;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public String getTime() {
-        return time;
     }
 }

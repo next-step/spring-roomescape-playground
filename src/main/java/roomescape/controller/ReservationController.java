@@ -7,30 +7,20 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import roomescape.ErrorCode;
 import roomescape.NotFoundReservationException;
 import roomescape.domain.Reservation;
 
-@Controller
+@RestController
 public class ReservationController {
     private final List<Reservation> reservations = new ArrayList<>();
     private final AtomicLong index = new AtomicLong(1);
 
-    @GetMapping("/")
-    public String home() {
-        return "home";
-    }
-
-    @GetMapping("/reservation")
-    public String reservation() {
-        return "reservation";
-    }
-
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> addReservation(@RequestBody Reservation reservation) {
-        if(reservation.getName().isEmpty() || reservation.getDate().isEmpty() || reservation.getTime().isEmpty()) {
-            throw new NotFoundReservationException();
+        if(reservation.getName().isEmpty() || reservation.getDate() == null || reservation.getTime() == null) {
+            throw new NotFoundReservationException(ErrorCode.INVALID_ARGUMENT);
         }
         Reservation newReservation = new Reservation(index.getAndIncrement(), reservation.getName(), reservation.getDate(), reservation.getTime());
         reservations.add(newReservation);
@@ -43,19 +33,13 @@ public class ReservationController {
     }
 
     @DeleteMapping("/reservations/{id}")
-    public ResponseEntity<Void> deleteReservation(@PathVariable long id) {
+    public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
         Reservation reservationToDelete = reservations.stream()
                 .filter(reservation -> Objects.equals(reservation.getId(), id))
                 .findFirst()
-                .orElseThrow(() -> new NotFoundReservationException());
+                .orElseThrow(() -> new NotFoundReservationException(ErrorCode.NOT_EXIST_RESERVATION));
         reservations.remove(reservationToDelete);
-        updateReservationsId();
         return ResponseEntity.noContent().build();
-    }
-
-    private void updateReservationsId() {
-        index.set(1);
-        reservations.forEach(reservation -> reservation.updateId(index.getAndIncrement()));
     }
 
     @ExceptionHandler(NotFoundReservationException.class)
