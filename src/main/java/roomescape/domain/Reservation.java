@@ -1,5 +1,7 @@
 package roomescape.domain;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NonNull;
 
@@ -10,8 +12,11 @@ import java.time.LocalTime;
 public class Reservation {
 
     private Long id;
+    @NotBlank
     private String name;
+    @NotNull
     private LocalDate date;
+    @NotNull
     private LocalTime time;
 
     public Reservation(Long id, String name, LocalDate date, LocalTime time) {

@@ -1,7 +1,10 @@
 package roomescape.controller;
 
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import roomescape.domain.Reservation;
 import roomescape.valid.ErrorCode;
@@ -28,16 +31,17 @@ public class ReservationController {
     }
 
     @PostMapping("/reservations")
-    public ResponseEntity<Reservation> reserve(@RequestBody Reservation reservation) throws IllegalReservationException {
+    public ResponseEntity<Reservation> reserve(@Valid @RequestBody Reservation reservation, BindingResult bindingResult) throws IllegalReservationException {
         log.info("이전 예약자 {}", reservation);
         Reservation newReservation = Reservation.toEntity(reservation, index.getAndIncrement());
 
         log.info("예약자 {}", newReservation);
         log.info("예약자 아이디 {}",newReservation.getId());
 
-        if(newReservation.getDate() == null || newReservation.getTime() == null || newReservation.getId()==null) {
+        if(bindingResult.hasErrors()) {
             throw new IllegalReservationException(ErrorCode.ILLEGAL_ARGUMENT);
         }
+
         reservations.add(newReservation);
         return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
     }
