@@ -56,7 +56,7 @@ public class ReservationController {
 
     @ExceptionHandler({NotFoundReservationException.class, IllegalReservationException.class})
     public ResponseEntity<Void> handleException(Exception e) {
-        log.info("error message = {}",e.getMessage());
+        log.info("error message = {}", e.getMessage());
         return ResponseEntity.badRequest().build();
     }
 }
