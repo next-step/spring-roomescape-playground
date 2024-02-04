@@ -1,6 +1,8 @@
 package roomescape.domain;
 
-import roomescape.dto.ReservationDto;
+import roomescape.dto.ReservationResponse;
+import roomescape.exception.ReservationErrorMessage;
+import roomescape.exception.ReservationException;
 
 public class Reservation {
 
@@ -14,24 +16,40 @@ public class Reservation {
     }
 
     public Reservation(Long id, String name, String date, String time) {
-        validateParams(date, time);
+        validateParams(name, date, time);
         this.id = id;
         this.name = name;
         this.date = date;
         this.time = time;
     }
 
-    private void validateParams(String date, String time) {
-        if (date.isBlank() || time.isBlank()) {
-            throw new NotFoundReservationException();
+    private void validateParams(String name, String date, String time) {
+        if (name.isBlank() ||date.isBlank() || time.isBlank()) {
+            throw new ReservationException(ReservationErrorMessage.INVALID_DATA);
         }
     }
 
-    public ReservationDto toDTO() {
-        return new ReservationDto(this.id, this.name, this.date, this.time);
+    public ReservationResponse toResponse() {
+        return new ReservationResponse(this.id, this.name, this.date, this.time);
     }
 
     public Reservation toEntity(Long id, Reservation reservation) {
         return new Reservation(id, reservation.name, reservation.date, reservation.time);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public String getTime() {
+        return time;
     }
 }
