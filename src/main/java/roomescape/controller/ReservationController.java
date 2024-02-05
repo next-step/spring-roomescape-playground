@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import roomescape.dto.ReservationAddRequest;
 import roomescape.dto.ReservationDTO;
+import roomescape.exception.NotFoundException;
 import roomescape.service.ReservationService;
 
 @RestController
@@ -37,14 +38,11 @@ public class ReservationController {
     }
 
     @DeleteMapping("/reservations/{id}")
-    public ResponseEntity<ReservationDTO> deleteReservation(@PathVariable long id) {
+    public ResponseEntity<Void> deleteReservation(@PathVariable long id) {
 
-        int row = reservationService.delete(id);
+        reservationService.delete(id);
 
-        if(row>0){
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.status(ResponseInfo.NOT_FOUND.getStatus()).body(null);
+        return ResponseEntity.noContent().build();
+
     }
-
 }

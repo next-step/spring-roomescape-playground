@@ -10,6 +10,7 @@ import roomescape.domain.Reservation;
 import roomescape.domain.Time;
 import roomescape.dto.ReservationAddRequest;
 import roomescape.dto.ReservationDTO;
+import roomescape.exception.NotFoundException;
 
 @Service
 public class ReservationService {
@@ -46,7 +47,11 @@ public class ReservationService {
 
     }
 
-    public int delete(long id) {
-        return reservationUpdatingDAO.delete(id);
+    public void delete(long id) {
+
+        int row = reservationUpdatingDAO.delete(id);
+
+        if(row == 0)throw new NotFoundException("There is no Reservation");
+
     }
 }
