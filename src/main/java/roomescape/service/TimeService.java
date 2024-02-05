@@ -25,9 +25,8 @@ public class TimeService {
     public Time save(TimeAddRequest time) {
         Time newTime = new Time(time.getTime());
         Number timeId = timeUpdatingDAO.save(newTime);
-        newTime.setId(timeId.longValue());
 
-        return newTime;
+        return newTime.toEntity(timeId.longValue(), time.getTime());
     }
 
     public List<Time> findAllTimes() {

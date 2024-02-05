@@ -18,10 +18,11 @@ public class TimeQueryingDAO {
     }
 
     private final RowMapper<Time> timeRowMapper = (resultSet, rowNum) -> {
+
         final Long id = resultSet.getLong("id");
         final Time time = new Time(resultSet.getString("time"));
-        time.setId(id);
-        return time;
+
+        return time.toEntity(id, time.getTime());
     };
 
 

@@ -11,20 +11,21 @@ public class Time {
         this.time = time;
     }
 
+    public Time(long id, String time){
+        this.id = id;
+        this.time = time;
+    }
+
+    public Time toEntity(long id, String time){
+        return new Time(id, time);
+    }
+
     public long getId(){
         return id;
     }
 
     public String getTime(){
         return time;
-    }
-
-    public void setId(long id){
-        this.id = id;
-    }
-
-    public void setTime(String time){
-        this.time = time;
     }
 
     public boolean isInvalid() {

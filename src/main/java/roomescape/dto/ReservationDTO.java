@@ -27,10 +27,6 @@ public class ReservationDTO {
 
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public String getId() {
         return String.valueOf(id);
     }

@@ -33,11 +33,7 @@ public class ReservationService {
 
     public ReservationDTO bookReservation(ReservationAddRequest reservation) {
 
-        Reservation newReservation = new Reservation();
-
-        newReservation.setName(reservation.getName());
-        newReservation.setDate(reservation.getDate());
-        newReservation.setTime(new Time(reservation.getTime().getTime()));
+        Reservation newReservation = new Reservation(reservation.getName(), reservation.getDate(), new Time(reservation.getTime().getTime()));
 
         Number reservationId = reservationUpdatingDAO.save(newReservation);
 

@@ -33,17 +33,5 @@ public class Reservation {
         return time;
     }
 
-    public void setId(long id){
-        this.id = id;
-    }
-    public void setName(String name){
-        this.name = name;
-    }
-    public void setDate(LocalDate date){
-        this.date = date;
-    }
-    public void setTime(Time time){
-        this.time = time;
-    }
 }
 

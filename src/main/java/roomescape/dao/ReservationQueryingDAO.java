@@ -24,17 +24,16 @@ public class ReservationQueryingDAO {
         final Long timeId = resultSet.getLong("time_id");
         final String timeValue = resultSet.getString("time_value");
 
-        final Time time = new Time();
-        time.setId(timeId);
-        time.setTime(timeValue);
+        final Time time = new Time(timeId, timeValue);
 
         final ReservationDTO reservation = new ReservationDTO(
                 resultSet.getString("name"),
                 resultSet.getDate("date").toLocalDate(),
                 time
         );
-        reservation.setId(id);
-        return reservation;
+
+        return reservation.toEntity(id, reservation.getName(), reservation.getDate(), reservation.getTime());
+
     };
 
     public List<ReservationDTO> getAllReservations(){
