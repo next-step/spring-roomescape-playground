@@ -7,7 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.HashMap;
 import java.util.Map;
 import roomescape.domain.Reservation;
-import roomescape.exception.GlobalExceptionHandler;
 import roomescape.exception.NotFoundException;
 
 @Repository

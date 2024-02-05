@@ -5,7 +5,6 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import roomescape.domain.Reservation;
 import roomescape.domain.Time;
 import roomescape.dto.ReservationDTO;
 

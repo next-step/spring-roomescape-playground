@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import roomescape.dto.ReservationAddRequest;
 import roomescape.dto.ReservationDTO;
-import roomescape.exception.NotFoundException;
 import roomescape.service.ReservationService;
 
 @RestController

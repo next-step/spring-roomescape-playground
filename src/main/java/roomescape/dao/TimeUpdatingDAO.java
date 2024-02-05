@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 import java.util.HashMap;
 import java.util.Map;
 import roomescape.domain.Time;
-import roomescape.exception.GlobalExceptionHandler;
 import roomescape.exception.NotFoundException;
 
 @Component

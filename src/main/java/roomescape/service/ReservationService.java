@@ -4,8 +4,6 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import roomescape.dao.ReservationQueryingDAO;
 import roomescape.dao.ReservationUpdatingDAO;
-import roomescape.dao.TimeQueryingDAO;
-import roomescape.dao.TimeUpdatingDAO;
 import roomescape.domain.Reservation;
 import roomescape.domain.Time;
 import roomescape.dto.ReservationAddRequest;
@@ -41,9 +39,7 @@ public class ReservationService {
 
         Number reservationId = reservationUpdatingDAO.save(newReservation);
 
-        ReservationDTO savedReservation = ReservationDTO.toEntity(newReservation.getId(), newReservation.getName(), newReservation.getDate(), newReservation.getTime());
-
-        return savedReservation;
+        return ReservationDTO.toEntity(reservationId.longValue(), newReservation.getName(), newReservation.getDate(), newReservation.getTime());
 
     }
 
