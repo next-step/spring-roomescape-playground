@@ -1,4 +1,4 @@
-package roomescape.exception;
+package roomescape.controller.exception;
 
 public class InvalidReservationException extends RuntimeException {
     public InvalidReservationException(String message) {

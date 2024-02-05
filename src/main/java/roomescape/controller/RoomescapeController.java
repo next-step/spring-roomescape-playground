@@ -1,16 +1,17 @@
-package roomescape;
+package roomescape.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import roomescape.DTO.ReservationDTO;
-import roomescape.exception.InvalidReservationException;
-import roomescape.exception.NotFoundReservationException;
-import roomescape.value.Date;
-import roomescape.value.ID;
-import roomescape.value.Name;
-import roomescape.value.Time;
+import roomescape.domain.Reservation;
+import roomescape.controller.exception.InvalidReservationException;
+import roomescape.controller.exception.NotFoundReservationException;
+import roomescape.domain.value.Date;
+import roomescape.domain.value.ID;
+import roomescape.domain.value.Name;
+import roomescape.domain.value.Time;
 
 import javax.validation.Valid;
 import java.net.URI;

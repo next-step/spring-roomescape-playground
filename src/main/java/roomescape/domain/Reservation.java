@@ -1,12 +1,12 @@
-package roomescape;
+package roomescape.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import roomescape.DTO.ReservationDTO;
-import roomescape.value.Date;
-import roomescape.value.ID;
-import roomescape.value.Name;
-import roomescape.value.Time;
+import roomescape.domain.value.Date;
+import roomescape.domain.value.ID;
+import roomescape.domain.value.Name;
+import roomescape.domain.value.Time;
 
 import java.time.LocalDate;
 import java.time.LocalTime;

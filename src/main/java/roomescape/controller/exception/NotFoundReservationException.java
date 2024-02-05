@@ -1,7 +1,6 @@
-package roomescape.exception;
+package roomescape.controller.exception;
 
 import org.springframework.http.HttpStatus;
-import roomescape.error.ErrorCode;
 
 public class NotFoundReservationException extends RuntimeException {
     private final ErrorCode errorCode;
