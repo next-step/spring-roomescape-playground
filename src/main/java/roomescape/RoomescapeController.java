@@ -60,8 +60,8 @@ public class RoomescapeController {
     }
 
     @DeleteMapping("/reservations/{id}")
-    public ResponseEntity<Void> cancelReservation(@PathVariable("id") long id) {
-        boolean removed = reservations.removeIf(reservation -> reservation.getID() == id);
+    public ResponseEntity<Void> cancelReservation(@PathVariable Long id) {
+        boolean removed = reservations.removeIf(reservation -> reservation.getID().equals(id));
         if (!removed) {
             throw new NotFoundReservationException("아이디 " + id + "로 예약된 기록을 찾을 수 없어요.");
         }
