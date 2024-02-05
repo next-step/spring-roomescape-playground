@@ -47,12 +47,12 @@ public class RoomescapeController {
         if (reservationDTO.getName() == null || reservationDTO.getDate() == null || reservationDTO.getTime() == null) {
             throw new InvalidReservationException("예약에 필요한 인자값이 비어있어요.");
         }
-        Reservation newReservation = new Reservation(
-                new ID(counter.incrementAndGet()),
-                new Name(reservationDTO.getName()),
-                new Date(reservationDTO.getDate()),
-                new Time(reservationDTO.getTime())
-        );
+        Reservation newReservation = Reservation.builder()
+                .id(new ID(counter.incrementAndGet()))
+                .name(new Name(reservationDTO.getName()))
+                .date(new Date(reservationDTO.getDate()))
+                .time(new Time(reservationDTO.getTime()))
+                .build();
         reservations.add(newReservation);
         return ResponseEntity
                 .created(URI.create("/reservations/" + newReservation.getID()))
