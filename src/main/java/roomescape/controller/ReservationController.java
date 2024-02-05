@@ -30,16 +30,6 @@ public class ReservationController {
     @PostMapping("/reservations")
     public ResponseEntity<ReservationDTO> createReservation(@RequestBody ReservationAddRequest reservationAddRequest){
 
-        //빈 값 들어왔을 때의 예외 처리
-        if(reservationAddRequest.getName() == null || reservationAddRequest.getName().isEmpty() || reservationAddRequest.getDate() == null || reservationAddRequest.getTime() == null){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-        }
-
-        // 'time' 필드가 'Time' 객체가 아닐 때의 예외 처리
-        if(reservationAddRequest.getTime().isInvalid()){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-        }
-
         ReservationDTO newReservation = reservationService.bookReservation(reservationAddRequest);
 
         return ResponseEntity

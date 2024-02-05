@@ -2,6 +2,7 @@ package roomescape.dto;
 
 import java.time.LocalDate;
 import roomescape.domain.Time;
+import roomescape.exception.InvalidRequestException;
 
 public class ReservationAddRequest {
     private final String name;
@@ -10,9 +11,14 @@ public class ReservationAddRequest {
 
     private final Time time;
 
-    private ReservationAddRequest(){this(null, null, null);}
+    public ReservationAddRequest(String name, LocalDate date, Time time) throws InvalidRequestException {
+        if(name==null || date == null || time == null || name.isEmpty()){
+            throw new InvalidRequestException("Invalid Reservation Request");
+        }
+        if(time.isInvalid()){
+            throw new InvalidRequestException("Invalid Time Value");
+        }
 
-    public ReservationAddRequest(String name, LocalDate date, Time time){
         this.name = name;
         this.date = date;
         this.time = time;
