@@ -3,6 +3,7 @@ package roomescape;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import roomescape.DTO.ReservationDTO;
 import roomescape.exception.InvalidReservationException;
@@ -12,6 +13,7 @@ import roomescape.value.ID;
 import roomescape.value.Name;
 import roomescape.value.Time;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,11 +25,6 @@ public class RoomescapeController {
 
     private List<Reservation> reservations = new ArrayList<>();
     private AtomicLong counter = new AtomicLong();
-
-    @GetMapping("/")
-    public String home(Model model) {
-        return "index";
-    }
 
     @GetMapping("/reservation")
     public String reservationPage(Model model) {
@@ -43,9 +40,10 @@ public class RoomescapeController {
     }
 
     @PostMapping("/reservations")
-    public ResponseEntity<ReservationDTO> addReservation(@RequestBody ReservationDTO reservationDTO) {
-        if (reservationDTO.getName() == null || reservationDTO.getDate() == null || reservationDTO.getTime() == null) {
-            throw new InvalidReservationException("예약에 필요한 인자값이 비어있어요.");
+    public ResponseEntity<ReservationDTO> addReservation(@Valid @RequestBody ReservationDTO reservationDTO, BindingResult result) {
+        if (result.hasErrors()) {
+            String errorMessage = result.getFieldError().getDefaultMessage();
+            throw new InvalidReservationException(errorMessage);
         }
         Reservation newReservation = Reservation.builder()
                 .id(new ID(counter.incrementAndGet()))
