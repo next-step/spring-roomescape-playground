@@ -1,6 +1,7 @@
 package roomescape.repository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -11,6 +12,7 @@ import roomescape.model.entity.Time;
 
 import javax.sql.DataSource;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class TimeRepository {
@@ -39,9 +41,13 @@ public class TimeRepository {
         return jdbcTemplate.query(sql, timeRowMapper);
     }
 
-    public Time findById(Long id) {
-        String sql = "select * from time where id = ?";
-        return jdbcTemplate.queryForObject(sql, timeRowMapper, id);
+    public Optional<Time> findById(Long id) {
+        try {
+            String sql = "select * from time where id = ?";
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, timeRowMapper, id));
+        } catch (IncorrectResultSizeDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     public Time save(Time time) {

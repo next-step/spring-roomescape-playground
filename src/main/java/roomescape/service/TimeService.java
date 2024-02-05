@@ -2,7 +2,6 @@ package roomescape.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import roomescape.exception.BadRequestReservationException;
 import roomescape.model.dto.TimeDto;
 import roomescape.model.entity.Time;
 import roomescape.repository.TimeRepository;
@@ -27,8 +26,7 @@ public class TimeService {
         return this.timeRepository.save(timeDto.toEntity());
     }
 
-    public void remove(Long id) {
-        if (this.timeRepository.delete(id) == 0)
-            throw new BadRequestReservationException();
+    public int remove(Long id) {
+        return this.timeRepository.delete(id);
     }
 }

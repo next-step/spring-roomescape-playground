@@ -2,7 +2,7 @@ package roomescape.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import roomescape.exception.BadRequestReservationException;
+import roomescape.exception.time.NotFoundTimeException;
 import roomescape.model.dto.ReservationDto;
 import roomescape.model.entity.Reservation;
 import roomescape.model.entity.Time;
@@ -28,12 +28,12 @@ public class ReservationService {
     }
 
     public Reservation join(ReservationDto reservationDto) {
-        Time time = this.timeRepository.findById(reservationDto.timeId());
+        Time time = this.timeRepository.findById(reservationDto.timeId())
+                .orElseThrow(NotFoundTimeException::new);
         return this.reservationRepository.save(reservationDto.toEntity(time));
     }
 
-    public void remove(Long id) {
-        if (this.reservationRepository.delete(id) == 0)
-            throw new BadRequestReservationException();
+    public int remove(Long id) {
+        return this.reservationRepository.delete(id);
     }
 }

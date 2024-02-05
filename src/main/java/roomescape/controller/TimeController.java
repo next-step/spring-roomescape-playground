@@ -5,10 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import roomescape.exception.BadRequestReservationException;
+import roomescape.exception.time.BadRequestTimeException;
 import roomescape.model.dto.TimeDto;
 import roomescape.model.entity.Time;
-import roomescape.repository.TimeRepository;
 import roomescape.service.TimeService;
 
 import java.net.URI;
@@ -39,7 +38,8 @@ public class TimeController {
 
     @DeleteMapping("/times/{id}")
     public ResponseEntity<Void> deleteTime(@PathVariable("id") Long id) {
-        this.timeService.remove(id);
+        if (this.timeService.remove(id) == 0)
+            throw new BadRequestTimeException();
         return ResponseEntity.noContent().build();
     }
 }
