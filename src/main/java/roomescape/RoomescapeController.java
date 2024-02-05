@@ -61,7 +61,7 @@ public class RoomescapeController {
     public ResponseEntity<Void> cancelReservation(@PathVariable Long id) {
         boolean removed = reservations.removeIf(reservation -> reservation.getID().equals(id));
         if (!removed) {
-            throw new NotFoundReservationException("아이디 " + id + "로 예약된 기록을 찾을 수 없어요.");
+            throw new NotFoundReservationException("해당 아이디로 예약된 기록을 찾을 수 없어요.");
         }
         return ResponseEntity.noContent().build();
     }

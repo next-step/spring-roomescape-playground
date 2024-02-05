@@ -1,9 +1,6 @@
 package roomescape.DTO;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Setter;
+import lombok.*;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
@@ -11,6 +8,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Data
+@AllArgsConstructor(access = AccessLevel.PUBLIC)
 @Setter(AccessLevel.NONE)
 @Builder
 public class ReservationDTO {
