@@ -2,7 +2,6 @@ package roomescape;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import roomescape.DTO.ReservationDTO;
@@ -24,10 +23,10 @@ import java.util.stream.Collectors;
 public class RoomescapeController {
 
     private List<Reservation> reservations = new ArrayList<>();
-    private AtomicLong counter = new AtomicLong();
+    private AtomicLong counter = new AtomicLong(1);
 
     @GetMapping("/reservation")
-    public String reservationPage(Model model) {
+    public String reservationPage() {
         return "reservation";
     }
 
