@@ -12,6 +12,7 @@ import java.util.List;
 import static roomescape.exception.ErrorCode.TIME_NOT_FOUND;
 
 @Service
+@Transactional(readOnly = true)
 public class TimeService {
     private final TimeDao timeDao;
 
@@ -19,6 +20,7 @@ public class TimeService {
         this.timeDao = timeDao;
     }
 
+    @Transactional
     public Time saveTime(TimeCreateRequestDto requestDto) {
         Long timeId = timeDao.insert(requestDto);
         return requestDto.toEntity(timeId);
@@ -28,6 +30,7 @@ public class TimeService {
         return timeDao.findAllTimes();
     }
 
+    @Transactional
     public void deleteTime(Long timeId) {
         Time time = timeDao.findTimeById(timeId)
                 .orElseThrow(() -> new BusinessException(TIME_NOT_FOUND));
