@@ -23,8 +23,9 @@ public class ReservationDTO {
         this.time = time;
     }
     public static ReservationDTO toEntity(long id, String name, LocalDate date, Time time){
-        ReservationDTO newReservationDTO = new ReservationDTO(id, name, date, time);
-        return newReservationDTO;
+
+        return new ReservationDTO(id, name, date, time);
+    
     }
 
     public void setId(Long id) {

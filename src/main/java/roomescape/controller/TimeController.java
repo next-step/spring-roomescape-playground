@@ -1,13 +1,9 @@
 package roomescape.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import roomescape.dao.TimeQueryingDAO;
-import roomescape.dao.TimeUpdatingDAO;
 import roomescape.domain.Time;
 import roomescape.dto.TimeAddRequest;
 import roomescape.service.TimeService;
@@ -24,13 +20,13 @@ public class TimeController {
     @PostMapping("/times")
     public ResponseEntity<Time> createTime(@RequestBody TimeAddRequest time){
         if(time.getTime().isEmpty()||time.getTime()==null){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            return ResponseEntity.status(ResponseInfo.BAD_REQUEST.getStatus()).body(null);
         }
 
         Time newTime = timeservice.save(time);
 
         return ResponseEntity
-                .status(201)
+                .status(ResponseInfo.CREATED.getStatus())
                 .location(java.net.URI.create("/times/"+newTime.getId()))
                 .body(newTime);
     }
@@ -52,6 +48,6 @@ public class TimeController {
             return ResponseEntity.noContent().build();
         }
 
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        return ResponseEntity.status(ResponseInfo.NOT_FOUND.getStatus()).body(null);
     }
 }

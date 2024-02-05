@@ -1,11 +1,9 @@
 package roomescape.controller;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import roomescape.domain.Reservation;
 import roomescape.dto.ReservationAddRequest;
 import roomescape.dto.ReservationDTO;
 import roomescape.service.ReservationService;
@@ -33,7 +31,7 @@ public class ReservationController {
         ReservationDTO newReservation = reservationService.bookReservation(reservationAddRequest);
 
         return ResponseEntity
-                .status(201)
+                .status(ResponseInfo.CREATED.getStatus())
                 .location(java.net.URI.create("/reservations/"+newReservation.getId()))
                 .body(newReservation);
     }
@@ -46,7 +44,7 @@ public class ReservationController {
         if(row>0){
             return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        return ResponseEntity.status(ResponseInfo.NOT_FOUND.getStatus()).body(null);
     }
 
 }
