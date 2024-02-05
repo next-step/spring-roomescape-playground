@@ -44,11 +44,11 @@ public class RoomescapeController {
 
     @PostMapping("/reservations")
     public ResponseEntity<ReservationDTO> addReservation(@RequestBody ReservationDTO reservationDTO) {
-        if (reservationDTO.getName() == null || reservationDTO.getDate().isEmpty() || reservationDTO.getTime().isEmpty()) {
+        if (reservationDTO.getName() == null || reservationDTO.getDate() == null || reservationDTO.getTime() == null) {
             throw new InvalidReservationException("예약에 필요한 인자값이 비어있어요.");
         }
         Reservation newReservation = new Reservation(
-                new ID((int) counter.incrementAndGet()),
+                new ID(counter.incrementAndGet()),
                 new Name(reservationDTO.getName()),
                 new Date(reservationDTO.getDate()),
                 new Time(reservationDTO.getTime())

@@ -1,14 +1,16 @@
 package roomescape.value;
 
+import java.time.LocalTime;
+
 public class Time {
 
-    private String time;
+    private LocalTime time;
 
-    public Time(String time) {
+    public Time(LocalTime time) {
         this.time = time;
     }
 
-    public String getTime() {
+    public LocalTime getTime() {
         return time;
     }
 }

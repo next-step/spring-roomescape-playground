@@ -1,14 +1,16 @@
 package roomescape.value;
 
+import java.time.LocalDate;
+
 public class Date {
 
-    private String date;
+    private LocalDate date;
 
-    public Date(String date) {
+    public Date(LocalDate date) {
         this.date = date;
     }
 
-    public String getDate() {
+    public LocalDate getDate() {
         return date;
     }
 }

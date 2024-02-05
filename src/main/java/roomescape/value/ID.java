@@ -2,13 +2,13 @@ package roomescape.value;
 
 public class ID {
 
-    private int id;
+    private Long id;
 
-    public ID(int id) {
+    public ID(Long id) {
         this.id = id;
     }
 
-    public int getID() {
+    public Long getID() {
         return id;
     }
 }
