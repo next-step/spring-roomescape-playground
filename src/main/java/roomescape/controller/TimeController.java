@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import roomescape.domain.Time;
 import roomescape.dto.TimeAddRequest;
+import roomescape.exception.NotFoundException;
 import roomescape.service.TimeService;
 
 @RestController
@@ -43,13 +44,9 @@ public class TimeController {
     }
 
     @DeleteMapping("/times/{id}")
-    public ResponseEntity<Time> deleteTime(@PathVariable long id) {
+    public ResponseEntity<Void> deleteTime(@PathVariable long id) {
 
-        int row = timeservice.delete(id);
-
-        if(row>0){
-            return ResponseEntity.noContent().build();
-        }
+        timeservice.delete(id);
 
         return ResponseEntity.status(ResponseInfo.NOT_FOUND.getStatus()).body(null);
     }

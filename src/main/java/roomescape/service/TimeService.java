@@ -7,6 +7,7 @@ import roomescape.dao.TimeQueryingDAO;
 import roomescape.dao.TimeUpdatingDAO;
 import roomescape.domain.Time;
 import roomescape.dto.TimeAddRequest;
+import roomescape.exception.NotFoundException;
 
 @Service
 public class TimeService {
@@ -33,7 +34,12 @@ public class TimeService {
         return timeQueryingDAO.getAllTimes();
     }
 
-    public int delete(long id) {
-        return timeUpdatingDAO.delete(id);
+    public void delete(long id) {
+
+
+        int row = timeUpdatingDAO.delete(id);
+
+        if(row == 0)throw new NotFoundException("There is no Time");
+
     }
 }
