@@ -1,6 +1,7 @@
 package roomescape;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import roomescape.DTO.ReservationDTO;
 import roomescape.value.Date;
 import roomescape.value.ID;
@@ -11,6 +12,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 @AllArgsConstructor
+@Builder
 public class Reservation {
 
 
