@@ -6,12 +6,14 @@ import roomescape.value.ID;
 import roomescape.value.Name;
 import roomescape.value.Time;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 public class Reservation {
 
 
     private ID id;
     private Name name;
-
     private Date date;
     private Time time;
 
@@ -26,7 +28,7 @@ public class Reservation {
         return new ReservationDTO(this.id.getID(), this.name.getName(), this.date.getDate(), this.time.getTime());
     }
 
-    public int getID() {
+    public Long getID() {
         return id.getID();
     }
 
@@ -34,11 +36,11 @@ public class Reservation {
         return name.getName();
     }
 
-    public String getDate() {
+    public LocalDate getDate() {
         return date.getDate();
     }
 
-    public String getTime() {
+    public LocalTime getTime() {
         return time.getTime();
     }
 }
