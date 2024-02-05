@@ -1,7 +1,17 @@
 package roomescape.exception;
 
-public class NotFoundReservationException extends RuntimeException{
-    public NotFoundReservationException(String message) {
-        super(message);
+import org.springframework.http.HttpStatus;
+import roomescape.error.ErrorCode;
+
+public class NotFoundReservationException extends RuntimeException {
+    private final ErrorCode errorCode;
+
+    public NotFoundReservationException() {
+        super(ErrorCode.RESERVATION_NOT_FOUND.getMessage());
+        this.errorCode = ErrorCode.RESERVATION_NOT_FOUND;
+    }
+
+    public HttpStatus getStatus() {
+        return errorCode.getHttpStatus();
     }
 }
