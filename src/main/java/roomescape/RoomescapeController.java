@@ -26,7 +26,7 @@ public class RoomescapeController {
 
     @GetMapping("/")
     public String home(Model model) {
-        return "home";
+        return "index";
     }
 
     @GetMapping("/reservation")
