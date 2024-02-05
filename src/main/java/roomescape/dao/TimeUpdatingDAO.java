@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import roomescape.domain.Time;
 import roomescape.exception.GlobalExceptionHandler;
+import roomescape.exception.NotFoundException;
 
 @Component
 public class TimeUpdatingDAO {
@@ -33,7 +34,7 @@ public class TimeUpdatingDAO {
         int num = jdbcTemplate.update(sql, id);
 
         if(num == 0){
-            throw new GlobalExceptionHandler.NotFoundReservationException("Time is not found with id: " + id);
+            throw new NotFoundException("Time is not found with id: " + id);
         }
 
         return num;

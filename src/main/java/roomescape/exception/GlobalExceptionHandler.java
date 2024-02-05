@@ -12,10 +12,9 @@ import roomescape.controller.ResponseInfo;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    public static class NotFoundReservationException extends RuntimeException {
-        public NotFoundReservationException(String message) {
-            super(message);
-        }
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<String> handleNotFoundException(NotFoundException e){
+        return ResponseEntity.status(ResponseInfo.NOT_FOUND.getStatus()).body(e.getMessage());
     }
 
     @ExceptionHandler(InvalidRequestException.class)

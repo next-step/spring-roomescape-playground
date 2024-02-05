@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import roomescape.domain.Reservation;
 import roomescape.exception.GlobalExceptionHandler;
+import roomescape.exception.NotFoundException;
 
 @Repository
 public class ReservationUpdatingDAO {
@@ -36,7 +37,7 @@ public class ReservationUpdatingDAO {
 
         int num = jdbcTemplate.update(sql, id);
         if(num == 0){
-            throw new GlobalExceptionHandler.NotFoundReservationException("Reservation is not found with id: " + id);
+            throw new NotFoundException("Reservation is not found with id: " + id);
         }
         return num;
     }
