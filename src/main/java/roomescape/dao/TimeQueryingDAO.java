@@ -1,5 +1,6 @@
 package roomescape.dao;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
@@ -11,6 +12,11 @@ import roomescape.domain.Time;
 public class TimeQueryingDAO {
     private final JdbcTemplate jdbcTemplate;
 
+    @Autowired
+    public TimeQueryingDAO(JdbcTemplate jdbcTemplate){
+        this.jdbcTemplate=jdbcTemplate;
+    }
+
     private final RowMapper<Time> timeRowMapper = (resultSet, rowNum) -> {
         final Long id = resultSet.getLong("id");
         final Time time = new Time(resultSet.getString("time"));
@@ -18,9 +24,6 @@ public class TimeQueryingDAO {
         return time;
     };
 
-    public TimeQueryingDAO(JdbcTemplate jdbcTemplate){
-        this.jdbcTemplate=jdbcTemplate;
-    }
 
     public List<Time> getAllTimes(){
         String sql = "select * from time";

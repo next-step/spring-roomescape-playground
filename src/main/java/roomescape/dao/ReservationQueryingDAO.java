@@ -1,5 +1,6 @@
 package roomescape.dao;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -10,6 +11,13 @@ import roomescape.dto.ReservationDTO;
 
 @Repository
 public class ReservationQueryingDAO {
+
+    private final JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    public ReservationQueryingDAO(JdbcTemplate jdbcTemplate){
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     private final RowMapper<ReservationDTO> reservationRowMapper = (resultSet, rowNum) -> {
         final Long id = resultSet.getLong("id");
@@ -28,11 +36,6 @@ public class ReservationQueryingDAO {
         reservation.setId(id);
         return reservation;
     };
-    private final JdbcTemplate jdbcTemplate;
-
-    public ReservationQueryingDAO(JdbcTemplate jdbcTemplate){
-        this.jdbcTemplate = jdbcTemplate;
-    }
 
     public List<ReservationDTO> getAllReservations(){
         String sql = "SELECT \n" +

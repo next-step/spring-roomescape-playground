@@ -1,6 +1,7 @@
 package roomescape.service;
 
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import roomescape.dao.ReservationQueryingDAO;
 import roomescape.dao.ReservationUpdatingDAO;
@@ -12,11 +13,12 @@ import roomescape.exception.NotFoundException;
 
 @Service
 public class ReservationService {
-    ReservationQueryingDAO reservationQueryingDAO;
 
-    ReservationUpdatingDAO reservationUpdatingDAO;
+    private final ReservationQueryingDAO reservationQueryingDAO;
 
+    private final ReservationUpdatingDAO reservationUpdatingDAO;
 
+    @Autowired
     public ReservationService(final ReservationQueryingDAO reservationQueryingDAO, final ReservationUpdatingDAO reservationUpdatingDAO){
 
         this.reservationQueryingDAO = reservationQueryingDAO;

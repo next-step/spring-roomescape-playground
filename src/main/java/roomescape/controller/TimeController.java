@@ -1,5 +1,6 @@
 package roomescape.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,8 +12,10 @@ import roomescape.service.TimeService;
 @RestController
 public class TimeController {
 
-    TimeService timeservice;
 
+    private final TimeService timeservice;
+
+    @Autowired
     public TimeController(TimeService timeservice){
         this.timeservice = timeservice;
     }
