@@ -20,6 +20,7 @@ public class TimeService {
         this.timeRepository = timeRepository;
     }
 
+    @Transactional(readOnly = true)
     public List<TimeDto> getTimeList() {
         return timeRepository.findAllTimes()
                 .stream()

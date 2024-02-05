@@ -20,6 +20,7 @@ public class ReservationService {
         this.reservationRepository = reservationRepository;
     }
 
+    @Transactional(readOnly = true)
     public List<ReservationDto> getReservationList() {
         return reservationRepository.findAllReservations()
                 .stream()
