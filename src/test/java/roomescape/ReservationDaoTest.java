@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import java.util.List;
 import roomescape.dao.ReservationQueryingDAO;
 import roomescape.domain.Reservation;
+import roomescape.dto.ReservationDTO;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -23,7 +24,7 @@ public class ReservationDaoTest {
     void test(){
         jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "브라운", "2023-08-05", "15:40");
 
-        final List<Reservation> reservations = reservationQueryingDAO.getAllReservations();
+        final List<ReservationDTO> reservations = reservationQueryingDAO.getAllReservations();
 
         assertThat(reservations.size())
                 .isEqualTo(1);

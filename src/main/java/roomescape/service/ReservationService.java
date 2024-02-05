@@ -9,6 +9,7 @@ import roomescape.dao.TimeUpdatingDAO;
 import roomescape.domain.Reservation;
 import roomescape.domain.Time;
 import roomescape.dto.ReservationAddRequest;
+import roomescape.dto.ReservationDTO;
 
 @Service
 public class ReservationService {
@@ -25,11 +26,11 @@ public class ReservationService {
     }
 
 
-    public List<Reservation> findAllReservations() {
+    public List<ReservationDTO> findAllReservations() {
         return reservationQueryingDAO.getAllReservations();
     }
 
-    public Reservation bookReservation(ReservationAddRequest reservation) {
+    public ReservationDTO bookReservation(ReservationAddRequest reservation) {
 
         Reservation newReservation = new Reservation();
 
@@ -39,7 +40,9 @@ public class ReservationService {
 
         Number reservationId = reservationUpdatingDAO.save(newReservation);
 
-        return Reservation.toEntity(reservationId.longValue(), newReservation);
+        ReservationDTO savedReservation = ReservationDTO.toEntity(newReservation.getId(), newReservation.getName(), newReservation.getDate(), newReservation.getTime());
+
+        return savedReservation;
 
     }
 

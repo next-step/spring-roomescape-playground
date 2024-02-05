@@ -7,11 +7,12 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import roomescape.domain.Reservation;
 import roomescape.domain.Time;
+import roomescape.dto.ReservationDTO;
 
 @Repository
 public class ReservationQueryingDAO {
 
-    private final RowMapper<Reservation> reservationRowMapper = (resultSet, rowNum) -> {
+    private final RowMapper<ReservationDTO> reservationRowMapper = (resultSet, rowNum) -> {
         final Long id = resultSet.getLong("id");
         final Long timeId = resultSet.getLong("time_id");
         final String timeValue = resultSet.getString("time_value");
@@ -20,7 +21,7 @@ public class ReservationQueryingDAO {
         time.setId(timeId);
         time.setTime(timeValue);
 
-        final Reservation reservation = new Reservation(
+        final ReservationDTO reservation = new ReservationDTO(
                 resultSet.getString("name"),
                 resultSet.getDate("date").toLocalDate(),
                 time
@@ -34,7 +35,7 @@ public class ReservationQueryingDAO {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public List<Reservation> getAllReservations(){
+    public List<ReservationDTO> getAllReservations(){
         String sql = "SELECT \n" +
                 "    r.id as reservation_id, \n" +
                 "    r.name, \n" +
