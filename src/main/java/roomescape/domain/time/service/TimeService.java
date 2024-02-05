@@ -1,6 +1,7 @@
 package roomescape.domain.time.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import roomescape.domain.time.dto.request.TimeCreateRequestDto;
 import roomescape.domain.time.entity.Time;
 import roomescape.domain.time.repository.TimeDao;
@@ -28,9 +29,7 @@ public class TimeService {
     }
 
     public void deleteTime(Long timeId) {
-        timeDao.findAllTimes().stream()
-                .filter(time -> time.getId().equals(timeId))
-                .findFirst()
+        Time time = timeDao.findTimeById(timeId)
                 .orElseThrow(() -> new BusinessException(TIME_NOT_FOUND));
 
         timeDao.deleteTimeById(timeId);
