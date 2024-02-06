@@ -23,8 +23,6 @@ public class ReservationService {
     }
 
     public ReservationResponse insertNewReservation(ReservationRequest reservationRequest) {
-//        if(Reservation.checkValidity(reservation)) throw new NoParameterException();
-
         Time timeWithValue = timeDAO.findSpecificTime(reservationRequest.getTime());
         Reservation reservation = new Reservation(
                 reservationRequest.getName(),
@@ -39,7 +37,7 @@ public class ReservationService {
 
     public List<Reservation> findAllReservations() { return reservationDAO.findAllReservations(); }
 
-    public void updateReservation(Reservation newReservation, Long id) {
+    public void updateReservation(ReservationRequest reservationRequest, Long id) {
         Reservation reservation = reservationDAO.findAllReservations().stream()
                 .filter(it -> Objects.equals(it.getId(), id))
                 .findFirst()
