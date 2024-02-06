@@ -5,17 +5,15 @@ import java.time.LocalTime;
 import org.springframework.format.annotation.DateTimeFormat;
 
 public class TimeAddRequest {
-    private Long id;
     @DateTimeFormat(pattern = "HH:MM")
     private LocalTime time;
 
-    public TimeAddRequest(Long id, LocalTime time) {
-        this.id = id;
-        this.time = time;
+    public TimeAddRequest() {
+        super();
     }
 
-    public Long getId() {
-        return id;
+    public TimeAddRequest(LocalTime time) {
+        this.time = time;
     }
 
     public LocalTime getTime() {

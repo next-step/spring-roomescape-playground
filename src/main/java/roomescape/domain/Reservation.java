@@ -4,6 +4,8 @@ import java.time.LocalDate;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import roomescape.exception.InvalidReservationException;
+
 public class Reservation {
     private final Long id;
     private final String name;
@@ -16,6 +18,7 @@ public class Reservation {
         this.name = name;
         this.date = date;
         this.time = time;
+        isValidReservation();
     }
 
     public Reservation(final String name, final LocalDate date, final Time time) {
@@ -24,6 +27,15 @@ public class Reservation {
 
     public static Reservation toEntity(final Long id, final Reservation reservation) {
         return new Reservation(id, reservation.name, reservation.date, reservation.time);
+    }
+
+    private void isValidReservation() {
+        if (this.name.isEmpty() || this.name.isBlank())
+            throw new InvalidReservationException();
+        if (this.date == null)
+            throw new InvalidReservationException();
+        if (this.time == null)
+            throw new InvalidReservationException();
     }
 
     public Long getId() {
