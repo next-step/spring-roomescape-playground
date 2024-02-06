@@ -4,5 +4,5 @@
 - [ ] valid 책임 변경
   - [ ] DTO
   - [ ] Domain
-- [ ] RuntimeException 오류 수정
+- [x] RuntimeException 오류 수정
 - [ ] 예외 처리 관련 디테일 추가
