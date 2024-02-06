@@ -5,23 +5,23 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import roomescape.domain.Time;
-import roomescape.dto.TimeRequestDto;
 
-import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 @Repository
+@Transactional
 public class TimeRepository {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
 
-    public TimeRepository(JdbcTemplate jdbcTemplate, DataSource dataSource) {
+    public TimeRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.jdbcInsert = new SimpleJdbcInsert(dataSource)
+        this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("time")
                 .usingGeneratedKeyColumns("id");
     }
@@ -34,6 +34,7 @@ public class TimeRepository {
         return time;
     };
 
+    @Transactional(readOnly = true)
     public List<Time> findAllTimes() {
         String sql = "select * from time";
         return jdbcTemplate.query(sql, timeRowMapper);
@@ -54,12 +55,12 @@ public class TimeRepository {
         return jdbcTemplate.update(sql, id);
     }
 
-    public Long insertTimeId(TimeRequestDto timeDto) {
+    public Time saveTime(Time time) {
         Map<String, Object> parameters = new HashMap<>();
-        parameters.put("time", timeDto.time());
+        parameters.put("time", time.getTime());
 
-        Number newId = jdbcInsert.executeAndReturnKey(new HashMap<>(parameters));
+        Long newId = jdbcInsert.executeAndReturnKey(new HashMap<>(parameters)).longValue();
 
-        return newId.longValue();
+        return new Time(newId, time.getTime());
     }
 }

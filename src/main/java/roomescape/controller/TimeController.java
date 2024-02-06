@@ -4,8 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import roomescape.domain.Time;
-import roomescape.dto.TimeRequestDto;
+import roomescape.dto.ReadTimeDto;
+import roomescape.dto.CreateTimeRequestDto;
+import roomescape.dto.CreateTimeResponseDto;
 import roomescape.service.TimeService;
 
 import java.net.URI;
@@ -23,15 +24,15 @@ public class TimeController {
     }
 
     @GetMapping
-    public ResponseEntity<List<TimeRequestDto>> readTimes() {
-        List<TimeRequestDto> timeDtos = timeService.findAllTimes();
+    public ResponseEntity<List<ReadTimeDto>> readTimes() {
+        List<ReadTimeDto> timeDtos = timeService.findAllTimes();
         return ResponseEntity.ok().body(timeDtos);
     }
 
     @PostMapping
-    public ResponseEntity<Time> createTime(@RequestBody TimeRequestDto timeDTO) {
-        Time time = timeService.createTime(timeDTO);
-        return ResponseEntity.created(URI.create("/times/" + time.getId())).body(time);
+    public ResponseEntity<CreateTimeResponseDto> createTime(@RequestBody CreateTimeRequestDto timeDTO) {
+        CreateTimeResponseDto createTimeResponseDto = timeService.createTime(timeDTO);
+        return ResponseEntity.created(URI.create("/times/" + createTimeResponseDto.getTimeId())).body(createTimeResponseDto);
     }
 
     @DeleteMapping("/{id}")

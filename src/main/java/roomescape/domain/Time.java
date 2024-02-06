@@ -1,6 +1,5 @@
 package roomescape.domain;
 
-import roomescape.dto.TimeRequestDto;
 import roomescape.exception.BadRequestException;
 
 import static io.micrometer.common.util.StringUtils.isBlank;
@@ -16,11 +15,11 @@ public class Time {
     }
 
     public Long getId() {
-        return id;
+        return this.id;
     }
 
     public String getTime() {
-        return time;
+        return this.time;
     }
 
     private void validateTime(String time) {

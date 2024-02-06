@@ -5,25 +5,25 @@ import roomescape.exception.BadRequestException;
 import static io.micrometer.common.util.StringUtils.isBlank;
 
 public class Reservation {
-        private Long time_id;
+        private Long ReservationId;
         private String name;
         private String date;
         private Time time;
 
-    public Reservation(Long id, String name, String date, Time time) {
-        this.time_id = id;
+    public Reservation(Long ReservationId, String name, String date, Time time) {
+        this.ReservationId = ReservationId;
         this.name = name;
         this.date = date;
         this.time = time;
         validateReservation(name, date, time);
     }
 
-    public Long getId() {
-        return time_id;
+    public Long getReservationId() {
+        return this.ReservationId;
     }
 
-    public void setId(Long id) {
-        this.time_id = id;
+    public void setId(Long ReservationId) {
+        this.ReservationId = ReservationId;
     }
 
     public String getName() {

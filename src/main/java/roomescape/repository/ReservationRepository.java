@@ -5,43 +5,43 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import roomescape.domain.Reservation;
 import roomescape.domain.Time;
-import roomescape.dto.ReservationRequestDto;
 
-import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 @Repository
+@Transactional
 public class ReservationRepository {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
 
-    public ReservationRepository(JdbcTemplate jdbcTemplate, DataSource dataSource) {
+    public ReservationRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.jdbcInsert = new SimpleJdbcInsert(dataSource)
+        this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("reservation")
                 .usingGeneratedKeyColumns("id");
     }
 
     private final RowMapper<Reservation> reservationRowMapper = (resultSet, rowNum) -> {
-        Time time = new Time(
-                resultSet.getLong("time_id"),
-                resultSet.getString("time_value")
-        );
 
         Reservation reservation = new Reservation(
-                resultSet.getLong("id"),
+                resultSet.getLong("reservation_id"),
                 resultSet.getString("name"),
                 resultSet.getString("date"),
-                time
+                new Time(
+                        resultSet.getLong("time_id"),
+                        resultSet.getString("time_value")
+                )
         );
         return reservation;
     };
 
+    @Transactional(readOnly = true)
     public List<Reservation> findAllReservations() {
         String sql = "SELECT " +
                 "r.id as reservation_id, " +
@@ -68,15 +68,15 @@ public class ReservationRepository {
         return jdbcTemplate.update(sql, id);
     }
 
-    public Long insertReservationId(ReservationRequestDto reservationDto) {
+    public Reservation saveReservation(Reservation reservation) {
         Map<String, Object> parameters = new HashMap<>();
-        parameters.put("name", reservationDto.name());
-        parameters.put("date", reservationDto.date());
-        parameters.put("time_id", reservationDto.timeId());
+        parameters.put("name", reservation.getName());
+        parameters.put("date", reservation.getDate());
+        parameters.put("time_id", reservation.getTime().getId());
 
-        Number newId = jdbcInsert.executeAndReturnKey(parameters);
+        Long newId = jdbcInsert.executeAndReturnKey(parameters).longValue();
 
-        return newId.longValue();
+        return new Reservation(newId, reservation.getName(), reservation.getDate(), reservation.getTime());
     }
 
 }
