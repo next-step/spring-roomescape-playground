@@ -1,6 +1,6 @@
 # TODO
 - [ ] 변수명 변경
-- [ ] Response DTO 생성
+- [x] Response DTO 생성
 - [x] valid 책임 변경
   - [x] Domain
 - [x] RuntimeException 오류 수정

@@ -11,7 +11,9 @@ import roomescape.dao.TimeUpdatingDao;
 import roomescape.domain.Reservation;
 import roomescape.domain.Time;
 import roomescape.dto.ReservationAddRequest;
+import roomescape.dto.ReservationResponse;
 import roomescape.dto.TimeAddRequest;
+import roomescape.dto.TimeResponse;
 import roomescape.exception.NotFoundReservationException;
 import roomescape.exception.NotFoundTimeException;
 
@@ -31,18 +33,22 @@ public class ReservationService {
         this.timeUpdatingDao = timeUpdatingDao;
     }
 
-    public List<Reservation> findReservationList() {
-        return reservationQueryingDao.selectListReservation();
+    public List<ReservationResponse> findReservationList() {
+        return reservationQueryingDao.selectListReservation()
+            .stream()
+            .map(ReservationResponse::new)
+            .toList();
     }
 
-    public Reservation addReservation(final ReservationAddRequest request) {
+    public ReservationResponse addReservation(final ReservationAddRequest request) {
         final Long timeId = request.getTime();
         final Time time = timeQueryingDao.selectTimeById(timeId);
 
         final Reservation reservation = new Reservation(request.getName(), request.getDate(), time);
         final Long reservationId = reservationUpdatingDao.createReservation(reservation);
+        final Reservation reservationEntity = Reservation.toEntity(reservationId, reservation);
 
-        return Reservation.toEntity(reservationId, reservation);
+        return new ReservationResponse(reservationEntity);
     }
 
     public void removeReservation(final Long id) {
@@ -52,15 +58,19 @@ public class ReservationService {
         }
     }
 
-    public List<Time> findTimeList() {
-        return timeQueryingDao.selectListTime();
+    public List<TimeResponse> findTimeList() {
+        return timeQueryingDao.selectListTime()
+            .stream()
+            .map(TimeResponse::new)
+            .toList();
     }
 
-    public Time addTime(TimeAddRequest request) {
+    public TimeResponse addTime(TimeAddRequest request) {
         final Time time = new Time(request.getTime());
         final Long id = timeUpdatingDao.createTime(time);
+        final Time timeEntity = Time.toEntity(id, time);
 
-        return Time.toEntity(id, time);
+        return new TimeResponse(timeEntity);
     }
 
     public void removeTime(final Long id) {
