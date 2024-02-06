@@ -2,6 +2,7 @@ package roomescape.domain;
 
 import java.time.LocalTime;
 import org.springframework.format.annotation.DateTimeFormat;
+import roomescape.exception.NoParameterException;
 
 public class Time {
     private Long id;
@@ -13,6 +14,11 @@ public class Time {
     public Time(Long id, LocalTime time) {
         this.id = id;
         this.time = time;
+        checkValidity();
+    }
+
+    private void checkValidity() {
+        if (this.getTime() == null) throw new NoParameterException();
     }
 
     public Long getId() { return id; }
@@ -20,9 +26,5 @@ public class Time {
 
     public static Time toEntity(Time time, Long id) {
         return new Time(id, time.time);
-    }
-
-    public static boolean checkValidity(Time time) {
-        return (time.getTime() == null);
     }
 }

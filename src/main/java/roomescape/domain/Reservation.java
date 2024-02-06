@@ -1,5 +1,7 @@
 package roomescape.domain;
 
+import roomescape.exception.NoParameterException;
+
 public class Reservation {
     private Long id;
     private String name;
@@ -19,6 +21,14 @@ public class Reservation {
         this.name = name;
         this.date = date;
         this.time = time;
+        checkValidity();
+    }
+
+    private void checkValidity() {
+        if (this.getName().isEmpty() ||
+                this.getDate().isEmpty() ||
+                this.getTime().getId() == null)
+            throw new NoParameterException();
     }
 
     public Long getId() { return id; }
@@ -28,12 +38,6 @@ public class Reservation {
 
     public static Reservation toEntity(Reservation reservation, Long id) {
         return new Reservation(id, reservation.name, reservation.date, reservation.time);
-    }
-
-    public static boolean checkValidity(Reservation reservation) {
-        return (reservation.getName().isEmpty() ||
-                reservation.getDate().isEmpty() ||
-                reservation.getTime().getId() == null);
     }
 
     public void update(Reservation newReservation) {
