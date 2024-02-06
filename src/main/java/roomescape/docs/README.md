@@ -5,4 +5,4 @@
   - [ ] DTO
   - [ ] Domain
 - [x] RuntimeException 오류 수정
-- [ ] 예외 처리 관련 디테일 추가
+- [x] 예외 처리 관련 디테일 추가

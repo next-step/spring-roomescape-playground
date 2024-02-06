@@ -9,6 +9,6 @@ public class ExceptionController {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity handleGlobalException(Exception e) {
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.badRequest().body(e.toString());
     }
 }
