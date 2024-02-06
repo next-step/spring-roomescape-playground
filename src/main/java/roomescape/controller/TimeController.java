@@ -25,16 +25,16 @@ public class TimeController {
 
     @GetMapping("/times")
     public ResponseEntity<List<TimeResponse>> timeList() {
-        final List<TimeResponse> timeList = reservationService.findTimeList();
+        final List<TimeResponse> times = reservationService.findTimeList();
 
-        return ResponseEntity.ok().body(timeList);
+        return ResponseEntity.ok().body(times);
     }
 
     @PostMapping("/times")
     public ResponseEntity<TimeResponse> timeSave(@RequestBody TimeAddRequest request) {
-        final TimeResponse newTime = reservationService.addTime(request);
+        final TimeResponse time = reservationService.addTime(request);
 
-        return ResponseEntity.created(URI.create("/times/" + newTime.getId())).body(newTime);
+        return ResponseEntity.created(URI.create("/times/" + time.getId())).body(time);
     }
 
     @DeleteMapping("/times/{id}")
