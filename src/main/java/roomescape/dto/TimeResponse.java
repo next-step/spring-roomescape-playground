@@ -15,4 +15,12 @@ public class TimeResponse {
         this.id = time.getId();
         this.time = time.getTime();
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public LocalTime getTime() {
+        return time;
+    }
 }
