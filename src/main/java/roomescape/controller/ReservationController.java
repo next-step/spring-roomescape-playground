@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import roomescape.domain.Reservation;
-import roomescape.domain.dto.ReservationAddRequest;
+import roomescape.dto.ReservationAddRequest;
 import roomescape.service.ReservationService;
 
 @Controller
