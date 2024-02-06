@@ -7,6 +7,8 @@ import roomescape.dao.ReservationDAO;
 import roomescape.dao.TimeDAO;
 import roomescape.domain.Reservation;
 import roomescape.domain.Time;
+import roomescape.dto.ReservationRequest;
+import roomescape.dto.ReservationResponse;
 import roomescape.exception.NoParameterException;
 import roomescape.exception.NotFoundReservationException;
 
@@ -20,18 +22,19 @@ public class ReservationService {
         this.timeDAO = timeDAO;
     }
 
-    public Reservation insertNewReservation(Reservation reservation) {
-        if(Reservation.checkValidity(reservation)) throw new NoParameterException();
+    public ReservationResponse insertNewReservation(ReservationRequest reservationRequest) {
+//        if(Reservation.checkValidity(reservation)) throw new NoParameterException();
 
-        Time timeWithValue = timeDAO.findSpecificTime(reservation.getTime().getId());
-        reservation = new Reservation(
-                reservation.getName(),
-                reservation.getDate(),
+        Time timeWithValue = timeDAO.findSpecificTime(reservationRequest.getTime());
+        Reservation reservation = new Reservation(
+                reservationRequest.getName(),
+                reservationRequest.getDate(),
                 timeWithValue
         );
 
         Long id = reservationDAO.insertNewReservation(reservation);
-        return Reservation.toEntity(reservation, id);
+        reservation = Reservation.toEntity(reservation, id);
+        return new ReservationResponse(reservation);
     }
 
     public List<Reservation> findAllReservations() { return reservationDAO.findAllReservations(); }
