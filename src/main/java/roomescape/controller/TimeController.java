@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import roomescape.domain.Time;
+import roomescape.dto.TimeRequest;
+import roomescape.dto.TimeResponse;
 import roomescape.service.TimeService;
 
 @Controller
@@ -24,15 +25,18 @@ public class TimeController {
     public String time() { return "time"; }
 
     @GetMapping("/times")
-    public ResponseEntity<List<Time>> read() {
-        List<Time> times = timeService.findAllTimes();
-        return ResponseEntity.ok().body(times);
+    public ResponseEntity<List<TimeResponse>> read() {
+        List<TimeResponse> timeResponses = timeService.findAllTimes()
+                .stream()
+                .map(TimeResponse::new)
+                .toList();
+        return ResponseEntity.ok().body(timeResponses);
     }
 
     @PostMapping("/times")
-    public ResponseEntity<Time> create(@RequestBody Time time) {
-        Time newTime = timeService.insertNewTime(time);
-        return ResponseEntity.created(URI.create("/times/" + newTime.getId())).body(newTime);
+    public ResponseEntity<TimeResponse> create(@RequestBody TimeRequest timeRequest) {
+        TimeResponse timeResponse = timeService.insertNewTime(timeRequest);
+        return ResponseEntity.created(URI.create("/times/" + timeResponse.getId())).body(timeResponse);
     }
 
     @DeleteMapping("/times/{id}")

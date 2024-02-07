@@ -5,7 +5,8 @@ import java.util.Objects;
 import org.springframework.stereotype.Service;
 import roomescape.dao.TimeDAO;
 import roomescape.domain.Time;
-import roomescape.exception.NoParameterException;
+import roomescape.dto.TimeRequest;
+import roomescape.dto.TimeResponse;
 import roomescape.exception.NotFoundTimeException;
 
 @Service
@@ -16,11 +17,12 @@ public class TimeService {
         this.timeDAO = timeDAO;
     }
 
-    public Time insertNewTime(Time time) {
-        if(Time.checkValidity(time)) throw new NoParameterException();
+    public TimeResponse insertNewTime(TimeRequest timeRequest) {
 
+        Time time = new Time(timeRequest.getTime());
         Long id = timeDAO.insertNewTime(time);
-        return Time.toEntity(time, id);
+        time = Time.toEntity(time, id);
+        return new TimeResponse(time);
     }
 
     public List<Time> findAllTimes() { return timeDAO.findAllTimes(); }
