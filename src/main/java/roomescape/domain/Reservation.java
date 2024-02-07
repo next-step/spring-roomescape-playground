@@ -3,14 +3,12 @@ package roomescape.domain;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import lombok.NonNull;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Data
 public class Reservation {
-
     private Long id;
     @NotBlank
     private String name;

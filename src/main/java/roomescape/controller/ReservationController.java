@@ -1,58 +1,51 @@
 package roomescape.controller;
 
 import jakarta.validation.Valid;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import roomescape.domain.Reservation;
+import roomescape.repository.ReservationRepository;
 import roomescape.valid.ErrorCode;
 import roomescape.valid.IllegalReservationException;
 import roomescape.valid.NotFoundReservationException;
 
+import javax.sql.DataSource;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.*;
 
 @Slf4j
 @RestController
 public class ReservationController {
+    private final ReservationRepository reservationRepository;
 
-    private final List<Reservation> reservations = new ArrayList<>();
-    private final AtomicLong index = new AtomicLong(1);
+    public ReservationController(DataSource dataSource) {
+        reservationRepository = new ReservationRepository(dataSource);
+    }
 
     @GetMapping("/reservations")
     public List<Reservation> reservations() {
-        return reservations;
+        return reservationRepository.findAllReservation();
     }
 
     @PostMapping("/reservations")
-    public ResponseEntity<Reservation> reserve(@Valid @RequestBody Reservation reservation, BindingResult bindingResult) throws IllegalReservationException {
-        log.info("이전 예약자 {}", reservation);
-        Reservation newReservation = Reservation.toEntity(reservation, index.getAndIncrement());
-
-        log.info("예약자 {}", newReservation);
-        log.info("예약자 아이디 {}",newReservation.getId());
-
+    public ResponseEntity<Reservation> reserve(@Valid @RequestBody Reservation reservation,
+                                               BindingResult bindingResult) throws IllegalReservationException {
         if(bindingResult.hasErrors()) {
             throw new IllegalReservationException(ErrorCode.ILLEGAL_ARGUMENT);
         }
-
-        reservations.add(newReservation);
-        return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
+        Long id = reservationRepository.save(reservation);
+        Reservation newReservation = Reservation.toEntity(reservation, id);
+        return ResponseEntity.created(URI.create("/reservations/" + id)).body(newReservation);
     }
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> rejectReserve(@PathVariable Long id) throws NotFoundReservationException {
-        Reservation reservation = reservations.stream()
-                .filter(it -> Objects.equals(it.getId(), id))
-                .findFirst()
-                .orElseThrow(() -> new NotFoundReservationException(ErrorCode.RESERVATION_NO_FOUND));
-
-        reservations.remove(reservation);
+        reservationRepository.delete(id);
         return ResponseEntity.noContent().build();
     }
 
