@@ -1,4 +1,4 @@
-package roomescape.exception;
+package roomescape.exception.reservation;
 
 public class BadRequestReservationException extends RuntimeException {
     public BadRequestReservationException() {

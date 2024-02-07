@@ -5,11 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import roomescape.exception.BadRequestReservationException;
+import roomescape.exception.reservation.BadRequestReservationException;
 import roomescape.model.dto.ReservationDto;
-import roomescape.repository.ReservationRepository;
 import roomescape.model.entity.Reservation;
-
+import roomescape.service.ReservationService;
 
 import java.net.URI;
 import java.util.List;
@@ -17,21 +16,21 @@ import java.util.List;
 @Controller
 public class ReservationController {
 
-    private final ReservationRepository reservationRepository;
+    private final ReservationService reservationService;
 
     @Autowired
-    public ReservationController(ReservationRepository reservationRepository) {
-        this.reservationRepository = reservationRepository;
+    public ReservationController(ReservationService reservationService) {
+        this.reservationService = reservationService;
     }
 
     @GetMapping("/reservations")
     public ResponseEntity<List<Reservation>> getReservations() {
-        return ResponseEntity.ok(reservationRepository.findAll());
+        return ResponseEntity.ok(this.reservationService.findReservations());
     }
 
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> addReservation(@Valid @RequestBody ReservationDto reservationDto) {
-        Reservation reservation = reservationRepository.save(reservationDto.toEntity());
+        Reservation reservation = this.reservationService.join(reservationDto);
         return ResponseEntity
                 .created(URI.create("/reservations/" + reservation.getId()))
                 .body(reservation);
@@ -39,7 +38,7 @@ public class ReservationController {
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable("id") Long id) {
-        if (reservationRepository.delete(id) == 0)
+        if (this.reservationService.remove(id) == 0)
             throw new BadRequestReservationException();
         return ResponseEntity.noContent().build();
     }
