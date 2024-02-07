@@ -1,7 +1,5 @@
 package roomescape.dto;
 
-import roomescape.domain.Time;
-
 public class CreateReservationResponseDto {
     private final Long reservationId;
     private final String name;

@@ -1,24 +1,22 @@
 package roomescape.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import roomescape.dto.ReadTimeDto;
 import roomescape.dto.CreateTimeRequestDto;
 import roomescape.dto.CreateTimeResponseDto;
+import roomescape.dto.ReadTimeDto;
 import roomescape.service.TimeService;
 
 import java.net.URI;
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/times")
 public class TimeController {
 
     private final TimeService timeService;
 
-    @Autowired
     public TimeController(TimeService timeService) {
         this.timeService = timeService;
     }
@@ -30,7 +28,7 @@ public class TimeController {
     }
 
     @PostMapping
-    public ResponseEntity<CreateTimeResponseDto> createTime(@RequestBody CreateTimeRequestDto timeDTO) {
+    public ResponseEntity<CreateTimeResponseDto> createTime(@Valid @RequestBody CreateTimeRequestDto timeDTO) {
         CreateTimeResponseDto createTimeResponseDto = timeService.createTime(timeDTO);
         return ResponseEntity.created(URI.create("/times/" + createTimeResponseDto.getTimeId())).body(createTimeResponseDto);
     }

@@ -13,8 +13,6 @@ public class CreateTimeResponseDto {
     public String getTime() {
         return this.time;
     }
-    public Long getTimeId() {
-        return this.timeId;
-    }
+    public Long getTimeId() { return this.timeId; }
 
 }
