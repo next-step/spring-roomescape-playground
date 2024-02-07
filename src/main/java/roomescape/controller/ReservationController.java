@@ -38,6 +38,7 @@ public class ReservationController {
         if(bindingResult.hasErrors()) {
             throw new IllegalReservationException(ErrorCode.ILLEGAL_ARGUMENT);
         }
+
         Long id = reservationRepository.save(reservation);
         Reservation newReservation = Reservation.toEntity(reservation, id);
         return ResponseEntity.created(URI.create("/reservations/" + id)).body(newReservation);
