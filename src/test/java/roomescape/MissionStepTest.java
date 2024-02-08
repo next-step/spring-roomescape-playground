@@ -11,14 +11,14 @@ import roomescape.controller.ReservationController;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;+
 import static org.hamcrest.Matchers.is;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class MissionStepTest {
-
     @Test
++
     void 팔단계() {
         Map<String, String> params = new HashMap<>();
         params.put("time", "10:00");
