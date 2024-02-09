@@ -17,17 +17,23 @@ import roomescape.exception.ReservationException;
 import roomescape.domain.Reservation;
 import roomescape.dto.ReservationRequest;
 import roomescape.dto.ReservationResponse;
+import roomescape.repository.ReservationDAO;
 
 @Controller
 public class ReservationController {
 
+    private final ReservationDAO reservationDAO;
     private List<Reservation> reservations = new ArrayList<>();
     private AtomicLong index = new AtomicLong(0);
+
+    public ReservationController(ReservationDAO reservationDAO) {
+        this.reservationDAO = reservationDAO;
+    }
 
 
     @GetMapping("/reservations")
     public ResponseEntity<List<ReservationResponse>> read() {
-        List<ReservationResponse> reservationResponses = reservations.stream()
+        List<ReservationResponse> reservationResponses = reservationDAO.findAll().stream()
                 .map(Reservation::toResponse)
                 .toList();
         return ResponseEntity.ok().body(reservationResponses);
