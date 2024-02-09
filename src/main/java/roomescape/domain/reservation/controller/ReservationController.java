@@ -6,41 +6,34 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import roomescape.domain.reservation.dto.request.ReservationCreateRequestDto;
 import roomescape.domain.reservation.entity.Reservation;
-import roomescape.domain.reservation.repository.ReservationDao;
-import roomescape.exception.custom.BusinessException;
+import roomescape.domain.reservation.service.ReservationService;
 
 import java.net.URI;
 import java.util.List;
 
-import static roomescape.exception.ErrorCode.RESERVATION_NOT_FOUND;
-
 @Controller
 public class ReservationController {
-    private final ReservationDao reservationDao;
+    private final ReservationService reservationService;
 
-    public ReservationController(ReservationDao reservationDao) {
-        this.reservationDao = reservationDao;
+    public ReservationController(ReservationService reservationService) {
+        this.reservationService = reservationService;
     }
 
     @GetMapping("/reservations")
     public ResponseEntity<List<Reservation>> readReservations() {
-        return ResponseEntity.ok().body(reservationDao.findAllReservations());
+        List<Reservation> reservations = reservationService.getReservations();
+        return ResponseEntity.ok().body(reservations);
     }
 
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> createReservation(@RequestBody @Valid ReservationCreateRequestDto requestDto) {
-        Long reservationId = reservationDao.insert(requestDto);
-        return ResponseEntity.created(URI.create("/reservations/" + reservationId)).body(requestDto.toEntity(reservationId));
+        Reservation reservation = reservationService.saveReservation(requestDto);
+        return ResponseEntity.created(URI.create("/reservations/" + reservation.getId())).body(reservation);
     }
 
     @DeleteMapping("/reservations/{reservationId}")
     public ResponseEntity<Void> deleteReservation(@PathVariable Long reservationId) {
-        reservationDao.findAllReservations().stream()
-                .filter(reservation -> reservation.getId().equals(reservationId))
-                .findFirst()
-                .orElseThrow(() -> new BusinessException(RESERVATION_NOT_FOUND));
-
-        reservationDao.deleteReservationById(reservationId);
+        reservationService.deleteReservation(reservationId);
         return ResponseEntity.noContent().build();
     }
 }
