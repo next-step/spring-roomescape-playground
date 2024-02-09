@@ -33,8 +33,8 @@ public class Reservation {
         return new ReservationResponse(this.id, this.name, this.date, this.time);
     }
 
-    public Reservation toEntity(Long id, Reservation reservation) {
-        return new Reservation(id, reservation.name, reservation.date, reservation.time);
+    public Reservation toEntity(Long id) {
+        return new Reservation(id, this.name, this.date, this.time);
     }
 
     public Long getId() {
