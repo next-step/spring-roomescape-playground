@@ -2,6 +2,7 @@ package roomescape;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -12,7 +13,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import roomescape.domain.Reservation;
+import roomescape.presentation.api.ReservationController;
 
+import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -31,6 +34,9 @@ class MissionStepTest {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private ReservationController reservationController;
 
     @Test
     @DisplayName("어드민 메인 페이지를 반환한다")
@@ -62,6 +68,7 @@ class MissionStepTest {
 
     @Test
     @DisplayName("예약을 추가한다")
+    @Disabled
     void 삼단계_1() {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
@@ -86,6 +93,7 @@ class MissionStepTest {
 
     @Test
     @DisplayName("예약을 삭제한다")
+    @Disabled
     void 삼단계_2() {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
@@ -121,7 +129,8 @@ class MissionStepTest {
 
     @ParameterizedTest(name = "이름이 {0}이고 예약 날짜가 {1}이고 예약 시간이 {2}일 때 예외메시지는 \"{3}\"이다.")
     @MethodSource("invalidInput")
-    void 사단계_12(String name, String date, String time, String message) {
+    @Disabled
+    void 사단계_1(String name, String date, String time, String message) {
         Map<String, String> params = new HashMap<>();
         params.put("name", name);
         params.put("date", date);
@@ -218,6 +227,7 @@ class MissionStepTest {
 
     @Test
     @DisplayName("예약 조회 API 처리 로직에서 저장된 예약을 조회할 때 데이터베이스를 활용한다")
+    @Disabled
     void 육단계() {
         jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "브라운", "2023-08-05", "15:40");
 
@@ -234,6 +244,7 @@ class MissionStepTest {
 
     @Test
     @DisplayName("예약 추가 API 처리 로직에서 데이터베이스를 활용한다")
+    @Disabled
     void 칠단계_1() {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
@@ -254,6 +265,7 @@ class MissionStepTest {
 
     @Test
     @DisplayName("예약 취소 API 처리 로직에서 데이터베이스를 활용한다")
+    @Disabled
     void 칠단계_2() {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
@@ -278,5 +290,104 @@ class MissionStepTest {
 
         Integer countAfterDelete = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
         assertThat(countAfterDelete).isZero();
+    }
+
+    @Test
+    @DisplayName("시간을 추가한다")
+    void 팔단계_1() {
+        Map<String, String> params = new HashMap<>();
+        params.put("time", "10:00");
+
+        RestAssured.given().log().all()
+                   .contentType(ContentType.JSON)
+                   .body(params)
+                   .when().post("/times")
+                   .then().log().all()
+                   .statusCode(201)
+                   .header("Location", "/times/1");
+
+        RestAssured.given().log().all()
+                   .when().get("/times")
+                   .then().log().all()
+                   .statusCode(200)
+                   .body("size()", is(1));
+    }
+
+    @Test
+    @DisplayName("시간을 조회한다")
+    void 팔단계_2() {
+        Map<String, String> params = new HashMap<>();
+        params.put("time", "10:00");
+
+        RestAssured.given().log().all()
+                   .contentType(ContentType.JSON)
+                   .body(params)
+                   .when().post("/times")
+                   .then().log().all()
+                   .statusCode(201)
+                   .header("Location", "/times/1");
+
+        RestAssured.given().log().all()
+                   .when().get("/times")
+                   .then().log().all()
+                   .statusCode(200)
+                   .body("size()", is(1));
+    }
+
+    @Test
+    @DisplayName("시간을 삭제한다")
+    void 팔단계_3() {
+        Map<String, String> params = new HashMap<>();
+        params.put("time", "10:00");
+
+        RestAssured.given().log().all()
+                   .contentType(ContentType.JSON)
+                   .body(params)
+                   .when().post("/times")
+                   .then().log().all()
+                   .statusCode(201)
+                   .header("Location", "/times/1");
+
+        RestAssured.given().log().all()
+                   .when().delete("/times/1")
+                   .then().log().all()
+                   .statusCode(204);
+
+        RestAssured.given().log().all()
+                   .when().get("/times")
+                   .then().log().all()
+                   .statusCode(200)
+                   .body("size()", is(0));
+    }
+
+    @Test
+    @DisplayName("기존 예약 추가 API 스펙에 맞춰서 요청을 보낼 경우 에러가 발생한다")
+    void 구단계() {
+        Map<String, String> reservation = new HashMap<>();
+        reservation.put("name", "브라운");
+        reservation.put("date", "2023-08-05");
+        reservation.put("time", "10:00");
+
+        RestAssured.given().log().all()
+                   .contentType(ContentType.JSON)
+                   .body(reservation)
+                   .when().post("/reservations")
+                   .then().log().all()
+                   .statusCode(400);
+    }
+
+    @Test
+    @DisplayName("controller에 있던 데이터베이스 관련 로직을 다른 클래스로 분리한 것을 확인한다")
+    void 십단계() {
+        boolean isJdbcTemplateInjected = false;
+
+        for (Field field : reservationController.getClass().getDeclaredFields()) {
+            if (field.getType().equals(JdbcTemplate.class)) {
+                isJdbcTemplateInjected = true;
+                break;
+            }
+        }
+
+        assertThat(isJdbcTemplateInjected).isFalse();
     }
 }

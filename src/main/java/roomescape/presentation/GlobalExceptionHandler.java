@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import roomescape.application.exception.TimeNotFoundException;
 import roomescape.presentation.dto.response.ExceptionResponse;
 import roomescape.application.exception.ReservationNotFoundException;
 
@@ -20,6 +21,14 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ReservationNotFoundException.class)
     public ResponseEntity<ExceptionResponse> handleReservationNotFoundException(final ReservationNotFoundException ex) {
+        logger.warn(ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                             .body(new ExceptionResponse(ex.getMessage()));
+    }
+
+    @ExceptionHandler(TimeNotFoundException.class)
+    public ResponseEntity<ExceptionResponse> handleTimeNotFoundException(final TimeNotFoundException ex) {
         logger.warn(ex.getMessage());
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)

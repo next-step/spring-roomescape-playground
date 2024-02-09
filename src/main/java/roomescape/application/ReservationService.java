@@ -5,9 +5,12 @@ import org.springframework.transaction.annotation.Transactional;
 import roomescape.application.dto.CreateInfoReservationDto;
 import roomescape.application.dto.CreateReservationDto;
 import roomescape.application.exception.ReservationNotFoundException;
+import roomescape.application.exception.TimeNotFoundException;
 import roomescape.domain.Reservation;
+import roomescape.domain.Time;
 import roomescape.domain.repository.ReservationRepository;
 import roomescape.application.dto.ReadReservationDto;
+import roomescape.domain.repository.TimeRepository;
 
 import java.util.List;
 
@@ -16,9 +19,11 @@ import java.util.List;
 public class ReservationService {
 
     private final ReservationRepository reservationRepository;
+    private final TimeRepository timeRepository;
 
-    public ReservationService(final ReservationRepository reservationRepository) {
+    public ReservationService(final ReservationRepository reservationRepository, final TimeRepository timeRepository) {
         this.reservationRepository = reservationRepository;
+        this.timeRepository = timeRepository;
     }
 
     @Transactional(readOnly = true)
@@ -30,8 +35,10 @@ public class ReservationService {
                            .toList();
     }
 
-    public CreateInfoReservationDto create(final CreateReservationDto createReservationDto) {
-        final Reservation newReservation = createReservationDto.toEntity();
+    public CreateInfoReservationDto create(final CreateReservationDto createDto) {
+        final Time time = timeRepository.findById(createDto.getTimeId())
+                                        .orElseThrow(() -> new TimeNotFoundException("예약 시간이 존재하지 않습니다."));
+        final Reservation newReservation = new Reservation(null, createDto.getName(), createDto.getDate(), time);
         final Reservation persistReservation = reservationRepository.save(newReservation);
 
         return CreateInfoReservationDto.from(persistReservation);

@@ -1,24 +1,17 @@
 package roomescape.application.dto;
 
-import roomescape.domain.Reservation;
-
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 public class CreateReservationDto {
 
     private final String name;
     private final LocalDate date;
-    private final LocalTime time;
+    private final Long timeId;
 
-    public CreateReservationDto(final String name, final LocalDate date, final LocalTime time) {
+    public CreateReservationDto(final String name, final LocalDate date, final Long timeId) {
         this.name = name;
         this.date = date;
-        this.time = time;
-    }
-
-    public Reservation toEntity() {
-        return new Reservation(null, name, date, time);
+        this.timeId = timeId;
     }
 
     public String getName() {
@@ -29,7 +22,7 @@ public class CreateReservationDto {
         return date;
     }
 
-    public LocalTime getTime() {
-        return time;
+    public Long getTimeId() {
+        return timeId;
     }
 }
