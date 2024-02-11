@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import roomescape.DBService;
 import roomescape.DTO.ReservationDTO;
 import roomescape.domain.Reservation;
 import roomescape.controller.exception.InvalidReservationException;
@@ -12,6 +13,7 @@ import roomescape.domain.value.Date;
 import roomescape.domain.value.ID;
 import roomescape.domain.value.Name;
 import roomescape.domain.value.Time;
+import roomescape.DBService;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -23,8 +25,13 @@ import java.util.stream.Collectors;
 @Controller
 public class RoomescapeController {
 
+    private final DBService dbService;
     private List<Reservation> reservations = new ArrayList<>();
     private AtomicLong counter = new AtomicLong(1);
+
+    public RoomescapeController(DBService dbService) {
+        this.dbService = dbService;
+    }
 
     @GetMapping("/reservation")
     public String reservationPage() {
@@ -34,8 +41,9 @@ public class RoomescapeController {
     @GetMapping("/reservations")
     @ResponseBody
     public List<ReservationDTO> getReservations() {
+        List<Reservation> reservations = dbService.getAllReservations();
         return reservations.stream()
-                .map(Reservation::toDTO)
+                .map(reservation -> new ReservationDTO(reservation.getID(), reservation.getName(), reservation.getDate(), reservation.getTime()))
                 .collect(Collectors.toList());
     }
 

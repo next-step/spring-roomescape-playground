@@ -2,6 +2,7 @@ package roomescape.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.NoArgsConstructor;
 import roomescape.DTO.ReservationDTO;
 import roomescape.domain.value.Date;
 import roomescape.domain.value.ID;
@@ -11,6 +12,7 @@ import roomescape.domain.value.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class Reservation {
@@ -21,12 +23,19 @@ public class Reservation {
     private Date date;
     private Time time;
 
+    public Reservation(long id, String name, String date, String time) {
+        this.id = new ID(id);
+        this.name = new Name(name);
+        this.date = new Date(date);
+        this.time = new Time(time);
+    }
+
     public ReservationDTO toDTO() {
-        return new ReservationDTO(this.id.getID(), this.name.getName(), this.date.getDate(), this.time.getTime());
+        return new ReservationDTO(this.id.getId(), this.name.getName(), this.date.getDate(), this.time.getTime());
     }
 
     public Long getID() {
-        return id.getID();
+        return id.getId();
     }
 
     public String getName() {

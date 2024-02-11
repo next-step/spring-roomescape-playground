@@ -1,14 +1,11 @@
 package roomescape.domain.value;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@AllArgsConstructor
+@Getter
 public class ID {
 
     private Long id;
-
-    public ID(Long id) {
-        this.id = id;
-    }
-
-    public Long getID() {
-        return id;
-    }
 }
