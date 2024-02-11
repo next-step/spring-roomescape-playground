@@ -26,8 +26,6 @@ import java.util.stream.Collectors;
 public class RoomescapeController {
 
     private final DBService dbService;
-    private List<Reservation> reservations = new ArrayList<>();
-    private AtomicLong counter = new AtomicLong(1);
 
     public RoomescapeController(DBService dbService) {
         this.dbService = dbService;
@@ -53,13 +51,7 @@ public class RoomescapeController {
             String errorMessage = result.getFieldError().getDefaultMessage();
             throw new InvalidReservationException(errorMessage);
         }
-        Reservation newReservation = Reservation.builder()
-                .id(new ID(counter.incrementAndGet()))
-                .name(new Name(reservationDTO.getName()))
-                .date(new Date(reservationDTO.getDate()))
-                .time(new Time(reservationDTO.getTime()))
-                .build();
-        reservations.add(newReservation);
+        Reservation newReservation = dbService.addReservation(new Reservation(reservationDTO.getName(), reservationDTO.getDateToString(), reservationDTO.getTimeToString()));
         return ResponseEntity
                 .created(URI.create("/reservations/" + newReservation.getID()))
                 .body(newReservation.toDTO());
@@ -67,10 +59,7 @@ public class RoomescapeController {
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> cancelReservation(@PathVariable Long id) {
-        boolean removed = reservations.removeIf(reservation -> reservation.getID().equals(id));
-        if (!removed) {
-            throw new NotFoundReservationException();
-        }
+        dbService.cancelReservation(id);
         return ResponseEntity.noContent().build();
     }
 }

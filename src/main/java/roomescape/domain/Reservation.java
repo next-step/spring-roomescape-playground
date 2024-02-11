@@ -3,6 +3,7 @@ package roomescape.domain;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import roomescape.DTO.ReservationDTO;
 import roomescape.domain.value.Date;
 import roomescape.domain.value.ID;
@@ -25,6 +26,19 @@ public class Reservation {
 
     public Reservation(long id, String name, String date, String time) {
         this.id = new ID(id);
+        this.name = new Name(name);
+        this.date = new Date(date);
+        this.time = new Time(time);
+    }
+
+    public Reservation(String name, String date, String time) {
+        this.name = new Name(name);
+        this.date = new Date(date);
+        this.time = new Time(time);
+    }
+
+    public Reservation(Long newId, String name, LocalDate date, LocalTime time) {
+        this.id = new ID(newId);
         this.name = new Name(name);
         this.date = new Date(date);
         this.time = new Time(time);

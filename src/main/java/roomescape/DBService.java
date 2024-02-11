@@ -20,4 +20,12 @@ public class DBService {
     public List<Reservation> getAllReservations() {
         return reservationDAO.findAllReservations();
     }
+
+    public Reservation addReservation(Reservation reservation) {
+        return reservationDAO.insertReservation(reservation);
+    }
+
+    public void cancelReservation(Long id) {
+        reservationDAO.deleteReservation(id);
+    }
 }
