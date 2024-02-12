@@ -36,8 +36,9 @@ public class ReservationController {
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
-
-        reservationDAO.delete(id);
+        if(reservationDAO.delete(id) == 0) {
+            throw new NotFoundReservationException(ErrorCode.NOT_EXIST_RESERVATION);
+        }
         return ResponseEntity.noContent().build();
     }
 
