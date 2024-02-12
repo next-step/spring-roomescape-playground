@@ -2,6 +2,7 @@ package roomescape.dao;
 
 import java.sql.PreparedStatement;
 import java.util.List;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -13,7 +14,7 @@ import roomescape.domain.Time;
 @Repository
 public class TimeDAO {
     private final JdbcTemplate jdbcTemplate;
-
+    private final SimpleJdbcInsert simpleJdbcInsert;
     private final RowMapper<Time> timeRowMapper = (resultSet, rowNum) -> {
         Time time = new Time(
                 resultSet.getLong("id"),
@@ -24,6 +25,10 @@ public class TimeDAO {
 
     public TimeDAO(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+        this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("time")
+                .usingColumns("time")
+                .usingGeneratedKeyColumns("id");;
     }
 
     public List<Time> findAllTimes() {
@@ -31,19 +36,14 @@ public class TimeDAO {
         return jdbcTemplate.query(sql, timeRowMapper);
     }
 
-    public Time findSpecificTime(Long timeId) {
+    public Time findSpecificTime(Long timeId) throws DataAccessException {
         String sql = "SELECT id, time FROM time WHERE id=" + timeId;
         return jdbcTemplate.queryForObject(sql, timeRowMapper);
     }
 
     public Long insertNewTime(Time time) {
-        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
-                .withTableName("time")
-                .usingColumns("time")
-                .usingGeneratedKeyColumns("id");
-
         SqlParameterSource sqlParameterSource = new BeanPropertySqlParameterSource(time);
-        Number key = simpleJdbcInsert.executeAndReturnKey(sqlParameterSource);
+        Number key = this.simpleJdbcInsert.executeAndReturnKey(sqlParameterSource);
 
         return key.longValue();
     }
