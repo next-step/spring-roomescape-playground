@@ -2,6 +2,7 @@ package roomescape.service;
 
 import java.util.List;
 import java.util.Objects;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import roomescape.dao.ReservationDAO;
 import roomescape.dao.TimeDAO;
@@ -47,11 +48,10 @@ public class ReservationService {
     }
 
     public void deleteReservation(Long id) {
-        Reservation reservation = reservationDAO.findAllReservations().stream()
-                .filter(it -> Objects.equals(it.getId(), id))
-                .findFirst()
-                .orElseThrow(NotFoundReservationException::new);
-
-        reservationDAO.deleteReservation(id);
+        try {
+            reservationDAO.deleteReservation(id);
+        } catch (DataAccessException e) {
+            throw new NotFoundReservationException();
+        }
     }
 }

@@ -2,6 +2,7 @@ package roomescape.service;
 
 import java.util.List;
 import java.util.Objects;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import roomescape.dao.TimeDAO;
 import roomescape.domain.Time;
@@ -28,11 +29,10 @@ public class TimeService {
     public List<Time> findAllTimes() { return timeDAO.findAllTimes(); }
 
     public void deleteTime(Long id) {
-        Time time = timeDAO.findAllTimes().stream()
-                .filter(it -> Objects.equals(it.getId(), id))
-                .findFirst()
-                .orElseThrow(NotFoundTimeException::new);
-
-        timeDAO.deleteTime(id);
+        try {
+            timeDAO.deleteTime(id);
+        } catch (DataAccessException e) {
+            throw new NotFoundTimeException();
+        }
     }
 }
