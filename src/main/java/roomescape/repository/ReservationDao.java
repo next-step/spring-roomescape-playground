@@ -13,11 +13,11 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
-public class ReservationRepository {
+public class ReservationDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
 
-    public ReservationRepository(DataSource dataSource) {
+    public ReservationDao(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
         this.jdbcInsert = new SimpleJdbcInsert(dataSource)
                 .withTableName("reservation")
