@@ -48,10 +48,12 @@ public class ReservationController {
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        reservations.stream()
+        Reservation reservation = reservations.stream()
             .filter(it -> it.getId() == id)
             .findAny()
-            .ifPresent(reservations::remove);
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 예약입니다."));
+
+        reservations.remove(reservation);
 
         return ResponseEntity.noContent().build();
     }
