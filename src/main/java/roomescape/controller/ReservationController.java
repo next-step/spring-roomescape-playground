@@ -41,7 +41,9 @@ public class ReservationController {
     @PostMapping("/reservations")
     public ResponseEntity<ReservationResponse> post(@RequestBody @Valid ReservationCreate request) {
         Reservation reservation = request.toReservation(id.getAndIncrement());
+
         reservations.add(reservation);
+        
         return ResponseEntity.created(URI.create("/reservations/" + reservation.getId()))
             .body(ReservationResponse.from(reservation));
     }

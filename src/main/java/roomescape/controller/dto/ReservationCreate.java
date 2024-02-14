@@ -13,7 +13,7 @@ public record ReservationCreate(
     @NotNull @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
     @NotBlank String name,
     @NotNull @DateTimeFormat(pattern = "hh:mm") LocalTime time
-    ) {
+) {
 
     public Reservation toReservation(Long id) {
         return new Reservation(id, name, date, time);
