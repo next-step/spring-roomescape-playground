@@ -37,7 +37,14 @@ public class ReservationDao{
     }
     public Reservation getReservationById(int id) {
         String sql = "SELECT id, name, date, time FROM reservation WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, new Object[]{id}, reservationRowMapper);
+        List<Reservation> reservations = jdbcTemplate.query(sql, new Object[]{id}, reservationRowMapper);
+        if(getAllReservations().isEmpty()){
+            throw new RuntimeException("예약이 존재하지 않습니다.");
+        }else if (reservations.size()>1){
+            throw new RuntimeException("중복된 예약이 존재합니다.");
+        }else {
+            return reservations.get(0);
+        }
     }
     public void deleteReservationById(int id) {
         String sql = "DELETE FROM reservation WHERE id = ?";

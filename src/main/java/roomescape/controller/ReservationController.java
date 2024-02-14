@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Controller
 public class ReservationController {
     private AtomicInteger index = new AtomicInteger(1);
-    private ReservationService reservationService;
+    private final ReservationService reservationService;
     public ReservationController(ReservationService reservationService){
         this.reservationService = reservationService;
     }
@@ -29,7 +29,7 @@ public class ReservationController {
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> createReservation(@Validated @RequestBody Reservation reservation) {
         Reservation newreservation = new Reservation(index.getAndIncrement(),reservation.getName(), reservation.getDate(),reservation.getTime());
-        reservationService.saveReservation(reservation);
+        reservationService.saveReservation(newreservation);
         return ResponseEntity.created(URI.create("/reservations/" + reservation.getId())).build();
     }
 
