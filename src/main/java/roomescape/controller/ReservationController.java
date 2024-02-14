@@ -1,15 +1,13 @@
 package roomescape.controller;
 
 import jakarta.validation.Valid;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import roomescape.domain.Reservation;
-import roomescape.repository.ReservationRepository;
+import roomescape.repository.ReservationDao;
 import roomescape.valid.ErrorCode;
 import roomescape.valid.IllegalReservationException;
 import roomescape.valid.NotFoundReservationException;
@@ -21,10 +19,10 @@ import java.util.*;
 @Slf4j
 @RestController
 public class ReservationController {
-    private final ReservationRepository reservationRepository;
+    private final ReservationDao reservationRepository;
 
     public ReservationController(DataSource dataSource) {
-        reservationRepository = new ReservationRepository(dataSource);
+        reservationRepository = new ReservationDao(dataSource);
     }
 
     @GetMapping("/reservations")
