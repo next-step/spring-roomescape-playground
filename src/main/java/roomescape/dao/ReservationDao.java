@@ -1,21 +1,23 @@
-package roomescape.domain;
+package roomescape.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
+import roomescape.domain.Reservation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Component
-public class JdbcReservations implements Reservations {
+public class ReservationDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert simpleJdbcInsert;
 
-    public JdbcReservations(JdbcTemplate jdbcTemplate) {
+    public ReservationDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("reservation")
@@ -23,7 +25,11 @@ public class JdbcReservations implements Reservations {
     }
 
     public Reservation add(Reservation reservation) {
-        SqlParameterSource parameterSource = new BeanPropertySqlParameterSource(reservation);
+        SqlParameterSource parameterSource = new MapSqlParameterSource(Map.of(
+                "name", reservation.getName(),
+                "date", reservation.getDate(),
+                "time_id", reservation.getTime().getId()
+        ));
         Long id = simpleJdbcInsert.executeAndReturnKey(parameterSource).longValue();
         return reservation.with(id);
     }
@@ -38,17 +44,20 @@ public class JdbcReservations implements Reservations {
 
     public List<Reservation> getAll() {
         return jdbcTemplate.queryForStream(
-                "SELECT id, name, date, time FROM reservation",
+                """
+                        SELECT reservation.id, name, date, time.id, time
+                        FROM reservation left join time 
+                        on time_id = time.id""",
                 (rs, rowNum) -> new Reservation(
                         rs.getLong("id"),
                         rs.getString("name"),
                         rs.getDate("date").toLocalDate(),
-                        rs.getTime("time").toLocalTime()
+                        TimeDao.TIME_ROW_MAPPER.mapRow(rs, rowNum)
                 )
         ).toList();
     }
 
-    public void cancel(Long id) {
+    public void deleteBy(Long id) {
         int affectedCount = jdbcTemplate.update("DELETE FROM reservation WHERE id = ?", id);
         if (affectedCount == 0) {
             throw new IllegalArgumentException("id가 " + id + "인 예약을 찾을 수 없습니다");

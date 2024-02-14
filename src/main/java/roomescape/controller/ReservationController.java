@@ -10,9 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import roomescape.controller.dto.ReservationRequest;
-import roomescape.domain.JdbcReservations;
 import roomescape.domain.Reservation;
-import roomescape.domain.Reservations;
+import roomescape.service.ReservationService;
 
 import java.net.URI;
 import java.util.List;
@@ -21,27 +20,27 @@ import java.util.List;
 @RequestMapping("/reservations")
 public class ReservationController {
 
-    private final Reservations reservations;
+    private final ReservationService reservationService;
 
-    public ReservationController(JdbcReservations reservations) {
-        this.reservations = reservations;
+    public ReservationController(ReservationService reservationService) {
+        this.reservationService = reservationService;
     }
 
     @GetMapping
     public List<Reservation> showReservations() {
-        return reservations.getAll();
+        return reservationService.getAll();
     }
 
     @PostMapping
     public ResponseEntity<Reservation> add(@RequestBody @Valid ReservationRequest reservation) {
-        Reservation saved = reservations.add(reservation.toEntity());
+        Reservation saved = reservationService.add(reservation);
         return ResponseEntity.created(URI.create("/reservations/" + saved.getId()))
                 .body(saved);
     }
 
     @DeleteMapping("{id}")
     public ResponseEntity<Void> cancel(@PathVariable Long id) {
-        reservations.cancel(id);
+        reservationService.cancel(id);
         return ResponseEntity.noContent().build();
     }
 }

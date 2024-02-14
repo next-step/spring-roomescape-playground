@@ -1,26 +1,27 @@
 package roomescape.domain;
 
+import jakarta.validation.constraints.NotNull;
+
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 public class Reservation {
 
     private Long id;
     private String name;
     private LocalDate date;
-    private LocalTime time;
+    private Time time;
 
-    protected Reservation() {
+    protected Reservation(Long id, String string, @NotNull(message = "날짜를 입력해야 합니다") LocalDate date, @NotNull(message = "시간을 입력해야 합니다") Long time) {
     }
 
-    public Reservation(String name, LocalDate date, LocalTime time) {
+    public Reservation(String name, LocalDate date, Time time) {
         this.id = null;
         this.name = name;
         this.date = date;
         this.time = time;
     }
 
-    public Reservation(Long id, String name, LocalDate date, LocalTime time) {
+    public Reservation(Long id, String name, LocalDate date, Time time) {
         this.id = id;
         this.name = name;
         this.date = date;
@@ -43,7 +44,7 @@ public class Reservation {
         return date;
     }
 
-    public LocalTime getTime() {
+    public Time getTime() {
         return time;
     }
 }
