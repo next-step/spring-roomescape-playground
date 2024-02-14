@@ -1,4 +1,4 @@
-package roomescape.DTO;
+package roomescape.domain.DTO;
 
 import lombok.*;
 
