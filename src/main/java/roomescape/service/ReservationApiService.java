@@ -2,6 +2,8 @@ package roomescape.service;
 
 import org.springframework.stereotype.Service;
 import roomescape.dto.Reservation;
+import roomescape.exception.NoParameterException;
+import roomescape.exception.NotFoundReservationException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +30,13 @@ public class ReservationApiService {
                 .date(reservation.getDate())
                 .time(reservation.getTime())
                 .build();
+        if (newReservation.getName().isEmpty()){
+            throw new NoParameterException("Reservation Have No Name Parameter");
+        } else if (newReservation.getDate().isEmpty()){
+            throw new NoParameterException("Reservation Have No Date Parameter");
+        } else if (newReservation.getTime().isEmpty()){
+            throw new NoParameterException("Reservation Have No Time Parameter");
+        }
         reservations.add(newReservation);
         return newReservation;
     }
@@ -36,7 +45,7 @@ public class ReservationApiService {
         Reservation reservation = reservations.stream()
                 .filter(it -> Objects.equals(it.getId(), id))
                 .findFirst()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new NotFoundReservationException("Not Found Reservation"));
         reservations.remove(reservation);
     }
 }

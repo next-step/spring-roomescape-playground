@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
-public class GlobalException {
+public class GlobalException{
 
     @ExceptionHandler(NotFoundReservationException.class)
     public ResponseEntity<String> handleException (NotFoundReservationException e){
