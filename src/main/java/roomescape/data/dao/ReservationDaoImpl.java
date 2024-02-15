@@ -38,9 +38,9 @@ public class ReservationDaoImpl implements ReservationDao {
     @Override
     public long createReservation(ReservationRequest reservationRequest) {
         if (reservationRequest == null ||
-                reservationRequest.getName() == null || reservationRequest.getName().isEmpty() ||
-                reservationRequest.getDate() == null || reservationRequest.getDate().isEmpty() ||
-                reservationRequest.getTime() == null || reservationRequest.getTime().isEmpty()) {
+                reservationRequest.getName().isBlank() ||
+                reservationRequest.getDate().isBlank() ||
+                reservationRequest.getTime().isBlank()) {
             throw new ReservationException(ReservationErrorCode.INVALID_ARGUMENT_ERROR);
         }
         KeyHolder keyHolder = new GeneratedKeyHolder();
