@@ -1,36 +1,37 @@
 package roomescape.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import roomescape.dto.Reservation;
-import roomescape.service.ReservationApiService;
+import roomescape.service.ReservationService;
 
 import java.net.URI;
 import java.util.List;
 
-@RestController
+@Controller
 @RequestMapping("/reservations")
-public class ReservationApiController {
+public class ReservationController {
 
-    private final ReservationApiService reservationApiService;
-    public ReservationApiController(ReservationApiService reservationApiService){
-        this.reservationApiService = reservationApiService;
+    private final ReservationService reservationService;
+    public ReservationController(ReservationService reservationService){
+        this.reservationService = reservationService;
     }
 
     @GetMapping
     public ResponseEntity<List<Reservation>> reservations(){
-        return ResponseEntity.ok(reservationApiService.loadReservationList());
+        return ResponseEntity.ok(reservationService.loadReservationList());
     }
 
     @PostMapping
     public ResponseEntity<Reservation> createReservations(@RequestBody Reservation reservation){
-        Reservation newReservation = reservationApiService.createReservation(reservation);
+        Reservation newReservation = reservationService.createReservation(reservation);
         return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable Long id){
-        reservationApiService.deleteReservation(id);
+        reservationService.deleteReservation(id);
         return ResponseEntity.noContent().build();
     }
 }
