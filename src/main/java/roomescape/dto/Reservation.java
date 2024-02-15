@@ -1,4 +1,4 @@
-package roomescape;
+package roomescape.dto;
 
 import lombok.Builder;
 import lombok.Getter;
