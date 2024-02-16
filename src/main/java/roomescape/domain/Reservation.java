@@ -12,7 +12,10 @@ public class Reservation {
     @NonNull
     private String date;
     @NonNull
-    private String time;
+    private Time time;
+    public void setId(int id){
+        this.id = id;
+    }
     public int getId() {
         return id;
     }
@@ -22,10 +25,10 @@ public class Reservation {
     public String getDate() {
         return date;
     }
-    public String getTime(){
+    public Time getTime(){
         return time;
     }
-    public Reservation(int id,String name, String date, String time) {
+    public Reservation(int id,String name, String date, Time time) {
         this.id = id;
         this.name = name;
         this.date = date;
