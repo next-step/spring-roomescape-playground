@@ -1,16 +1,17 @@
 package roomescape.domain.value;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
+import lombok.*;
+
+@AllArgsConstructor
+@Getter
 public class Date {
 
     private LocalDate date;
 
-    public Date(LocalDate date) {
-        this.date = date;
-    }
-
-    public LocalDate getDate() {
-        return date;
+    public Date(String date) {
+        this.date = LocalDate.parse(date);
     }
 }

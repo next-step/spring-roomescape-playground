@@ -4,27 +4,24 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import roomescape.DTO.ReservationDTO;
+import roomescape.service.ReservationService;
+import roomescape.domain.DTO.ReservationDTO;
 import roomescape.domain.Reservation;
-import roomescape.controller.exception.InvalidReservationException;
-import roomescape.controller.exception.NotFoundReservationException;
-import roomescape.domain.value.Date;
-import roomescape.domain.value.ID;
-import roomescape.domain.value.Name;
-import roomescape.domain.value.Time;
+import roomescape.exception.InvalidReservationException;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 @Controller
 public class RoomescapeController {
 
-    private List<Reservation> reservations = new ArrayList<>();
-    private AtomicLong counter = new AtomicLong(1);
+    private final ReservationService reservationService;
+
+    public RoomescapeController(ReservationService reservationService) {
+        this.reservationService = reservationService;
+    }
 
     @GetMapping("/reservation")
     public String reservationPage() {
@@ -34,8 +31,9 @@ public class RoomescapeController {
     @GetMapping("/reservations")
     @ResponseBody
     public List<ReservationDTO> getReservations() {
+        List<Reservation> reservations = reservationService.getAllReservations();
         return reservations.stream()
-                .map(Reservation::toDTO)
+                .map(reservation -> new ReservationDTO(reservation.getID(), reservation.getName(), reservation.getDate(), reservation.getTime()))
                 .collect(Collectors.toList());
     }
 
@@ -45,13 +43,7 @@ public class RoomescapeController {
             String errorMessage = result.getFieldError().getDefaultMessage();
             throw new InvalidReservationException(errorMessage);
         }
-        Reservation newReservation = Reservation.builder()
-                .id(new ID(counter.incrementAndGet()))
-                .name(new Name(reservationDTO.getName()))
-                .date(new Date(reservationDTO.getDate()))
-                .time(new Time(reservationDTO.getTime()))
-                .build();
-        reservations.add(newReservation);
+        Reservation newReservation = reservationService.addReservation(new Reservation(reservationDTO.getName(), reservationDTO.getDateToString(), reservationDTO.getTimeToString()));
         return ResponseEntity
                 .created(URI.create("/reservations/" + newReservation.getID()))
                 .body(newReservation.toDTO());
@@ -59,10 +51,7 @@ public class RoomescapeController {
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> cancelReservation(@PathVariable Long id) {
-        boolean removed = reservations.removeIf(reservation -> reservation.getID().equals(id));
-        if (!removed) {
-            throw new NotFoundReservationException();
-        }
+        reservationService.cancelReservation(id);
         return ResponseEntity.noContent().build();
     }
 }
