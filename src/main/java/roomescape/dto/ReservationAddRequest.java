@@ -1,24 +1,19 @@
-package roomescape;
+package roomescape.dto;
 
-public class Reservation {
+import jakarta.validation.constraints.NotBlank;
+
+public class ReservationAddRequest {
+    @NotBlank
     private final String name;
+    @NotBlank
     private final String date;
+    @NotBlank
     private final String time;
-    private long id;
 
-    public Reservation(long id, String name, String date, String time) {
-        this.id = id;
+    public ReservationAddRequest(String name, String date, String time) {
         this.name = name;
         this.date = date;
         this.time = time;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -32,5 +27,4 @@ public class Reservation {
     public String getTime() {
         return time;
     }
-
 }
