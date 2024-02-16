@@ -13,7 +13,9 @@ public class Reservation {
     private String date;
     @NonNull
     private Time time;
-
+    public void setId(int id){
+        this.id = id;
+    }
     public int getId() {
         return id;
     }
@@ -26,7 +28,7 @@ public class Reservation {
     public Time getTime(){
         return time;
     }
-    public Reservation(int id,String name, String date, String time) {
+    public Reservation(int id,String name, String date, Time time) {
         this.id = id;
         this.name = name;
         this.date = date;
