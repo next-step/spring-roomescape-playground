@@ -15,6 +15,7 @@ public class Reservation {
         this.name = name;
         this.date = date;
         this.time = time;
+        checkValidity();
     }
 
     public Reservation(String name, String date, Time time) {
