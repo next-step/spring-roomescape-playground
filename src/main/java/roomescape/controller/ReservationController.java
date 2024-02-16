@@ -1,7 +1,6 @@
 package roomescape.controller;
 
 import jakarta.validation.Valid;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.http.ResponseEntity;
@@ -38,7 +37,6 @@ public class ReservationController {
         if(bindingResult.hasErrors()) {
             throw new IllegalReservationException(ErrorCode.ILLEGAL_ARGUMENT);
         }
-
         Long id = reservationDao.save(reservation);
         Reservation newReservation = Reservation.toEntity(reservation, id);
         return ResponseEntity.created(URI.create("/reservations/" + id)).body(newReservation);
