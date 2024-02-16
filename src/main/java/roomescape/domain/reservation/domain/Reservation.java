@@ -9,7 +9,11 @@ public class Reservation {
     private LocalDate date;
     private LocalTime time;
 
-    public Reservation(String name, LocalDate date, LocalTime time) {
+    public Reservation() {
+
+    }
+
+    public Reservation(LocalDate date, String name, LocalTime time) {
         this.name = name;
         this.date = date;
         this.time = time;
@@ -36,7 +40,7 @@ public class Reservation {
         return time;
     }
 
-    public Reservation toEntity(Reservation reservation, Long id) {
+    public static Reservation toEntity(Reservation reservation, Long id) {
         return new Reservation(id, reservation.getName(), reservation.getDate(), reservation.getTime());
     }
 
