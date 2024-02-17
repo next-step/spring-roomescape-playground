@@ -20,8 +20,8 @@ public class TimeDAO {
 
     private final RowMapper<Time> rowMapper = (rs, rowNum) -> {
         Time time = new Time(
-            rs.getLong("id"),
-            rs.getString("time")
+                rs.getLong("id"),
+                rs.getString("time")
         );
         return time;
     };

@@ -14,12 +14,4 @@ public class RoomescapeApplication {
 
     @Autowired
     JdbcTemplate jdbcTemplate;
-
-//    @Override
-//    public void run(String... args) throws Exception {
-//        jdbcTemplate.execute("DROP TABLE reservation IF EXISTS");
-//        jdbcTemplate.execute("CREATE TABLE reservation(id SERIAL, name VARCHAR(255), date VARCHAR(255), time BIGINT)");
-//        jdbcTemplate.execute("DROP TABLE time IF EXISTS");
-//        jdbcTemplate.execute("CREATE TABLE time(id SERIAL, time VARCHAR(255))");
-//    }
 }

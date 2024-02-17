@@ -24,7 +24,7 @@ public class Reservation {
     }
 
     private void validateParams(String name, String date) {
-        if (name.isBlank() ||date.isBlank()) {
+        if (name.isBlank() || date.isBlank()) {
             throw new ReservationException(ReservationErrorMessage.INVALID_DATA);
         }
     }
