@@ -31,6 +31,11 @@ public class TimeDAO {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
+    public Time findById(Long id) {
+        String sql = "SELECT id, time FROM time where id = ?";
+        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    }
+
     public Long insert(Time time) {
         String sql = "INSERT INTO time(time) VALUES(?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();

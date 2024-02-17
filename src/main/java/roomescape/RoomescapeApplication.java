@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 @SpringBootApplication
-public class RoomescapeApplication implements CommandLineRunner {
+public class RoomescapeApplication {
     public static void main(String[] args) {
         SpringApplication.run(RoomescapeApplication.class, args);
     }
@@ -15,11 +15,11 @@ public class RoomescapeApplication implements CommandLineRunner {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
-    @Override
-    public void run(String... args) throws Exception {
-        jdbcTemplate.execute("DROP TABLE reservation IF EXISTS");
-        jdbcTemplate.execute("CREATE TABLE reservation(id SERIAL, name VARCHAR(255), date VARCHAR(255), time VARCHAR(255))");
-        jdbcTemplate.execute("DROP TABLE time IF EXISTS");
-        jdbcTemplate.execute("CREATE TABLE time(id SERIAL, time VARCHAR(255))");
-    }
+//    @Override
+//    public void run(String... args) throws Exception {
+//        jdbcTemplate.execute("DROP TABLE reservation IF EXISTS");
+//        jdbcTemplate.execute("CREATE TABLE reservation(id SERIAL, name VARCHAR(255), date VARCHAR(255), time BIGINT)");
+//        jdbcTemplate.execute("DROP TABLE time IF EXISTS");
+//        jdbcTemplate.execute("CREATE TABLE time(id SERIAL, time VARCHAR(255))");
+//    }
 }
