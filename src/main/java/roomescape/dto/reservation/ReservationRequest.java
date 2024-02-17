@@ -10,7 +10,7 @@ public class ReservationRequest {
     private LocalDate date;
 
     @NotNull
-    private LocalTime time;
+    private Long timeId;
 
     @NotNull
     private String name;
@@ -19,8 +19,8 @@ public class ReservationRequest {
         return date;
     }
 
-    public LocalTime getTime() {
-        return time;
+    public Long getTime() {
+        return timeId;
     }
 
     public String getName() {

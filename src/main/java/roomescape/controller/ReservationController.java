@@ -1,9 +1,7 @@
 package roomescape.controller;
 
 import jakarta.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -15,8 +13,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import roomescape.domain.Reservation;
 import roomescape.dto.reservation.ReservationRequest;
-import roomescape.exception.ReservationNotFoundException;
-import roomescape.repository.ReservationRepository;
 import roomescape.service.ReservationService;
 
 @Controller
@@ -30,7 +26,12 @@ public class ReservationController {
 
     @GetMapping("/reservation")
     public String reservation() {
-        return "reservation";
+        return "new-reservation";
+    }
+
+    @GetMapping("/time")
+    public String time() {
+        return "time";
     }
 
     @GetMapping("/reservations")
