@@ -2,6 +2,7 @@ package roomescape.controller;
 
 import static roomescape.dto.ReservationResponseDTO.AddReservation;
 
+import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +34,7 @@ public class ReservationController {
 
 	@PostMapping("/reservations")
 	public ResponseEntity<AddReservation> addReservation(
-			@RequestBody ReservationRequestDTO.AddReservation reservationRequest) {
+			@Valid @RequestBody ReservationRequestDTO.AddReservation reservationRequest) {
 		AddReservation newReservation = reservationService.addReservation(reservationRequest);
 		return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
 	}

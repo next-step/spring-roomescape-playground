@@ -1,5 +1,6 @@
 package roomescape.dto;
 
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,8 +14,11 @@ public class ReservationRequestDTO {
 	@NoArgsConstructor
 	@AllArgsConstructor
 	public static class AddReservation {
+		@NotEmpty
 		private String name;
+		@NotEmpty
 		private String date;
+		@NotEmpty
 		private String time;
 	}
 }

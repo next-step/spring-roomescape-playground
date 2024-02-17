@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.stereotype.Repository;
 import roomescape.dto.ReservationResponseDTO;
+import roomescape.dto.ReservationResponseDTO.QueryReservation;
+import roomescape.exception.ReservationException;
 
 @Repository
 public class ReservationRepository {
@@ -15,13 +17,15 @@ public class ReservationRepository {
 		return reservations;
 	}
 
-	public ReservationResponseDTO.QueryReservation save(ReservationResponseDTO.QueryReservation reservation) {
+	public void save(QueryReservation reservation) {
 		reservations.add(reservation);
-		return reservation;
 	}
 
 	public void deleteById(Long id) {
-		reservations.removeIf(reservation -> reservation.getId().equals(id));
+		boolean removed = reservations.removeIf(reservation -> reservation.getId().equals(id));
+		if (!removed) {
+			throw new ReservationException("Reservation with id " + id + " not found.");
+		}
 	}
 
 	public Long generateId() {

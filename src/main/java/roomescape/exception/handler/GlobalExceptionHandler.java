@@ -5,6 +5,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
@@ -13,6 +14,12 @@ import roomescape.exception.ReservationException;
 @RestControllerAdvice
 @NonNullApi
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+
+	@ExceptionHandler(ReservationException.class)
+	public ResponseEntity<Void> handleReservationException(ReservationException e) {
+		return ResponseEntity.badRequest().build();
+	}
+
 	@Override
 	protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers,
 															 HttpStatusCode statusCode, WebRequest request) {
