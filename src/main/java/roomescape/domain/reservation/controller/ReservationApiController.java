@@ -3,6 +3,7 @@ package roomescape.domain.reservation.controller;
 import java.net.URI;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,18 +12,20 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import jakarta.validation.Valid;
 import roomescape.domain.reservation.domain.Reservation;
 import roomescape.domain.reservation.service.ReservationService;
-import roomescape.domain.reservation.service.ReservationServiceImpl;
 
 @RestController
 @RequestMapping("/reservations")
 public class ReservationApiController {
 
-    ReservationService reservationService = new ReservationServiceImpl();
+   private final ReservationService reservationService;
+
+    public ReservationApiController(ReservationService reservationService) {
+        this.reservationService = reservationService;
+    }
 
     @PostMapping
     public ResponseEntity<Reservation> addReservation(@RequestBody @Valid Reservation reservation) {
