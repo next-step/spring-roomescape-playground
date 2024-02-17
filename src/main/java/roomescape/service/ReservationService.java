@@ -24,19 +24,20 @@ public class ReservationService {
     }
 
     public Reservation createReservation(Reservation reservation){
+        if (reservation.getName().isEmpty()){
+            throw new NoParameterException("Reservation Have No Name Parameter");
+        } else if (reservation.getDate().isEmpty()){
+            throw new NoParameterException("Reservation Have No Date Parameter");
+        } else if (reservation.getTime().isEmpty()){
+            throw new NoParameterException("Reservation Have No Time Parameter");
+        }
         Reservation newReservation = Reservation.builder()
                 .id(index.incrementAndGet())
                 .name(reservation.getName())
                 .date(reservation.getDate())
                 .time(reservation.getTime())
                 .build();
-        if (newReservation.getName().isEmpty()){
-            throw new NoParameterException("Reservation Have No Name Parameter");
-        } else if (newReservation.getDate().isEmpty()){
-            throw new NoParameterException("Reservation Have No Date Parameter");
-        } else if (newReservation.getTime().isEmpty()){
-            throw new NoParameterException("Reservation Have No Time Parameter");
-        }
+
         reservations.add(newReservation);
         return newReservation;
     }
