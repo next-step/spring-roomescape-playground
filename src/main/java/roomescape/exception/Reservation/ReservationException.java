@@ -1,4 +1,4 @@
-package roomescape.exception;
+package roomescape.exception.Reservation;
 
 public class ReservationException extends RuntimeException {
 

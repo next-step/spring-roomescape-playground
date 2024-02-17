@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import roomescape.domain.Reservation;
 import roomescape.dto.ReservationRequest;
 import roomescape.dto.ReservationResponse;
-import roomescape.exception.ReservationErrorMessage;
-import roomescape.exception.ReservationException;
+import roomescape.exception.Reservation.ReservationErrorMessage;
+import roomescape.exception.Reservation.ReservationException;
 import roomescape.repository.ReservationDAO;
 
 @Controller
@@ -37,9 +37,9 @@ public class ReservationController {
     public ResponseEntity<ReservationResponse> create(@RequestBody ReservationRequest reservationRequest) {
         Reservation reservation = new Reservation(reservationRequest.name(), reservationRequest.date(),
                 reservationRequest.time());
-        Reservation newReservation = reservation.toEntity(reservationDAO.insert(reservation));
-        return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId()))
-                .body(newReservation.toResponse());
+        ReservationResponse reservationResponse = reservation.toEntity(reservationDAO.insert(reservation)).toResponse();
+        return ResponseEntity.created(URI.create("/reservations/" + reservationResponse.id()))
+                .body(reservationResponse);
     }
 
     @DeleteMapping("/reservations/{id}")

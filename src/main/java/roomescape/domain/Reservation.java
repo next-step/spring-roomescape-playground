@@ -1,8 +1,8 @@
 package roomescape.domain;
 
 import roomescape.dto.ReservationResponse;
-import roomescape.exception.ReservationErrorMessage;
-import roomescape.exception.ReservationException;
+import roomescape.exception.Reservation.ReservationErrorMessage;
+import roomescape.exception.Reservation.ReservationException;
 
 public class Reservation {
 
