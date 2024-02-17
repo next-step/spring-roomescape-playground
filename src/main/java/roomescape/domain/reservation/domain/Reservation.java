@@ -3,20 +3,20 @@ package roomescape.domain.reservation.domain;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 public class Reservation {
     private Long id;
+    @NotBlank(message = "이름형식을 확인해주세요.")
     private String name;
+    @NotNull(message = "날짜형식을 확인해주세요.")
     private LocalDate date;
+    @NotNull(message = "시간형식을 확인해주세요.")
     private LocalTime time;
 
     public Reservation() {
 
-    }
-
-    public Reservation(LocalDate date, String name, LocalTime time) {
-        this.name = name;
-        this.date = date;
-        this.time = time;
     }
 
     public Reservation(Long id, String name, LocalDate date, LocalTime time) {
@@ -25,6 +25,7 @@ public class Reservation {
         this.date = date;
         this.time = time;
     }
+
 
     public Long getId() { return id; }
 
@@ -42,11 +43,5 @@ public class Reservation {
 
     public static Reservation toEntity(Reservation reservation, Long id) {
         return new Reservation(id, reservation.getName(), reservation.getDate(), reservation.getTime());
-    }
-
-    public void update(Reservation reservation) {
-        this.name = reservation.getName();
-        this.date = reservation.getDate();
-        this.time = reservation.getTime();
     }
 }
