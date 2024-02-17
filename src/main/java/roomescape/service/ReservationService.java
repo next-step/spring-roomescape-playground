@@ -15,12 +15,6 @@ public class ReservationService {
     private List<Reservation> reservations = new ArrayList<>();
     private final AtomicLong index = new AtomicLong(1);
 
-//    public List<ReserveListResponseDto> converToDtoList(List<Reservation> reservations) {
-//        return reservations.stream()
-//                .map(ReserveListResponseDto::new)
-//                .collect(Collectors.toList());
-//    }
-
     @Transactional
     public List<Reservation> getAllReservation() {
         return reservations;
@@ -39,6 +33,7 @@ public class ReservationService {
         reservations.removeIf(reservation -> reservation.getId().equals(id));
     }
 
+    @Transactional
     public Reservation getReservationById(Long id) {
         return reservations.stream()
                 .filter(reservation -> reservation.getId().equals(id))
