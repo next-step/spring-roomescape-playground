@@ -2,6 +2,7 @@ package roomescape;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -48,6 +49,11 @@ public class ReservationController {
                 .orElseThrow(RuntimeException::new);
         reservations.remove(reservation);
         return ResponseEntity.noContent().build();
+    }
+
+    @ExceptionHandler({IllegalArgumentException.class, RuntimeException.class})
+    public ResponseEntity handleException(Exception e) {
+        return ResponseEntity.badRequest().build();
     }
 
 

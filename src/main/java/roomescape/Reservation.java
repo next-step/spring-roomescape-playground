@@ -40,7 +40,9 @@ public class Reservation {
     }
 
     public static Reservation toEntity(Reservation reservation, Long id) {
+        if (reservation.getName().isEmpty() || reservation.getDate().isEmpty() || reservation.getTime().isEmpty()) {
+            throw new IllegalArgumentException();
+        }
         return new Reservation(id, reservation.name, reservation.date, reservation.time);
     }
-
 }
