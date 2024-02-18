@@ -6,7 +6,7 @@ import java.time.LocalTime;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-public class Reservation {
+public class Reservation implements Cloneable{
     private Long id;
     @NotBlank(message = "이름형식을 확인해주세요.")
     private String name;
@@ -43,5 +43,14 @@ public class Reservation {
 
     public static Reservation toEntity(Reservation reservation, Long id) {
         return new Reservation(id, reservation.getName(), reservation.getDate(), reservation.getTime());
+    }
+
+    @Override
+    public Reservation clone() {
+        try {
+            return (Reservation) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 }
