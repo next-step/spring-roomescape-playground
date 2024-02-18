@@ -43,4 +43,12 @@
         public static ReservationDomain toEntity(ReservationDomain reservation, long id) {
             return new ReservationDomain(id, reservation.name, reservation.date, reservation.time);
         }
+
+        public boolean isValid() {
+            return isNotNullOrEmpty(name) && isNotNullOrEmpty(date) && isNotNullOrEmpty(time);
+        }
+
+        private boolean isNotNullOrEmpty(String string) {
+            return string != null && !string.isEmpty();
+        }
     }
