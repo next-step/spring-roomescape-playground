@@ -35,7 +35,7 @@ public class ReservationController {
     }
 
     @GetMapping("/reservations/{id}")
-    public ResponseEntity<Reservation> getReservation(@PathVariable("id") Long id){
+    public ResponseEntity<Reservation> getReservation(@PathVariable("id") Long id) {
         Reservation reservation = reservations.stream()
                 .filter(it -> Objects.equals(it.getId(), id))
                 .findFirst()
@@ -49,7 +49,7 @@ public class ReservationController {
         Reservation reservation = reservations.stream()
                 .filter(it -> Objects.equals(it.getId(), id))
                 .findFirst()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new RuntimeException("예약이 존재하지 않습니다!"));
 
         reservations.remove(reservation);
 
