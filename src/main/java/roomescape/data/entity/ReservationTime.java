@@ -1,5 +1,7 @@
 package roomescape.data.entity;
 
+import java.sql.Time;
+import java.time.LocalTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,14 +11,15 @@ import lombok.Getter;
 public class ReservationTime {
 
     private Long id;
-    private String time;
+    private LocalTime time;
 
-    public ReservationTime(Long id, String time) {
+
+    public ReservationTime(Long id, LocalTime time) {
         this.id = id;
         this.time = time;
     }
 
-    public static ReservationTime from(String time) {
+    public static ReservationTime from(LocalTime time) {
         return ReservationTime.builder()
                 .time(time)
                 .build();

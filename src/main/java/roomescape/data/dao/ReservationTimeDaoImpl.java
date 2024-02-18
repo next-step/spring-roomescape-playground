@@ -2,8 +2,6 @@ package roomescape.data.dao;
 
 import java.sql.PreparedStatement;
 import java.util.List;
-import java.util.Objects;
-import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -26,7 +24,7 @@ public class ReservationTimeDaoImpl implements ReservationTimeDao {
         final String sql = "insert into time (time) values (?)";
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
-            ps.setString(1, reservationTime.getTime());
+            ps.setTime(1, java.sql.Time.valueOf(reservationTime.getTime()));
             return ps;
         }, keyHolder);
         return ReservationTime.builder()
@@ -38,7 +36,13 @@ public class ReservationTimeDaoImpl implements ReservationTimeDao {
     @Override
     public List<ReservationTime> findAll() {
         final String sql = "select id, time from time";
-        return jdbcTemplate.query(sql, (resultSet, rowNum) -> new ReservationTime(resultSet.getLong("id"), resultSet.getString("time")));
+        return jdbcTemplate.query(sql, (resultSet, rowNum) -> new ReservationTime(resultSet.getLong("id"), resultSet.getTime("time").toLocalTime()));
+    }
+
+    @Override
+    public ReservationTime findById(long id) {
+        final String sql = "select id, time from time where id = ?";
+        return jdbcTemplate.queryForObject(sql, ReservationTime.class, id);
     }
 
     @Override

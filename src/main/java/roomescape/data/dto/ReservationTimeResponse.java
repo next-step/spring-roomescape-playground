@@ -1,5 +1,7 @@
 package roomescape.data.dto;
 
+import java.sql.Time;
+import java.time.LocalTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import roomescape.data.entity.ReservationTime;
@@ -9,7 +11,7 @@ import roomescape.data.entity.ReservationTime;
 public class ReservationTimeResponse {
 
     private long id;
-    private String time;
+    private LocalTime time;
 
     public static ReservationTimeResponse from(ReservationTime reservationTime) {
         return new ReservationTimeResponse(reservationTime.getId(), reservationTime.getTime());

@@ -1,5 +1,8 @@
 package roomescape.data.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import java.sql.Time;
+import java.time.LocalTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,6 +14,6 @@ import roomescape.data.entity.ReservationTime;
 @Builder
 public class ReservationTimeRequest {
 
-    private Long id;
-    private String time;
+    @JsonFormat(pattern = "HH:mm")
+    private LocalTime time;
 }
