@@ -1,20 +1,22 @@
 package roomescape.controller;
 
 import jakarta.validation.Valid;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import roomescape.domain.Reservation;
 
+import roomescape.domain.Time;
+import roomescape.domain.dto.ReservationDto;
 import roomescape.repository.ReservationDao;
+import roomescape.repository.TimeDao;
 import roomescape.valid.ErrorCode;
-import roomescape.valid.IllegalReservationException;
-import roomescape.valid.NotFoundReservationException;
+import roomescape.valid.exception.IllegalReservationException;
+import roomescape.valid.exception.NotFoundReservationException;
 
-import javax.sql.DataSource;
 import java.net.URI;
 import java.util.*;
 
@@ -22,9 +24,12 @@ import java.util.*;
 @RestController
 public class ReservationController {
     private final ReservationDao reservationDao;
+    private final TimeDao timeDao;
 
-    public ReservationController(DataSource dataSource) {
-        reservationDao = new ReservationDao(dataSource);
+    @Autowired
+    public ReservationController(ReservationDao reservationDao, TimeDao timeDao) {
+        this.reservationDao = reservationDao;
+        this.timeDao = timeDao;
     }
 
     @GetMapping("/reservations")
@@ -32,12 +37,22 @@ public class ReservationController {
         return reservationDao.findAllReservation();
     }
 
+    
+
     @PostMapping("/reservations")
-    public ResponseEntity<Reservation> reserve(@Valid @RequestBody Reservation reservation,
+    public ResponseEntity<Reservation> reserve(@Valid @RequestBody ReservationDto reservationDto,
                                                BindingResult bindingResult) throws IllegalReservationException {
         if(bindingResult.hasErrors()) {
             throw new IllegalReservationException(ErrorCode.ILLEGAL_ARGUMENT);
         }
+        log.info("reservation timeId = {}", reservationDto.getTime());
+        Time time = timeDao.findById(reservationDto.getTime());
+
+        Reservation reservation = Reservation.builder()
+                .name(reservationDto.getName())
+                .time(time)
+                .date(reservationDto.getDate())
+                .build();
 
         Long id = reservationDao.save(reservation);
         Reservation newReservation = Reservation.toEntity(reservation, id);
