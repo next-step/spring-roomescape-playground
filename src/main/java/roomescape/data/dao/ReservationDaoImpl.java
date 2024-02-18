@@ -8,17 +8,21 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import roomescape.common.exception.ReservationErrorCode;
 import roomescape.common.exception.ReservationException;
 import roomescape.data.dao.daoInterface.ReservationDao;
 import roomescape.data.dto.ReservationRequest;
 import roomescape.data.dto.ReservationResponse;
 
-@Component
+@Repository
 public class ReservationDaoImpl implements ReservationDao {
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
+
+    public ReservationDaoImpl(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     @Override
     public List<ReservationResponse> getReservations() {

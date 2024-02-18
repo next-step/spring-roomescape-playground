@@ -22,18 +22,18 @@ public class ReservationController {
         this.reservationService = reservationService;
     }
 
-    @GetMapping("/reservation")
+    @GetMapping(value = "/reservation")
     public String createReservationForm() {
         return "reservation";
     }
 
-    @GetMapping("/reservations")
+    @GetMapping(value = "/reservations")
     @ResponseBody
     public List<ReservationResponse> getReservations() {
         return reservationService.getReservations();
     }
 
-    @PostMapping("/reservations")
+    @PostMapping(value = "/reservations")
     @ResponseBody
     public ResponseEntity<ReservationResponse> createReservation(@RequestBody ReservationRequest reservationRequest) {
         return reservationService.createReservation(reservationRequest);
