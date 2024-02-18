@@ -18,7 +18,7 @@ public class ReservationRepository {
     public Reservation addReservation(Reservation reservation) {
         Reservation newReservation = Reservation.toEntity(reservation, index.getAndIncrement());
         reservations.add(newReservation);
-        return newReservation.clone();
+        return newReservation;
     }
 
     public boolean deleteReservation(Long id) {
@@ -29,12 +29,13 @@ public class ReservationRepository {
         Optional<Reservation> foundReservation = reservations.stream()
             .filter(reservation -> reservation.getId().equals(id))
             .findFirst();
-        if(foundReservation.isPresent()) return Optional.of(foundReservation.get().clone());
-        else return foundReservation;
+        return foundReservation;
     }
 
     public List<Reservation> getAllReservation() {
-        return new ArrayList<Reservation>(reservations);
+        List<Reservation> reservationList = new ArrayList<>();
+        reservationList.addAll(reservations);
+        return reservationList;
     }
 
 }
