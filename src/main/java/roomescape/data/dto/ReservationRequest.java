@@ -1,13 +1,15 @@
 package roomescape.data.dto;
 
-import java.sql.Time;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
-import roomescape.data.entity.ReservationTime;
 
 @Getter
 public class ReservationRequest {
 
+    @NotEmpty
     private String date;
+    @NotEmpty
     private String name;
-    private long timeId;
+    private long time;
 }

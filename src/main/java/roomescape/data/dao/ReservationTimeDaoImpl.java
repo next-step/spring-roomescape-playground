@@ -2,10 +2,14 @@ package roomescape.data.dao;
 
 import java.sql.PreparedStatement;
 import java.util.List;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.server.ResponseStatusException;
 import roomescape.data.dao.daoInterface.ReservationTimeDao;
 import roomescape.data.entity.ReservationTime;
 
@@ -17,6 +21,13 @@ public class ReservationTimeDaoImpl implements ReservationTimeDao {
     public ReservationTimeDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
+
+    private final RowMapper<ReservationTime> rowMapper = (rs, rowNum) -> {
+        return new ReservationTime(
+                rs.getLong("id"),
+                rs.getTime("time").toLocalTime()
+        );
+    };
 
     @Override
     public ReservationTime save(ReservationTime reservationTime) {
@@ -36,13 +47,17 @@ public class ReservationTimeDaoImpl implements ReservationTimeDao {
     @Override
     public List<ReservationTime> findAll() {
         final String sql = "select id, time from time";
-        return jdbcTemplate.query(sql, (resultSet, rowNum) -> new ReservationTime(resultSet.getLong("id"), resultSet.getTime("time").toLocalTime()));
+        return jdbcTemplate.query(sql, rowMapper);
     }
 
     @Override
     public ReservationTime findById(long id) {
         final String sql = "select id, time from time where id = ?";
-        return jdbcTemplate.queryForObject(sql, ReservationTime.class, id);
+        try {
+            return jdbcTemplate.queryForObject(sql, rowMapper, id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "적합하지 못한 아이디 : " + id);
+        }
     }
 
     @Override

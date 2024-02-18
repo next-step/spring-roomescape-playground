@@ -20,7 +20,7 @@ public class ReservationTimeService {
     }
 
     public ReservationTimeResponse save(ReservationTimeRequest reservationTimeRequest) {
-        ReservationTime reservationTime = reservationTimeDao.save(ReservationTime.from(reservationTimeRequest.getTime()));
+        ReservationTime reservationTime = reservationTimeDao.save(new ReservationTime(reservationTimeRequest.getTime()));
         return ReservationTimeResponse.from(reservationTime);
     }
 

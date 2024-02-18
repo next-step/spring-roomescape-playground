@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import roomescape.common.exception.ReservationErrorCode;
 import roomescape.common.exception.ReservationException;
 import roomescape.data.dao.ReservationTimeDaoImpl;
+import roomescape.data.entity.ReservationTime;
 import roomescape.data.repository.repositoryInterface.ReservationRepository;
 import roomescape.data.dto.ReservationRequest;
 import roomescape.data.entity.Reservation;
@@ -27,12 +28,12 @@ public class ReservationRepositoryImpl implements ReservationRepository {
     @Override
     public List<Reservation> findAll() {
         final String sql = "select * from reservation";
-        return jdbcTemplate.query(sql, (resultSet, rowNum) -> {
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
             Reservation reservation = new Reservation(
-                    resultSet.getLong("id"),
-                    resultSet.getString("name"),
-                    resultSet.getString("date"),
-                    reservationTimeDao.findById(Long.valueOf(resultSet.getString("time_id")))
+                    rs.getLong("id"),
+                    rs.getString("name"),
+                    rs.getString("date"),
+                    reservationTimeDao.findById(Long.valueOf(rs.getString("time_id")))
             );
             return reservation;
         });
@@ -40,28 +41,22 @@ public class ReservationRepositoryImpl implements ReservationRepository {
 
     @Override
     public Reservation save(ReservationRequest reservationRequest) {
-        if (reservationRequest == null ||
-                reservationRequest.getName().isBlank() ||
-                reservationRequest.getDate().isBlank()
-        ) {
-            throw new ReservationException(ReservationErrorCode.INVALID_ARGUMENT_ERROR);
-        }
-        long timeId = reservationRequest.getTimeId();
+        ReservationTime reservationTime = reservationTimeDao.findById(reservationRequest.getTime());
+        Reservation reservation = Reservation.builder()
+                .name(reservationRequest.getName())
+                .date(reservationRequest.getDate())
+                .time(reservationTime)
+                .build();
         KeyHolder keyHolder = new GeneratedKeyHolder();
         final String sql = "insert into reservation (name, date, time_id) values (?, ?, ?)";
         jdbcTemplate.update(connection -> {
                 PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
-                ps.setString(1, reservationRequest.getName());
-                ps.setString(2, reservationRequest.getDate());
-                ps.setString(3, String.valueOf(timeId));
+                ps.setString(1, reservation.getName());
+                ps.setString(2, reservation.getDate());
+                ps.setString(3, String.valueOf(reservationTime.getId()));
                 return ps;
         }, keyHolder);
-        return Reservation.builder()
-                .id(keyHolder.getKey().longValue())
-                .date(reservationRequest.getDate())
-                .name(reservationRequest.getName())
-                .time(reservationTimeDao.findById(timeId))
-                .build();
+        return new Reservation(keyHolder.getKey().longValue(), reservation.getName(), reservation.getDate(), reservationTime);
     }
 
     @Override

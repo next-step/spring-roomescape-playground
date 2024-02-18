@@ -14,19 +14,19 @@ import roomescape.data.entity.Reservation;
 public class ReservationService {
 
     @Autowired
-    private ReservationRepository reservationDao;
+    private ReservationRepository reservationRepository;
 
     public List<ReservationResponse> getReservations() {
-        List<Reservation> reservations = reservationDao.findAll();
+        List<Reservation> reservations = reservationRepository.findAll();
         return reservations.stream().map(ReservationResponse::from).collect(Collectors.toList());
     }
 
     public ReservationResponse createReservation(@RequestBody ReservationRequest reservationRequest) {
-        Reservation newReservation = reservationDao.save(reservationRequest);
+        Reservation newReservation = reservationRepository.save(reservationRequest);
         return ReservationResponse.from(newReservation);
     }
 
     public void deleteReservation(@PathVariable Long deletedReservationId) {
-        reservationDao.deleteById(deletedReservationId);
+        reservationRepository.deleteById(deletedReservationId);
     }
 }
