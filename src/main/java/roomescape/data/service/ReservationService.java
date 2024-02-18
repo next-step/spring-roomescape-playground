@@ -16,11 +16,7 @@ import roomescape.data.dto.ReservationResponse;
 public class ReservationService {
 
     @Autowired
-    private final ReservationDao reservationDao;
-
-    public ReservationService(ReservationDao reservationDao) {
-        this.reservationDao = reservationDao;
-    }
+    private ReservationDao reservationDao;
 
     public List<ReservationResponse> getReservations() {
         return reservationDao.getReservations();
