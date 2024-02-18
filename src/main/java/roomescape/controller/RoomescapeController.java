@@ -25,7 +25,7 @@ public class RoomescapeController {
 
     @GetMapping("/reservation")
     public String reservationPage() {
-        return "reservation";
+        return "new-reservation";
     }
 
     @GetMapping("/reservations")

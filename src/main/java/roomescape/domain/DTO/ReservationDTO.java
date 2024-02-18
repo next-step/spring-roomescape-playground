@@ -10,9 +10,12 @@ import java.time.format.DateTimeFormatter;
 
 @Data
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
+@NoArgsConstructor
 @Setter(AccessLevel.NONE)
 @Builder
 public class ReservationDTO {
+
+    @NotNull(message = "ID cannot be null")
     private Long id;
 
     @NotNull(message = "Name cannot be null")
