@@ -1,39 +1,54 @@
 package roomescape.Controller;
 
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.*;
 import roomescape.Domain.ReservationDomain;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.net.URI;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Controller
 public class ReservationController {
-    private List<ReservationDomain> reservationDomains = new ArrayList<>
-            (
-                    Arrays.asList
-                            (
-                                    new ReservationDomain(1L, "서정빈", LocalDate.parse("2024-02-18"), LocalTime.of(12, 0)),
-                                    new ReservationDomain(2L, "서정빈", LocalDate.parse("2024-02-19"), LocalTime.of(14, 0)),
-                                    new ReservationDomain(3L, "서정빈", LocalDate.parse("2024-02-20"), LocalTime.of(16, 0))
-                            )
-            );
+    private AtomicLong index = new AtomicLong(1);
+    private List<ReservationDomain> reservationDomains = new ArrayList<>();
 
     @GetMapping("/") // index로 이름을 바꾸어 처리했는데, @Controller 사용해서 수정
-    public String Home(){ return "home"; }
+    public String Home() {
+        return "home";
+    }
 
     @GetMapping("/reservation")
-    public String Reservation()
-    {
+    public String Reservation() {
         return "reservation";
     }
 
     @GetMapping("/reservations")
     public ResponseEntity<List<ReservationDomain>> Reservations() {
         return ResponseEntity.ok(reservationDomains);
+    }
+    @PostMapping("/reservations")
+    public ResponseEntity<ReservationDomain> createReservation(@RequestBody ReservationDomain reservationDomain)
+    {
+        ReservationDomain newReservation = ReservationDomain.toEntity(reservationDomain, index.getAndIncrement());
+        reservationDomains.add(newReservation);
+        return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
+    }
+
+    @DeleteMapping("/reservations/{id}")
+    public ResponseEntity<Void> deleteReservation(@PathVariable Long id)
+    {
+        ReservationDomain reservationDomain = reservationDomains.stream()
+                .filter(it -> Objects.equals(it.getId(), id))
+                .findFirst()
+                .orElseThrow(RuntimeException::new);
+
+        reservationDomains.remove(reservationDomain);
+
+        return ResponseEntity.noContent().build();
     }
 }
