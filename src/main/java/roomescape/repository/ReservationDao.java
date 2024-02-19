@@ -1,13 +1,17 @@
 package roomescape.repository;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
+
 import roomescape.domain.Time;
 import roomescape.valid.ErrorCode;
 import roomescape.valid.exception.NotFoundReservationException;
+
 
 import javax.sql.DataSource;
 import java.util.HashMap;
@@ -19,15 +23,16 @@ public class ReservationDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
 
-    @Autowired
-    public ReservationDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
-        this.jdbcTemplate = jdbcTemplate;
+
+    public ReservationDao(DataSource dataSource) {
+        this.jdbcTemplate = new JdbcTemplate(dataSource);
         this.jdbcInsert = new SimpleJdbcInsert(dataSource)
                 .withTableName("reservation")
                 .usingGeneratedKeyColumns("id");
     }
 
     public List<Reservation> findAllReservation() {
+
        return jdbcTemplate.query("""
                        SELECT r.id as reservation_id, 
                        r.name, 
@@ -54,6 +59,7 @@ public class ReservationDao {
         param.put("name", reservation.getName());
         param.put("date", reservation.getDate());
         param.put("time", reservation.getTime().getId());
+
         Number number = jdbcInsert.executeAndReturnKey(param);
         return number.longValue();
     }

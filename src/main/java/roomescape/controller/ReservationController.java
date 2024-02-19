@@ -9,6 +9,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import roomescape.domain.Reservation;
 
+
 import roomescape.domain.Time;
 import roomescape.domain.dto.ReservationDto;
 import roomescape.repository.ReservationDao;
@@ -24,6 +25,7 @@ import java.util.*;
 @RestController
 public class ReservationController {
     private final ReservationDao reservationDao;
+
     private final TimeDao timeDao;
 
     @Autowired
@@ -46,6 +48,7 @@ public class ReservationController {
             throw new IllegalReservationException(ErrorCode.ILLEGAL_ARGUMENT);
         }
 
+
         log.info("reservation timeId = {}", reservationDto.getTime());
         Time time = timeDao.findById(reservationDto.getTime());
 
@@ -54,6 +57,8 @@ public class ReservationController {
                 .time(time)
                 .date(reservationDto.getDate())
                 .build();
+
+
 
         Long id = reservationDao.save(reservation);
         Reservation newReservation = Reservation.toEntity(reservation, id);
