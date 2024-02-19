@@ -9,14 +9,19 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
 import roomescape.domain.Time;
+import roomescape.dto.ReservationRequest;
+import roomescape.exception.Reservation.ReservationErrorMessage;
+import roomescape.exception.Reservation.ReservationException;
 
 @Repository
-public class ReservationDAO {
+public class ReservationRepository {
 
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
+    private final TimeRepository timeRepository;
 
-    public ReservationDAO(JdbcTemplate jdbcTemplate) {
+    public ReservationRepository(JdbcTemplate jdbcTemplate, TimeRepository timeRepository) {
         this.jdbcTemplate = jdbcTemplate;
+        this.timeRepository = timeRepository;
     }
 
     private final RowMapper<Reservation> rowMapper = (rs, rowNum) -> {
@@ -45,7 +50,13 @@ public class ReservationDAO {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public Long insert(Reservation reservation) {
+    public Reservation create(ReservationRequest reservationRequest) {
+        Reservation reservation = new Reservation(
+                reservationRequest.name(),
+                reservationRequest.date(),
+                timeRepository.findById(reservationRequest.time())
+                );
+
         String sql = "INSERT INTO reservation(name, date, time_id) VALUES (?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
@@ -59,11 +70,15 @@ public class ReservationDAO {
             return ps;
         }, keyHolder);
 
-        return keyHolder.getKey().longValue();
+        return reservation.toEntity(keyHolder.getKey().longValue());
     }
 
     public int delete(Long id) {
         String sql = "DELETE FROM reservation WHERE id = ?";
-        return jdbcTemplate.update(sql, id);
+        int deleteRows = jdbcTemplate.update(sql, id);
+        if (deleteRows == 0) {
+            throw new ReservationException(ReservationErrorMessage.NOT_FOUND);
+        }
+        return deleteRows;
     }
 }

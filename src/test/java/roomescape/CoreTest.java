@@ -63,7 +63,7 @@ public class CoreTest {
     private ReservationController reservationController;
 
     @Test
-    void 십단계() {
+    void Step10() {
         boolean isJdbcTemplateInjected = false;
 
         for (Field field : reservationController.getClass().getDeclaredFields()) {

@@ -8,13 +8,16 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Time;
+import roomescape.dto.TimeRequest;
+import roomescape.exception.Time.TimeErrorMessage;
+import roomescape.exception.Time.TimeException;
 
 @Repository
-public class TimeDAO {
+public class TimeRepository {
 
     private JdbcTemplate jdbcTemplate;
 
-    public TimeDAO(JdbcTemplate jdbcTemplate) {
+    public TimeRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
@@ -36,7 +39,9 @@ public class TimeDAO {
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
-    public Long insert(Time time) {
+    public Time create(TimeRequest timeRequest) {
+        Time time = new Time(timeRequest.time());
+
         String sql = "INSERT INTO time(time) VALUES(?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
@@ -49,11 +54,15 @@ public class TimeDAO {
             return ps;
         }, keyHolder);
 
-        return keyHolder.getKey().longValue();
+        return time.toEntity(keyHolder.getKey().longValue());
     }
 
     public int delete(Long id) {
         String sql = "DELETE FROM time WHERE id = ?";
-        return jdbcTemplate.update(sql, id);
+        int deleteRows = jdbcTemplate.update(sql, id);
+        if (deleteRows == 0) {
+            throw new TimeException(TimeErrorMessage.NOT_FOUND);
+        }
+        return deleteRows;
     }
 }

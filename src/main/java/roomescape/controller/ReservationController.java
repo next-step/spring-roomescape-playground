@@ -13,46 +13,37 @@ import roomescape.domain.Reservation;
 import roomescape.domain.Time;
 import roomescape.dto.ReservationRequest;
 import roomescape.dto.ReservationResponse;
-import roomescape.exception.Reservation.ReservationErrorMessage;
-import roomescape.exception.Reservation.ReservationException;
-import roomescape.repository.ReservationDAO;
-import roomescape.repository.TimeDAO;
+import roomescape.repository.ReservationRepository;
+import roomescape.repository.TimeRepository;
+import roomescape.service.ReservationService;
 
 @Controller
 public class ReservationController {
 
-    private final ReservationDAO reservationDAO;
-    private final TimeDAO timeDAO;
+    private final ReservationService reservationService;
+    private final TimeRepository timeDAO;
 
-    public ReservationController(ReservationDAO reservationDAO, TimeDAO timeDAO) {
-        this.reservationDAO = reservationDAO;
+    public ReservationController(ReservationService reservationService, TimeRepository timeDAO) {
+        this.reservationService = reservationService;
         this.timeDAO = timeDAO;
     }
 
     @GetMapping("/reservations")
     public ResponseEntity<List<ReservationResponse>> read() {
-        List<ReservationResponse> reservationResponses = reservationDAO.findAll().stream()
-                .map(Reservation::toResponse)
-                .toList();
+        List<ReservationResponse> reservationResponses = reservationService.findAll();
         return ResponseEntity.ok().body(reservationResponses);
     }
 
     @PostMapping("/reservations")
     public ResponseEntity<ReservationResponse> create(@RequestBody ReservationRequest reservationRequest) {
-        Time time = timeDAO.findById(reservationRequest.time());
-        Reservation reservation = new Reservation(reservationRequest.name(), reservationRequest.date(),
-                time);
-        ReservationResponse reservationResponse = reservation.toEntity(reservationDAO.insert(reservation)).toResponse();
+        ReservationResponse reservationResponse = reservationService.create(reservationRequest);
         return ResponseEntity.created(URI.create("/reservations/" + reservationResponse.id()))
                 .body(reservationResponse);
     }
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        int deletedRows = reservationDAO.delete(id);
-        if (deletedRows == 0) {
-            throw new ReservationException(ReservationErrorMessage.NOT_FOUND);
-        }
+        reservationService.delete(id);
         return ResponseEntity.noContent().build();
     }
 }
