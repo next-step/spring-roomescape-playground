@@ -1,6 +1,5 @@
 package roomescape.data.dto;
 
-import java.sql.Time;
 import java.time.LocalTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

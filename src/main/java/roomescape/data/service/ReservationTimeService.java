@@ -2,8 +2,6 @@ package roomescape.data.service;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import roomescape.data.dao.daoInterface.ReservationTimeDao;
 import roomescape.data.dto.ReservationTimeRequest;
@@ -20,7 +18,7 @@ public class ReservationTimeService {
     }
 
     public ReservationTimeResponse save(ReservationTimeRequest reservationTimeRequest) {
-        ReservationTime reservationTime = reservationTimeDao.save(new ReservationTime(reservationTimeRequest.getTime()));
+        ReservationTime reservationTime = reservationTimeDao.save(reservationTimeRequest);
         return ReservationTimeResponse.from(reservationTime);
     }
 

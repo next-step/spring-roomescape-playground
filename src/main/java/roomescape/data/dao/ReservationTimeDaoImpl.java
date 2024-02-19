@@ -2,15 +2,14 @@ package roomescape.data.dao;
 
 import java.sql.PreparedStatement;
 import java.util.List;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.http.HttpStatus;
+import java.util.Objects;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.server.ResponseStatusException;
 import roomescape.data.dao.daoInterface.ReservationTimeDao;
+import roomescape.data.dto.ReservationTimeRequest;
 import roomescape.data.entity.ReservationTime;
 
 @Repository
@@ -30,17 +29,17 @@ public class ReservationTimeDaoImpl implements ReservationTimeDao {
     };
 
     @Override
-    public ReservationTime save(ReservationTime reservationTime) {
+    public ReservationTime save(ReservationTimeRequest reservationTimeRequest) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         final String sql = "insert into time (time) values (?)";
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
-            ps.setTime(1, java.sql.Time.valueOf(reservationTime.getTime()));
+            ps.setTime(1, java.sql.Time.valueOf(reservationTimeRequest.getTime()));
             return ps;
         }, keyHolder);
         return ReservationTime.builder()
                 .id(keyHolder.getKey().longValue())
-                .time(reservationTime.getTime())
+                .time(reservationTimeRequest.getTime())
                 .build();
     }
 
@@ -53,11 +52,7 @@ public class ReservationTimeDaoImpl implements ReservationTimeDao {
     @Override
     public ReservationTime findById(long id) {
         final String sql = "select id, time from time where id = ?";
-        try {
-            return jdbcTemplate.queryForObject(sql, rowMapper, id);
-        } catch (EmptyResultDataAccessException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "적합하지 못한 아이디 : " + id);
-        }
+        return Objects.requireNonNull(jdbcTemplate.queryForObject(sql, rowMapper, id));
     }
 
     @Override
