@@ -1,6 +1,5 @@
 package roomescape.domain;
 
-import roomescape.dto.TimeResponse;
 import roomescape.exception.Time.TimeErrorMessage;
 import roomescape.exception.Time.TimeException;
 
@@ -23,10 +22,6 @@ public class Time {
         if (time.isBlank()) {
             throw new TimeException(TimeErrorMessage.INVALID_DATA);
         }
-    }
-
-    public TimeResponse toResponse() {
-        return new TimeResponse(this.id, this.time);
     }
 
     public Time toEntity(Long id) {

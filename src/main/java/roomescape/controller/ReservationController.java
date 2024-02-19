@@ -9,23 +9,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import roomescape.domain.Reservation;
-import roomescape.domain.Time;
 import roomescape.dto.ReservationRequest;
 import roomescape.dto.ReservationResponse;
-import roomescape.repository.ReservationRepository;
-import roomescape.repository.TimeRepository;
 import roomescape.service.ReservationService;
 
 @Controller
 public class ReservationController {
 
     private final ReservationService reservationService;
-    private final TimeRepository timeDAO;
 
-    public ReservationController(ReservationService reservationService, TimeRepository timeDAO) {
+    public ReservationController(ReservationService reservationService) {
         this.reservationService = reservationService;
-        this.timeDAO = timeDAO;
     }
 
     @GetMapping("/reservations")

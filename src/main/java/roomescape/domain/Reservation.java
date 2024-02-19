@@ -1,6 +1,5 @@
 package roomescape.domain;
 
-import roomescape.dto.ReservationResponse;
 import roomescape.exception.Reservation.ReservationErrorMessage;
 import roomescape.exception.Reservation.ReservationException;
 
@@ -29,10 +28,6 @@ public class Reservation {
         }
     }
 
-    public ReservationResponse toResponse() {
-        return new ReservationResponse(this.id, this.name, this.date, this.time);
-    }
-
     public Reservation toEntity(Long id) {
         return new Reservation(id, this.name, this.date, this.time);
     }
@@ -53,7 +48,7 @@ public class Reservation {
         return time.getId();
     }
 
-    public String getTime() {
-        return time.getTime();
+    public Time getTime() {
+        return time;
     }
 }

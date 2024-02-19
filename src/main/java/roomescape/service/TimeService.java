@@ -2,7 +2,6 @@ package roomescape.service;
 
 import java.util.List;
 import org.springframework.stereotype.Service;
-import roomescape.domain.Time;
 import roomescape.dto.TimeRequest;
 import roomescape.dto.TimeResponse;
 import roomescape.repository.TimeRepository;
@@ -18,12 +17,12 @@ public class TimeService {
 
     public List<TimeResponse> findAll() {
         return timeRepository.findAll().stream()
-                .map(Time::toResponse)
+                .map(TimeResponse::from)
                 .toList();
     }
 
     public TimeResponse create(TimeRequest timeRequest) {
-        return timeRepository.create(timeRequest).toResponse();
+        return TimeResponse.from(timeRepository.create(timeRequest));
     }
 
     public void delete(Long id) {
