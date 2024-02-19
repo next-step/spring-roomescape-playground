@@ -33,7 +33,17 @@ public class Reservation {
     }
 
     public static Reservation toEntity(Reservation reservation, Long id) {
+        if (reservation == null || !reservation.isValid()) {
+            throw new IllegalArgumentException("누락된 사항이 있습니다. 확인해주세요.");
+        }
         return new Reservation(id, reservation.name, reservation.date, reservation.time);
     }
 
+    public boolean isValid() {
+        return isNotNullOrEmpty(name) && isNotNullOrEmpty(date) && isNotNullOrEmpty(time);
+    }
+
+    private boolean isNotNullOrEmpty(String string) {
+        return string != null && !string.isEmpty();
+    }
 }

@@ -7,6 +7,7 @@ import roomescape.domain.Reservation;
 import java.net.URI;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicLong;
 
 @RestController
@@ -27,14 +28,23 @@ public class ReservationController {
 
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> create(@RequestBody Reservation reservation) {
-        Reservation newReservation = Reservation.toEntity(reservation, index.getAndIncrement());
-        reservations.add(newReservation);
-        return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
+        try {
+            Reservation newReservation = Reservation.toEntity(reservation, index.getAndIncrement());
+            reservations.add(newReservation);
+            return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        reservations.removeIf(reservation -> reservation.getId().equals(id));
-        return ResponseEntity.noContent().build();
+        boolean removed = reservations.removeIf(reservation -> reservation.getId().equals(id));
+
+        if (removed) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
     }
 }
