@@ -2,6 +2,7 @@ package roomescape.DAO;
 
 import io.micrometer.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
@@ -12,6 +13,7 @@ import roomescape.domain.Reservation;
 import roomescape.domain.value.*;
 import roomescape.exception.ErrorCode;
 import roomescape.exception.InvalidReservationException;
+import roomescape.exception.NotFoundException;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
@@ -61,7 +63,7 @@ public class ReservationDAO {
 
     public Reservation insertReservation(Reservation reservation) {
         if (StringUtils.isBlank(reservation.getName()) || reservation.getDate() == null || reservation.getTime() == null || reservation.getTimeId() == null) {
-            throw new InvalidReservationException(ErrorCode.INVALID_RESERVATION.getMessage());
+            throw new InvalidReservationException(ErrorCode.INVALID_RESERVATION);
         }
         final String sql = "INSERT INTO reservation (name, date, time_id) VALUES (?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -80,6 +82,8 @@ public class ReservationDAO {
 
     public void deleteReservation(Long id) {
         String sql = "DELETE FROM reservation WHERE id = ?";
-        jdbcTemplate.update(sql, id);
+        int count = jdbcTemplate.update(sql, id);
+
+        if (count == 0)  throw new NotFoundException(ErrorCode.RESERVATION_NOT_FOUND);
     }
 }

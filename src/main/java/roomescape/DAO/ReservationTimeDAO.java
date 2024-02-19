@@ -7,6 +7,8 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.value.Time;
+import roomescape.exception.ErrorCode;
+import roomescape.exception.NotFoundException;
 
 import java.sql.PreparedStatement;
 import java.util.List;
@@ -14,6 +16,7 @@ import java.util.List;
 @Repository
 public class ReservationTimeDAO {
     private final JdbcTemplate jdbcTemplate;
+
 
     @Autowired
     public ReservationTimeDAO(JdbcTemplate jdbcTemplate) {
@@ -39,6 +42,7 @@ public class ReservationTimeDAO {
     }
 
     public void deleteById(Long id) {
-        jdbcTemplate.update("DELETE FROM time WHERE id = ?", id);
+        int count = jdbcTemplate.update("DELETE FROM time WHERE id = ?", id);
+        if (count == 0) throw new NotFoundException(ErrorCode.TIME_NOT_FOUND);
     }
 }
