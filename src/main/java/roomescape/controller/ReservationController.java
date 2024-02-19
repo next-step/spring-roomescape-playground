@@ -6,9 +6,9 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
-import roomescape.ErrorCode;
-import roomescape.NotFoundReservationException;
-import roomescape.ReservationDAO;
+import roomescape.error.ErrorCode;
+import roomescape.error.NotFoundReservationException;
+import roomescape.dao.ReservationDAO;
 import roomescape.domain.Reservation;
 
 @RestController
@@ -25,7 +25,7 @@ public class ReservationController {
             throw new NotFoundReservationException(ErrorCode.INVALID_ARGUMENT);
         }
         Long id = reservationDAO.insert(reservation);
-        Reservation newReservation = Reservation.toEntity(reservation, id);
+        Reservation newReservation = reservation.toEntity(id);
         return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
     }
 
