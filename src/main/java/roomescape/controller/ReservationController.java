@@ -45,6 +45,7 @@ public class ReservationController {
         if(bindingResult.hasErrors()) {
             throw new IllegalReservationException(ErrorCode.ILLEGAL_ARGUMENT);
         }
+
         log.info("reservation timeId = {}", reservationDto.getTime());
         Time time = timeDao.findById(reservationDto.getTime());
 
