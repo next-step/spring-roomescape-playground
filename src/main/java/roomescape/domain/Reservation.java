@@ -33,8 +33,8 @@ public class Reservation {
     }
 
     public static Reservation toEntity(Reservation reservation, Long id) {
-        if (reservation.getName().isEmpty() || reservation.getDate().equals(null) || reservation.getTime().equals(null)) {
-            throw new RuntimeException("필요한 인자가 없습니다!");
+        if (reservation.getName().isEmpty() || reservation.getDate() == null || reservation.getTime() == null) {
+            throw new IllegalArgumentException ("필요한 인자가 없습니다!");
         }
         return new Reservation(id, reservation.name, reservation.date, reservation.time);
     }

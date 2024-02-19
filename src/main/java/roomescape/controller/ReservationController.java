@@ -8,6 +8,7 @@ import roomescape.domain.Reservation;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -49,7 +50,7 @@ public class ReservationController {
         Reservation reservation = reservations.stream()
                 .filter(it -> Objects.equals(it.getId(), id))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("예약이 존재하지 않습니다!"));
+                .orElseThrow(() -> new NoSuchElementException("예약이 존재하지 않습니다!"));
 
         reservations.remove(reservation);
 
