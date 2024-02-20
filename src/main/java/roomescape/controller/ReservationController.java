@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import roomescape.domain.Reservation;
+import roomescape.dto.ReservationDTO;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -28,8 +29,9 @@ public class ReservationController {
     }
 
     @PostMapping("/reservations")
-    public ResponseEntity<Reservation> addReservation(@RequestBody Reservation reservation) {
-        Reservation newReservation = Reservation.toEntity(reservation, index.getAndIncrement());
+    public ResponseEntity<Reservation> addReservation(@RequestBody ReservationDTO reservationDTO) {
+        Reservation newReservation = new Reservation(index.getAndIncrement(), reservationDTO.getName(),
+                reservationDTO.getDate(), reservationDTO.getTime());
         reservations.add(newReservation);
 
         return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
@@ -40,7 +42,7 @@ public class ReservationController {
         Reservation reservation = reservations.stream()
                 .filter(it -> Objects.equals(it.getId(), id))
                 .findFirst()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(NoSuchElementException::new);
 
         return ResponseEntity.ok().body(reservation);
     }
