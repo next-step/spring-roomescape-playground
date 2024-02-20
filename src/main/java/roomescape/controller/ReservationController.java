@@ -16,7 +16,7 @@ public class ReservationController {
     private List<Reservation> reservations = new ArrayList<>();
     private AtomicLong index = new AtomicLong(1);
 
-    @GetMapping("/reservation/")
+    @GetMapping("/reservation")
     public String reservation() {
         return "reservation";
     }
