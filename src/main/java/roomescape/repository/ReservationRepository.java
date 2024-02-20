@@ -10,8 +10,13 @@ import roomescape.exception.ReservationException;
 
 @Repository
 public class ReservationRepository {
-	private final List<ReservationResponseDTO.QueryReservation> reservations = new ArrayList<>();
-	private final AtomicLong id = new AtomicLong(1);
+	private final List<ReservationResponseDTO.QueryReservation> reservations;
+	private final AtomicLong id;
+
+	public ReservationRepository() {
+		this.reservations = new ArrayList<>();
+		this.id = new AtomicLong(0);
+	}
 
 	public List<ReservationResponseDTO.QueryReservation> findAll() {
 		return reservations;
@@ -30,10 +35,5 @@ public class ReservationRepository {
 
 	public Long generateId() {
 		return id.incrementAndGet();
-	}
-
-	public void clear() {
-		reservations.clear();
-		id.set(0);
 	}
 }
