@@ -3,6 +3,7 @@ package roomescape.controller;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.http.ResponseEntity;
@@ -53,7 +54,7 @@ public class ReservationController {
         Reservation reservation = reservations.stream()
             .filter(it -> it.getId() == id)
             .findAny()
-            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 예약입니다."));
+            .orElseThrow(() -> new NoSuchElementException("존재하지 않는 예약입니다."));
 
         reservations.remove(reservation);
 
