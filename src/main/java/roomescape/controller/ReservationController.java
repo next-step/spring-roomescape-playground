@@ -31,24 +31,23 @@ public class ReservationController {
     @PostMapping("/reservations")
     @ResponseBody
     public ResponseEntity<Reservation> create(@RequestBody Reservation reservation) {
-        try {
-            Reservation newReservation = Reservation.toEntity(reservation, index.getAndIncrement());
-            reservations.add(newReservation);
-            return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
-        }
+        Reservation newReservation = Reservation.toEntity(reservation, index.getAndIncrement());
+        reservations.add(newReservation);
+        return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
     }
 
     @DeleteMapping("/reservations/{id}")
     @ResponseBody
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         boolean removed = reservations.removeIf(reservation -> reservation.getId().equals(id));
-
-        if (removed) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.badRequest().build();
+        if (!removed) {
+            throw new NoSuchElementException("삭제할 항목이 없습니다.");
         }
+        return ResponseEntity.noContent().build();
+    }
+
+    @ExceptionHandler({IllegalArgumentException.class, NoSuchElementException.class})
+    public ResponseEntity<Reservation> exception(Exception e) {
+        return ResponseEntity.badRequest().build();
     }
 }
