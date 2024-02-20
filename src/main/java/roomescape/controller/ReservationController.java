@@ -1,6 +1,7 @@
 package roomescape.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import roomescape.domain.Reservation;
 
@@ -10,7 +11,7 @@ import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicLong;
 
-@RestController
+@Controller
 public class ReservationController {
 
     private List<Reservation> reservations = new ArrayList<>();
@@ -22,11 +23,13 @@ public class ReservationController {
     }
 
     @GetMapping("/reservations")
+    @ResponseBody
     public ResponseEntity<List<Reservation>> read() {
         return ResponseEntity.ok().body(reservations);
     }
 
     @PostMapping("/reservations")
+    @ResponseBody
     public ResponseEntity<Reservation> create(@RequestBody Reservation reservation) {
         try {
             Reservation newReservation = Reservation.toEntity(reservation, index.getAndIncrement());
@@ -38,6 +41,7 @@ public class ReservationController {
     }
 
     @DeleteMapping("/reservations/{id}")
+    @ResponseBody
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         boolean removed = reservations.removeIf(reservation -> reservation.getId().equals(id));
 
