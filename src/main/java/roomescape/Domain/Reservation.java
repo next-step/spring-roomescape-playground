@@ -1,15 +1,13 @@
     package roomescape.Domain;
 
-    import roomescape.Controller.ReservationController;
-
-    public class ReservationDomain {
+    public class Reservation {
         private long id;
         private String name;
         private String date;
         private String time;
 
-        public ReservationDomain() {}
-        public ReservationDomain(long id, String name, String date, String time)
+        public Reservation() {}
+        public Reservation(long id, String name, String date, String time)
         {
             this.id = id;
             this.name = name;
@@ -17,7 +15,7 @@
             this.time = time;
         }
 
-        public ReservationDomain(String name, String date, String time)
+        public Reservation(String name, String date, String time)
         {
             this.name = name;
             this.date = date;
@@ -40,8 +38,8 @@
             return time;
         }
 
-        public static ReservationDomain toEntity(ReservationDomain reservation, long id) {
-            return new ReservationDomain(id, reservation.name, reservation.date, reservation.time);
+        public static Reservation toEntity(Reservation reservation, long id) {
+            return new Reservation(id, reservation.name, reservation.date, reservation.time);
         }
 
         public boolean isValid() {
