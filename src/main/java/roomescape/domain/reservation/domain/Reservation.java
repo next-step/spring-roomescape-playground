@@ -8,11 +8,11 @@ import jakarta.validation.constraints.NotNull;
 
 public class Reservation {
     private Long id;
-    @NotBlank(message = "이름형식을 확인해주세요.")
+    @NotBlank
     private String name;
-    @NotNull(message = "날짜형식을 확인해주세요.")
+    @NotNull
     private LocalDate date;
-    @NotNull(message = "시간형식을 확인해주세요.")
+    @NotNull
     private LocalTime time;
 
     public Reservation() {
