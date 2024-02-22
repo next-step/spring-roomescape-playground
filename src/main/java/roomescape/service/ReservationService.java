@@ -1,11 +1,13 @@
 package roomescape.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import roomescape.dto.ReservationRequestDTO;
-import roomescape.dto.ReservationResponseDTO;
-import roomescape.dto.ReservationResponseDTO.QueryReservation;
+import roomescape.domain.Reservation;
+import roomescape.dto.ReservationRequestDTO.AddReservationRequest;
+import roomescape.dto.ReservationResponseDTO.AddReservationResponse;
+import roomescape.dto.ReservationResponseDTO.QueryReservationResponse;
 import roomescape.repository.ReservationRepository;
 
 @Service
@@ -13,30 +15,35 @@ import roomescape.repository.ReservationRepository;
 public class ReservationService {
 	private final ReservationRepository reservationRepository;
 
-	public List<QueryReservation> getReservations() {
-		return reservationRepository.findAll();
+	public List<QueryReservationResponse> getReservations() {
+		List<Reservation> reservations = reservationRepository.findAll();
+		return reservations.stream()
+				.map(reservation -> new QueryReservationResponse(
+						reservation.id(),
+						reservation.name(),
+						reservation.date(),
+						reservation.time()))
+				.collect(Collectors.toList());
 	}
 
-	public ReservationResponseDTO.AddReservation addReservation(
-			ReservationRequestDTO.AddReservation reservationRequest) {
+	public AddReservationResponse addReservation(
+			AddReservationRequest reservationRequest) {
 		Long newId = reservationRepository.generateId();
-		ReservationResponseDTO.AddReservation newReservation =
-				ReservationResponseDTO.AddReservation.builder()
-						.id(newId)
-						.name(reservationRequest.getName())
-						.date(reservationRequest.getDate())
-						.time(reservationRequest.getTime())
-						.build();
-		ReservationResponseDTO.QueryReservation newQueryReservation =
-				ReservationResponseDTO.QueryReservation.builder()
-						.id(newId)
-						.name(reservationRequest.getName())
-						.date(reservationRequest.getDate())
-						.time(reservationRequest.getTime())
-						.build();
 
-		reservationRepository.save(newQueryReservation);
-		return newReservation;
+		Reservation newReservation = new Reservation(
+				newId,
+				reservationRequest.name(),
+				reservationRequest.date(),
+				reservationRequest.time()
+		);
+
+		reservationRepository.save(newReservation);
+
+		return new AddReservationResponse(
+				newId,
+				newReservation.name(),
+				newReservation.date(),
+				newReservation.time());
 	}
 
 	public void deleteReservation(Long id) {
