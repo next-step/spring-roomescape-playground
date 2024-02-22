@@ -1,27 +1,33 @@
 package roomescape.domain;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 @Setter
-@Entity
 @NoArgsConstructor
 @Getter
+@Entity
+@Table(name = "reservation")
 public class Reservation {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JsonProperty("name")
+    @Column(name = "name", length = 500, nullable = false)
     private String name;
 
-    @JsonProperty("date")
+    @Column(name = "date", length = 500, nullable = false)
     private String date;
 
-    @JsonProperty("time")
+    @Column(name = "time", length = 500, nullable = false)
     private String time;
 
     @Builder
@@ -34,6 +40,14 @@ public class Reservation {
 
     public Long getId() {
         return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDate() {
+        return date;
     }
 
     public String getTime() {

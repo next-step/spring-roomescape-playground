@@ -35,7 +35,7 @@ public class ReservationController {
     }
 
     @PostMapping(consumes = "application/json")
-    public ResponseEntity<?> create(@RequestBody Map<String, String> params) {
+    public ResponseEntity<Reservation> create(@RequestBody Map<String, String> params) {
 
         String name = params.get("name");
         String date = params.get("date");
@@ -44,21 +44,16 @@ public class ReservationController {
         if(name == null || date == null || time ==null) {
             throw new NotFoundReservationException("필요한 인자가 부족합니다.");
         }
+        
+        Reservation newReservation = reservationService.createReservation(name, date, time);
 
-        try {
-            Reservation newReservation = reservationService.createReservation(name, date, time);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(newReservation.getId())
+                .toUri();
 
-            URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-                    .path("/{id}")
-                    .buildAndExpand(newReservation.getId())
-                    .toUri();
+        return ResponseEntity.created(location).body(newReservation);
 
-            return ResponseEntity.created(location).body(newReservation);
-        } catch (NotFoundReservationException e) {
-                return globalExceptionHandler.handleNotFoundReservationException(e);
-        } catch (Exception e){
-                return globalExceptionHandler.handleGenericException(e);
-            }
         }
 
 

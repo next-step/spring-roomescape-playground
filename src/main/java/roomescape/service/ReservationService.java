@@ -29,7 +29,7 @@ public class ReservationService {
     }
 
     @Transactional
-    public void deleteReservationById(@PathVariable Long id) {
+    public void deleteReservationById(Long id) {
         reservations.removeIf(reservation -> reservation.getId().equals(id));
     }
 
