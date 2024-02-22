@@ -8,10 +8,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 @Setter
-@NoArgsConstructor
 @Getter
 @Entity
 @Table(name = "reservation")
@@ -29,6 +28,10 @@ public class Reservation {
 
     @Column(name = "time", length = 500, nullable = false)
     private String time;
+
+    public Reservation() {
+
+    }
 
     @Builder
     public Reservation(Long id, String name, String date, String time) {
@@ -52,6 +55,22 @@ public class Reservation {
 
     public String getTime() {
         return time;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
     }
 }
 

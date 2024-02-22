@@ -1,43 +1,54 @@
 package roomescape.service;
 
 import jakarta.transaction.Transactional;
-import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import roomescape.domain.Reservation;
 
-import java.util.ArrayList;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import roomescape.domain.Reservation;
+import roomescape.domain.ReservationRepository;
+import roomescape.web.dto.ReservationDto;
+
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
+import java.util.Optional;
 
 
 @Service
 public class ReservationService {
-    private List<Reservation> reservations = new ArrayList<>();
+    // private List<Reservation> reservations = new ArrayList<>();
+    private final ReservationRepository repository;
     private final AtomicLong index = new AtomicLong(1);
 
-    @Transactional
-    public List<Reservation> getAllReservation() {
-        return reservations;
+    @Autowired
+    public ReservationService(ReservationRepository repository) {
+        this.repository = repository;
     }
 
     @Transactional
-    public Reservation createReservation(String name, String date, String time) {
-        Long reservationId = index.getAndIncrement();
-        Reservation reservation = new Reservation(reservationId, name, date, time);
-        reservations.add(reservation);
-        return reservation;
+    public List<ReservationDto> getAllReservation() {
+        List<Reservation> reservations = repository.findAll();
+        return reservations.stream()
+        .map(ReservationDto::new)
+        .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public ReservationDto createReservation(String name, String date, String time) {
+        Reservation reservation = new Reservation(index.incrementAndGet(), name, date, time);
+
+        Reservation savedReservation = repository.save(reservation);
+
+        return new ReservationDto(savedReservation);
     }
 
     @Transactional
     public void deleteReservationById(Long id) {
-        reservations.removeIf(reservation -> reservation.getId().equals(id));
+        repository.deleteById(id);
     }
 
     @Transactional
-    public Reservation getReservationById(Long id) {
-        return reservations.stream()
-                .filter(reservation -> reservation.getId().equals(id))
-                .findFirst()
-                .orElse(null);
+    public Optional<Reservation> getReservationById(Long id) {
+        return repository.findById(id);
     }
 }

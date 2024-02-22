@@ -7,10 +7,11 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import roomescape.domain.Reservation;
 import roomescape.service.ReservationService;
 import roomescape.web.exception.NotFoundReservationException;
-import roomescape.web.exception.GlobalExceptionHandler;
+import roomescape.web.dto.ReservationDto;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 import java.util.Map;
 
 
@@ -26,16 +27,13 @@ public class ReservationController {
         this.reservationService = reservationService;
     }
 
-    @Autowired
-    private GlobalExceptionHandler globalExceptionHandler;
-
     @GetMapping
-    public List<Reservation> getAllReservation() {
+    public List<ReservationDto> getAllReservation() {
         return reservationService.getAllReservation();
     }
 
     @PostMapping(consumes = "application/json")
-    public ResponseEntity<Reservation> create(@RequestBody Map<String, String> params) {
+    public ResponseEntity<ReservationDto> create(@RequestBody Map<String, String> params) {
 
         String name = params.get("name");
         String date = params.get("date");
@@ -45,7 +43,7 @@ public class ReservationController {
             throw new NotFoundReservationException("필요한 인자가 부족합니다.");
         }
         
-        Reservation newReservation = reservationService.createReservation(name, date, time);
+        ReservationDto newReservation = reservationService.createReservation(name, date, time);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
@@ -59,10 +57,11 @@ public class ReservationController {
 
     @GetMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<?> read(@PathVariable Long id) {
-        Reservation reservation = reservationService.getReservationById(id);
 
-        if (reservation != null) {
-            return ResponseEntity.ok(reservation);
+        Optional<Reservation> reservationDtoOptional = reservationService.getReservationById(id);
+
+        if (reservationDtoOptional != null) {
+            return ResponseEntity.ok(reservationDtoOptional);
         } else {
             throw new NotFoundReservationException("예약을 찾을 수 없습니다.");
         }
