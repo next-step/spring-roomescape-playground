@@ -19,12 +19,19 @@ import jakarta.validation.Valid;
 import roomescape.controller.dto.ReservationCreate;
 import roomescape.controller.dto.ReservationResponse;
 import roomescape.domain.Reservation;
+import roomescape.service.ReservationService;
 
 @Controller
 public class ReservationController {
 
     private final AtomicLong id = new AtomicLong(1);
     private final List<Reservation> reservations = new ArrayList<>();
+
+    private final ReservationService reservationService;
+
+    public ReservationController(ReservationService reservationService) {
+        this.reservationService = reservationService;
+    }
 
     @GetMapping("/reservation")
     public String getReservation() {
@@ -34,7 +41,7 @@ public class ReservationController {
     @GetMapping("/reservations")
     @ResponseBody
     public List<ReservationResponse> getReservations() {
-        return reservations.stream()
+        return reservationService.findAll().stream()
             .map(ReservationResponse::from)
             .toList();
     }
