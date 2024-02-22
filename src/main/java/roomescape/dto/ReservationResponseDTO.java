@@ -1,33 +1,13 @@
 package roomescape.dto;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ReservationResponseDTO {
-	@Builder
-	@Getter
-	@NoArgsConstructor
-	@AllArgsConstructor
-	public static class QueryReservation {
-		private Long id;
-		private String name;
-		private String date;
-		private String time;
+	public record QueryReservationResponse(Long id, String name, String date, String time) {
 	}
 
-	@Builder
-	@Getter
-	@NoArgsConstructor
-	@AllArgsConstructor
-	public static class AddReservation {
-		private Long id;
-		private String name;
-		private String date;
-		private String time;
-
+	public record AddReservationResponse(Long id, String name, String date, String time) {
 	}
 }
