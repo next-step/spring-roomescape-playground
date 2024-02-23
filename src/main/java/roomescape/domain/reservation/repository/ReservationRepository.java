@@ -24,29 +24,23 @@ public class ReservationRepository {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
-    KeyHolder keyHolder = new GeneratedKeyHolder();
+    private final RowMapper<Reservation> rowMapper = (resultSet, rowNum) -> new Reservation(
+        resultSet.getLong("id"),
+        resultSet.getString("name"),
+        LocalDate.parse(resultSet.getString("date")),
+        LocalTime.parse(resultSet.getString("time"))
+    );
 
-    private final RowMapper<Reservation> rowMapper = ((resultSet, rowNum) -> {
-        Reservation reservation = new Reservation(
-            resultSet.getLong("id"),
-            resultSet.getString("name"),
-            LocalDate.parse(resultSet.getString("date")),
-            LocalTime.parse(resultSet.getString("time"))
-        );
-        return reservation;
-    });
-
-    public Reservation addReservation(Reservation reservation) {
-        jdbcTemplate.update(
-            connection -> {
-                PreparedStatement ps = connection.prepareStatement("insert into reservation(name, date, time) values(?, ?, ?)", new String[] {"id"});
-                ps.setString(1, reservation.getName());
-                ps.setString(2, reservation.getDate().toString());
-                ps.setString(3, reservation.getTime().toString());
-                return ps;
-            }, keyHolder);
-        long generatedId = keyHolder.getKey().longValue();
-        return getReservationById(generatedId).get();
+    public Optional<Reservation> addReservation(Reservation reservation) {
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement("insert into reservation(name, date, time) values(?, ?, ?)", new String[] {"id"});
+            ps.setString(1, reservation.getName());
+            ps.setString(2, reservation.getDate().toString());
+            ps.setString(3, reservation.getTime().toString());
+            return ps;
+        }, keyHolder);
+        return getReservationById(keyHolder.getKey().longValue());
     }
 
     public boolean deleteReservation(Long id) {
@@ -60,8 +54,6 @@ public class ReservationRepository {
     }
 
     public List<Reservation> getAllReservation() {
-        List<Reservation> reservations = jdbcTemplate.query("select * from reservation", rowMapper);
-        return reservations;
+        return jdbcTemplate.query("select * from reservation", rowMapper);
     }
-
 }

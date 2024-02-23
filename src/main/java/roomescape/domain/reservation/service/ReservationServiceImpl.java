@@ -24,7 +24,7 @@ public class ReservationServiceImpl implements ReservationService {
     public Reservation addReservation(Reservation reservation) {
         LocalDateTime localDateTime = LocalDateTime.of(reservation.getDate(), reservation.getTime());
         if(localDateTime.isBefore(LocalDateTime.now())) throw new ReservationInvalidArgumentException(HttpStatus.BAD_REQUEST, "날짜 및 시간은 과거가 될 수 없습니다.");
-        return reservationRepository.addReservation(reservation);
+        return reservationRepository.addReservation(reservation).orElseThrow(() -> new ReservationNotFoundException(HttpStatus.BAD_REQUEST, "예약 실패 입력값을 확인해주세요."));
     }
 
     @Override
