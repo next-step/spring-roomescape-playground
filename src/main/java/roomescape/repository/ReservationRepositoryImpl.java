@@ -20,4 +20,19 @@ public class ReservationRepositoryImpl implements ReservationRepository {
     public List<Reservation> findAll() {
         return reservationDao.readAll();
     }
+
+    @Override
+    public boolean existsById(Long id) {
+        return reservationDao.read(id) != null;
+    }
+
+    @Override
+    public Reservation save(Reservation reservation) {
+        return reservationDao.create(reservation);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        reservationDao.delete(id);
+    }
 }

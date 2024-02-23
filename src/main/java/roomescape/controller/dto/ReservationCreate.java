@@ -15,7 +15,7 @@ public record ReservationCreate(
     @NotNull @DateTimeFormat(pattern = "hh:mm") LocalTime time
 ) {
 
-    public Reservation toReservation(Long id) {
-        return new Reservation(id, name, date, time);
+    public Reservation toReservation() {
+        return new Reservation(null, name, date, time);
     }
 }
