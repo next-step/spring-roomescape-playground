@@ -17,9 +17,6 @@ public class ReservationService {
     private final AtomicLong index = new AtomicLong(0);
 
     public List<Reservation> loadReservationList(){
-//        reservations.add(new Reservation(index.incrementAndGet(), "브라운", "2022-08-05", "15:40"));
-//        reservations.add(new Reservation(index.incrementAndGet(), "브라운", "2022-08-05", "18:40"));
-//        reservations.add(new Reservation(index.incrementAndGet(), "브라운", "2022-08-05", "20:40"));
         return reservations;
     }
 
