@@ -26,6 +26,12 @@ public class ReservationDao {
     };
 
     public List<Reservation> findAll(){
-        return null;
+        String sql = "SELECT id, name, date, time FROM reservation";
+        return jdbcTemplate.query(sql, actorRowMapper);
+    }
+
+    public Reservation findById(Long id){
+        String sql = "SELECT id, name, date, time FROM reservation where id = ?";
+        return jdbcTemplate.queryForObject(sql, actorRowMapper, id);
     }
 }
