@@ -16,8 +16,7 @@ public class ReservationService {
 	private final ReservationRepository reservationRepository;
 
 	public List<QueryReservationResponse> getReservations() {
-		List<Reservation> reservations = reservationRepository.findAll();
-		return reservations.stream()
+		return reservationRepository.findAll().stream()
 				.map(reservation -> new QueryReservationResponse(
 						reservation.id(),
 						reservation.name(),
@@ -28,19 +27,18 @@ public class ReservationService {
 
 	public AddReservationResponse addReservation(
 			AddReservationRequest reservationRequest) {
-		Long newId = reservationRepository.generateId();
 
 		Reservation newReservation = new Reservation(
-				newId,
+				null,
 				reservationRequest.name(),
 				reservationRequest.date(),
 				reservationRequest.time()
 		);
 
-		reservationRepository.save(newReservation);
+		Long savedReservationId = reservationRepository.save(newReservation);
 
 		return new AddReservationResponse(
-				newId,
+				savedReservationId,
 				newReservation.name(),
 				newReservation.date(),
 				newReservation.time());
