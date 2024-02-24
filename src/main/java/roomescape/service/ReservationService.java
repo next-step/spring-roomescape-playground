@@ -1,49 +1,37 @@
 package roomescape.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import roomescape.dto.Reservation;
+import org.thymeleaf.util.StringUtils;
+import roomescape.dao.ReservationDao;
+import roomescape.dto.ReservationRequestDto;
+import roomescape.dto.ReservationResponseDto;
 import roomescape.exception.NoParameterException;
-import roomescape.exception.NotFoundReservationException;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicLong;
+
 
 @Service
+@RequiredArgsConstructor
 public class ReservationService {
 
-    private final List<Reservation> reservations = new ArrayList<>();
-    private final AtomicLong index = new AtomicLong(0);
+    private final ReservationDao reservationDao;
 
-    public List<Reservation> loadReservationList(){
-        return reservations;
+    public List<ReservationResponseDto> loadReservationList(){
+        return reservationDao.findAll();
     }
 
-    public Reservation createReservation(Reservation reservation){
-        if (reservation.getName().isEmpty()){
+    public ReservationResponseDto createReservation(ReservationRequestDto reservationRequest){
+        if (StringUtils.isEmpty(reservationRequest.name())){
             throw new NoParameterException("Reservation Have No Name Parameter");
-        } else if (reservation.getDate().isEmpty()){
+        } else if (StringUtils.isEmpty(reservationRequest.date())){
             throw new NoParameterException("Reservation Have No Date Parameter");
-        } else if (reservation.getTime().isEmpty()){
+        } else if (StringUtils.isEmpty(reservationRequest.time())){
             throw new NoParameterException("Reservation Have No Time Parameter");
         }
-        Reservation newReservation = Reservation.builder()
-                .id(index.incrementAndGet())
-                .name(reservation.getName())
-                .date(reservation.getDate())
-                .time(reservation.getTime())
-                .build();
-
-        reservations.add(newReservation);
-        return newReservation;
+        return reservationDao.insert(reservationRequest);
     }
 
     public void deleteReservation(Long id){
-        Reservation reservation = reservations.stream()
-                .filter(it -> Objects.equals(it.getId(), id))
-                .findFirst()
-                .orElseThrow(() -> new NotFoundReservationException("Not Found Reservation"));
-        reservations.remove(reservation);
+        reservationDao.delete(id);
     }
 }
