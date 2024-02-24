@@ -4,19 +4,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import roomescape.domain.Reservation;
-import roomescape.dto.ReservationDTO;
+import roomescape.service.ReservationService;
 
-import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Controller
 public class ReservationController {
-    private List<Reservation> reservations = new ArrayList<>();
-    private final AtomicLong index = new AtomicLong(1);
+    private ReservationService reservationService;
+
+    public ReservationController(ReservationService reservationService){
+        this.reservationService = reservationService;
+    }
 
     @GetMapping("/reservation")
     public String getReservationPage() {
@@ -25,13 +23,14 @@ public class ReservationController {
 
     @GetMapping("/reservations")
     public ResponseEntity<List<Reservation>> reservations() {
+        List<Reservation> reservations = reservationService.findAllReservations();
         return ResponseEntity.ok().body(reservations);
     }
 
-    @PostMapping("/reservations")
+    /*@PostMapping("/reservations")
     public ResponseEntity<Reservation> addReservation(@RequestBody ReservationDTO reservationDTO) {
-        Reservation newReservation = new Reservation(index.getAndIncrement(), reservationDTO.getName(),
-                reservationDTO.getDate(), reservationDTO.getTime());
+
+        Long newReservation = reservationService.addReservation(reservationDTO);
         reservations.add(newReservation);
 
         return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
@@ -57,5 +56,5 @@ public class ReservationController {
         reservations.remove(reservation);
 
         return ResponseEntity.noContent().build();
-    }
+    }*/
 }
