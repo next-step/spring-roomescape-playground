@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Reservation {
 
-    private final Long id;
+    private Long id;
     private final String name;
     private final String date;
     private final String time;
@@ -36,6 +36,10 @@ public class Reservation {
 
     public Long getId() {
         return this.id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
