@@ -11,15 +11,19 @@ import java.util.List;
 public class ReservationService {
     private final ReservationRepository reservationRepository;
 
-    public ReservationService(ReservationRepository reservationRepository){
+    public ReservationService(ReservationRepository reservationRepository) {
         this.reservationRepository = reservationRepository;
     }
 
-    public List<Reservation> findAllReservations(){
+    public List<Reservation> findAllReservations() {
         return reservationRepository.findAll();
     }
 
-    public Long addReservation(ReservationDTO reservationDTO){
+    public Reservation addReservation(ReservationDTO reservationDTO) {
         return reservationRepository.addReservation(reservationDTO);
+    }
+
+    public void deleteReservation(Long id) {
+        reservationRepository.deleteById(id);
     }
 }

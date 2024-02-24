@@ -35,7 +35,7 @@ public class ReservationRepository {
         return reservationList;
     }
 
-    public Long addReservation(ReservationDTO reservationDTO){
+    public Reservation addReservation(ReservationDTO reservationDTO) {
         String sql = "INSERT INTO reservation (name, date, time) values (?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
@@ -47,6 +47,15 @@ public class ReservationRepository {
             preparedStatement.setString(3, reservationDTO.getTime());
             return preparedStatement;
         }, keyHolder);
-        return keyHolder.getKey().longValue();
+        return new Reservation(keyHolder.getKey().longValue(),
+                reservationDTO.getName(),
+                reservationDTO.getDate(),
+                reservationDTO.getTime()
+        );
+    }
+
+    public void deleteById(Long id) {
+        String sql = "DELETE FROM reservation WHERE id = ?";
+        jdbcTemplate.update(sql, id);
     }
 }
