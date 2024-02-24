@@ -1,6 +1,7 @@
 package roomescape.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import roomescape.domain.Reservation;
@@ -13,6 +14,8 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @Controller
 public class ReservationController {
+
+    private JdbcTemplate jdbcTemplate;
 
     private List<Reservation> reservations = new ArrayList<>();
     private AtomicLong index = new AtomicLong(1);
