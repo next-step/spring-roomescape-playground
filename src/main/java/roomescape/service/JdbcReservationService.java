@@ -3,19 +3,20 @@ package roomescape.service;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Service;
 import roomescape.dto.ReservationRequestDTO.AddReservationRequest;
 import roomescape.dto.ReservationResponseDTO.AddReservationResponse;
 import roomescape.dto.ReservationResponseDTO.QueryReservationResponse;
 
-@Service
+@Profile("jdbc")
 @RequiredArgsConstructor
-public class JdbcReservationService {
+public class JdbcReservationService implements ReservationService {
 	private final JdbcTemplate jdbcTemplate;
 
+	@Override
 	public List<QueryReservationResponse> getReservations() {
 		String sql = "SELECT id, name, date, time FROM reservation";
 		return jdbcTemplate.query(sql, (rs, rowNum) -> new QueryReservationResponse(
@@ -25,6 +26,7 @@ public class JdbcReservationService {
 				rs.getString("time")));
 	}
 
+	@Override
 	public AddReservationResponse addReservation(AddReservationRequest reservationRequest) {
 		String sql = "INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)";
 		KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -44,6 +46,7 @@ public class JdbcReservationService {
 				reservationRequest.time());
 	}
 
+	@Override
 	public void deleteReservation(Long id) {
 		String sql = "DELETE FROM reservation WHERE id = ?";
 		jdbcTemplate.update(sql, id);
