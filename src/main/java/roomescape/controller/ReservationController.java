@@ -45,9 +45,4 @@ public class ReservationController {
         }
         return ResponseEntity.noContent().build();
     }
-
-    @ExceptionHandler({IllegalArgumentException.class, NoSuchElementException.class})
-    public ResponseEntity<Reservation> exception(Exception e) {
-        return ResponseEntity.badRequest().build();
-    }
 }
