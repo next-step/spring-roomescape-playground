@@ -11,7 +11,4 @@ public class RoomescapeApplication {
         SpringApplication.run(RoomescapeApplication.class, args);
     }
 
-    @Autowired
-    JdbcTemplate jdbcTemplate;
-
 }

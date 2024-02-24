@@ -1,9 +1,11 @@
 package roomescape.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import roomescape.dao.ReservationDao;
 import roomescape.domain.Reservation;
 
 import java.net.URI;
@@ -15,10 +17,14 @@ import java.util.concurrent.atomic.AtomicLong;
 @Controller
 public class ReservationController {
 
-    private JdbcTemplate jdbcTemplate;
-
+    @Autowired
+    private ReservationDao reservationDao;
     private List<Reservation> reservations = new ArrayList<>();
     private AtomicLong index = new AtomicLong(1);
+
+    public ReservationController(ReservationDao reservationDao) {
+        this.reservationDao = reservationDao;
+    }
 
     @GetMapping("/reservation")
     public String reservation() {
@@ -28,6 +34,7 @@ public class ReservationController {
     @GetMapping("/reservations")
     @ResponseBody
     public ResponseEntity<List<Reservation>> read() {
+        List<Reservation> reservations = (List<Reservation>) reservationDao.getAllReservations();
         return ResponseEntity.ok().body(reservations);
     }
 
