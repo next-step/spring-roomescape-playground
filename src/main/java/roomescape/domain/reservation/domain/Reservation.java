@@ -8,11 +8,8 @@ import jakarta.validation.constraints.NotNull;
 
 public class Reservation {
     private Long id;
-    @NotBlank
     private String name;
-    @NotNull
     private LocalDate date;
-    @NotNull
     private LocalTime time;
 
     public Reservation() {
