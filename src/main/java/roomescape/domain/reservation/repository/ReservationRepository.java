@@ -44,8 +44,8 @@ public class ReservationRepository {
     }
 
     public boolean deleteReservation(Long id) {
-        int ret = jdbcTemplate.update("delete from reservation where id = ?", id);
-        return ret > 0;
+        int affectRowCount = jdbcTemplate.update("delete from reservation where id = ?", id);
+        return affectRowCount > 0;
     }
 
     public Optional<Reservation> getReservationById(Long id) {
