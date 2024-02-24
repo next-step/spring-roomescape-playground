@@ -32,9 +32,9 @@ public class ReservationApiController {
     }
 
     @PostMapping
-    public ResponseEntity<Reservation> addReservation(@RequestBody @Valid ReservationCreateDTO reservationCreateDTO) {
+    public ResponseEntity<ReservationResponseDTO> addReservation(@RequestBody @Valid ReservationCreateDTO reservationCreateDTO) {
         Reservation newReservation = reservationService.addReservation(ReservationMapper.toEntity(reservationCreateDTO));
-        return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
+        return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(ReservationMapper.toReservationResponseDTO(newReservation));
     }
 
     @DeleteMapping("/{id}")
@@ -44,8 +44,8 @@ public class ReservationApiController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Reservation> reservations(@PathVariable Long id) {
-        return ResponseEntity.ok().body(reservationService.getReservationById(id));
+    public ResponseEntity<ReservationResponseDTO> reservations(@PathVariable Long id) {
+        return ResponseEntity.ok().body(ReservationMapper.toReservationResponseDTO(reservationService.getReservationById(id)));
     }
 
     @GetMapping
