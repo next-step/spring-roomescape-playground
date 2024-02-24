@@ -6,6 +6,6 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ReservationRequestDTO {
-	public record AddReservationRequest(@NotEmpty String name, @NotEmpty String date, @NotEmpty String time) {
+  	public record AddReservationRequest(@NotEmpty String name, @NotEmpty String date, @NotEmpty String time) {}
 	}
 }

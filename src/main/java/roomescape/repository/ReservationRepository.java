@@ -1,5 +1,4 @@
 package roomescape.repository;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,7 +9,7 @@ import roomescape.exception.ReservationException;
 
 @Repository
 public class ReservationRepository {
-	private final Map<Long, Reservation> reservations;
+  	private final Map<Long, Reservation> reservations;
 	private final AtomicLong id;
 
 	public ReservationRepository() {
