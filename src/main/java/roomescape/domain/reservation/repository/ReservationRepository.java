@@ -1,15 +1,11 @@
 package roomescape.domain.reservation.repository;
 
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicLong;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -21,8 +17,7 @@ import roomescape.domain.reservation.domain.Reservation;
 @Repository
 public class ReservationRepository {
 
-    @Autowired
-    JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
     private final RowMapper<Reservation> rowMapper = (resultSet, rowNum) -> new Reservation(
         resultSet.getLong("id"),
@@ -31,7 +26,11 @@ public class ReservationRepository {
         LocalTime.parse(resultSet.getString("time"))
     );
 
-    public Optional<Reservation> addReservation(Reservation reservation) {
+    public ReservationRepository(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
+    public long addReservation(Reservation reservation) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement("insert into reservation(name, date, time) values(?, ?, ?)", new String[] {"id"});
@@ -40,7 +39,7 @@ public class ReservationRepository {
             ps.setString(3, reservation.getTime().toString());
             return ps;
         }, keyHolder);
-        return getReservationById(keyHolder.getKey().longValue());
+        return keyHolder.getKey().longValue();
     }
 
     public boolean deleteReservation(Long id) {
