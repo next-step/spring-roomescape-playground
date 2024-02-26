@@ -18,7 +18,7 @@ import java.util.Optional;
 public class ReservationService {
     // private List<Reservation> reservations = new ArrayList<>();
     private final ReservationDao reservationDao;
-    private final AtomicLong index = new AtomicLong(1);
+    private final AtomicLong index = new AtomicLong(0);
 
     @Autowired
     public ReservationService(ReservationDao reservationDao) {
