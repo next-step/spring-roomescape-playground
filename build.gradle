@@ -13,10 +13,12 @@ repositories {
 }
 
 dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'jakarta.validation:jakarta.validation-api:3.0.0'
     implementation 'org.hibernate.validator:hibernate-validator:7.0.1.Final'
+    runtimeOnly 'com.h2database:h2'
     testImplementation 'org.hamcrest:hamcrest:2.2'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'io.rest-assured:rest-assured:5.3.1'
