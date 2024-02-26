@@ -1,5 +1,6 @@
 package roomescape.exception;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -7,8 +8,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalException{
 
-    @ExceptionHandler(NotFoundReservationException.class)
-    public ResponseEntity<String> handleException (NotFoundReservationException e){
+    @ExceptionHandler(EmptyResultDataAccessException.class)
+    public ResponseEntity<String> handleException (EmptyResultDataAccessException e){
         return ResponseEntity.badRequest().body(ErrorCode.NOT_FOUND_RESERVATION.getMessage());
     }
 

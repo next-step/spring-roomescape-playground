@@ -1,9 +1,11 @@
 package roomescape.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import roomescape.dto.Reservation;
+import roomescape.dto.ReservationRequestDto;
+import roomescape.dto.ReservationResponseDto;
 import roomescape.service.ReservationService;
 
 import java.net.URI;
@@ -11,22 +13,20 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/reservations")
+@RequiredArgsConstructor
 public class ReservationController {
 
     private final ReservationService reservationService;
-    public ReservationController(ReservationService reservationService){
-        this.reservationService = reservationService;
-    }
 
     @GetMapping
-    public ResponseEntity<List<Reservation>> reservations(){
+    public ResponseEntity<List<ReservationResponseDto>> reservations(){
         return ResponseEntity.ok(reservationService.loadReservationList());
     }
 
     @PostMapping
-    public ResponseEntity<Reservation> createReservations(@RequestBody Reservation reservation){
-        Reservation newReservation = reservationService.createReservation(reservation);
-        return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
+    public ResponseEntity<ReservationResponseDto> createReservations(@RequestBody ReservationRequestDto reservationRequest){
+        ReservationResponseDto reservationResponse = reservationService.createReservation(reservationRequest);
+        return ResponseEntity.created(URI.create("/reservations/" + reservationResponse.id())).body(reservationResponse);
     }
 
     @DeleteMapping("/{id}")
