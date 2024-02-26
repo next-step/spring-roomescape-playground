@@ -60,8 +60,9 @@ public class ReservationController {
 
         Optional<Reservation> reservationDtoOptional = reservationService.getReservationById(id);
 
-        if (reservationDtoOptional != null) {
-            return ResponseEntity.ok(reservationDtoOptional);
+        if (reservationDtoOptional.isPresent()) {
+            ReservationDto reservationDto = new ReservationDto(reservationDtoOptional.get());
+            return ResponseEntity.ok(reservationDto);
         } else {
             throw new NotFoundReservationException("예약을 찾을 수 없습니다.");
         }
