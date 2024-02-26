@@ -3,9 +3,6 @@ package roomescape.domain.reservation.domain;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-
 public class Reservation {
     private Long id;
     private String name;
