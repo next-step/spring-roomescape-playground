@@ -27,9 +27,9 @@ public class ReservationDaoImpl implements ReservationDao {
         rs.getTime("time").toLocalTime()
     );
 
-    public ReservationDaoImpl(JdbcTemplate jdbcTemplate, DataSource dataSource) {
+    public ReservationDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource)
+        this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate.getDataSource)
             .withTableName("reservation")
             .usingGeneratedKeyColumns("id");
     }
