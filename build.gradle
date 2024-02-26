@@ -15,7 +15,10 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf' // 의존성 추
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+
+    runtimeOnly 'com.h2database:h2'
 
     testImplementation 'org.hamcrest:hamcrest:2.2'// test에서 is(3)을 사용하기 위해서 추가
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
