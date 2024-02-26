@@ -22,9 +22,8 @@ public class ReservationServiceImpl implements ReservationService{
     }
 
     @Override
-    public Reservation createReservation(ReservationDto reservationDto) {
+    public Long createReservation(ReservationDto reservationDto) {
         Reservation newReservation = Reservation.builder().
-                id(reservationRepository.index.getAndIncrement()).
                 name(reservationDto.getName()).
                 date(reservationDto.getDate()).
                 time(reservationDto.getTime()).build();
@@ -33,12 +32,12 @@ public class ReservationServiceImpl implements ReservationService{
     }
 
     @Override
-    public void deleteReservation(Long id) {
+    public int deleteReservation(Long id) {
         Reservation reservation = reservationRepository.findAll().stream()
                 .filter(existId -> Objects.equals(existId.getId(), id))
                 .findFirst()
                 .orElseThrow(()->new NotFoundReservationException("예약 정보를 찾을 수 없습니다."));
 
-        reservationRepository.deleteReservation(reservation);
+        return reservationRepository.deleteReservation(reservation.getId());
     }
 }
