@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import roomescape.domain.Reservation;
 import roomescape.dto.ReservationDTO;
+import roomescape.dto.ResponseReservationDTO;
 import roomescape.service.ReservationService;
 
 import java.net.URI;
@@ -30,11 +31,11 @@ public class ReservationController {
     }
 
     @PostMapping("/reservations")
-    public ResponseEntity<Reservation> addReservation(@RequestBody ReservationDTO reservationDTO) {
+    public ResponseEntity<ResponseReservationDTO> makeReservation(@RequestBody ReservationDTO reservationDTO) {
 
-        Reservation newReservation = reservationService.addReservation(reservationDTO);
+        ResponseReservationDTO newReservation = reservationService.makeReservation(reservationDTO);
 
-        return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
+        return ResponseEntity.created(URI.create("/reservations/" + newReservation.id())).body(newReservation);
     }
 
     @DeleteMapping("/reservations/{id}")
