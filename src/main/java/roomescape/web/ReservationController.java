@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import roomescape.domain.Reservation;
+import roomescape.domain.Time;
 import roomescape.service.ReservationService;
 import roomescape.web.exception.NotFoundReservationException;
 
@@ -36,15 +37,15 @@ public class ReservationController {
     }
 
     @PostMapping(consumes = "application/json")
-
     public ResponseEntity<ReservationDto> create(@RequestBody Map<String, String> params) {
 
 
         String name = params.get("name");
         String date = params.get("date");
-        String time = params.get("time");
+        String timeString = params.get("time");
+        Time time = new Time(timeString);
 
-        if(name == null || date == null || time ==null) {
+        if(name == null || date == null || time == null) {
             throw new NotFoundReservationException("필요한 인자가 부족합니다.");
         }
 

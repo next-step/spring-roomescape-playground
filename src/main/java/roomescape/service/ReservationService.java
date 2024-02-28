@@ -5,6 +5,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import roomescape.domain.Reservation;
+import roomescape.domain.Time;
 import roomescape.web.dao.ReservationDao;
 import roomescape.web.dto.ReservationDto;
 
@@ -35,7 +36,7 @@ public class ReservationService {
     }
 
     @Transactional
-    public ReservationDto createReservation(String name, String date, String time) {
+    public ReservationDto createReservation(String name, String date, Time time) {
 
         Long newId = index.incrementAndGet();
         Reservation reservation = reservationDao.createReservation(newId, name, date, time);

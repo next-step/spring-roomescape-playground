@@ -2,6 +2,7 @@ package roomescape.web.dto;
 
 import lombok.Getter;
 import roomescape.domain.Reservation;
+import roomescape.domain.Time;
 
 @Getter
 public class ReservationDto {
@@ -10,7 +11,7 @@ public class ReservationDto {
     private Long id;
     private String name;
     private String date;
-    private String time;
+    private Time time;
 
     public Long getId() {
         return id;
@@ -24,7 +25,7 @@ public class ReservationDto {
         return date;
     }
 
-    public String getTime() {
+    public Time getTime() {
         return time;
     }
 

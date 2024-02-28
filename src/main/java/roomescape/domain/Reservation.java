@@ -1,15 +1,11 @@
 package roomescape.domain;
 
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+
 
 @Setter
 @Getter
@@ -26,15 +22,20 @@ public class Reservation {
     @Column(name = "date", length = 500, nullable = false)
     private String date;
 
-    @Column(name = "time", length = 500, nullable = false)
-    private String time;
+
+    @ManyToOne
+    @JoinColumn(name = "time_id")
+    private Time time;
+
+//    @Column(name = "time_id", nullable = false)  // Change the column definition for time_id
+//    private Long timeId;
 
     public Reservation() {
 
     }
 
     @Builder
-    public Reservation(Long id, String name, String date, String time) {
+    public Reservation(Long id, String name, String date, Time time) {
         this.id = id;
         this.name = name;
         this.date = date;
@@ -54,7 +55,7 @@ public class Reservation {
         return date;
     }
 
-    public String getTime() {
+    public Time getTime() {
         return time;
     }
 
@@ -70,7 +71,7 @@ public class Reservation {
         this.date = date;
     }
 
-    public void setTime(String time) {
+    public void setTime(Time time) {
         this.time = time;
     }
 

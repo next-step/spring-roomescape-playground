@@ -18,12 +18,20 @@ public class Time {
     private String time;
 
     public Time() {
-
     }
+
+    public Time(String time) {
+        this.time = time;
+    }
+
     @Builder
     public Time(Long id, String time) {
         this.id = id;
         this.time = time;
+    }
+
+    public Time(java.sql.Time sqltime) {
+        this.time = sqltime.toLocalTime().toString();
     }
 
     public Long getId() {
