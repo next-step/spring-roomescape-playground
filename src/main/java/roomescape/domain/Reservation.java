@@ -1,5 +1,6 @@
 package roomescape.domain;
 
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -15,7 +16,6 @@ import lombok.Setter;
 @Entity
 @Table(name = "reservation")
 public class Reservation {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -45,6 +45,7 @@ public class Reservation {
         return id;
     }
 
+
     public String getName() {
         return name;
     }
@@ -72,5 +73,6 @@ public class Reservation {
     public void setTime(String time) {
         this.time = time;
     }
+
 }
 
