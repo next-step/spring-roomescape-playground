@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
+import roomescape.web.dao.rowmapper.ReservationRowMapper;
 
 import java.util.List;
 import java.util.Optional;

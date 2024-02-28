@@ -35,14 +35,4 @@ public class ReservationDto {
         this.date = reservation.getDate();
         this.time = reservation.getTime();
     }
-
-    public Reservation toEntity() {
-        Reservation reservation = new Reservation();
-        reservation.setId(id);
-        reservation.setName(name);
-        reservation.setDate(date);
-        reservation.setTime(time);
-
-        return reservation;
-    }
 }
