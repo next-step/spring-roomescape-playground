@@ -7,6 +7,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import roomescape.domain.Reservation;
 import roomescape.service.ReservationService;
 import roomescape.web.exception.NotFoundReservationException;
+
 import roomescape.web.dto.ReservationDto;
 
 import java.net.URI;
@@ -27,13 +28,17 @@ public class ReservationController {
         this.reservationService = reservationService;
     }
 
+
     @GetMapping
     public List<ReservationDto> getAllReservation() {
+
         return reservationService.getAllReservation();
     }
 
     @PostMapping(consumes = "application/json")
+
     public ResponseEntity<ReservationDto> create(@RequestBody Map<String, String> params) {
+
 
         String name = params.get("name");
         String date = params.get("date");
@@ -42,6 +47,7 @@ public class ReservationController {
         if(name == null || date == null || time ==null) {
             throw new NotFoundReservationException("필요한 인자가 부족합니다.");
         }
+
         
         ReservationDto newReservation = reservationService.createReservation(name, date, time);
 
@@ -58,11 +64,13 @@ public class ReservationController {
     @GetMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<?> read(@PathVariable Long id) {
 
+
         Optional<Reservation> reservationDtoOptional = reservationService.getReservationById(id);
 
         if (reservationDtoOptional.isPresent()) {
             ReservationDto reservationDto = new ReservationDto(reservationDtoOptional.get());
             return ResponseEntity.ok(reservationDto);
+
         } else {
             throw new NotFoundReservationException("예약을 찾을 수 없습니다.");
         }

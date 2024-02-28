@@ -6,8 +6,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+
 @EnableJpaAuditing
 @SpringBootApplication
+@EntityScan("roomescape.domain")
 public class RoomescapeApplication {
     public static void main(String[] args) {
         SpringApplication.run(RoomescapeApplication.class, args);

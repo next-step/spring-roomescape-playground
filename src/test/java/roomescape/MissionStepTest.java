@@ -2,13 +2,14 @@ package roomescape;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import roomescape.domain.Reservation;
 
+import roomescape.domain.Reservation;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
+
 
 
 import java.sql.SQLException;
@@ -102,6 +103,7 @@ public class MissionStepTest {
                 .statusCode(400);
     }
 
+
     @Autowired
     private JdbcTemplate jdbcTemplate;
     
@@ -157,8 +159,5 @@ void 칠단계() {
     Integer countAfterDelete = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
     assertThat(countAfterDelete).isEqualTo(0);
 }
-
-
-
 
 }
