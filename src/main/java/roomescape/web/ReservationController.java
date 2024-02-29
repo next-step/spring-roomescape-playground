@@ -5,12 +5,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import roomescape.domain.Reservation;
+import roomescape.domain.Time;
 import roomescape.service.ReservationService;
 import roomescape.web.exception.NotFoundReservationException;
-import roomescape.web.exception.GlobalExceptionHandler;
+
+import roomescape.web.dto.ReservationDto;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 import java.util.Map;
 
 
@@ -26,48 +29,49 @@ public class ReservationController {
         this.reservationService = reservationService;
     }
 
-    @Autowired
-    private GlobalExceptionHandler globalExceptionHandler;
 
     @GetMapping
-    public List<Reservation> getAllReservation() {
+    public List<ReservationDto> getAllReservation() {
+
         return reservationService.getAllReservation();
     }
 
     @PostMapping(consumes = "application/json")
-    public ResponseEntity<?> create(@RequestBody Map<String, String> params) {
+    public ResponseEntity<ReservationDto> create(@RequestBody Map<String, String> params) {
+
 
         String name = params.get("name");
         String date = params.get("date");
-        String time = params.get("time");
+        String timeString = params.get("time");
+        Time time = new Time(timeString);
 
-        if(name == null || date == null || time ==null) {
+        if(name == null || date == null || time == null) {
             throw new NotFoundReservationException("필요한 인자가 부족합니다.");
         }
 
-        try {
-            Reservation newReservation = reservationService.createReservation(name, date, time);
+        
+        ReservationDto newReservation = reservationService.createReservation(name, date, time);
 
-            URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-                    .path("/{id}")
-                    .buildAndExpand(newReservation.getId())
-                    .toUri();
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(newReservation.getId())
+                .toUri();
 
-            return ResponseEntity.created(location).body(newReservation);
-        } catch (NotFoundReservationException e) {
-                return globalExceptionHandler.handleNotFoundReservationException(e);
-        } catch (Exception e){
-                return globalExceptionHandler.handleGenericException(e);
-            }
+        return ResponseEntity.created(location).body(newReservation);
+
         }
 
 
     @GetMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<?> read(@PathVariable Long id) {
-        Reservation reservation = reservationService.getReservationById(id);
 
-        if (reservation != null) {
-            return ResponseEntity.ok(reservation);
+
+        Optional<Reservation> reservationDtoOptional = reservationService.getReservationById(id);
+
+        if (reservationDtoOptional.isPresent()) {
+            ReservationDto reservationDto = new ReservationDto(reservationDtoOptional.get());
+            return ResponseEntity.ok(reservationDto);
+
         } else {
             throw new NotFoundReservationException("예약을 찾을 수 없습니다.");
         }
