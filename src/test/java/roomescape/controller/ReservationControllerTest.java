@@ -23,7 +23,7 @@ public class ReservationControllerTest {
 
 	@BeforeEach
 	void setUp() {
-		reservationRepository.clear();
+    reservationRepository = new ReservationRepository();
 	}
 
 	@Test
@@ -76,7 +76,7 @@ public class ReservationControllerTest {
 				.statusCode(200)
 				.body("size()", is(0));
 	}
-	
+
 	@Test
 	void 예약_삭제_입력_검증() {
 		Map<String, String> params = new HashMap<>();

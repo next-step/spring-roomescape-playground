@@ -1,39 +1,36 @@
 package roomescape.repository;
-
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.stereotype.Repository;
-import roomescape.dto.ReservationResponseDTO;
-import roomescape.dto.ReservationResponseDTO.QueryReservation;
+import roomescape.domain.Reservation;
 import roomescape.exception.ReservationException;
 
 @Repository
 public class ReservationRepository {
-	private final List<ReservationResponseDTO.QueryReservation> reservations = new ArrayList<>();
-	private final AtomicLong id = new AtomicLong(1);
+  	private final Map<Long, Reservation> reservations;
+	private final AtomicLong id;
 
-	public List<ReservationResponseDTO.QueryReservation> findAll() {
-		return reservations;
+	public ReservationRepository() {
+		this.reservations = new HashMap<>();
+		this.id = new AtomicLong(0);
 	}
 
-	public void save(QueryReservation reservation) {
-		reservations.add(reservation);
+	public Collection<Reservation> findAll() {
+		return reservations.values();
+	}
+
+	public Long save(Reservation reservation) {
+		Long newId = id.incrementAndGet();
+		reservations.put(newId, reservation);
+		return newId;
 	}
 
 	public void deleteById(Long id) {
-		boolean removed = reservations.removeIf(reservation -> reservation.getId().equals(id));
-		if (!removed) {
+		if (!reservations.containsKey(id)) {
 			throw new ReservationException("Reservation with id " + id + " not found.");
 		}
-	}
-
-	public Long generateId() {
-		return id.incrementAndGet();
-	}
-
-	public void clear() {
-		reservations.clear();
-		id.set(0);
+		reservations.remove(id);
 	}
 }
