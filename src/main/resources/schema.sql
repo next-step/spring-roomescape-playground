@@ -1,4 +1,5 @@
 DROP TABLE IF EXISTS reservation;
+DROP TABLE IF EXISTS time;
 
 CREATE TABLE reservation
 (
@@ -6,5 +7,12 @@ CREATE TABLE reservation
     name    VARCHAR(255) NOT NULL,
     date    VARCHAR(255) NOT NULL,
     time    VARCHAR(255) NOT NULL,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE time
+(
+    id   BIGINT       NOT NULL AUTO_INCREMENT,
+    time VARCHAR(255) NOT NULL,
     PRIMARY KEY (id)
 );
