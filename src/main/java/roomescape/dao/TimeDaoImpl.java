@@ -1,7 +1,6 @@
 package roomescape.dao;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Objects;
 
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -61,12 +60,6 @@ public class TimeDaoImpl implements TimeDao {
 
     @Override
     public Time findById(Long id) {
-        Time result = jdbcTemplate.queryForObject("SELECT * FROM time WHERE id = ?", TIME_ROW_MAPPER, id);
-
-        if (result == null) {
-            throw new NoSuchElementException("존재하지 않는 예약입니다.");
-        }
-
-        return result;
+        return jdbcTemplate.queryForObject("SELECT * FROM time WHERE id = ?", TIME_ROW_MAPPER, id);
     }
 }

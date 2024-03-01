@@ -34,8 +34,13 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public ReservationResponse add(ReservationCreate request) {
+    public ReservationResponse add(ReservationCreate request) throws NoSuchElementException {
         Time time = timeDao.findById(request.time());
+
+        if (time == null) {
+            throw new NoSuchElementException("존재하지 않는 시간대입니다.");
+        }
+
         Reservation reservation = new Reservation(null, request.name(), request.date(), time);
         return ReservationResponse.from(reservationDao.save(reservation));
     }
