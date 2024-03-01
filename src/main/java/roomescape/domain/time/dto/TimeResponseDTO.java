@@ -1,7 +1,6 @@
 package roomescape.domain.time.dto;
 
 import java.time.LocalTime;
-import java.util.Timer;
 
 public class TimeResponseDTO {
     private Long id;

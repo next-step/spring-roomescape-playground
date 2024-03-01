@@ -32,8 +32,9 @@ public class TimeAPIController {
 
     @PostMapping
     public ResponseEntity<TimeResponseDTO> addTime(@RequestBody @Valid TimeCreateDTO timeCreateDTO) {
-        Time newTime = TimeMapper.toEntity(timeCreateDTO);
-        TimeResponseDTO timeResponseDTO = TimeMapper.toTimeResponseDTO(timeService.createTime(newTime));
+        Time time = TimeMapper.toEntity(timeCreateDTO);
+        Time newTime = timeService.createTime(time);
+        TimeResponseDTO timeResponseDTO = TimeMapper.toTimeResponseDTO(newTime);
         return ResponseEntity.created(URI.create("/times/" + timeResponseDTO.getId())).body(timeResponseDTO);
     }
 
