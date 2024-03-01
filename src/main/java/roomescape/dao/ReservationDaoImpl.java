@@ -1,8 +1,7 @@
 package roomescape.dao;
 
 import java.util.List;
-
-import javax.sql.DataSource;
+import java.util.Objects;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -29,7 +28,7 @@ public class ReservationDaoImpl implements ReservationDao {
 
     public ReservationDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate.getDataSource)
+        this.simpleJdbcInsert = new SimpleJdbcInsert(Objects.requireNonNull(jdbcTemplate.getDataSource()))
             .withTableName("reservation")
             .usingGeneratedKeyColumns("id");
     }
