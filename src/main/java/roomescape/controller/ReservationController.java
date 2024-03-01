@@ -10,15 +10,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import jakarta.validation.Valid;
 import roomescape.controller.dto.ReservationCreate;
 import roomescape.controller.dto.ReservationResponse;
-import roomescape.domain.Reservation;
 import roomescape.service.ReservationService;
 
 @Controller
+@RequestMapping("/reservations")
 public class ReservationController {
 
     private final ReservationService reservationService;
@@ -27,18 +28,13 @@ public class ReservationController {
         this.reservationService = reservationService;
     }
 
-    @GetMapping("/reservation")
-    public String getReservation() {
-        return "new-reservation";
-    }
-
-    @GetMapping("/reservations")
+    @GetMapping
     @ResponseBody
     public List<ReservationResponse> getReservations() {
         return reservationService.findAll();
     }
 
-    @PostMapping("/reservations")
+    @PostMapping
     public ResponseEntity<ReservationResponse> post(@RequestBody @Valid ReservationCreate request) {
         ReservationResponse response = reservationService.add(request);
         
@@ -46,7 +42,7 @@ public class ReservationController {
             .body(response);
     }
 
-    @DeleteMapping("/reservations/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         reservationService.remove(id);
 

@@ -24,7 +24,7 @@ public class TimeServiceImpl implements TimeService {
     @Override
     @Transactional(readOnly = true)
     public List<TimeResponse> findAll() {
-        return timeDao.readAll().stream()
+        return timeDao.findAll().stream()
             .map(TimeResponse::from)
             .toList();
     }
@@ -41,6 +41,6 @@ public class TimeServiceImpl implements TimeService {
             throw new NoSuchElementException("존재하지 않는 예약 시간입니다.");
         }
 
-        timeDao.delete(id);
+        timeDao.deleteById(id);
     }
 }

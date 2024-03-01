@@ -8,7 +8,8 @@ import roomescape.domain.Time;
 
 public record TimeResponse(
     long id,
-    @JsonFormat(pattern = "HH:mm") LocalTime time // 0 ~ 23시간 형식
+    @JsonFormat(pattern = "HH:mm")
+    LocalTime time // 0 ~ 23시간 형식
 ) {
     public static TimeResponse from(Time time) {
         return new TimeResponse(

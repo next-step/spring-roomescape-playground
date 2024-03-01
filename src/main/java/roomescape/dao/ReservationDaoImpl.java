@@ -42,7 +42,7 @@ public class ReservationDaoImpl implements ReservationDao {
     }
 
     @Override
-    public List<Reservation> readAll() {
+    public List<Reservation> findAll() {
         return jdbcTemplate.query(
             """
                 SELECT
@@ -58,29 +58,17 @@ public class ReservationDaoImpl implements ReservationDao {
     }
 
     @Override
-    public Reservation read(Long id) {
-        try {
-            return jdbcTemplate.queryForObject(
-                """
-                SELECT
-                r.id as reservation_id,
-                r.name,
-                r.date,
-                t.id as time_id,
-                t.time as time_value
-                FROM reservation as r inner join time as t on r.time_id = t.id
-                WHERE r.id = ?
-                """,
-                RESERVATION_ROW_MAPPER,
-                id
-            );
-        } catch (EmptyResultDataAccessException e) {
-            return null;
-        }
+    public boolean existsById(Long id) {
+        Boolean result = jdbcTemplate.queryForObject(
+            "SELECT EXISTS(SELECT 1 FROM reservation WHERE id = ?)",
+            Boolean.class,
+            id
+        );
+        return result != null && result;
     }
 
     @Override
-    public Reservation create(Reservation reservation) {
+    public Reservation save(Reservation reservation) {
         SqlParameterSource source = new BeanPropertySqlParameterSource(reservation);
         Number key = simpleJdbcInsert.executeAndReturnKey(source);
 
@@ -88,7 +76,7 @@ public class ReservationDaoImpl implements ReservationDao {
     }
 
     @Override
-    public void delete(Long id) {
+    public void deleteById(Long id) {
         jdbcTemplate.update("DELETE FROM reservation WHERE id = ?", id);
     }
 

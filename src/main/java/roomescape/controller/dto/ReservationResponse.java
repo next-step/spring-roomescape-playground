@@ -5,12 +5,12 @@ import java.time.LocalDate;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import roomescape.domain.Reservation;
-import roomescape.domain.Time;
 
 public record ReservationResponse(
     long id,
     String name,
-    @JsonFormat(pattern = "yyyy-MM-dd") LocalDate date,
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    LocalDate date,
     TimeResponse time
 ) {
     public static ReservationResponse from(Reservation reservation) {

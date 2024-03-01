@@ -32,7 +32,7 @@ public class TimeDaoImpl implements TimeDao {
     }
 
     @Override
-    public List<Time> readAll() {
+    public List<Time> findAll() {
         return jdbcTemplate.query("SELECT * FROM time", TIME_ROW_MAPPER);
     }
 
@@ -55,7 +55,7 @@ public class TimeDaoImpl implements TimeDao {
     }
 
     @Override
-    public void delete(Long id) {
+    public void deleteById(Long id) {
         jdbcTemplate.update("DELETE FROM time WHERE id = ?", id);
     }
 
