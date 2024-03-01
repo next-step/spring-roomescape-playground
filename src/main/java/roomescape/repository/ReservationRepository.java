@@ -1,22 +1,31 @@
 package roomescape.repository;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
 import roomescape.dto.ReservationDTO;
-import roomescape.dto.ResponseReservationDTO;
+import roomescape.dto.ReservationResponseDTO;
+import roomescape.rowMapper.ReservationRowMapper;
 
+import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.util.List;
 
 @Repository
 public class ReservationRepository {
     private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert insert;
 
-    public ReservationRepository(JdbcTemplate jdbcTemplate) {
+    public ReservationRepository(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
+        this.insert = new SimpleJdbcInsert(dataSource)
+                .withTableName("reservation")
+                .usingGeneratedKeyColumns("id");
     }
 
     public List<Reservation> findAll() {
@@ -24,43 +33,28 @@ public class ReservationRepository {
 
         return jdbcTemplate.query(
                 sql,
-                (resultSet, rowNum) -> {
-                    Reservation reservation = new Reservation(
-                            resultSet.getLong("id"),
-                            resultSet.getString("name"),
-                            resultSet.getString("date"),
-                            resultSet.getString("time")
-                    );
-                    return reservation;
-                });
+                new ReservationRowMapper());
     }
 
-    public ResponseReservationDTO makeReservation(ReservationDTO reservationDTO) {
-        String sql = "INSERT INTO reservation (name, date, time) values (?, ?, ?)";
-        KeyHolder keyHolder = new GeneratedKeyHolder();
+    public ReservationResponseDTO makeReservation(ReservationDTO reservationDTO) {
+        SqlParameterSource params = new BeanPropertySqlParameterSource(reservationDTO);
 
-        jdbcTemplate.update(connection -> {
-            PreparedStatement preparedStatement = connection.prepareStatement(sql,
-                    new String[]{"id"});
-            preparedStatement.setString(1, reservationDTO.name());
-            preparedStatement.setString(2, reservationDTO.date());
-            preparedStatement.setString(3, reservationDTO.time());
-            return preparedStatement;
-        }, keyHolder);
-        return new ResponseReservationDTO(keyHolder.getKey().longValue(),
+        Long id = insert.executeAndReturnKey(params).longValue();
+
+        return new ReservationResponseDTO(id,
                 reservationDTO.name(),
                 reservationDTO.date(),
                 reservationDTO.time()
         );
     }
 
-    private boolean idUserNotExist(Long id){
+    private boolean idUserNotExist(Long id) {
         String sql = "SELECT * FROM reservation WHERE id = ?";
         return jdbcTemplate.query(sql, (rs, rowNum) -> 0, id).isEmpty();
     }
 
     public void deleteById(Long id) {
-        if(idUserNotExist(id)){
+        if (idUserNotExist(id)) {
             throw new IllegalArgumentException("아이디가 존재하지 않습니다!");
         }
 

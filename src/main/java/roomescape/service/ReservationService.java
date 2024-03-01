@@ -3,7 +3,7 @@ package roomescape.service;
 import org.springframework.stereotype.Service;
 import roomescape.domain.Reservation;
 import roomescape.dto.ReservationDTO;
-import roomescape.dto.ResponseReservationDTO;
+import roomescape.dto.ReservationResponseDTO;
 import roomescape.repository.ReservationRepository;
 
 import java.util.List;
@@ -20,7 +20,7 @@ public class ReservationService {
         return reservationRepository.findAll();
     }
 
-    public ResponseReservationDTO makeReservation(ReservationDTO reservationDTO) {
+    public ReservationResponseDTO makeReservation(ReservationDTO reservationDTO) {
         return reservationRepository.makeReservation(reservationDTO);
     }
 
