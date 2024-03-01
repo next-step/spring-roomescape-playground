@@ -2,7 +2,6 @@ package roomescape.Domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-@JsonIgnoreProperties (ignoreUnknown = true) // "valid"
 public class Reservation {
     private long id;
     private String name;
@@ -50,11 +49,11 @@ public class Reservation {
         return new Reservation(id, reservation.name, reservation.date, reservation.time);
     }
 
-    public boolean isValid() {
-        return isNotNullOrEmpty(name) && isNotNullOrEmpty(date) && isNotNullOrEmpty(time);
+    public boolean notEmpty() {
+        return notNullOrEmpty(name) && notNullOrEmpty(date) && notNullOrEmpty(time);
     }
 
-    private boolean isNotNullOrEmpty(String string) {
+    private boolean notNullOrEmpty(String string) {
         return string != null && !string.isEmpty();
     }
 }
