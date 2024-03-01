@@ -6,7 +6,11 @@ import java.util.NoSuchElementException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import roomescape.controller.dto.ReservationCreate;
+import roomescape.controller.dto.ReservationResponse;
+import roomescape.dao.TimeDao;
 import roomescape.domain.Reservation;
+import roomescape.domain.Time;
 import roomescape.repository.ReservationRepository;
 
 @Service
@@ -14,20 +18,26 @@ import roomescape.repository.ReservationRepository;
 public class ReservationServiceImpl implements ReservationService {
 
     private final ReservationRepository reservationRepository;
+    private final TimeDao timeDao;
 
-    public ReservationServiceImpl(ReservationRepository reservationRepository) {
+    public ReservationServiceImpl(ReservationRepository reservationRepository, TimeDao timeDao) {
         this.reservationRepository = reservationRepository;
+        this.timeDao = timeDao;
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<Reservation> findAll() {
-        return reservationRepository.findAll();
+    public List<ReservationResponse> findAll() {
+        return reservationRepository.findAll().stream()
+            .map(ReservationResponse::from)
+            .toList();
     }
 
     @Override
-    public Reservation add(Reservation request) {
-        return reservationRepository.save(request);
+    public ReservationResponse add(ReservationCreate request) {
+        Time time = timeDao.findById(request.time());
+        Reservation reservation = new Reservation(null, request.name(), request.date(), time);
+        return ReservationResponse.from(reservationRepository.save(reservation));
     }
 
     @Override

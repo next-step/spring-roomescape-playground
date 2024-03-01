@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import roomescape.controller.dto.TimeCreate;
 import roomescape.controller.dto.TimeResponse;
@@ -11,6 +12,7 @@ import roomescape.dao.TimeDao;
 import roomescape.domain.Time;
 
 @Service
+@Transactional
 public class TimeServiceImpl implements TimeService {
 
     private final TimeDao timeDao;
@@ -20,6 +22,7 @@ public class TimeServiceImpl implements TimeService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<TimeResponse> findAll() {
         return timeDao.readAll().stream()
             .map(TimeResponse::from)

@@ -12,4 +12,6 @@ public interface TimeDao {
     boolean existsById(Long id);
 
     void delete(Long id);
+
+    Time findById(Long id);
 }

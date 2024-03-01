@@ -12,6 +12,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import roomescape.domain.Reservation;
+import roomescape.domain.Time;
 
 @Repository
 public class ReservationDaoImpl implements ReservationDao {
@@ -19,12 +20,19 @@ public class ReservationDaoImpl implements ReservationDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert simpleJdbcInsert;
 
-    private static final RowMapper<Reservation> RESERVATION_ROW_MAPPER = (rs, rowNum) -> new Reservation(
-        rs.getLong("id"),
-        rs.getString("name"),
-        rs.getDate("date").toLocalDate(),
-        rs.getTime("time").toLocalTime()
-    );
+    private static final RowMapper<Reservation> RESERVATION_ROW_MAPPER = (rs, rowNum) -> {
+        Time time = new Time(
+            rs.getLong("time_id"),
+            rs.getTime("time_value").toLocalTime()
+        );
+
+        return new Reservation(
+            rs.getLong("id"),
+            rs.getString("name"),
+            rs.getDate("date").toLocalDate(),
+            time
+        );
+    };
 
     public ReservationDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -35,13 +43,37 @@ public class ReservationDaoImpl implements ReservationDao {
 
     @Override
     public List<Reservation> readAll() {
-        return jdbcTemplate.query("SELECT id, name, date, time FROM reservation", RESERVATION_ROW_MAPPER);
+        return jdbcTemplate.query(
+            """
+                SELECT
+                r.id as reservation_id,
+                r.name,
+                r.date,
+                t.id as time_id,
+                t.time as time_value
+                FROM reservation as r inner join time as t on r.time_id = t.id
+                """,
+            RESERVATION_ROW_MAPPER
+        );
     }
 
     @Override
     public Reservation read(Long id) {
         try {
-            return jdbcTemplate.queryForObject("SELECT * FROM reservation WHERE id = ?", RESERVATION_ROW_MAPPER, id);
+            return jdbcTemplate.queryForObject(
+                """
+                SELECT
+                r.id as reservation_id,
+                r.name,
+                r.date,
+                t.id as time_id,
+                t.time as time_value
+                FROM reservation as r inner join time as t on r.time_id = t.id
+                WHERE r.id = ?
+                """,
+                RESERVATION_ROW_MAPPER,
+                id
+            );
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
