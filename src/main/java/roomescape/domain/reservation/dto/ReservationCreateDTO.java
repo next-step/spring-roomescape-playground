@@ -1,5 +1,6 @@
 package roomescape.domain.reservation.dto;
 
+import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -11,8 +12,8 @@ public class ReservationCreateDTO {
     String name;
     @NotNull(message = "날짜를 입력해주세요.")
     LocalDate date;
-    @NotNull(message = "시간을 입력해주세요.")
-    LocalTime time;
+    @NotNull(message = "시간을 선택해주세요.")
+    Long time;
 
     ReservationCreateDTO() {
 
@@ -26,7 +27,7 @@ public class ReservationCreateDTO {
         return date;
     }
 
-    public LocalTime getTime() {
+    public Long getTime() {
         return time;
     }
 }
