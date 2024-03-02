@@ -14,13 +14,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Repository
-public class UpdatingDAO {
+public class ReservationUpdatingDAO {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
 
-    public UpdatingDAO(JdbcTemplate jdbcTemplate, DataSource dataSource) {
+    public ReservationUpdatingDAO(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.jdbcInsert = new SimpleJdbcInsert(dataSource)
                 .withTableName("reservation")

@@ -11,12 +11,12 @@ import java.sql.SQLException;
 import java.util.List;
 
 @Repository
-public class QueryingDAO {
+public class ReservationQueryDao {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    public QueryingDAO(JdbcTemplate jdbcTemplate) {
+    public ReservationQueryDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
