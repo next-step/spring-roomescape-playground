@@ -3,9 +3,12 @@ package roomescape.dao;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import roomescape.domain.Reservation;
+import roomescape.domain.Time;
 import roomescape.dto.ReservationRequestDto;
 import roomescape.dto.ReservationResponseDto;
 
@@ -24,32 +27,43 @@ public class ReservationDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    private final RowMapper<ReservationResponseDto> rowMapper = (resultSet, rowNum) -> {
-        ReservationResponseDto reservation = new ReservationResponseDto(
-                resultSet.getLong("id"),
+    private final RowMapper<Reservation> rowMapper = (resultSet, rowNum) -> {
+        Reservation reservation = new Reservation(
+                resultSet.getLong("reservation_id"),
                 resultSet.getString("name"),
                 resultSet.getString("date"),
-                resultSet.getString("time")
+                new Time(resultSet.getLong("time_id"), resultSet.getString("time_value"))
         );
         return reservation;
     };
 
-    public List<ReservationResponseDto> findAll(){
-        String sql = "SELECT * FROM reservation";
+    public List<Reservation> findAll(){
+        String sql = """
+                SELECT
+                r.id as reservation_id,
+                r.name,
+                r.date,
+                t.id as time_id,
+                t.time as time_value
+                FROM reservation as r inner join time as t on r.time_id = t.id
+                """;
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public ReservationResponseDto findById(Long id){
+    public Reservation findById(Long id){
         String sql = "SELECT * FROM reservation where id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
-    public ReservationResponseDto insert(ReservationRequestDto reservationRequest){
-        SqlParameterSource params = new BeanPropertySqlParameterSource(reservationRequest);
+    public Reservation insert(Reservation reservation){
+        SqlParameterSource params = new MapSqlParameterSource()
+                .addValue("name", reservation.getName())
+                .addValue("date", reservation.getDate())
+                .addValue("time_id", reservation.getTime().getId());
         Long id = jdbcInsert.executeAndReturnKey(params).longValue();
 
-        return new ReservationResponseDto(id, reservationRequest.name(),
-                reservationRequest.date(), reservationRequest.time());
+        return new Reservation(id, reservation.getName(),
+                reservation.getDate(), reservation.getTime());
     }
 
     public void delete(Long id){

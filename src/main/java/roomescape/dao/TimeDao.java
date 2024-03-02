@@ -1,14 +1,12 @@
 package roomescape.dao;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import roomescape.dto.ReservationRequestDto;
-import roomescape.dto.ReservationResponseDto;
+import roomescape.domain.Time;
 import roomescape.dto.TimeRequestDto;
 import roomescape.dto.TimeResponseDto;
 
@@ -28,20 +26,20 @@ public class TimeDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    private final RowMapper<TimeResponseDto> rowMapper = (resultSet, rowNum) -> {
-        TimeResponseDto time = new TimeResponseDto(
+    private final RowMapper<Time> rowMapper = (resultSet, rowNum) -> {
+        Time time = new Time(
                 resultSet.getLong("id"),
                 resultSet.getString("time")
         );
         return time;
     };
 
-    public List<TimeResponseDto> findAll(){
+    public List<Time> findAll(){
         String sql = "SELECT * FROM time";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public TimeResponseDto findById(Long id){
+    public Time findById(Long id){
         String sql = "SELECT * FROM time where id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }

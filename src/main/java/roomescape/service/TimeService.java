@@ -2,16 +2,14 @@ package roomescape.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.thymeleaf.util.StringUtils;
-import roomescape.dao.ReservationDao;
 import roomescape.dao.TimeDao;
-import roomescape.dto.ReservationRequestDto;
 import roomescape.dto.ReservationResponseDto;
 import roomescape.dto.TimeRequestDto;
 import roomescape.dto.TimeResponseDto;
 import roomescape.exception.NoParameterException;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -19,11 +17,13 @@ public class TimeService {
     private final TimeDao timeDao;
 
     public List<TimeResponseDto> loadTimeList(){
-        return timeDao.findAll();
+        return timeDao.findAll().stream()
+                .map(TimeResponseDto::toTimeDto)
+                .collect(Collectors.toList());
     }
 
     public TimeResponseDto createTime(TimeRequestDto timeRequest){
-        if (StringUtils.isEmpty(timeRequest.time())) {
+        if (timeRequest.time() == null) {
             throw new NoParameterException("Time Have No Parameter");
         }
         return timeDao.insert(timeRequest);

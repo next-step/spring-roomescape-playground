@@ -1,14 +1,11 @@
 package roomescape.controller;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import roomescape.dto.ReservationResponseDto;
 import roomescape.dto.TimeRequestDto;
 import roomescape.dto.TimeResponseDto;
-import roomescape.service.ReservationService;
 import roomescape.service.TimeService;
 
 import java.net.URI;
