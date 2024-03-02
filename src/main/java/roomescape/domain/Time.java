@@ -1,4 +1,4 @@
 package roomescape.domain;
 
-public record Time(Long id, String time) {
+public record Time(Long time_id, String time_value) {
 }
