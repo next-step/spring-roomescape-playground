@@ -1,19 +1,25 @@
 package roomescape.domain;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Reservation {
 
     private Long id;
-    private final String name;
-    private final String date;
-    private final String time;
+    private String name;
+    private String date;
+    private String time;
 
-    public Reservation(Long id, String name, String date, String time) {
+//    public Reservation() {
+//
+//    }
+
+    @JsonCreator
+    public Reservation(@JsonProperty("id") Long id,
+                       @JsonProperty("name") String name,
+                       @JsonProperty("date") String date,
+                       @JsonProperty("time") String time) {
         this.id = id;
-        if (!isValid(name, date, time)) {
-            throw new IllegalArgumentException("누락된 사항이 있습니다. 확인해주세요.");
-        }
         this.name = name;
         this.date = date;
         this.time = time;
