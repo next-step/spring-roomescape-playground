@@ -1,6 +1,6 @@
 package roomescape.controller;
 
-import static roomescape.dto.ReservationResponseDTO.AddReservationResponse;
+import static roomescape.dto.reservation.ReservationResponseDTO.AddReservationResponse;
 
 import jakarta.validation.Valid;
 import java.net.URI;
@@ -13,19 +13,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import roomescape.dto.ReservationRequestDTO;
-import roomescape.dto.ReservationResponseDTO.QueryReservationResponse;
+import roomescape.dto.reservation.ReservationRequestDTO;
+import roomescape.dto.reservation.ReservationResponseDTO.QueryReservationResponse;
 import roomescape.service.ReservationService;
 
 @RestController
 @RequiredArgsConstructor
 public class ReservationController {
 	private final ReservationService reservationService;
-
-	@GetMapping("/reservation")
-	public String reservation() {
-		return "reservation";
-	}
 
 	@GetMapping("/reservations")
 	public ResponseEntity<List<QueryReservationResponse>> getReservations() {
