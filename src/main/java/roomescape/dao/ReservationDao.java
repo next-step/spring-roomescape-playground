@@ -2,44 +2,37 @@ package roomescape.dao;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
 
 import javax.sql.DataSource;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Repository
-public class ReservationUpdatingDAO {
+public class ReservationDao {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
+    private final ReservationRowMapper rowMapper;
 
-    public ReservationUpdatingDAO(JdbcTemplate jdbcTemplate, DataSource dataSource) {
+    public ReservationDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.jdbcInsert = new SimpleJdbcInsert(dataSource)
                 .withTableName("reservation")
                 .usingGeneratedKeyColumns("id");
+        this.rowMapper = new ReservationRowMapper();
     }
 
-    private static class ReservationRowMapper implements RowMapper<Reservation> {
-        @Override
-        public Reservation mapRow(ResultSet resultSet, int rowNum) throws SQLException {
-            return new Reservation(
-                    resultSet.getLong("id"),
-                    resultSet.getString("name"),
-                    resultSet.getString("date"),
-                    resultSet.getString("time")
-            );
-        }
+    public List<Reservation> getAllReservations() {
+        String sql = "SELECT * FROM reservation";
+        return jdbcTemplate.query(sql, this.rowMapper);
     }
 
-    public void insertReservation(Reservation reservation) {
+    public Reservation insertReservation(Reservation reservation) {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("name", reservation.getName());
         parameters.put("date", reservation.getDate());
@@ -47,6 +40,7 @@ public class ReservationUpdatingDAO {
 
         Number newId = jdbcInsert.executeAndReturnKey(parameters);
         reservation.setId(newId.longValue());
+        return reservation;
     }
 
     public int deleteReservation(Long id) {
