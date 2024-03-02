@@ -190,14 +190,14 @@ public class MissionStepTest {
         Map<String, String> reservation = new HashMap<>();
         reservation.put("name", "브라운");
         reservation.put("date", "2023-08-05");
-        reservation.put("time", "10:00");
+        reservation.put("time", "1");
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(reservation)
                 .when().post("/reservations")
                 .then().log().all()
-                .statusCode(400);
+                .statusCode(200);
     }
 
 }

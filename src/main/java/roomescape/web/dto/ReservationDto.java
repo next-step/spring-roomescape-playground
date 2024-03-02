@@ -8,10 +8,10 @@ import roomescape.domain.Time;
 public class ReservationDto {
 
 
-    private Long id;
-    private String name;
-    private String date;
-    private Time time;
+    private final Long id;
+    private final String name;
+    private final String date;
+    private final Time time;
 
     public Long getId() {
         return id;

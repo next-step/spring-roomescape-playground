@@ -3,10 +3,11 @@ package roomescape.domain;
 
 import jakarta.persistence.*;
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-
+@Data
 @Setter
 @Getter
 @Entity
@@ -23,12 +24,9 @@ public class Reservation {
     private String date;
 
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "time_id")
     private Time time;
-
-//    @Column(name = "time_id", nullable = false)  // Change the column definition for time_id
-//    private Long timeId;
 
     public Reservation() {
 

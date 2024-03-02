@@ -13,4 +13,6 @@ public interface TimeDao {
     Time createTime(Long Id, String time);
 
     void deleteTimeById(Long id);
+
+    Optional<Time> getTimeById(Long id);
 }

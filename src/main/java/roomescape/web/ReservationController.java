@@ -42,15 +42,14 @@ public class ReservationController {
 
         String name = params.get("name");
         String date = params.get("date");
-        String timeString = params.get("time");
-        Time time = new Time(timeString);
+        Long timeId = Long.parseLong(params.get("timeId"));
 
-        if(name == null || date == null || time == null) {
+        if(name == null || date == null || params.get("timeId") == null) {
             throw new NotFoundReservationException("필요한 인자가 부족합니다.");
         }
 
         
-        ReservationDto newReservation = reservationService.createReservation(name, date, time);
+        ReservationDto newReservation = reservationService.createReservation(name, date, timeId);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
