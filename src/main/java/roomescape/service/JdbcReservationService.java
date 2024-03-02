@@ -1,7 +1,6 @@
 package roomescape.service;
 
 import java.util.List;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -38,7 +37,7 @@ public class JdbcReservationService implements ReservationService {
 			return ps;
 		}, keyHolder);
 
-		Long id = Objects.requireNonNull(keyHolder.getKey()).longValue();
+		Long id = keyHolder.getKey().longValue();
 		return new AddReservationResponse(
 				id,
 				reservationRequest.name(),
