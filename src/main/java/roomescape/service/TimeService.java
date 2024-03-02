@@ -3,6 +3,7 @@ package roomescape.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import roomescape.dao.TimeDao;
+import roomescape.domain.Time;
 import roomescape.dto.ReservationResponseDto;
 import roomescape.dto.TimeRequestDto;
 import roomescape.dto.TimeResponseDto;
@@ -26,7 +27,8 @@ public class TimeService {
         if (timeRequest.time() == null) {
             throw new NoParameterException("Time Have No Parameter");
         }
-        return timeDao.insert(timeRequest);
+        Time time = new Time(null, timeRequest.time());
+        return TimeResponseDto.toTimeDto(timeDao.insert(time));
     }
 
     public void deleteTime (Long id){

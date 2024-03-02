@@ -44,11 +44,11 @@ public class TimeDao {
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
-    public TimeResponseDto insert(TimeRequestDto timeRequest){
-        SqlParameterSource params = new BeanPropertySqlParameterSource(timeRequest);
+    public Time insert(Time time){
+        SqlParameterSource params = new BeanPropertySqlParameterSource(time);
         Long id = jdbcInsert.executeAndReturnKey(params).longValue();
 
-        return new TimeResponseDto(id, timeRequest.time());
+        return new Time(id, time.getTime());
     }
 
     public void delete(Long id){

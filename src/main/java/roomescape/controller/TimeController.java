@@ -19,7 +19,7 @@ public class TimeController {
     private final TimeService timeService;
 
     @GetMapping
-    public ResponseEntity<List<TimeResponseDto>> LoadTime(){
+    public ResponseEntity<List<TimeResponseDto>> LoadTimes(){
         return ResponseEntity.ok(timeService.loadTimeList());
     }
 
