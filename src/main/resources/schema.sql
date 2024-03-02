@@ -1,7 +1,16 @@
-CREATE TABLE Reservation
+CREATE TABLE time
 (
-    id   BIGINT PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(255) NOT NULL,
-    date DATE         NOT NULL,
-    time TIME         NOT NULL
+    id   BIGINT       NOT NULL AUTO_INCREMENT,
+    time VARCHAR(255) NOT NULL,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE reservation
+(
+    id      BIGINT       NOT NULL AUTO_INCREMENT,
+    name    VARCHAR(255) NOT NULL,
+    date    VARCHAR(255) NOT NULL,
+    time_id BIGINT,
+    PRIMARY KEY (id),
+    FOREIGN KEY (time_id) REFERENCES time (id)
 );
