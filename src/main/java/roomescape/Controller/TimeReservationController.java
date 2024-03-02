@@ -3,8 +3,11 @@ package roomescape.Controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import roomescape.DTO.TimeRequestDTO;
+import roomescape.DTO.TimeResponseDTO;
 import roomescape.Domain.Time;
-import roomescape.Repository.TimeDAO;
+import roomescape.Repository.TimeRepository;
+import roomescape.Service.TimeServiceImpl;
 
 import java.net.URI;
 import java.util.List;
@@ -12,17 +15,16 @@ import java.util.List;
 @Controller
 @RequestMapping("/times")
 public class TimeReservationController {
-    private final TimeDAO timeDAO;
+    private final TimeServiceImpl service;
 
-    public TimeReservationController(TimeDAO timeDAO)
+    public TimeReservationController(TimeServiceImpl service)
     {
-        this.timeDAO = timeDAO;
+        this.service = service;
     }
 
     @GetMapping
-    public ResponseEntity<List<Time>> getAllTimeReservations() {
-        List<Time> times = timeDAO.findAllTimeReservation();
-        return ResponseEntity.ok().body(times);
+    public ResponseEntity<List<TimeResponseDTO>> getAllTimeReservations() {
+        return ResponseEntity.ok(service.findAllTimeReservations());
     }
 
     /*
@@ -33,10 +35,10 @@ public class TimeReservationController {
     */
 
     @PostMapping
-    public ResponseEntity<Time> createTimeReservation(@RequestBody Time time)
+    public ResponseEntity<TimeResponseDTO> createTimeReservation(@RequestBody TimeRequestDTO timeRequest)
     {
-        Long id = timeDAO.createTimeReservation(time);
-        Time newTimeReservation = timeDAO.findTimeReservation(id);
+        Long id = service.createTimeReservation(timeRequest);
+        TimeResponseDTO newTimeReservation = service.findTimeReservationById(id);
 
         return ResponseEntity.created(URI.create("/times/" + newTimeReservation.getId())).body(newTimeReservation);
     }
@@ -44,7 +46,7 @@ public class TimeReservationController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTimeReservation(@PathVariable Long id)
     {
-        timeDAO.deleteTimeReservation(id);
+        service.deleteTimeReservationById(id);
         return ResponseEntity.noContent().build();
     }
 }

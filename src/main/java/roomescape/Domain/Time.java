@@ -1,44 +1,35 @@
 package roomescape.Domain;
 
-import org.springframework.cglib.core.Local;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.LocalTime;
 
 public class Time {
     private Long id;
-    private LocalTime time;
+    private String time;
 
     public Time()
     {}
 
-    public Time(Long id, LocalTime time)
+    public Time(Long id, String time)
     {
         this.id = id;
         this.time = time;
     }
-
-    public Time(Long id, String time)
-    {
-        this(id, LocalTime.parse(time));
-    }
-
-    public Time(String time)
-    {
-        this(null, LocalTime.parse(time));
-    }
-
     public Long getId()
     {
         return id;
     }
 
-    public LocalTime getTime()
+    public String getTime()  // 반환 타입을 String으로 변경
     {
         return time;
     }
 
     public boolean notEmpty() {
-        return notNullOrEmpty(time.toString());
+        return notNullOrEmpty(time);
     }
 
     private boolean notNullOrEmpty(String string) {

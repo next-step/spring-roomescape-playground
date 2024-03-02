@@ -1,15 +1,13 @@
 package roomescape.Domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 public class Reservation {
     private long id;
     private String name;
     private String date;
-    private String time;
+    private Time time;
 
     public Reservation() {}
-    public Reservation(long id, String name, String date, String time)
+    public Reservation(long id, String name, String date, Time time)
     {
         this.id = id;
         this.name = name;
@@ -17,7 +15,7 @@ public class Reservation {
         this.time = time;
     }
 
-    public Reservation(String name, String date, String time)
+    public Reservation(String name, String date, Time time)
     {
         this.name = name;
         this.date = date;
@@ -36,21 +34,12 @@ public class Reservation {
         return date;
     }
 
-    public String getTime() {
+    public Time getTime() {
         return time;
     }
 
-    public void setId(Long id)
-    {
-        this.id = id;
-    }
-
-    public static Reservation toEntity(Reservation reservation, long id) {
-        return new Reservation(id, reservation.name, reservation.date, reservation.time);
-    }
-
     public boolean notEmpty() {
-        return notNullOrEmpty(name) && notNullOrEmpty(date) && notNullOrEmpty(time);
+        return notNullOrEmpty(name) && notNullOrEmpty(date) && time != null;
     }
 
     private boolean notNullOrEmpty(String string) {
