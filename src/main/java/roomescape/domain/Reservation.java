@@ -7,6 +7,7 @@ public class Reservation {
     private final Time time;
 
     public Reservation(Long id, String name, String date, Time time) {
+
         this.id = id;
         this.name = name;
         this.date = date;
