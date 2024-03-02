@@ -4,8 +4,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
 import roomescape.dto.ReservationDTO;
@@ -13,8 +11,8 @@ import roomescape.dto.ReservationResponseDTO;
 import roomescape.rowMapper.ReservationRowMapper;
 
 import javax.sql.DataSource;
-import java.sql.PreparedStatement;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Repository
 public class ReservationRepository {
@@ -29,10 +27,17 @@ public class ReservationRepository {
     }
 
     public List<Reservation> findAll() {
-        String sql = "SELECT id, name, date, time FROM reservation";
+        String sql = """
+                SELECT
+                r.id as reservation_id,
+                        r.name,
+                        r.date,
+                        t.id as time_id,
+                t.time as time_value
+                FROM reservation as r inner join time as t on r.time_id = t.id
+                """;
 
-        return jdbcTemplate.query(
-                sql,
+        return jdbcTemplate.query(sql,
                 new ReservationRowMapper());
     }
 
@@ -48,15 +53,30 @@ public class ReservationRepository {
         );
     }
 
-    private boolean idUserNotExist(Long id) {
-        String sql = "SELECT * FROM reservation WHERE id = ?";
-        return jdbcTemplate.query(sql, (rs, rowNum) -> 0, id).isEmpty();
+    private void idUserNotExist(Long id) {
+        String sql = """
+                 SELECT
+                r.id as reservation_id
+                , r.name
+                , r.date
+                , t.id as time_id
+                , t.time as time_value
+                FROM reservation as r
+                inner join time as t
+                on r.time_id = ?
+                """;
+        try{
+            Reservation reservation =
+                    jdbcTemplate.queryForObject(sql,
+                            new ReservationRowMapper(),
+                            id);
+        }catch (Exception e){
+            throw new NoSuchElementException();
+        }
     }
 
     public void deleteById(Long id) {
-        if (idUserNotExist(id)) {
-            throw new IllegalArgumentException("아이디가 존재하지 않습니다!");
-        }
+        idUserNotExist(id);
 
         String sql = "DELETE FROM reservation WHERE id = ?";
         jdbcTemplate.update(sql, id);
