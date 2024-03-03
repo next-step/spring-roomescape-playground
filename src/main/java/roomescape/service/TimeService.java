@@ -23,7 +23,6 @@ public class TimeService {
     }
 
     public void deleteTime(Long id){
-        //timeRepository.findById(id);
         timeRepository.deleteTime(id);
     }
 }

@@ -12,12 +12,12 @@ public class ReservationRowMapper implements RowMapper<Reservation> {
     @Override
     public Reservation mapRow(ResultSet resultSet, int rowNum) throws SQLException {
         Time time = new Time(
-                resultSet.getLong("id"),
-                resultSet.getString("time")
+                resultSet.getLong("time_id"),
+                resultSet.getString("time_value")
         );
 
         return new Reservation(
-                resultSet.getLong("id"),
+                resultSet.getLong("reservation_id"),
                 resultSet.getString("name"),
                 resultSet.getString("date"),
                 time

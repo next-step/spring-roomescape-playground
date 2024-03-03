@@ -1,7 +1,6 @@
 package roomescape.controller;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import roomescape.domain.Time;
 import roomescape.dto.TimeResponseDTO;
@@ -10,7 +9,7 @@ import roomescape.service.TimeService;
 import java.net.URI;
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/times")
 public class TimeController {
     private final TimeService timeService;
