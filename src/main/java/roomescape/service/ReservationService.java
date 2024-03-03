@@ -23,7 +23,7 @@ public class ReservationService {
 
     public List<ReservationResponseDto> loadReservationList(){
         return reservationDao.findAll().stream()
-                .map(ReservationResponseDto::toReservationDto)
+                .map(ReservationResponseDto::from)
                 .collect(Collectors.toList());
     }
 
@@ -40,7 +40,7 @@ public class ReservationService {
         Reservation newReservation = new Reservation(null, reservationRequest.name(),
                 reservationRequest.date(), time);
 
-        return ReservationResponseDto.toReservationDto(reservationDao.insert(newReservation));
+        return ReservationResponseDto.from(reservationDao.insert(newReservation));
     }
 
     public void deleteReservation(Long id){

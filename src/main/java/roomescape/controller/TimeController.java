@@ -19,18 +19,18 @@ public class TimeController {
     private final TimeService timeService;
 
     @GetMapping
-    public ResponseEntity<List<TimeResponseDto>> LoadTimes(){
+    public ResponseEntity<List<TimeResponseDto>> loadTimes(){
         return ResponseEntity.ok(timeService.loadTimeList());
     }
 
     @PostMapping
-    public ResponseEntity<TimeResponseDto> CreateTime(@RequestBody TimeRequestDto timeRequest){
+    public ResponseEntity<TimeResponseDto> createTime(@RequestBody TimeRequestDto timeRequest){
         TimeResponseDto timeResponse = timeService.createTime(timeRequest);
         return ResponseEntity.created(URI.create("/times/" + timeResponse.id())).body(timeResponse);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> DeleteTime(@PathVariable Long id){
+    public ResponseEntity<Void> deleteTime(@PathVariable Long id){
         timeService.deleteTime(id);
         return ResponseEntity.noContent().build();
     }

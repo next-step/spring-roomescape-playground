@@ -4,7 +4,7 @@ import roomescape.domain.Reservation;
 import roomescape.domain.Time;
 
 public record ReservationResponseDto(Long id, String name, String date, Time time) {
-    public static ReservationResponseDto toReservationDto (Reservation reservation){
+    public static ReservationResponseDto from (Reservation reservation){
         return new ReservationResponseDto(
                 reservation.getId(),
                 reservation.getName(),

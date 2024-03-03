@@ -19,7 +19,7 @@ public class TimeService {
 
     public List<TimeResponseDto> loadTimeList(){
         return timeDao.findAll().stream()
-                .map(TimeResponseDto::toTimeDto)
+                .map(TimeResponseDto::from)
                 .collect(Collectors.toList());
     }
 
@@ -28,7 +28,7 @@ public class TimeService {
             throw new NoParameterException("Time Have No Parameter");
         }
         Time time = new Time(null, timeRequest.time());
-        return TimeResponseDto.toTimeDto(timeDao.insert(time));
+        return TimeResponseDto.from(timeDao.insert(time));
     }
 
     public void deleteTime (Long id){
