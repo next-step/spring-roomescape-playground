@@ -1,14 +1,17 @@
 package roomescape.repository;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
+import roomescape.domain.Time;
 import roomescape.dto.ReservationDTO;
 import roomescape.dto.ReservationResponseDTO;
 import roomescape.rowMapper.ReservationRowMapper;
+import roomescape.rowMapper.TimeRowMapper;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -47,10 +50,12 @@ public class ReservationRepository {
 
         Long id = insert.executeAndReturnKey(params).longValue();
 
+        Time time = jdbcTemplate.queryForObject("Select * From time where id = ?", new TimeRowMapper());
+
         return new ReservationResponseDTO(id,
                 reservationDTO.name(),
                 reservationDTO.date(),
-                reservationDTO.time()
+                time
         );
     }
 
@@ -71,7 +76,7 @@ public class ReservationRepository {
                     jdbcTemplate.queryForObject(sql,
                             new ReservationRowMapper(),
                             id);
-        }catch (Exception e){
+        }catch (DataAccessException e){
             throw new NoSuchElementException();
         }
     }

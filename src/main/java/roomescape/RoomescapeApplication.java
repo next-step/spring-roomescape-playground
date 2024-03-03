@@ -9,6 +9,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 @SpringBootApplication
 public class RoomescapeApplication implements CommandLineRunner {
     public static void main(String[] args) {
+
         SpringApplication.run(RoomescapeApplication.class, args);
     }
 }
