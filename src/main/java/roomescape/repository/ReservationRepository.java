@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
 import roomescape.domain.Time;
 import roomescape.dto.ReservationDTO;
-import roomescape.dto.ReservationResponseDTO;
 import roomescape.rowMapper.ReservationRowMapper;
 import roomescape.rowMapper.TimeRowMapper;
 
@@ -45,14 +44,19 @@ public class ReservationRepository {
                 new ReservationRowMapper());
     }
 
-    public ReservationResponseDTO makeReservation(ReservationDTO reservationDTO) {
+    public Reservation makeReservation(ReservationDTO reservationDTO) {
         SqlParameterSource params = new BeanPropertySqlParameterSource(reservationDTO);
 
         Long id = insert.executeAndReturnKey(params).longValue();
 
-        Time time = jdbcTemplate.queryForObject("Select * From time where id = ?", new TimeRowMapper());
+        String sql = "SELECT * FROM time WHERE id = ?";
 
-        return new ReservationResponseDTO(id,
+        Time time = jdbcTemplate.queryForObject(sql,
+                new TimeRowMapper(),
+                reservationDTO.time());
+
+        return new Reservation(
+                id,
                 reservationDTO.name(),
                 reservationDTO.date(),
                 time
@@ -71,12 +75,12 @@ public class ReservationRepository {
                 inner join time as t
                 on r.time_id = ?
                 """;
-        try{
+        try {
             Reservation reservation =
                     jdbcTemplate.queryForObject(sql,
                             new ReservationRowMapper(),
                             id);
-        }catch (DataAccessException e){
+        } catch (DataAccessException e) {
             throw new NoSuchElementException();
         }
     }

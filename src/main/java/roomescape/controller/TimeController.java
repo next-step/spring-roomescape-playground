@@ -10,7 +10,8 @@ import roomescape.service.TimeService;
 import java.net.URI;
 import java.util.List;
 
-@Controller("/times")
+@Controller
+@RequestMapping("/times")
 public class TimeController {
     private final TimeService timeService;
 
@@ -18,12 +19,7 @@ public class TimeController {
         this.timeService = timeService;
     }
 
-    @GetMapping("/time")
-    public String getTimePage() {
-        return "time";
-    }
-
-    @PostMapping("/times")
+    @PostMapping
     public ResponseEntity<TimeResponseDTO> saveTime(@RequestBody Time time) {
         Long id = timeService.saveTime(time);
         TimeResponseDTO newTime = new TimeResponseDTO(id, time.getTime());
@@ -31,13 +27,13 @@ public class TimeController {
         return ResponseEntity.created(URI.create("/times/" + id)).body(newTime);
     }
 
-    @GetMapping("/times")
+    @GetMapping
     public ResponseEntity<List<Time>> getAllTime() {
 
         return ResponseEntity.ok(timeService.findAllTime());
     }
 
-    @DeleteMapping("/times/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTime(@PathVariable("id") Long id) {
         timeService.deleteTime(id);
 
