@@ -38,11 +38,8 @@ public class Reservation {
         return time;
     }
 
-    public boolean notEmpty() {
-        return notNullOrEmpty(name) && notNullOrEmpty(date) && time != null;
-    }
-
-    private boolean notNullOrEmpty(String string) {
-        return string != null && !string.isEmpty();
+    public boolean isEmpty() {
+        if (name == null || date == null || time == null) return false;
+        return name.isEmpty();
     }
 }

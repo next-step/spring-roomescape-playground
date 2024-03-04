@@ -15,28 +15,28 @@ import java.util.List;
 @Controller
 @RequestMapping("/times")
 public class TimeReservationController {
-    private final TimeServiceImpl service;
+    private final TimeServiceImpl timeService;
 
-    public TimeReservationController(TimeServiceImpl service) {
-        this.service = service;
+    public TimeReservationController(TimeServiceImpl timeService) {
+        this.timeService = timeService;
     }
 
     @GetMapping
     public ResponseEntity<List<TimeResponseDTO>> getAllTimeReservations() {
-        return ResponseEntity.ok(service.findAllTimeReservations());
+        return ResponseEntity.ok(timeService.findAllTimeReservations());
     }
 
     @PostMapping
     public ResponseEntity<TimeResponseDTO> createTimeReservation(@RequestBody TimeRequestDTO timeRequest) {
-        Long id = service.createTimeReservation(timeRequest);
-        TimeResponseDTO newTimeReservation = service.findTimeReservationById(id);
+        Long id = timeService.createTimeReservation(timeRequest);
+        TimeResponseDTO newTimeReservation = timeService.findTimeReservationById(id);
 
         return ResponseEntity.created(URI.create("/times/" + newTimeReservation.getId())).body(newTimeReservation);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTimeReservation(@PathVariable Long id) {
-        service.deleteTimeReservationById(id);
+        timeService.deleteTimeReservationById(id);
         return ResponseEntity.noContent().build();
     }
 }
