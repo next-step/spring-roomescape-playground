@@ -10,16 +10,15 @@ public class Time {
     private Long id;
     private String time;
 
-    public Time()
-    {}
+    public Time() {
+    }
 
-    public Time(Long id, String time)
-    {
+    public Time(Long id, String time) {
         this.id = id;
         this.time = time;
     }
-    public Long getId()
-    {
+
+    public Long getId() {
         return id;
     }
 

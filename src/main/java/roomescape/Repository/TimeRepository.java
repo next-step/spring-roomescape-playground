@@ -36,8 +36,7 @@ public class TimeRepository {
         return jdbcTemplate.queryForObject(sql, timeRowMapper, id);
     }
 
-    public List<Time> findAllTimeReservations()
-    {
+    public List<Time> findAllTimeReservations() {
         String sql = "select * from time";
         return jdbcTemplate.query(sql, timeRowMapper);
     }
@@ -55,8 +54,7 @@ public class TimeRepository {
     public void deleteTimeReservation(Long id) {
         String sql = "delete from time where id = ? ";
         int rowsCheck = jdbcTemplate.update(sql, id);
-        if(rowsCheck == 0)
-        {
+        if (rowsCheck == 0) {
             throw new NoSuchElementException("지우려는 아이디가 존재하지 않습니다." + id);
         }
     }

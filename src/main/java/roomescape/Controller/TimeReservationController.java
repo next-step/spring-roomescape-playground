@@ -17,8 +17,7 @@ import java.util.List;
 public class TimeReservationController {
     private final TimeServiceImpl service;
 
-    public TimeReservationController(TimeServiceImpl service)
-    {
+    public TimeReservationController(TimeServiceImpl service) {
         this.service = service;
     }
 
@@ -27,16 +26,8 @@ public class TimeReservationController {
         return ResponseEntity.ok(service.findAllTimeReservations());
     }
 
-    /*
-    @GetMapping("/{id}")
-    public Time getTimeReservation(@PathVariable Long id) {
-        return timeDAO.findTimeReservation(id);
-    }
-    */
-
     @PostMapping
-    public ResponseEntity<TimeResponseDTO> createTimeReservation(@RequestBody TimeRequestDTO timeRequest)
-    {
+    public ResponseEntity<TimeResponseDTO> createTimeReservation(@RequestBody TimeRequestDTO timeRequest) {
         Long id = service.createTimeReservation(timeRequest);
         TimeResponseDTO newTimeReservation = service.findTimeReservationById(id);
 
@@ -44,8 +35,7 @@ public class TimeReservationController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTimeReservation(@PathVariable Long id)
-    {
+    public ResponseEntity<Void> deleteTimeReservation(@PathVariable Long id) {
         service.deleteTimeReservationById(id);
         return ResponseEntity.noContent().build();
     }

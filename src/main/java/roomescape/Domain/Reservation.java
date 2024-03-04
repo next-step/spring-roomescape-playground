@@ -6,17 +6,17 @@ public class Reservation {
     private String date;
     private Time time;
 
-    public Reservation() {}
-    public Reservation(long id, String name, String date, Time time)
-    {
+    public Reservation() {
+    }
+
+    public Reservation(long id, String name, String date, Time time) {
         this.id = id;
         this.name = name;
         this.date = date;
         this.time = time;
     }
 
-    public Reservation(String name, String date, Time time)
-    {
+    public Reservation(String name, String date, Time time) {
         this.name = name;
         this.date = date;
         this.time = time;

@@ -16,5 +16,7 @@ public class WebController {
     }
 
     @GetMapping("/time")
-    public String Time(){ return "time"; }
+    public String Time() {
+        return "time";
+    }
 }

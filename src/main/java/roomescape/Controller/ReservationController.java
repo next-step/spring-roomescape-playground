@@ -16,8 +16,7 @@ import java.util.List;
 public class ReservationController {
     private final ReservationServiceImpl service;
 
-    public ReservationController(ReservationServiceImpl service)
-    {
+    public ReservationController(ReservationServiceImpl service) {
         this.service = service;
     }
 
@@ -25,14 +24,6 @@ public class ReservationController {
     public ResponseEntity<List<ReservationResponseDTO>> getAllReservations() {
         return ResponseEntity.ok(service.findAllReservations());
     }
-
-    /*
-    @GetMapping("/{id}")
-    public Reservation getReservation(@PathVariable Long id)
-    {
-        return reservationDAO.findReservation(id);
-    }
-    */
 
     @PostMapping
     public ResponseEntity<ReservationResponseDTO> createReservation(@RequestBody ReservationRequestDTO reservationRequest) {

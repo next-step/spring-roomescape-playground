@@ -2,7 +2,7 @@ package roomescape.DTO;
 
 import roomescape.Domain.Time;
 
-public class TimeResponseDTO{
+public class TimeResponseDTO {
 
     private Long id;
     private String time;

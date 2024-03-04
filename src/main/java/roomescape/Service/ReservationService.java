@@ -8,7 +8,10 @@ import java.util.List;
 
 public interface ReservationService {
     public List<ReservationResponseDTO> findAllReservations();
+
     public ReservationResponseDTO findReservationById(Long id);
+
     public Long createReservation(ReservationRequestDTO reservationRequest);
+
     public void deleteReservationById(Long id);
 }

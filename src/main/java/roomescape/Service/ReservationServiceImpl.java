@@ -12,40 +12,35 @@ import roomescape.Repository.TimeRepository;
 import java.util.List;
 
 @Service
-public class ReservationServiceImpl implements ReservationService{
+public class ReservationServiceImpl implements ReservationService {
     private final ReservationRepository reservationRepository;
     private final TimeRepository timeRepository;
 
-    public ReservationServiceImpl(ReservationRepository reservationRepository, TimeRepository timeRepository)
-    {
+    public ReservationServiceImpl(ReservationRepository reservationRepository, TimeRepository timeRepository) {
         this.reservationRepository = reservationRepository;
         this.timeRepository = timeRepository;
     }
 
     @Override
-    public List<ReservationResponseDTO> findAllReservations()
-    {
+    public List<ReservationResponseDTO> findAllReservations() {
         return reservationRepository.findAllReservations().stream()
                 .map(ReservationResponseDTO::from).toList();
     }
 
     @Override
-    public ReservationResponseDTO findReservationById(Long id)
-    {
+    public ReservationResponseDTO findReservationById(Long id) {
         Reservation reservation = reservationRepository.findReservationById(id);
         return ReservationResponseDTO.from(reservation);
     }
 
     @Override
-    public Long createReservation(ReservationRequestDTO reservationRequest)
-    {
+    public Long createReservation(ReservationRequestDTO reservationRequest) {
         Time time = timeRepository.findTimeReservationById(reservationRequest.getTime());
         return reservationRepository.createReservation(reservationRequest.getName(), reservationRequest.getDate(), time.getId());
     }
 
     @Override
-    public void deleteReservationById(Long id)
-    {
+    public void deleteReservationById(Long id) {
         reservationRepository.deleteReservation(id);
     }
 }
