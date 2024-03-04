@@ -11,7 +11,9 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
+
 public class JdbcReservationDao implements ReservationDao {
+
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired
@@ -21,6 +23,7 @@ public class JdbcReservationDao implements ReservationDao {
 
     @Override
     public List<Reservation> getAllReservations() {
+
         String selectSql = """
                 SELECT
                 r.id as reservation_id,
@@ -31,11 +34,13 @@ public class JdbcReservationDao implements ReservationDao {
                 FROM reservation as r inner join time as t on r.time_id = t.id
                 """;
         return jdbcTemplate.query(selectSql, new ReservationRowMapper());
+
     }
 
     @Override
     public Reservation createReservation(Long id, String name, String date, Time time) {
         String sql = "INSERT INTO reservation (id, name, date, time_id) VALUES (?, ?, ?, ?)";
+
         jdbcTemplate.update(sql, id, name, date, time.getId());
 
         String selectSql = """
@@ -49,6 +54,7 @@ public class JdbcReservationDao implements ReservationDao {
                 WHERE r.id = ?
                 """;
         return jdbcTemplate.queryForObject(selectSql, new Object[]{name, date, time.getId()}, new ReservationRowMapper());
+
     }
 
     @Override
@@ -59,6 +65,7 @@ public class JdbcReservationDao implements ReservationDao {
 
     @Override
     public Optional<Reservation> getReservationById(Long id) {
+
         String selectSql = """
                 SELECT
                 r.id as reservation_id,

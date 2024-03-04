@@ -15,4 +15,5 @@ public interface TimeDao {
     void deleteTimeById(Long id);
 
     Optional<Time> getTimeById(Long id);
+
 }

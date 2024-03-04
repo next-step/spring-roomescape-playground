@@ -20,6 +20,7 @@ public class ReservationService {
 
     // private List<Reservation> reservations = new ArrayList<>();
     private final ReservationDao reservationDao;
+
     private final TimeService timeService;
     private final AtomicLong index = new AtomicLong(0);
 
@@ -27,6 +28,7 @@ public class ReservationService {
     public ReservationService(ReservationDao reservationDao, TimeService timeService) {
         this.reservationDao = reservationDao;
         this.timeService = timeService;
+
     }
 
     @Transactional
@@ -38,6 +40,7 @@ public class ReservationService {
     }
 
     @Transactional
+
     public ReservationDto createReservation(String name, String date, Long timeId) {
 
         Optional<Time> optionalTime = timeService.getTimeById(timeId);
@@ -50,7 +53,7 @@ public class ReservationService {
         } else {
             throw new RuntimeException("an error occurred during reservation creation.");
         }
-    }
+
 
     @Transactional
     public void deleteReservationById(Long id) {

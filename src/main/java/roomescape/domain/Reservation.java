@@ -7,7 +7,9 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+
 @Data
+
 @Setter
 @Getter
 @Entity
@@ -22,6 +24,7 @@ public class Reservation {
 
     @Column(name = "date", length = 500, nullable = false)
     private String date;
+
 
 
     @ManyToOne(cascade = CascadeType.ALL)
