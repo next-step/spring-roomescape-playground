@@ -8,11 +8,24 @@ public class Time {
     private Long id;
     private String time;
 
+    public Time() {
+
+    }
+
+    public Time(String time) {
+        this.time = time;
+    }
+
     @JsonCreator
     public Time(@JsonProperty("id") Long id,
                 @JsonProperty("time") String time) {
         this.id = id;
         this.time = time;
+    }
+
+    @Override
+    public String toString() {
+        return this.time;
     }
 
     public String getTime() {

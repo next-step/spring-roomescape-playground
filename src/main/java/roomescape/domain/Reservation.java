@@ -8,7 +8,7 @@ public class Reservation {
     private Long id;
     private String name;
     private String date;
-    private String time;
+    private Time time;
 
 //    public Reservation() {
 //
@@ -18,7 +18,7 @@ public class Reservation {
     public Reservation(@JsonProperty("id") Long id,
                        @JsonProperty("name") String name,
                        @JsonProperty("date") String date,
-                       @JsonProperty("time") String time) {
+                       Time time) {
         this.id = id;
         this.name = name;
         this.date = date;
@@ -56,7 +56,7 @@ public class Reservation {
         return this.date;
     }
 
-    public String getTime() {
+    public Time getTime() {
         return this.time;
     }
 
