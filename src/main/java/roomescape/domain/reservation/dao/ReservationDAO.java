@@ -48,13 +48,21 @@ public class ReservationDAO {
     }
 
     public Optional<Reservation> getReservationById(Long id) {
-        String sql = "SELECT r.id as reservation_id, r.name, r.date, t.id as time_id, t.time as time_value FROM reservation as r inner join time as t on r.time_id = t.id where r.id = ?";
+        String sql = """
+        SELECT r.id as reservation_id, r.name, r.date, t.id as time_id, t.time as time_value 
+        FROM reservation as r 
+        inner join time as t on r.time_id = t.id where r.id = ?
+        """;
         Reservation reservation = jdbcTemplate.queryForObject(sql, rowMapper, id);
         return Optional.of(reservation);
     }
 
     public List<Reservation> getAllReservation() {
-        String sql = "SELECT r.id as reservation_id, r.name, r.date, t.id as time_id, t.time as time_value FROM reservation as r inner join time as t on r.time_id = t.id ";
+        String sql = """
+        SELECT r.id as reservation_id, r.name, r.date, t.id as time_id, t.time as time_value 
+        FROM reservation as r 
+        inner join time as t on r.time_id = t.id 
+        """;
         return jdbcTemplate.query(sql, rowMapper);
     }
 }
