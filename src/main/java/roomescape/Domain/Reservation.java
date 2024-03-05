@@ -39,7 +39,6 @@ public class Reservation {
     }
 
     public boolean isEmpty() {
-        if (name == null || date == null || time == null) return false;
-        return name.isEmpty();
+        return name == null || date == null || time == null || name.isEmpty();
     }
 }

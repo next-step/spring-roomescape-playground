@@ -10,6 +10,7 @@ import roomescape.Repository.ReservationRepository;
 import roomescape.Repository.TimeRepository;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class ReservationServiceImpl implements ReservationService {
@@ -30,6 +31,11 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     public ReservationResponseDTO findReservationById(Long id) {
         Reservation reservation = reservationRepository.findReservationById(id);
+
+        if (reservation == null || reservation.isEmpty()) {
+            throw new NoSuchElementException("찾으려는 아이디가 존재하지 않습니다." + id);
+        }
+
         return ReservationResponseDTO.from(reservation);
     }
 

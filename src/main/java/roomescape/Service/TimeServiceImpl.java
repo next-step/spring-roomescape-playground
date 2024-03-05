@@ -7,6 +7,7 @@ import roomescape.Domain.Time;
 import roomescape.Repository.TimeRepository;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class TimeServiceImpl implements TimeService {
@@ -25,6 +26,10 @@ public class TimeServiceImpl implements TimeService {
     @Override
     public TimeResponseDTO findTimeReservationById(Long id) {
         Time time = timeRepository.findTimeReservationById(id);
+        
+        if (time == null || time.isEmpty()) {
+            throw new NoSuchElementException("찾으려는 아이디가 존재하지 않습니다." + id);
+        }
         return TimeResponseDTO.from(time);
     }
 

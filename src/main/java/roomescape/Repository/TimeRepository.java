@@ -45,6 +45,7 @@ public class TimeRepository {
         if (time == null) {
             throw new IllegalArgumentException("누락된 사항이 있습니다. 확인해주세요.");
         }
+
         SqlParameterSource params = new MapSqlParameterSource()
                 .addValue("time", time);
 

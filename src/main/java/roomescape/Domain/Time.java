@@ -27,11 +27,7 @@ public class Time {
         return time;
     }
 
-    public boolean notEmpty() {
-        return notNullOrEmpty(time);
-    }
-
-    private boolean notNullOrEmpty(String string) {
-        return string != null && !string.isEmpty();
+    public boolean isEmpty() {
+        return time == null || time.isEmpty();
     }
 }
