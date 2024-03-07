@@ -1,5 +1,6 @@
 package roomescape.domain.reservation.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -8,25 +9,24 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import roomescape.domain.reservation.domain.Reservation;
-import roomescape.domain.reservation.repository.ReservationRepository;
+import roomescape.domain.reservation.dao.ReservationDAO;
 import roomescape.global.exception.ReservationInvalidArgumentException;
 import roomescape.global.exception.ReservationNotFoundException;
 
 @Service
 public class ReservationServiceImpl implements ReservationService {
 
-    private final ReservationRepository reservationRepository;
+    private final ReservationDAO reservationRepository;
 
-    public ReservationServiceImpl(ReservationRepository reservationRepository) {
+    public ReservationServiceImpl(ReservationDAO reservationRepository) {
         this.reservationRepository = reservationRepository;
     }
 
     @Override
     @Transactional
     public Reservation addReservation(Reservation reservation) {
-        LocalDateTime localDateTime = LocalDateTime.of(reservation.getDate(), reservation.getTime());
-        if (localDateTime.isBefore(LocalDateTime.now()))
-            throw new ReservationInvalidArgumentException(HttpStatus.BAD_REQUEST, "날짜 및 시간은 과거가 될 수 없습니다.");
+        if (reservation.getDate().isBefore(LocalDate.now()) || reservation.getDate().isEqual(LocalDate.now()))
+            throw new ReservationInvalidArgumentException(HttpStatus.BAD_REQUEST, "당일예약 및 과거날짜는 예약할 수 없습니다.");
         return getReservationById(reservationRepository.addReservation(reservation));
     }
 

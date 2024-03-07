@@ -33,7 +33,7 @@ public class ReservationApiController {
 
     @PostMapping
     public ResponseEntity<ReservationResponseDTO> addReservation(@RequestBody @Valid ReservationCreateDTO reservationCreateDTO) {
-       Reservation newReservation = reservationService.addReservation(ReservationMapper.toEntity(reservationCreateDTO));
+        Reservation newReservation = reservationService.addReservation(ReservationMapper.toEntity(reservationCreateDTO));
         return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(ReservationMapper.toReservationResponseDTO(newReservation));
     }
 
