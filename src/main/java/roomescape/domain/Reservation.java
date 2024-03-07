@@ -1,4 +1,13 @@
 package roomescape.domain;
 
 
-public record Reservation(Long id,  String name, String date, String time) {}
+import lombok.*;
+
+@Getter
+@AllArgsConstructor
+public class Reservation {
+    private Long id;
+    private String name;
+    private String date;
+    private Time time;
+}

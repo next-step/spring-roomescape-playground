@@ -6,6 +6,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
+import roomescape.domain.Time;
 
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
@@ -19,25 +20,37 @@ public class JdbcTemplateReservationRepository {
         jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public List<Reservation> findAll() {
-        return jdbcTemplate.query("select * from reservation", reservationRowMapper);
+    public List<Reservation> findAllReservation() {
+        String sql =
+                """
+                SELECT
+                  r.id as reservation_id,
+                  r.name,
+                  r.date,
+                  t.id as time_id,
+                  t.time as time_value,
+                FROM reservation as r inner join time as t on r.time_id = t.id
+                """;
+
+        return jdbcTemplate.query(sql, reservationRowMapper);
     }
 
-    public Long insert(Reservation reservation) {
-        String sql = "insert into reservation (name, date, time) values (?, ?, ?)";
+    public Reservation insertReservation(Reservation reservation) {
+        String sql = "insert into reservation (name, date, time_id) values (?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(
                     sql, new String[]{"id"});
-            ps.setString(1, reservation.name());
-            ps.setString(2, reservation.date());
-            ps.setString(3, reservation.time());
+            ps.setString(1, reservation.getName());
+            ps.setString(2, reservation.getDate());
+            ps.setLong(3, reservation.getTime().getId());
             return ps;
         }, keyHolder);
-        return keyHolder.getKey().longValue();
+
+        return new Reservation(keyHolder.getKey().longValue(), reservation.getName(), reservation.getDate(), reservation.getTime());
     }
 
-    public boolean delete(Long id) {
+    public boolean deleteReservation(Long id) {
         String sql = "delete from reservation where id = ?";
 
         // 삭제에 성공하면 1반환 실패하면 0 반환
@@ -46,10 +59,11 @@ public class JdbcTemplateReservationRepository {
 
     private final RowMapper<Reservation> reservationRowMapper = (rs, rowNum) -> {
         Reservation reservation = new Reservation(
-                rs.getLong("id"),
+                rs.getLong("reservation_id"),
                 rs.getString("name"),
                 rs.getString("date"),
-                rs.getString("time")
+                new Time(rs.getLong("time_id"),
+                        rs.getString("time_value"))
         );
         return reservation;
     };
