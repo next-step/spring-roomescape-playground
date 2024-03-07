@@ -1,69 +1,52 @@
 package roomescape.Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Service;
+import roomescape.DTO.ReservationRequestDTO;
+import roomescape.DTO.ReservationResponseDTO;
 import roomescape.Domain.Reservation;
+import roomescape.Domain.Time;
+import roomescape.Repository.ReservationRepository;
+import roomescape.Repository.TimeRepository;
 
-import java.sql.PreparedStatement;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
-public class ReservationServiceImpl implements ReservationService{
+public class ReservationServiceImpl implements ReservationService {
+    private final ReservationRepository reservationRepository;
+    private final TimeRepository timeRepository;
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
-
-    public ReservationServiceImpl(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    public ReservationServiceImpl(ReservationRepository reservationRepository, TimeRepository timeRepository) {
+        this.reservationRepository = reservationRepository;
+        this.timeRepository = timeRepository;
     }
 
     @Override
-    public List<Reservation> getReservations() {
-        String sql = "select id, name, date, time from reservation";
-        return jdbcTemplate.query(sql, (resultSet, rowNum) ->
-        {
-            Reservation reservation = new Reservation(
-                    resultSet.getLong("id"),
-                    resultSet.getString("name"),
-                    resultSet.getString("date"),
-                    resultSet.getString("time")
-            );
-            return reservation;
-        });
+    public List<ReservationResponseDTO> findAllReservations() {
+        return reservationRepository.findAllReservations().stream()
+                .map(ReservationResponseDTO::from).toList();
     }
 
     @Override
-    public Long createReservation(Reservation reservation) {
-        String sql = "insert into reservation (name, date, time) values (?, ?, ?)";
+    public ReservationResponseDTO findReservationById(Long id) {
+        Reservation reservation = reservationRepository.findReservationById(id);
 
-        if (reservation == null || !reservation.isValid()) {
-            throw new IllegalArgumentException("누락된 사항이 있습니다. 확인해주세요.");
+        if (reservation == null || reservation.isEmpty()) {
+            throw new NoSuchElementException("찾으려는 아이디가 존재하지 않습니다." + id);
         }
 
-        return insertWithKeyHolder(reservation);
+        return ReservationResponseDTO.from(reservation);
     }
 
     @Override
-    public void deleteReservation(Long id) {
-        String sql = "delete from reservation where id = ? ";
-        jdbcTemplate.update(sql, id);
+    public Long createReservation(ReservationRequestDTO reservationRequest) {
+        Time time = timeRepository.findTimeReservationById(reservationRequest.getTime());
+        return reservationRepository.createReservation(reservationRequest.getName(), reservationRequest.getDate(), time.getId());
     }
 
-    private Long insertWithKeyHolder(Reservation reservation) {
-        String sql = "insert into reservation (name, date, time) values (?, ?, ?)";
-
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
-            ps.setString(1, reservation.getName());
-            ps.setString(2, reservation.getDate());
-            ps.setString(3, reservation.getTime());
-            return ps;
-        }, keyHolder);
-
-        return keyHolder.getKey().longValue();
+    @Override
+    public void deleteReservationById(Long id) {
+        reservationRepository.deleteReservation(id);
     }
 }

@@ -12,6 +12,11 @@ public class WebController {
 
     @GetMapping("/reservation")
     public String Reservation() {
-        return "reservation";
+        return "new-reservation";
+    }
+
+    @GetMapping("/time")
+    public String Time() {
+        return "time";
     }
 }
