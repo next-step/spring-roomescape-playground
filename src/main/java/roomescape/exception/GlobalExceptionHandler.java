@@ -1,6 +1,7 @@
 package roomescape.exception;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -9,7 +10,7 @@ import java.util.NoSuchElementException;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(value = {NoSuchElementException.class, IllegalArgumentException.class})
+    @ExceptionHandler(value = {NoSuchElementException.class, IllegalArgumentException.class, HttpMessageNotReadableException.class})
     public ResponseEntity<String> handleIllegalArgumentException(Exception e) {
 
         return ResponseEntity.badRequest().body(e.getMessage());

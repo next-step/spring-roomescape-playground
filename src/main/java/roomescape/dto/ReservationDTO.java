@@ -1,19 +1,19 @@
 package roomescape.dto;
 
-public class ReservationDTO {
-    private String name;
-    private String date;
-    private String time;
+import roomescape.domain.Time;
 
-    public String getName() {
-        return name;
-    }
+public record ReservationDTO (
+    String name,
+    String date,
+    Long time
+){
+    public ReservationDTO(String name, String date, Long time){
+        this.name = name;
+        this.date = date;
+        this.time = time;
 
-    public String getDate() {
-        return date;
-    }
-
-    public String getTime() {
-        return time;
+        if(name.isEmpty() || date.isEmpty() || time == null){
+            throw new IllegalArgumentException("필요한 인자가 부족합니다!");
+        }
     }
 }
