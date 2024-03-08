@@ -22,9 +22,9 @@ public class DefaultTimeService implements TimeService {
 	}
 
 	@Override
-	public AddTimeResponse addTime(String time) {
-		Long id = timeRepository.save(new Time(null, time));
-		return new AddTimeResponse(id, time);
+	public AddTimeResponse addTime(String value) {
+		Long id = timeRepository.save(new Time(null, value));
+		return new AddTimeResponse(id, value);
 	}
 
 	@Override
