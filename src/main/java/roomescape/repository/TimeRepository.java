@@ -19,11 +19,12 @@ public class TimeRepository {
 		this.id = new AtomicLong(0);
 	}
 
-	public Time findById(Long id) {
-		if (!times.containsKey(id)) {
-			throw new TimeException("Time with id " + id + " not found.");
-		}
-		return times.get(id);
+
+	public Time findByValue(String value) {
+		return times.values().stream()
+				.filter(time -> time.value().equals(value))
+				.findFirst()
+				.orElseThrow(() -> new TimeException("Time with value " + value + " not found."));
 	}
 
 	public List<Time> findAll() {
@@ -31,12 +32,9 @@ public class TimeRepository {
 	}
 
 	public Long save(Time time) {
-		if (times.containsKey(time.id())) {
-			throw new TimeException("Time with id " + time.id() + " already exists.");
-		}
-
-		times.put(time.id(), time);
-		return time.id();
+		Long newId = id.incrementAndGet();
+		times.put(newId, time);
+		return newId;
 	}
 
 	public void deleteById(Long id) {
