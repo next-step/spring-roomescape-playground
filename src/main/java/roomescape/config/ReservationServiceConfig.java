@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import roomescape.repository.ReservationRepository;
 import roomescape.repository.TimeRepository;
 import roomescape.service.DefaultReservationService;
+import roomescape.service.DefaultTimeService;
 import roomescape.service.JdbcReservationService;
 import roomescape.service.JdbcTimeService;
 import roomescape.service.ReservationService;
@@ -31,5 +32,11 @@ public class ReservationServiceConfig {
 	public ReservationService DefaultRefaultReservationService(ReservationRepository reservationRepository,
 															   TimeRepository timeRepository) {
 		return new DefaultReservationService(reservationRepository, timeRepository);
+	}
+
+	@Bean
+	@Profile("default")
+	public TimeService DefaultTimeService(TimeRepository timeRepository) {
+		return new DefaultTimeService(timeRepository);
 	}
 }
