@@ -26,11 +26,9 @@ public class ReservationService {
     private final TimeService timeService;
     private final AtomicLong index = new AtomicLong(0);
 
-    //spring의 bean 주입방법
     public ReservationService(ReservationDao reservationDao, TimeService timeService) {
         this.reservationDao = reservationDao;
         this.timeService = timeService;
-
     }
 
     @Transactional

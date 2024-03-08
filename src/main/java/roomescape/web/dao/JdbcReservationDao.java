@@ -15,10 +15,12 @@ import java.util.Optional;
 public class JdbcReservationDao implements ReservationDao {
 
     private final JdbcTemplate jdbcTemplate;
+    private final ReservationRowMapper reservationRowMapper;
 
     @Autowired
-    public JdbcReservationDao(JdbcTemplate jdbcTemplate) {
+    public JdbcReservationDao(JdbcTemplate jdbcTemplate, ReservationRowMapper reservationRowMapper) {
         this.jdbcTemplate = jdbcTemplate;
+        this.reservationRowMapper = reservationRowMapper;
     }
 
     @Override
@@ -33,7 +35,7 @@ public class JdbcReservationDao implements ReservationDao {
                 t.time as time_value
                 FROM reservation as r inner join time as t on r.time_id = t.id
                 """;
-        return jdbcTemplate.query(selectSql, new ReservationRowMapper());
+        return jdbcTemplate.query(selectSql, reservationRowMapper);
 
     }
 
@@ -53,7 +55,7 @@ public class JdbcReservationDao implements ReservationDao {
                 FROM reservation as r inner join time as t on r.time_id = t.id
                 WHERE r.id = ?
                 """;
-        return jdbcTemplate.queryForObject(selectSql, new Object[]{name, date, time.getId()}, new ReservationRowMapper());
+        return jdbcTemplate.queryForObject(selectSql, new Object[]{name, date, time.getId()}, reservationRowMapper);
 
     }
 
@@ -76,7 +78,7 @@ public class JdbcReservationDao implements ReservationDao {
                 FROM reservation as r inner join time as t on r.time_id = t.id
                 WHERE r.id = ?
                 """;
-        return Optional.ofNullable(jdbcTemplate.queryForObject(selectSql, new Object[]{id}, new ReservationRowMapper()));
+        return Optional.ofNullable(jdbcTemplate.queryForObject(selectSql, new Object[]{id}, reservationRowMapper));
     }
 
 }

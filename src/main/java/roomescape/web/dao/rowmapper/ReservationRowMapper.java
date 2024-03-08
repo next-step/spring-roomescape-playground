@@ -1,5 +1,6 @@
 package roomescape.web.dao.rowmapper;
 
+import org.springframework.stereotype.Component;
 import roomescape.domain.Reservation;
 import roomescape.domain.Time;
 import org.springframework.jdbc.core.RowMapper;
@@ -8,6 +9,7 @@ import org.springframework.jdbc.core.RowMapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+@Component
 public class ReservationRowMapper implements RowMapper<Reservation> {
 
     @Override
