@@ -16,8 +16,8 @@ import roomescape.service.TimeService;
 public class ReservationServiceConfig {
 	@Bean
 	@Profile("jdbc")
-	public ReservationService JdbcReservationService(JdbcTemplate jdbcTemplate, TimeRepository timeRepository) {
-		return new JdbcReservationService(jdbcTemplate, timeRepository);
+	public ReservationService JdbcReservationService(JdbcTemplate jdbcTemplate) {
+		return new JdbcReservationService(jdbcTemplate);
 	}
 
 	@Bean
