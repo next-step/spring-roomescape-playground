@@ -34,7 +34,7 @@ public class JdbcTimeService implements TimeService {
 		}, keyHolder);
 
 		return new AddTimeResponse(
-				keyHolder.getKey(),
+				keyHolder.getKey().longValue(),
 				time
 		);
 	}
