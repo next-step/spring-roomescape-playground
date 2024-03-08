@@ -1,16 +1,19 @@
 package roomescape.controller;
 
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import roomescape.repository.ReservationRepository;
 
@@ -20,10 +23,12 @@ public class ReservationControllerTest {
 
 	@Autowired
 	private ReservationRepository reservationRepository;
+	@Autowired
+	private ReservationController reservationController;
 
 	@BeforeEach
 	void setUp() {
-    reservationRepository = new ReservationRepository();
+		reservationRepository = new ReservationRepository();
 	}
 
 	@Test
@@ -95,5 +100,19 @@ public class ReservationControllerTest {
 				.when().delete("/reservations/1")
 				.then().log().all()
 				.statusCode(400);
+	}
+
+	@Test
+	void JDBC_의존성_분리_성공() {
+		boolean isJdbcTemplateInjected = false;
+
+		for (Field field : reservationController.getClass().getDeclaredFields()) {
+			if (field.getType().equals(JdbcTemplate.class)) {
+				isJdbcTemplateInjected = true;
+				break;
+			}
+		}
+
+		assertThat(isJdbcTemplateInjected).isFalse();
 	}
 }

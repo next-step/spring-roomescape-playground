@@ -29,16 +29,17 @@ public class JdbcReservationService implements ReservationService {
 
 	@Override
 	public AddReservationResponse addReservation(AddReservationRequest reservationRequest) {
-		String sql = "INSERT INTO reservation (name, date, time_id) VALUES (?, ?, ?)";
-		String timeValueSql = "SELECT time_value FROM time WHERE id = ?";
-		String time = jdbcTemplate.queryForObject(timeValueSql, (rs, rowNum) -> rs.getString("time"));
+
+		String findTimeIdSql = "SELECT id FROM time WHERE time_value = ?";
+		Long timeId = jdbcTemplate.queryForObject(findTimeIdSql, new Object[]{reservationRequest.time_value()},
+				(rs, rowNum) -> rs.getLong("id"));
 
 		KeyHolder keyHolder = new GeneratedKeyHolder();
 		jdbcTemplate.update(con -> {
-			var ps = con.prepareStatement(sql, new String[]{"id"});
+			var ps = con.prepareStatement(findTimeIdSql, new String[]{"id"});
 			ps.setString(1, reservationRequest.name());
 			ps.setString(2, reservationRequest.date());
-			ps.setString(3, time);
+			ps.setLong(3, timeId);
 			return ps;
 		}, keyHolder);
 
@@ -47,7 +48,7 @@ public class JdbcReservationService implements ReservationService {
 				id,
 				reservationRequest.name(),
 				reservationRequest.date(),
-				time
+				reservationRequest.time_value()
 		);
 	}
 
