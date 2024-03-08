@@ -25,14 +25,14 @@ public class DefaultReservationService implements ReservationService {
 						reservation.id(),
 						reservation.name(),
 						reservation.date(),
-						reservation.time().time_value()))
+						reservation.time().value()))
 				.collect(Collectors.toList());
 	}
 
 	@Override
 	public AddReservationResponse addReservation(
 			AddReservationRequest reservationRequest) {
-		Time time = timeRepository.findById(reservationRequest.time_id());
+		Time time = timeRepository.findByValue(reservationRequest.time_value());
 
 		Reservation newReservation = new Reservation(
 				null,
@@ -47,7 +47,7 @@ public class DefaultReservationService implements ReservationService {
 				savedReservationId,
 				newReservation.name(),
 				newReservation.date(),
-				newReservation.time().time_value()
+				time.value()
 		);
 	}
 

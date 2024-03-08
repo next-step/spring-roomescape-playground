@@ -6,23 +6,18 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import roomescape.domain.Time;
 import roomescape.dto.reservation.ReservationRequestDTO.AddReservationRequest;
 import roomescape.dto.reservation.ReservationResponseDTO.AddReservationResponse;
 import roomescape.dto.reservation.ReservationResponseDTO.QueryReservationResponse;
-import roomescape.repository.TimeRepository;
 
 @Profile("jdbc")
 @RequiredArgsConstructor
 public class JdbcReservationService implements ReservationService {
 	private final JdbcTemplate jdbcTemplate;
-	private final TimeRepository timeRepository;
 
 	@Override
 	public List<QueryReservationResponse> getReservations() {
-		String sql = "SELECT r.id as reservation_id, r.name, r.date, t.id as time_id, t.time as time_value "
-				+ "FROM reservation as r inner join time as t "
-				+ "on r.time_id = t.id";
+		String sql = "SELECT r.id as reservation_id, r.name, r.date, t.id, t.time_value FROM reservation as r inner join time as t on r.time_id = t.id;";
 
 		return jdbcTemplate.query(sql, (rs, rowNum) -> new QueryReservationResponse(
 				rs.getLong("id"),
@@ -34,15 +29,17 @@ public class JdbcReservationService implements ReservationService {
 
 	@Override
 	public AddReservationResponse addReservation(AddReservationRequest reservationRequest) {
-		String sql = "INSERT INTO reservation (name, date, time_id) VALUES (?, ?, ?)";
-		Time time = timeRepository.findById(reservationRequest.time_id());
+
+		String findTimeIdSql = "SELECT id FROM time WHERE time_value = ?";
+		Long timeId = jdbcTemplate.queryForObject(findTimeIdSql, new Object[]{reservationRequest.time_value()},
+				(rs, rowNum) -> rs.getLong("id"));
 
 		KeyHolder keyHolder = new GeneratedKeyHolder();
 		jdbcTemplate.update(con -> {
-			var ps = con.prepareStatement(sql, new String[]{"id"});
+			var ps = con.prepareStatement(findTimeIdSql, new String[]{"id"});
 			ps.setString(1, reservationRequest.name());
 			ps.setString(2, reservationRequest.date());
-			ps.setString(3, time.time_value());
+			ps.setLong(3, timeId);
 			return ps;
 		}, keyHolder);
 
@@ -51,7 +48,7 @@ public class JdbcReservationService implements ReservationService {
 				id,
 				reservationRequest.name(),
 				reservationRequest.date(),
-				time.time_value()
+				reservationRequest.time_value()
 		);
 	}
 

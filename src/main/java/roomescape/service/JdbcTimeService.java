@@ -6,7 +6,8 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import roomescape.domain.Time;
+import roomescape.dto.time.TimeResponseDTO.AddTimeResponse;
+import roomescape.dto.time.TimeResponseDTO.QueryTimeResponse;
 
 @Profile("jdbc")
 @RequiredArgsConstructor
@@ -14,16 +15,17 @@ public class JdbcTimeService implements TimeService {
 	private final JdbcTemplate jdbcTemplate;
 
 	@Override
-	public List<Time> getAllTimes() {
-		String sql = "SELECT id, time FROM time";
-		return jdbcTemplate.query(sql, (rs, rowNum) -> new Time(
+	public List<QueryTimeResponse> getAllTimes() {
+		String sql = "SELECT t.id, t.time_value FROM time t";
+		return jdbcTemplate.query(sql, (rs, rowNum) -> new QueryTimeResponse(
 				rs.getLong("id"),
-				rs.getString("time")));
+				rs.getString("time_value")
+		));
 	}
 
 	@Override
-	public Time addTime(String time) {
-		String sql = "INSERT INTO time (time) VALUES (?)";
+	public AddTimeResponse addTime(String time) {
+		String sql = "INSERT INTO TIME (TIME_VALUE) VALUES (?)";
 		KeyHolder keyHolder = new GeneratedKeyHolder();
 		jdbcTemplate.update(con -> {
 			var ps = con.prepareStatement(sql, new String[]{"id"});
@@ -31,8 +33,10 @@ public class JdbcTimeService implements TimeService {
 			return ps;
 		}, keyHolder);
 
-		return new Time(keyHolder.getKey().longValue(), time);
-
+		return new AddTimeResponse(
+				keyHolder.getKey().longValue(),
+				time
+		);
 	}
 
 	@Override
