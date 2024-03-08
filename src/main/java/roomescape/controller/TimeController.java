@@ -1,5 +1,6 @@
 package roomescape.controller;
 
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -11,7 +12,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import roomescape.domain.Time;
+import roomescape.dto.time.TimeRequestDTO;
+import roomescape.dto.time.TimeResponseDTO.AddTimeResponse;
+import roomescape.dto.time.TimeResponseDTO.QueryTimeResponse;
 import roomescape.service.TimeService;
 
 @RestController
@@ -21,15 +24,14 @@ public class TimeController {
 	private final TimeService timeService;
 
 	@GetMapping
-	public ResponseEntity<List<Time>> getAllTimes() {
-		List<Time> times = timeService.getAllTimes();
-		return ResponseEntity.ok(times);
+	public ResponseEntity<List<QueryTimeResponse>> getAllTimes() {
+		return ResponseEntity.ok(timeService.getAllTimes());
 	}
 
 	@PostMapping
-	public ResponseEntity<Time> addTime(@RequestBody String time) {
-		Time addedTime = timeService.addTime(time);
-		return ResponseEntity.status(HttpStatus.CREATED).body(addedTime);
+	public ResponseEntity<AddTimeResponse> addTime(@Valid @RequestBody TimeRequestDTO.AddTimeRequest addTimeRequest) {
+		AddTimeResponse response = timeService.addTime(addTimeRequest.time());
+		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
 
 	@DeleteMapping("/{id}")

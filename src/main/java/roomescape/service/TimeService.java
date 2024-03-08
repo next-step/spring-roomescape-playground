@@ -1,12 +1,13 @@
 package roomescape.service;
 
 import java.util.List;
-import roomescape.domain.Time;
+import roomescape.dto.time.TimeResponseDTO.AddTimeResponse;
+import roomescape.dto.time.TimeResponseDTO.QueryTimeResponse;
 
 public interface TimeService {
-	List<Time> getAllTimes();
+	List<QueryTimeResponse> getAllTimes();
 
-	Time addTime(String time);
+	AddTimeResponse addTime(String time);
 
 	void deleteTime(Long id);
 }
