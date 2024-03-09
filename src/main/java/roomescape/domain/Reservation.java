@@ -1,11 +1,9 @@
 package roomescape.domain;
 
-
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-
 
 @Setter
 @Getter
@@ -22,13 +20,9 @@ public class Reservation {
     @Column(name = "date", length = 500, nullable = false)
     private String date;
 
-
     @ManyToOne
     @JoinColumn(name = "time_id")
     private Time time;
-
-//    @Column(name = "time_id", nullable = false)  // Change the column definition for time_id
-//    private Long timeId;
 
     public Reservation() {
 

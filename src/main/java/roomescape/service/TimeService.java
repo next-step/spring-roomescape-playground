@@ -10,6 +10,8 @@ import roomescape.web.dto.ReservationDto;
 import roomescape.web.dto.TimeDto;
 
 import java.util.List;
+import java.util.Optional;
+
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
@@ -44,4 +46,12 @@ public class TimeService {
     public void deleteTimeById(Long id) {
         timeDao.deleteTimeById(id);
     }
+
+
+    @Transactional
+    public Optional<Time> getTimeById(Long id) {
+        return timeDao.getTimeById(id);
+
+    }
+
 }

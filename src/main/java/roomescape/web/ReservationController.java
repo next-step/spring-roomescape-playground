@@ -7,10 +7,12 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import roomescape.domain.Reservation;
 import roomescape.domain.Time;
 import roomescape.service.ReservationService;
+import roomescape.web.dto.CreateReservationRequestDto;
 import roomescape.web.exception.NotFoundReservationException;
 
 import roomescape.web.dto.ReservationDto;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
@@ -36,30 +38,17 @@ public class ReservationController {
         return reservationService.getAllReservation();
     }
 
-    @PostMapping(consumes = "application/json")
-    public ResponseEntity<ReservationDto> create(@RequestBody Map<String, String> params) {
-
-
-        String name = params.get("name");
-        String date = params.get("date");
-        String timeString = params.get("time");
-        Time time = new Time(timeString);
-
-        if(name == null || date == null || time == null) {
-            throw new NotFoundReservationException("필요한 인자가 부족합니다.");
-        }
-
-        
-        ReservationDto newReservation = reservationService.createReservation(name, date, time);
+    @PostMapping
+    public ResponseEntity<Void> create(@Valid @RequestBody CreateReservationRequestDto requestDto) {
+        Reservation newReservation = reservationService.createReservation(requestDto);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(newReservation.getId())
                 .toUri();
 
-        return ResponseEntity.created(location).body(newReservation);
-
-        }
+        return ResponseEntity.created(location).build();
+    }
 
 
     @GetMapping(value = "/{id}", produces = "application/json")

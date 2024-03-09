@@ -1,12 +1,15 @@
 package roomescape.web.dao.rowmapper;
 
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
 import roomescape.domain.Reservation;
 import roomescape.domain.Time;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+@Component
 public class TimeRowMapper implements RowMapper<Time> {
 
     @Override
