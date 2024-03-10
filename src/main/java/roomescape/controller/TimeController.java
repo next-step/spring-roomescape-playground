@@ -7,10 +7,12 @@ import org.springframework.web.bind.annotation.*;
 import roomescape.dao.TimeDao;
 import roomescape.domain.Reservation;
 import roomescape.domain.Time;
+import roomescape.dto.TimeDTO;
 
 import java.net.URI;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Controller
 public class TimeController {
@@ -29,16 +31,22 @@ public class TimeController {
 
     @GetMapping("/times")
     @ResponseBody
-    public ResponseEntity<List<Time>> read() {
+    public ResponseEntity<List<TimeDTO>> read() {
         List<Time> times = timeDao.getAllTimes();
-        return ResponseEntity.ok().body(times);
+        List<TimeDTO> timeDTOS = times.stream()
+                .map(this::convertToTimeDTO)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok().body(timeDTOS);
     }
 
     @PostMapping("/times")
     @ResponseBody
-    public ResponseEntity<Time> create(@RequestBody Time time) {
+    public ResponseEntity<TimeDTO> create(@RequestBody Time time) {
         Time newTime = timeDao.insertTime(time);
-        return ResponseEntity.created(URI.create("/times/" + newTime.getId())).body(newTime);
+        TimeDTO timeDTO = convertToTimeDTO(newTime);
+
+        return ResponseEntity.created(URI.create("/times/" + timeDTO.getId())).body(timeDTO);
     }
 
     @DeleteMapping("/times/{id}")
@@ -49,5 +57,9 @@ public class TimeController {
             throw new NoSuchElementException("삭제할 항목이 없습니다.");
         }
         return ResponseEntity.noContent().build();
+    }
+
+    private TimeDTO convertToTimeDTO(Time time) {
+        return new TimeDTO(time.getId(), time.getTime());
     }
 }

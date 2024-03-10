@@ -2,14 +2,28 @@ package roomescape.dao;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Time;
 
 import javax.sql.DataSource;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+class TimeRowMapper implements RowMapper<Time> {
+    @Override
+    public Time mapRow(ResultSet resultSet, int rowNum) throws SQLException {
+        return new Time(
+                resultSet.getLong("id"),
+                resultSet.getString("time")
+        );
+    }
+
+}
 
 @Repository
 public class TimeDao {

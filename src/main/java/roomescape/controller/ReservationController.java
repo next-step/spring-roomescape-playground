@@ -6,10 +6,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import roomescape.dao.ReservationDao;
 import roomescape.domain.Reservation;
+import roomescape.domain.Time;
+import roomescape.dto.ReservationDTO;
+import roomescape.dto.TimeDTO;
 
 import java.net.URI;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Controller
 public class ReservationController {
@@ -28,16 +32,23 @@ public class ReservationController {
 
     @GetMapping("/reservations")
     @ResponseBody
-    public ResponseEntity<List<Reservation>> read() {
+    public ResponseEntity<List<ReservationDTO>> read() {
         List<Reservation> reservations = reservationDao.getAllReservations();
-        return ResponseEntity.ok().body(reservations);
+        List<ReservationDTO> reservationDTOs = reservations.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok().body(reservationDTOs);
     }
 
     @PostMapping("/reservations")
     @ResponseBody
-    public ResponseEntity<Reservation> create(@RequestBody Reservation reservation) {
+    public ResponseEntity<ReservationDTO> create(@RequestBody ReservationDTO reservationDTO) {
+        Reservation reservation = convertToEntity(reservationDTO);
         Reservation newReservation = reservationDao.insertReservation(reservation);
-        return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
+        ReservationDTO newReservationDTO = convertToDTO(newReservation);
+
+        return ResponseEntity.created(URI.create("/reservations/" + newReservationDTO.getId())).body(newReservationDTO);
     }
 
     @DeleteMapping("/reservations/{id}")
@@ -48,5 +59,25 @@ public class ReservationController {
             throw new NoSuchElementException("삭제할 항목이 없습니다.");
         }
         return ResponseEntity.noContent().build();
+    }
+
+    // Helper method to convert Reservation to ReservationDTO
+    private ReservationDTO convertToDTO(Reservation reservation) {
+        return new ReservationDTO(
+                reservation.getId(),
+                reservation.getName(),
+                reservation.getDate(),
+                new TimeDTO(reservation.getTime().getId(), reservation.getTime().getTime())
+        );
+    }
+
+    // Helper method to convert ReservationDTO to Reservation
+    private Reservation convertToEntity(ReservationDTO reservationDTO) {
+        return new Reservation(
+                reservationDTO.getId(),
+                reservationDTO.getName(),
+                reservationDTO.getDate(),
+                new Time(reservationDTO.getTime().getId(), reservationDTO.getTime().getTime())
+        );
     }
 }
