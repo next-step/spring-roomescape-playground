@@ -35,11 +35,8 @@ public class ReservationService {
         return convertToDTO(newReservation);
     }
 
-    public void deleteReservation(Long id) {
-        int removed = reservationDao.deleteReservation(id);
-        if (removed == 0) {
-            throw new NoSuchElementException("삭제할 항목이 없습니다.");
-        }
+    public void deleteReservationById(Long id) {
+        reservationDao.deleteReservationById(id);
     }
 
     private ReservationDTO convertToDTO(Reservation reservation) {

@@ -32,11 +32,8 @@ public class TimeService {
         return convertToTimeDTO(newTime);
     }
 
-    public void deleteTime(Long id) {
-        int removed = timeDao.deleteTime(id);
-        if (removed == 0) {
-            throw new NoSuchElementException("삭제할 항목이 없습니다.");
-        }
+    public void deleteTimeById(Long id) {
+        timeDao.deleteTimeById(id);
     }
 
     private TimeDTO convertToTimeDTO(Time time) {

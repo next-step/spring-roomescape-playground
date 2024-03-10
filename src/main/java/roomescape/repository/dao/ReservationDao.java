@@ -61,15 +61,15 @@ public class ReservationDao {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("name", reservation.getName());
         parameters.put("date", reservation.getDate());
-        parameters.put("time_id", reservation.getTime().getId());
+        parameters.put("time", reservation.getTime().getId());
 
         Number newId = jdbcInsert.executeAndReturnKey(parameters);
         reservation.setId(newId.longValue());
         return reservation;
     }
 
-    public int deleteReservation(Long id) {
+    public void deleteReservationById(Long id) {
         String sql = "delete from reservation where id = ?";
-        return jdbcTemplate.update(sql, Long.valueOf(id));
+        jdbcTemplate.update(sql, Long.valueOf(id));
     }
 }

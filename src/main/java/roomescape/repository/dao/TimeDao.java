@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import roomescape.dto.TimeDTO;
 import roomescape.repository.domain.Time;
 
 import javax.sql.DataSource;
@@ -16,6 +17,8 @@ import java.util.Map;
 
 @Repository
 public class TimeDao {
+
+
     static class TimeRowMapper implements RowMapper<Time> {
         @Override
         public Time mapRow(ResultSet resultSet, int rowNum) throws SQLException {
@@ -31,12 +34,26 @@ public class TimeDao {
     private final SimpleJdbcInsert jdbcInsert;
     private final TimeRowMapper rowMapper;
 
+
     public TimeDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.jdbcInsert = new SimpleJdbcInsert(dataSource)
                 .withTableName("time")
                 .usingGeneratedKeyColumns("id");
         this.rowMapper = new TimeRowMapper();
+    }
+
+    public static TimeDTO mapToTimeDTO(Time time) {
+        TimeDTO timeDTO = new TimeDTO();
+        timeDTO.setId(time.getId());
+
+        return timeDTO;
+    }
+
+    public TimeDTO getTimeById(Long id) {
+        String sql = "SELECT * FROM time WHERE id = ?";
+        TimeDTO timeDTO = mapToTimeDTO(jdbcTemplate.queryForObject(sql, new Object[]{id}, rowMapper));
+        return timeDTO;
     }
 
     public List<Time> getAllTimes() {
@@ -60,8 +77,8 @@ public class TimeDao {
         return time;
     }
 
-    public int deleteTime(Long id) {
+    public void deleteTimeById(Long id) {
         String sql = "delete from time where id = ?";
-        return jdbcTemplate.update(sql, Long.valueOf(id));
+        jdbcTemplate.update(sql, Long.valueOf(id));
     }
 }
