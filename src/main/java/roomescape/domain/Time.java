@@ -23,11 +23,6 @@ public class Time {
         this.time = time;
     }
 
-    @Override
-    public String toString() {
-        return this.time;
-    }
-
     public String getTime() {
         return this.time;
     }
@@ -38,6 +33,11 @@ public class Time {
 
     public Long getId() {
         return this.id;
+    }
+
+    @Override
+    public String toString() {
+        return this.time;
     }
 
 }
