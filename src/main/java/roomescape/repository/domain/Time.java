@@ -1,4 +1,4 @@
-package roomescape.domain;
+package roomescape.repository.domain;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -16,10 +16,13 @@ public class Time {
         this.time = time;
     }
 
-    @JsonCreator
-    public Time(@JsonProperty("id") Long id,
-                @JsonProperty("time") String time) {
+    public Time(Long id, String time) {
         this.id = id;
+        this.time = time;
+    }
+
+    public Time(String id, String time) {
+        this.id = Long.parseLong(id);
         this.time = time;
     }
 

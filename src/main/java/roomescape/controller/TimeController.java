@@ -4,24 +4,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import roomescape.dao.TimeDao;
-import roomescape.domain.Reservation;
-import roomescape.domain.Time;
+import roomescape.repository.domain.Time;
 import roomescape.dto.TimeDTO;
+import roomescape.service.TimeService;
 
 import java.net.URI;
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 @Controller
 public class TimeController {
 
-    @Autowired
-    private TimeDao timeDao;
+    private final TimeService timeService;
 
-    public TimeController(TimeDao timeDao) {
-        this.timeDao = timeDao;
+    @Autowired
+    public TimeController(TimeService timeService) {
+        this.timeService = timeService;
     }
 
     @GetMapping("/time")
@@ -32,34 +29,21 @@ public class TimeController {
     @GetMapping("/times")
     @ResponseBody
     public ResponseEntity<List<TimeDTO>> read() {
-        List<Time> times = timeDao.getAllTimes();
-        List<TimeDTO> timeDTOS = times.stream()
-                .map(this::convertToTimeDTO)
-                .collect(Collectors.toList());
-
+        List<TimeDTO> timeDTOS = timeService.getAllTimes();
         return ResponseEntity.ok().body(timeDTOS);
     }
 
     @PostMapping("/times")
     @ResponseBody
     public ResponseEntity<TimeDTO> create(@RequestBody Time time) {
-        Time newTime = timeDao.insertTime(time);
-        TimeDTO timeDTO = convertToTimeDTO(newTime);
-
+        TimeDTO timeDTO = timeService.insertTime(time);
         return ResponseEntity.created(URI.create("/times/" + timeDTO.getId())).body(timeDTO);
     }
 
     @DeleteMapping("/times/{id}")
     @ResponseBody
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        int removed = timeDao.deleteTime(id);
-        if (removed == 0) {
-            throw new NoSuchElementException("삭제할 항목이 없습니다.");
-        }
+        timeService.deleteTime(id);
         return ResponseEntity.noContent().build();
-    }
-
-    private TimeDTO convertToTimeDTO(Time time) {
-        return new TimeDTO(time.getId(), time.getTime());
     }
 }

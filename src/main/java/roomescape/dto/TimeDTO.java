@@ -1,6 +1,7 @@
 package roomescape.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class TimeDTO {
@@ -11,10 +12,13 @@ public class TimeDTO {
     public TimeDTO() {
     }
 
-    @JsonCreator
-    public TimeDTO(@JsonProperty("id") Long id,
-                   @JsonProperty("time") String time) {
+    public TimeDTO(Long id, String time) {
         this.id = id;
+        this.time = time;
+    }
+
+    public TimeDTO(String id, String time) {
+        this.id = Long.parseLong(id);
         this.time = time;
     }
 
@@ -24,6 +28,10 @@ public class TimeDTO {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public void setId(String id) {
+        this.id = id != null ? Long.parseLong(id) : null;
     }
 
     public Long getId() {

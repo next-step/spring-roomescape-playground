@@ -10,11 +10,7 @@ public class ReservationDTO {
     private String date;
     private TimeDTO time;
 
-    @JsonCreator
-    public ReservationDTO(@JsonProperty("id") Long id,
-                          @JsonProperty("name") String name,
-                          @JsonProperty("date") String date,
-                          TimeDTO time) {
+    public ReservationDTO(Long id, String name, String date, TimeDTO time) {
         this.id = id;
         this.name = name;
         this.date = date;

@@ -1,12 +1,12 @@
-package roomescape.dao;
+package roomescape.repository.dao;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import roomescape.domain.Reservation;
-import roomescape.domain.Time;
+import roomescape.repository.domain.Reservation;
+import roomescape.repository.domain.Time;
 
 import javax.sql.DataSource;
 import java.sql.ResultSet;
@@ -15,22 +15,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-class ReservationRowMapper implements RowMapper<Reservation> {
-    @Override
-    public Reservation mapRow(ResultSet resultSet, int rowNum) throws SQLException {
-        Time time = new Time(resultSet.getString("time"));
-
-        return new Reservation(
-                resultSet.getLong("id"),
-                resultSet.getString("name"),
-                resultSet.getString("date"),
-                time
-        );
-    }
-}
 
 @Repository
 public class ReservationDao {
+
+    static class ReservationRowMapper implements RowMapper<Reservation> {
+        @Override
+        public Reservation mapRow(ResultSet resultSet, int rowNum) throws SQLException {
+            Time time = new Time(resultSet.getString("time"));
+
+            return new Reservation(
+                    resultSet.getLong("id"),
+                    resultSet.getString("name"),
+                    resultSet.getString("date"),
+                    time
+            );
+        }
+    }
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -60,7 +61,7 @@ public class ReservationDao {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("name", reservation.getName());
         parameters.put("date", reservation.getDate());
-        parameters.put("time", reservation.getTime());
+        parameters.put("time_id", reservation.getTime().getId());
 
         Number newId = jdbcInsert.executeAndReturnKey(parameters);
         reservation.setId(newId.longValue());

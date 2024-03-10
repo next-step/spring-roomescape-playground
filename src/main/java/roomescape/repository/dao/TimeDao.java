@@ -1,11 +1,11 @@
-package roomescape.dao;
+package roomescape.repository.dao;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import roomescape.domain.Time;
+import roomescape.repository.domain.Time;
 
 import javax.sql.DataSource;
 import java.sql.ResultSet;
@@ -14,19 +14,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-class TimeRowMapper implements RowMapper<Time> {
-    @Override
-    public Time mapRow(ResultSet resultSet, int rowNum) throws SQLException {
-        return new Time(
-                resultSet.getLong("id"),
-                resultSet.getString("time")
-        );
-    }
-
-}
-
 @Repository
 public class TimeDao {
+    static class TimeRowMapper implements RowMapper<Time> {
+        @Override
+        public Time mapRow(ResultSet resultSet, int rowNum) throws SQLException {
+            return new Time(
+                    resultSet.getLong("id"),
+                    resultSet.getString("time")
+            );
+        }
+    }
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -47,11 +45,18 @@ public class TimeDao {
     }
 
     public Time insertTime(Time time) {
+        if (time.getTime() == null || time.getTime().isEmpty()) {
+            throw new IllegalArgumentException("Time field cannot be null or empty");
+        }
+
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("time", time.getTime());
 
         Number newId = jdbcInsert.executeAndReturnKey(parameters);
-        time.setId(newId.longValue());
+        long generatedId = newId != null ? newId.longValue() : 0L;  // null 체크
+
+        // 생성된 ID를 Time 객체에 할당
+        time.setId(generatedId);
         return time;
     }
 
