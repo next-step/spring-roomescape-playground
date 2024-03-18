@@ -27,7 +27,9 @@ public class ReservationRepository {
     public Reservation findById(Long id) {
         return store.get(id);
     }
-
+    public void deleteById(final Long id) {
+        store.remove(id);
+    }
     public void update (Long id, Reservation updateReservation) {
         Reservation findReservation = findById(id);
 
