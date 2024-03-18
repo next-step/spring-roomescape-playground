@@ -23,6 +23,11 @@ public class ReservationController {
     public ReservationController(final ReservationRepository reservationRepository) {
         this.reservationRepository = reservationRepository;
     }
+
+    public void validateRequestBody(Reservation reservation) {
+        if(reservation.getName().isEmpty() || reservation.getDate() == null|| reservation.getTime() ==null)
+            throw new IllegalArgumentException("예약 정보가 비어있습니다.");
+    }
     @GetMapping
     public List<Reservation> getReservationList() {
     return reservationRepository.findAll();
@@ -30,6 +35,7 @@ public class ReservationController {
 
     @PostMapping
     public ResponseEntity<Reservation> addReservation(@RequestBody Reservation reservation) {
+        validateRequestBody(reservation);
         Reservation addedReservation = reservationRepository.save(reservation);
 
         return ResponseEntity.created(URI.create("/reservations/" + addedReservation.getId())).body(addedReservation);
