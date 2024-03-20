@@ -32,10 +32,10 @@ public class ReservationController {
         // 수정 후
         return "home";
     }
+
+    //reservation 이동
     @GetMapping("/reservation")
-    public String read(Model model){
-        model.addAttribute("reservation",reservations);
-        return "reservation";
+    public void reservation(){
     }
 
     @ResponseBody
