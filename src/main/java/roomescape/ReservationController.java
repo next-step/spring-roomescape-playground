@@ -17,6 +17,14 @@ import java.util.concurrent.atomic.AtomicLong;
 @Controller
 public class ReservationController {
 
+    List<Reservation> reservations = new ArrayList<>();
+    ReservationService reservationService;
+
+    //생성자로 ReservationService 에 대한 의존성을 주입해요.
+    public ReservationController (ReservationService reservationService){
+        this.reservationService=reservationService;
+    }
+
     @GetMapping("/")
     public String GoToHome(){
         // 수정 전
@@ -24,27 +32,19 @@ public class ReservationController {
         // 수정 후
         return "home";
     }
-
-    List<Reservation> reservations = new ArrayList<>();
-
     @GetMapping("/reservation")
     public String read(Model model){
         model.addAttribute("reservation",reservations);
         return "reservation";
     }
-    public ReservationController() {
-        // 데이터 추가
-        reservations.add(new Reservation(1L, "브라운", LocalDate.of(2023, 1, 1), LocalTime.of(10, 0)));
-        reservations.add(new Reservation(2L, "브라운", LocalDate.of(2023, 1, 2), LocalTime.of(11, 0)));
-        reservations.add(new Reservation(3L, "브라운", LocalDate.of(2023, 1, 3), LocalTime.of(12, 0)));
-    }
 
     @ResponseBody
     @GetMapping("/reservations")
     public ResponseEntity<List<Reservation>> read(){
-        return ResponseEntity.ok().body(reservations);
+        return ResponseEntity.ok().body(reservationService.getAllReservations());
     }
     private AtomicLong index = new AtomicLong(1);
+    @ResponseBody
     @PostMapping("/reservations")
     public ResponseEntity<Void> create(@RequestBody Reservation reservation) {
         Reservation newReservation = Reservation.toEntity(reservation, index.getAndIncrement());
