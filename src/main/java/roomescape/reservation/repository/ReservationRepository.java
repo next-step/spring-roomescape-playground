@@ -16,10 +16,10 @@ public class ReservationRepository {
     private final AtomicLong index = new AtomicLong(0);
 
     public Reservation save(Reservation reservation) {
-        reservation.setId(index.incrementAndGet());
-        store.put(reservation.getId(), reservation);
+        Reservation addedReservation = new Reservation(index.incrementAndGet(), reservation.getName(), reservation.getDate(), reservation.getTime());
+        store.put(addedReservation.getId(), addedReservation);
 
-        return reservation;
+        return addedReservation;
     }
 
     public List<Reservation> findAll() {
@@ -32,6 +32,7 @@ public class ReservationRepository {
     public void deleteById(final Long id) {
         store.remove(id);
     }
+
 //    public void update (Long id, Reservation updateReservation) {
 //        Reservation findReservation = findById(id);
 //
