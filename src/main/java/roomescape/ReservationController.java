@@ -1,5 +1,6 @@
 package roomescape;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -40,16 +41,15 @@ public class ReservationController {
 
     @ResponseBody
     @GetMapping("/reservations")
-    public ResponseEntity<List<Reservation>> read(){
-        return ResponseEntity.ok().body(reservationService.getAllReservations());
+    public List<Reservation> read(){
+        return reservationService.getAllReservations();
     }
-    private AtomicLong index = new AtomicLong(1);
-    @ResponseBody
+    final AtomicLong index = new AtomicLong(0);
     @PostMapping("/reservations")
-    public ResponseEntity<Void> create(@RequestBody Reservation reservation) {
-        Reservation newReservation = Reservation.toEntity(reservation, index.getAndIncrement());
+    public ResponseEntity<Reservation> create(@RequestBody Reservation reservation) {
+        Reservation newReservation = Reservation.toEntity(index,reservation);
         reservations.add(newReservation);
-        return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).build();
+        return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
     }
 
     @DeleteMapping("/reservations/{id}")
@@ -59,7 +59,6 @@ public class ReservationController {
                 .findFirst()
                 .orElseThrow(RuntimeException::new);
         reservations.remove(reservation);
-
         return ResponseEntity.noContent().build();
     }
 }
