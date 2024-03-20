@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicLong;
 @Repository
 public class ReservationRepository {
     private static final Map<Long,Reservation> store = new HashMap<>();
-    private AtomicLong index = new AtomicLong(0);
+    private final AtomicLong index = new AtomicLong(0);
 
     public Reservation save(Reservation reservation) {
         reservation.setId(index.incrementAndGet());
@@ -32,12 +32,12 @@ public class ReservationRepository {
     public void deleteById(final Long id) {
         store.remove(id);
     }
-    public void update (Long id, Reservation updateReservation) {
-        Reservation findReservation = findById(id);
-
-        findReservation.setName(updateReservation.getName());
-        findReservation.setDate(updateReservation.getDate());
-        findReservation.setTime(updateReservation.getTime());
-    }
+//    public void update (Long id, Reservation updateReservation) {
+//        Reservation findReservation = findById(id);
+//
+//        findReservation.setName(updateReservation.getName());
+//        findReservation.setDate(updateReservation.getDate());
+//        findReservation.setTime(updateReservation.getTime());
+//    }
 
 }
