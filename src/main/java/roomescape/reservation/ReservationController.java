@@ -14,6 +14,7 @@ import roomescape.reservation.repository.ReservationRepository;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/reservations")
@@ -25,6 +26,8 @@ public class ReservationController {
     }
 
     public void validateRequestBody(Reservation reservation) {
+        if(reservation == null)
+            throw new IllegalArgumentException("해당하는 예약 내역이 없습니다.");
         if(reservation.getName().isEmpty() || reservation.getDate() == null|| reservation.getTime() ==null)
             throw new IllegalArgumentException("예약 정보가 비어있습니다.");
     }
@@ -43,6 +46,8 @@ public class ReservationController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable final Long id) {
+        Reservation deletedReservation = reservationRepository.findById(id);
+        validateRequestBody(deletedReservation);
         reservationRepository.deleteById(id);
 
         return ResponseEntity.noContent().build();

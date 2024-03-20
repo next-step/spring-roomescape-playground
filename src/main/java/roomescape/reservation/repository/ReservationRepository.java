@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Repository
 public class ReservationRepository {
@@ -25,7 +26,7 @@ public class ReservationRepository {
     }
 
     public Reservation findById(Long id) {
-        return store.get(id);
+        return Optional.ofNullable(store.get(id)).orElse(store.get(id));
     }
     public void deleteById(final Long id) {
         store.remove(id);
