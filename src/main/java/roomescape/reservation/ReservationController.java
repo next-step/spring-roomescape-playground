@@ -28,7 +28,7 @@ public class ReservationController {
     }
 
     public void validateRequestBody(ReservationRequest reservation) {
-        if(reservation.getName().isEmpty() || reservation.getDate().isEmpty()|| reservation.getTime().isEmpty())
+        if(reservation.name().isEmpty() || reservation.date().isEmpty()|| reservation.time().isEmpty())
             throw new IllegalArgumentException("예약 정보가 비어있습니다.");
     }
     public void validateRequestParam(Reservation reservation) {
@@ -43,7 +43,7 @@ public class ReservationController {
     @PostMapping
     public ResponseEntity<Reservation> addReservation(@RequestBody final ReservationRequest reservation) {
         validateRequestBody(reservation);
-        Reservation addedReservation = reservationRepository.save(new Reservation(reservation.getName(), LocalDate.parse(reservation.getDate()), LocalTime.parse(reservation.getTime())));
+        Reservation addedReservation = reservationRepository.save(new Reservation(reservation.name(), LocalDate.parse(reservation.date()), LocalTime.parse(reservation.time())));
 
         return ResponseEntity.created(URI.create("/reservations/" + addedReservation.getId())).body(addedReservation);
     }
