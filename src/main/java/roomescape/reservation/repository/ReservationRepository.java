@@ -8,14 +8,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Repository
 public class ReservationRepository {
     private static final Map<Long,Reservation> store = new HashMap<>();
-    private static long sequence = 0L;
+    private AtomicLong index = new AtomicLong(0);
 
     public Reservation save(Reservation reservation) {
-        reservation.setId(++sequence);
+        reservation.setId(index.incrementAndGet());
         store.put(reservation.getId(), reservation);
 
         return reservation;
