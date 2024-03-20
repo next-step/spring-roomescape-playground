@@ -21,9 +21,7 @@ public class Reservation {
     }
 
     public Reservation(String name, LocalDate date, LocalTime time) {
-        this.name = name;
-        this.date = date;
-        this.time = time;
+        this(null,name,date,time); // this()를 사용해서 코드를 줄였어요.
     }
 
 
