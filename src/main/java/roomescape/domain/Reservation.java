@@ -1,7 +1,6 @@
 package roomescape.domain;
 
 import java.time.LocalDate;
-import java.util.Objects;
 
 public class Reservation {
 
@@ -13,40 +12,17 @@ public class Reservation {
     protected Reservation() {
     }
 
-    public Reservation(String name, LocalDate date, String time) {
-        this.id = null;
-        this.name = name;
-        this.date = date;
-        this.time = time;
-    }
-
     public Reservation(Long id, String name, LocalDate date, String time) {
-        validateNotNull(name, date, time);
-        validateNotBlank(name, time);
         this.id = id;
         this.name = name;
         this.date = date;
         this.time = time;
     }
 
-    private void validateNotNull(Object... parameters) {
-        for (Object parameter : parameters) {
-            if (Objects.isNull(parameter)) {
-                throw new IllegalArgumentException("빈 인자가 있습니다");
-            }
-        }
-    }
-
-    private void validateNotBlank(String... strings) {
-        for (String string : strings) {
-            if (string.isBlank()) {
-                throw new IllegalArgumentException("빈 인자가 있습니다");
-            }
-        }
-    }
-
-    public Reservation with(Long id) {
-        return new Reservation(id, this.name, this.date, this.time);
+    public Reservation(String name, LocalDate date, String time) {
+        this.name = name;
+        this.date = date;
+        this.time = time;
     }
 
     public Long getId() {
@@ -64,4 +40,9 @@ public class Reservation {
     public String getTime() {
         return time;
     }
+
+    public static Reservation toEntity(Reservation reservation, Long id) {
+        return new Reservation(id, reservation.name, reservation.date, reservation.time);
+    }
+
 }
