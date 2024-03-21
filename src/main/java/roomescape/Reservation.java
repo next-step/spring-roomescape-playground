@@ -1,5 +1,5 @@
 package roomescape;
-
+//엔티티를 작성하여 확인 할 수 있게 했다 다음에는 롬복으로 진행해서 해당과정을 생략할 계획이다
 public class Reservation {
     private long id;
     private String name;
