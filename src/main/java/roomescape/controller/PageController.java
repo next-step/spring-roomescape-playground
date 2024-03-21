@@ -8,6 +8,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class PageController {
     @GetMapping("/reservation")
     public String reservation() {
-        return "reservation";
+        return "new-reservation";
+    }
+
+    @GetMapping("/time")
+    public String time() {
+        return "time";
     }
 }

@@ -1,51 +1,32 @@
 package roomescape.domain;
 
 public class Reservation {
-        private long id;
+        private Long ReservationId;
         private String name;
         private String date;
-        private String time;
+        private Time time;
 
-    public Reservation(long id, String name, String date, String time) {
-        this.id = id;
+    public Reservation(Long ReservationId, String name, String date, Time time) {
+        this.ReservationId = ReservationId;
         this.name = name;
         this.date = date;
         this.time = time;
     }
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
+    public Long getReservationId() {
+        return this.ReservationId;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getDate() {
         return date;
     }
 
-    public void setDate(String date) {
-        this.date = date;
-    }
-
-    public String getTime() {
+    public Time getTime() {
         return time;
     }
 
-    public void setTime(String time) {
-        this.time = time;
-    }
-
-    public boolean isEqualId(long id) {
-        return this.id == id;
-    }
 }
