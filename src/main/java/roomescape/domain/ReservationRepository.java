@@ -1,14 +1,15 @@
-package roomescape.repository;
+package roomescape.domain;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import roomescape.domain.Reservation;
 
 import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.NoSuchElementException;
+
+import static java.util.Objects.requireNonNull;
 
 @Repository
 public class ReservationRepository {
@@ -24,25 +25,33 @@ public class ReservationRepository {
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(
-                    "insert into reservation (name, date, time) values (?, ?, ?)",
+                    "insert into reservation (name, date, time_id) values (?, ?, ?)",
                     new String[]{"id"});
             ps.setString(1, reservation.getName());
             ps.setString(2, reservation.getDate().toString());
-            ps.setString(3, reservation.getTime().toString());
+            ps.setLong(3, reservation.getTimeId());
             return ps;
         }, keyHolder);
 
-        return keyHolder.getKey().longValue();
+        return requireNonNull(keyHolder.getKey(), "예약 생성에 실패했습니다. 예약 id가 존재하지 않습니다.").longValue();
     }
 
     public List<Reservation> findAll() {
         return jdbcTemplate.query(
-                "select id, name, date, time from reservation",
+                """
+                        SELECT
+                            r.id as reservation_id,
+                            r.name,
+                            r.date,
+                            t.id as time_id,
+                            t.time as time_value
+                        FROM reservation as r inner join time as t on r.time_id = t.id
+                        """,
                 (resultSet, rowNum) -> new Reservation(
-                        resultSet.getLong("id"),
+                        resultSet.getLong("reservation_id"),
                         resultSet.getString("name"),
                         resultSet.getString("date"),
-                        resultSet.getString("time")
+                        new ReservationTime(resultSet.getLong("time_id"), resultSet.getString("time_value"))
                 ));
     }
 

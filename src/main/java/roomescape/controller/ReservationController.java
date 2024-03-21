@@ -1,5 +1,6 @@
 package roomescape.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -10,44 +11,43 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import roomescape.controller.dto.ReservationDto;
-import roomescape.controller.dto.ReservationSaveDto;
+import roomescape.controller.dto.ReservationSaveRequestDto;
+import roomescape.controller.dto.ReservationSaveResponseDto;
 import roomescape.domain.Reservation;
-import roomescape.repository.ReservationRepository;
+import roomescape.service.ReservationService;
 
 import java.util.List;
-import java.util.Map;
 
-@Controller
 @RequestMapping("/reservations")
+@Controller
 public class ReservationController {
 
-    private final ReservationRepository reservationRepository;
+    private final ReservationService reservationService;
 
-    public ReservationController(ReservationRepository reservationRepository) {
-        this.reservationRepository = reservationRepository;
+    public ReservationController(ReservationService reservationService) {
+        this.reservationService = reservationService;
     }
 
     @GetMapping
     public ResponseEntity<List<ReservationDto>> getAllReservations() {
-        List<Reservation> reservations = reservationRepository.findAll();
-        
+        List<Reservation> reservations = reservationService.findAll();
+
         return ResponseEntity.ok()
                 .body(ReservationDto.from(reservations));
     }
 
     @PostMapping
-    public ResponseEntity<ReservationSaveDto> createReservations(@RequestBody Map<String, String> request) {
-        Reservation reservation = new Reservation(request.get("name"), request.get("date"), request.get("time"));
-        long id = reservationRepository.save(reservation);
+    public ResponseEntity<ReservationSaveResponseDto> createReservations(@Valid @RequestBody ReservationSaveRequestDto request) {
+        long id = reservationService.save(request);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .header("Location", "/reservations/" + id)
-                .body(new ReservationSaveDto(id));
+                .body(new ReservationSaveResponseDto(id));
     }
 
     @DeleteMapping("/{deleteId}")
     public ResponseEntity<Void> deleteById(@PathVariable(name = "deleteId") long deleteId) {
-        reservationRepository.deleteById(deleteId);
+        reservationService.deleteById(deleteId);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
                 .build();
