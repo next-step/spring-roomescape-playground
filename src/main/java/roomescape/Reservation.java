@@ -1,5 +1,9 @@
 package roomescape;
 
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 public class Reservation {
     private long id;
     private String name;
@@ -47,6 +51,18 @@ public class Reservation {
     public void setTime(String time) {
         this.time = time;
     }
+
+    @Override
+    public String toString() {
+        try {
+            return new ObjectMapper().writeValueAsString(this);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
 
 
 }
