@@ -1,5 +1,6 @@
 package roomescape;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -11,6 +12,8 @@ import java.util.List;
 public class ReservationService {
 
     final List<Reservation> reservations = new ArrayList<>();
+    @Autowired
+    private QueryDAO queryDAO;
 
 //    public ReservationService(){
 //            // 데이터 추가
@@ -20,7 +23,7 @@ public class ReservationService {
 //    }
 
     public List<Reservation> getAllReservations() {
-        return reservations;
+        return queryDAO.findAllReservations();
     }
 
 

@@ -21,6 +21,7 @@ public class ReservationController {
     List<Reservation> reservations = new ArrayList<>();
     ReservationService reservationService;
 
+
     //생성자로 ReservationService 에 대한 의존성을 주입해요.
     public ReservationController (ReservationService reservationService){
         this.reservationService=reservationService;
