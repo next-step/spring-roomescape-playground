@@ -37,5 +37,15 @@ public class QueryDAO {
                 });
     }
 
+    public void addReservation(Reservation reservation) {
+        String sql = "INSERT INTO reservation(name, date, time) VALUES (?, ?, ?)";
+        jdbcTemplate.update(sql, reservation.getName(), reservation.getDate(), reservation.getTime());
+    }
+
+    public void deleteReservation(Long id){
+        String sql = "DELETE FROM reservation WHERE id = ?";
+        jdbcTemplate.update(sql, id);
+    }
+
 
 }

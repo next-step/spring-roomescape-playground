@@ -26,6 +26,14 @@ public class ReservationService {
         return queryDAO.findAllReservations();
     }
 
+    public void addReservation(Reservation reservation){
+        queryDAO.addReservation(reservation);
+    }
+
+    public void deleteReservation(Long id){
+        queryDAO.deleteReservation(id);
+    }
+
 
 
 }

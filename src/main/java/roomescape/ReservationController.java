@@ -1,5 +1,6 @@
 package roomescape;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,13 +20,9 @@ import java.util.concurrent.atomic.AtomicLong;
 public class ReservationController {
 
     List<Reservation> reservations = new ArrayList<>();
+    @Autowired
     ReservationService reservationService;
 
-
-    //생성자로 ReservationService 에 대한 의존성을 주입해요.
-    public ReservationController (ReservationService reservationService){
-        this.reservationService=reservationService;
-    }
 
     @GetMapping("/")
     public String GoToHome(){
@@ -45,21 +42,16 @@ public class ReservationController {
     public List<Reservation> read(){
         return reservationService.getAllReservations();
     }
+
     final AtomicLong index = new AtomicLong(0);
     @PostMapping("/reservations")
-    public ResponseEntity<Reservation> create(@RequestBody Reservation reservation) {
-        Reservation newReservation = Reservation.toEntity(index,reservation);
-        reservations.add(newReservation);
-        return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
+    public ResponseEntity<Void> create(@RequestBody Reservation reservation) {
+        reservationService.addReservation(reservation);
+        return ResponseEntity.created(URI.create("/reservations/" + index.incrementAndGet())).build();
     }
-
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        Reservation reservation = reservations.stream()
-                .filter(it -> Objects.equals(it.getId(), id))
-                .findFirst()
-                .orElseThrow(RuntimeException::new);
-        reservations.remove(reservation);
+        reservationService.deleteReservation(id);
         return ResponseEntity.noContent().build();
     }
 }
