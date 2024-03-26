@@ -5,36 +5,52 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 public class Reservation {
-    private Long id;
+    private long id;
     private String name;
-    private LocalDate date;
-    private LocalTime time;
+    private String date;
+    private String time;
 
-    public Reservation(){
+    public Reservation() {
     }
 
-    public Reservation(Long id, String name, LocalDate date, LocalTime time){
+    public Reservation(long id, String name, String date, String time) {
         this.id = id;
         this.name = name;
         this.date = date;
         this.time = time;
     }
 
-    public Long getId(){
+    public long getId() {
         return id;
     }
-    public String getName(){
-        return name;
-    }
-    public LocalDate getDate(){
-        return date;
-    }
-    public String getTime(){
-        return time.format(DateTimeFormatter.ofPattern("HH:mm"));
+
+    public void setId(long id) {
+        this.id = id;
     }
 
-    public static Reservation toEntity(Reservation reservation, Long id) {
-        return new Reservation(id, reservation.name, reservation.date, reservation.time);
+    public String getName() {
+        return name;
     }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
 
 }
