@@ -1,3 +1,4 @@
+package roomescape;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,15 +13,8 @@ import roomescape.NotFoundReservationException;
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(NotFoundReservationException.class)
-    protected ResponseEntity<Object> handleNotFoundReservationException(NotFoundReservationException ex, WebRequest request) {
-        String bodyOfResponse = "Reservation not found";
-        return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
-    }
-
-    @ExceptionHandler(NotFoundReservationException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    protected ResponseEntity<Object> handleBadRequestException(NotFoundReservationException ex, WebRequest request) {
-        String bodyOfResponse = "Bad request";
+    protected ResponseEntity<Object> handleInvalidReservationRequestException(NotFoundReservationException ex, WebRequest request) {
+        String bodyOfResponse = "Not found";
         return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 }

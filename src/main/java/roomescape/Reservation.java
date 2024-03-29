@@ -3,6 +3,7 @@ package roomescape;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class Reservation {
     private long id;
@@ -52,17 +53,21 @@ public class Reservation {
         this.time = time;
     }
 
+
     @Override
     public String toString() {
         try {
-            return new ObjectMapper().writeValueAsString(this);
+            ObjectMapper objectMapper = new ObjectMapper();
+            ObjectNode reservationJson = objectMapper.createObjectNode();
+            reservationJson.put("id", this.id);
+            reservationJson.put("name", this.name);
+            reservationJson.put("date", this.date);
+            reservationJson.put("time", this.time);
+            return objectMapper.writeValueAsString(reservationJson);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            return null;
+            System.err.println("Error converting Reservation object to JSON: " + e.getMessage());
+            return "{\"error\": \"Failed to convert object to JSON\"}";
         }
     }
-
-
-
 
 }
