@@ -136,6 +136,7 @@ public class MissionStepTest {
         }
     }
 
+<<<<<<< HEAD
     @Test
     void 육단계() {
         log.info("육단계");
@@ -184,4 +185,6 @@ public class MissionStepTest {
         assertThat(countAfterDelete).isEqualTo(0);
     }
 
+=======
+>>>>>>> 0522ab1a62da6a59ef08a835cabdbdfa192feabf
 }
