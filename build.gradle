@@ -13,12 +13,15 @@ repositories {
 }
 
 dependencies {
+    // Spring 의존 추가
     implementation 'org.springframework.boot:spring-boot-starter'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    // Spring Web Starter 의존성 추가
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    // 동적 페이지 처리를 위한 Template Engine
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     testImplementation 'io.rest-assured:rest-assured:5.3.1'
-    // 테스트 코드
+    // 테스트 코드 내부 import lombok.extern.slf4j.Slf4j
     testCompileOnly 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
 }
