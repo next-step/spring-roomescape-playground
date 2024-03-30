@@ -13,7 +13,20 @@ public class Reservation {
     this.time = time;
   }
 
-  public Reservation() {
+  public int getId() {
+    return this.id;
+  }
+  public String getName() {
+    return this.name;
+  }
+  public String getDate() {
+    return this.date;
+  }
+  public String getTime() {
+    return this.time;
+  }
 
+  public static Reservation toEntity(Reservation reservation, int id) {
+    return new Reservation(id, reservation.getName(), reservation.getDate(), reservation.getTime());
   }
 }
