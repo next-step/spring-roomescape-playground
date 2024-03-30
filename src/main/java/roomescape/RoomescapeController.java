@@ -2,7 +2,6 @@ package roomescape;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -35,6 +34,9 @@ public class RoomescapeController {
   @PostMapping("/reservations")
   @ResponseBody
   public ResponseEntity<Reservation> addReservation(@RequestBody Reservation reservation) {
+    if (reservation.getDate().isEmpty() || reservation.getName().isEmpty() || reservation.getTime().isEmpty()) {
+      return ResponseEntity.badRequest().build();
+    }
     Reservation added = Reservation.toEntity(reservation, index.getAndIncrement());
     reservations.add(added);
     return ResponseEntity.created(URI.create("/reservations/" + added.getId())).body(added);
@@ -45,9 +47,11 @@ public class RoomescapeController {
     Reservation willDeleted = reservations.stream()
             .filter(item -> Objects.equals(item.getId(), id))
             .findFirst()
-            .orElseThrow(RuntimeException::new);
+            .orElse(null);
 
-    reservations.remove(willDeleted);
+    if(!reservations.remove(willDeleted)) {
+      return ResponseEntity.badRequest().build();
+    }
 
     return ResponseEntity.noContent().build();
   }
