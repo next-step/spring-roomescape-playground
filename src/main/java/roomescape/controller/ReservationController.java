@@ -1,8 +1,9 @@
-package roomescape;
+package roomescape.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import roomescape.dto.Reservation;
 import roomescape.dto.ReservationDto;
 
 import java.util.ArrayList;
@@ -24,13 +25,13 @@ public class ReservationController
 
     // 예약 추가
     @PostMapping("/reservations")
-    public  ResponseEntity<Reservation> saveReservation(@RequestBody ReservationDto reservationDto) {
+    public  ResponseEntity<Reservation> saveReservation(@RequestBody Reservation reservation) {
         // 예약 추가 시 필요한 인자값이 비어있는 경우, 예외를 던집니다.
-        if (Objects.equals(reservationDto.name, "") || Objects.equals(reservationDto.date, "") || Objects.equals(reservationDto.time, "")) {
+        if (Objects.equals(reservation.getName(), "") || Objects.equals(reservation.getDate(), "") || Objects.equals(reservation.getTime(), "")) {
             return ResponseEntity.badRequest().build();
         }
         // 객체를 할당하고 리스트에 넣자! (index의 initialvalue가 1이기에 getAndIncrement를 해야함)
-        Reservation newReservation = new Reservation(index.getAndIncrement(), reservationDto.name, reservationDto.date, reservationDto.time);
+        Reservation newReservation = new Reservation(index.getAndIncrement(), reservation.getName(), reservation.getDate(), reservation.getTime());
         reservations.add(newReservation);
 
         // 생성된 예약 정보와 함께 201 Created 응답 반환 (CREATED : 201, body : API 응답 정보 반환)
