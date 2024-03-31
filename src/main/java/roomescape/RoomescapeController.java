@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static org.springframework.web.servlet.function.ServerResponse.status;
+
 
 @Controller
 public class RoomescapeController {
@@ -37,6 +39,10 @@ public class RoomescapeController {
     @PostMapping("/reservations")
     @ResponseBody
     public ResponseEntity<Reservation> create(@RequestBody Reservation reservation) {
+        if(reservation.getName().isEmpty() || reservation.getDate().isEmpty() || reservation.getDate().isEmpty()){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
         Reservation newReservation = new Reservation(atomic.incrementAndGet(), reservation.getName(), reservation.getDate(), reservation.getTime());
         reservations.add(newReservation);
 
@@ -46,6 +52,9 @@ public class RoomescapeController {
     @DeleteMapping("/reservations/{id}")
     @ResponseStatus (HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> delete(@PathVariable("id") int id) {
+        if(reservations.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         Reservation deletedReservation = reservations.stream()
                 .filter(it -> Objects.equals(it.getId(), id))
                 .findFirst()
@@ -55,4 +64,6 @@ public class RoomescapeController {
 
         return null;
     }
+
+
 }
