@@ -15,6 +15,7 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-jdbc' // Spring JDBC Starter 의존성 추가
     runtimeOnly 'com.h2database:h2' // 메모리 기반의 H2 데이터베이스 사용
 
