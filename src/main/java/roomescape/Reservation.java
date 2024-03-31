@@ -13,5 +13,16 @@ public class Reservation {
         this.time = time;
     }
 
-
+    public int getId() {
+        return id;
+    }
+    public String getName() {
+        return name;
+    }
+    public String getDate() {
+        return date;
+    }
+    public String getTime() {
+        return time;
+    }
 }
