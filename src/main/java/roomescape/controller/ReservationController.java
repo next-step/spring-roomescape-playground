@@ -4,7 +4,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import roomescape.dto.Reservation;
-import roomescape.dto.ReservationDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +29,7 @@ public class ReservationController
         if (Objects.equals(reservation.getName(), "") || Objects.equals(reservation.getDate(), "") || Objects.equals(reservation.getTime(), "")) {
             return ResponseEntity.badRequest().build();
         }
+
         // 객체를 할당하고 리스트에 넣자! (index의 initialvalue가 1이기에 getAndIncrement를 해야함)
         Reservation newReservation = new Reservation(index.getAndIncrement(), reservation.getName(), reservation.getDate(), reservation.getTime());
         reservations.add(newReservation);
