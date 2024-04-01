@@ -1,9 +1,9 @@
-package roomescape;
+package roomescape.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import roomescape.dto.ReservationDto;
+import roomescape.dto.Reservation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,13 +24,14 @@ public class ReservationController
 
     // 예약 추가
     @PostMapping("/reservations")
-    public  ResponseEntity<Reservation> saveReservation(@RequestBody ReservationDto reservationDto) {
+    public  ResponseEntity<?> saveReservation(@RequestBody Reservation reservation) {
         // 예약 추가 시 필요한 인자값이 비어있는 경우, 예외를 던집니다.
-        if (Objects.equals(reservationDto.name, "") || Objects.equals(reservationDto.date, "") || Objects.equals(reservationDto.time, "")) {
-            return ResponseEntity.badRequest().build();
+        if (Objects.equals(reservation.getName(), "") || Objects.equals(reservation.getDate(), "") || Objects.equals(reservation.getTime(), "")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error! 예약 추가 시 필요한 인자값이 비어 있습니다.");
         }
+
         // 객체를 할당하고 리스트에 넣자! (index의 initialvalue가 1이기에 getAndIncrement를 해야함)
-        Reservation newReservation = new Reservation(index.getAndIncrement(), reservationDto.name, reservationDto.date, reservationDto.time);
+        Reservation newReservation = new Reservation(index.getAndIncrement(), reservation.getName(), reservation.getDate(), reservation.getTime());
         reservations.add(newReservation);
 
         // 생성된 예약 정보와 함께 201 Created 응답 반환 (CREATED : 201, body : API 응답 정보 반환)
@@ -42,17 +43,17 @@ public class ReservationController
 
     // 예약 취소
     @DeleteMapping("/reservations/{id}") // 'reservaions/1' 이런 식으로 맵핑함
-    public ResponseEntity<Reservation> deleteReservation(@PathVariable Long id) {
+    public ResponseEntity<?> deleteReservation(@PathVariable Long id) {
         // ID와 일치하는 예약을 찾아서 삭제합니다.
         for (Reservation reservation : reservations) {
             if (reservation.getId().equals(id)) {
                 reservations.remove(reservation);
-                return ResponseEntity.noContent().build();
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
             }
         }
 
         // ID와 일치하는 예약을 찾지 못한 경우, 예외를 던집니다.
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error! 회원 ID와 일치하는 예약을 찾지 못했습니다.");
     }
 
 }
