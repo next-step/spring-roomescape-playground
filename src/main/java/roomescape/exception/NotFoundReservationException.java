@@ -1,23 +1,14 @@
 package roomescape.exception;
 
-public class NotFoundReservationException extends RuntimeException {
+import org.springframework.http.HttpStatus;
 
-    public NotFoundReservationException() {
+public class NotFoundReservationException extends BaseException {
+
+    public NotFoundReservationException(ErrorCode errorCode) {
+        super(HttpStatus.NOT_FOUND, errorCode);
     }
 
-    public NotFoundReservationException(String message) {
-        super(message);
-    }
-
-    public NotFoundReservationException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public NotFoundReservationException(Throwable cause) {
-        super(cause);
-    }
-
-    public NotFoundReservationException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
+    public NotFoundReservationException(ErrorCode errorCode, Throwable cause) {
+        super(HttpStatus.NOT_FOUND, errorCode, cause);
     }
 }
