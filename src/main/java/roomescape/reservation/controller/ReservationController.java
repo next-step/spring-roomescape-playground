@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import roomescape.reservation.domain.Reservation;
+import roomescape.reservation.exception.InvalidReservationException;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -31,6 +32,9 @@ public class ReservationController {
 
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservation){
+        if (reservation.getId() == null || reservation.getDate() == null || reservation.getTime() == null) {
+            throw new InvalidReservationException("Invalid reservation data");
+        }
         Reservation newReservation = Reservation.toEntity(reservation, index.getAndIncrement());
         reservations.add(newReservation);
         return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
@@ -41,7 +45,7 @@ public class ReservationController {
         Reservation reservation = reservations.stream()
                 .filter(item -> Objects.equals(item.getId(), id))
                 .findFirst()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new InvalidReservationException("Reservation not found with id: " + id));
 
         reservations.remove(reservation);
 
