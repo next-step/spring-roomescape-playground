@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -55,8 +56,7 @@ public class RoomescapeController {
         Reservation deletedReservation = reservations.stream()
                 .filter(it -> Objects.equals(it.getId(), id))
                 .findFirst()
-                .orElseThrow(RuntimeException::new);
-
+                .orElseThrow(() -> new NoSuchElementException("삭제할 예약이 없습니다."));
         reservations.remove(deletedReservation);
 
         return null;
