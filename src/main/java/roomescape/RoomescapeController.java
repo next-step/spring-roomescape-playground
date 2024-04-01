@@ -35,7 +35,7 @@ public class RoomescapeController {
 
     @PostMapping("/reservations")
     @ResponseBody
-    public ResponseEntity<Reservation> create(@RequestBody Reservation reservation) {
+    public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservation) {
         if(reservation.getName().isEmpty() || reservation.getDate().isEmpty() || reservation.getDate().isEmpty()){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
