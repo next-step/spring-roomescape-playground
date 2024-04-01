@@ -48,7 +48,7 @@ public class RoomescapeController {
     }
 
     @DeleteMapping("/reservations/{id}")
-    @ResponseStatus (HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> delete(@PathVariable() int id) {
         if(reservations.isEmpty()){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
