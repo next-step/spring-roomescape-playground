@@ -12,8 +12,10 @@ import java.util.List;
 public class ReservationService {
 
     final List<Reservation> reservations = new ArrayList<>();
+
     @Autowired
     private QueryDAO queryDAO;
+
 
 //    public ReservationService(){
 //            // 데이터 추가
@@ -32,6 +34,8 @@ public class ReservationService {
 
     public void deleteReservation(Long id){
         queryDAO.deleteReservation(id);
+        return reservations;
+
     }
 
 

@@ -1,5 +1,6 @@
 package roomescape;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -20,9 +21,14 @@ import java.util.concurrent.atomic.AtomicLong;
 public class ReservationController {
 
     List<Reservation> reservations = new ArrayList<>();
+
     @Autowired
     ReservationService reservationService;
 
+    //생성자로 ReservationService 에 대한 의존성을 주입해요.
+    public ReservationController (ReservationService reservationService){
+        this.reservationService=reservationService;
+    }
 
     @GetMapping("/")
     public String GoToHome(){
@@ -52,6 +58,5 @@ public class ReservationController {
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         reservationService.deleteReservation(id);
-        return ResponseEntity.noContent().build();
-    }
+
 }
