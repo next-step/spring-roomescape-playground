@@ -11,9 +11,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.springframework.web.servlet.function.ServerResponse.status;
-
-
 @Controller
 public class RoomescapeController {
     private List<Reservation> reservations = new ArrayList<>();
@@ -51,7 +48,7 @@ public class RoomescapeController {
 
     @DeleteMapping("/reservations/{id}")
     @ResponseStatus (HttpStatus.NO_CONTENT)
-    public ResponseEntity<Void> delete(@PathVariable("id") int id) {
+    public ResponseEntity<Void> delete(@PathVariable() int id) {
         if(reservations.isEmpty()){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -64,6 +61,4 @@ public class RoomescapeController {
 
         return null;
     }
-
-
 }
