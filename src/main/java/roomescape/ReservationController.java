@@ -1,60 +1,44 @@
 package roomescape;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.util.ArrayList;
+import javax.sql.DataSource;
+import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.Map;
 
-@Controller
+@RestController
 public class ReservationController {
 
-    private List<Reservation> reservations = new ArrayList<>();
-    private AtomicLong index = new AtomicLong(0);
+    private final ReservationService reservationService;
 
-    @GetMapping("/")
-    public String showHomePage() {
-        return "home";
-    }
-
-    @GetMapping("/reservation")
-    public String showReservationPage() {
-        return "reservation";
+    @Autowired
+    public ReservationController(ReservationService reservationService) {
+        this.reservationService = reservationService;
     }
 
     @GetMapping("/reservations")
-    @ResponseBody
     public List<Reservation> getReservations() {
-        return reservations;
+        return reservationService.getAllReservations();
     }
 
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> addReservation(@RequestBody Reservation reservation) {
-        if (reservation.getName() == null || reservation.getName().isEmpty() ||
-                reservation.getDate() == null || reservation.getDate().isEmpty() ||
-                reservation.getTime() == null || reservation.getTime().isEmpty()) {
-            throw new NotFoundReservationException("Required fields are missing.");
-        }
-
-        long newId = index.incrementAndGet();
-        reservation.setId(newId);
-        reservations.add(reservation);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .header("Location", "/reservations/" + newId)
-                .body(reservation);
+        ResponseEntity<Reservation> responseEntity = reservationService.addReservation(reservation);
+        return ResponseEntity.created(responseEntity.getHeaders().getLocation()).body(responseEntity.getBody());
     }
-
 
     @DeleteMapping("/reservations/{id}")
-    public ResponseEntity<Void> cancelReservation(@PathVariable long id) {
-        boolean removed = reservations.removeIf(reservation -> reservation.getId() == id);
-        if (!removed) {
-            throw new NotFoundReservationException("Reservation not found.");
-        }
+    public ResponseEntity<Void> cancelReservation(@PathVariable Long id) {
+        reservationService.cancelReservation(id);
         return ResponseEntity.noContent().build();
     }
-
 }
