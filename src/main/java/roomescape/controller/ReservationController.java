@@ -24,10 +24,10 @@ public class ReservationController
 
     // 예약 추가
     @PostMapping("/reservations")
-    public  ResponseEntity<Reservation> saveReservation(@RequestBody Reservation reservation) {
+    public  ResponseEntity<?> saveReservation(@RequestBody Reservation reservation) {
         // 예약 추가 시 필요한 인자값이 비어있는 경우, 예외를 던집니다.
         if (Objects.equals(reservation.getName(), "") || Objects.equals(reservation.getDate(), "") || Objects.equals(reservation.getTime(), "")) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error! 예약 추가 시 필요한 인자값이 비어 있습니다.");
         }
 
         // 객체를 할당하고 리스트에 넣자! (index의 initialvalue가 1이기에 getAndIncrement를 해야함)
@@ -43,17 +43,17 @@ public class ReservationController
 
     // 예약 취소
     @DeleteMapping("/reservations/{id}") // 'reservaions/1' 이런 식으로 맵핑함
-    public ResponseEntity<Reservation> deleteReservation(@PathVariable Long id) {
+    public ResponseEntity<?> deleteReservation(@PathVariable Long id) {
         // ID와 일치하는 예약을 찾아서 삭제합니다.
         for (Reservation reservation : reservations) {
             if (reservation.getId().equals(id)) {
                 reservations.remove(reservation);
-                return ResponseEntity.noContent().build();
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
             }
         }
 
         // ID와 일치하는 예약을 찾지 못한 경우, 예외를 던집니다.
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error! 회원 ID와 일치하는 예약을 찾지 못했습니다.");
     }
 
 }
