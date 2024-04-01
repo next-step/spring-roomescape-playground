@@ -16,7 +16,7 @@ public class MemoryReservationRepository implements ReservationRepository {
 
     @Override
     public List<Reservation> findAll() {
-        return reservations;
+        return new ArrayList<>(reservations);
     }
 
     @Override

@@ -1,9 +1,7 @@
 package roomescape.service;
 
-import java.net.URI;
 import java.util.List;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -22,14 +20,11 @@ public class ReservationService {
         return reservationRepository.findAll();
     }
 
-    public ResponseEntity<Reservation> addReservation(@Valid @RequestBody Reservation request) {
-
-        Reservation reservation = reservationRepository.save(request);
-        return ResponseEntity.created(URI.create("/reservations/" + reservation.getId())).body(reservation);
+    public Reservation addReservation(@Valid @RequestBody Reservation request) {
+        return reservationRepository.save(request);
     }
 
-    public ResponseEntity<Object> deleteReservation(Long id) {
+    public void deleteReservation(Long id) {
         reservationRepository.deleteById(id);
-        return ResponseEntity.noContent().build();
     }
 }
