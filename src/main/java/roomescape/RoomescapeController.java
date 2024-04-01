@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class RoomescapeController {
     private List<Reservation> reservations = new ArrayList<>();
 
-    AtomicInteger atomic = new AtomicInteger();
+    AtomicInteger atomic = new AtomicInteger(0);
 
     @GetMapping("/")
     public String home() {
