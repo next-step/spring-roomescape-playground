@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.core.Is.is;
 
 @Slf4j
@@ -120,6 +120,7 @@ public class MissionStepTest {
                 .body(is("NotFoundReservationException"));
     }
 
+//<<<<<<< HEAD
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
@@ -136,7 +137,7 @@ public class MissionStepTest {
         }
     }
 
-<<<<<<< HEAD
+//<<<<<<< HEAD
     @Test
     void 육단계() {
         log.info("육단계");
@@ -185,6 +186,8 @@ public class MissionStepTest {
         assertThat(countAfterDelete).isEqualTo(0);
     }
 
-=======
+/*=======
 >>>>>>> 0522ab1a62da6a59ef08a835cabdbdfa192feabf
+=======
+>>>>>>> parent of 0522ab1 (test: 데이터베이스 연결 테스트)*/
 }
