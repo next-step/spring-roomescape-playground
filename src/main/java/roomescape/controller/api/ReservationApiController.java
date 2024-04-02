@@ -12,13 +12,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import roomescape.domain.Reservation;
 import roomescape.service.ReservationService;
 
-@Controller
+@RestController
 @RequestMapping("reservations")
 @RequiredArgsConstructor
 public class ReservationApiController {
@@ -26,7 +27,6 @@ public class ReservationApiController {
     private final ReservationService reservationService;
 
     @GetMapping
-    @ResponseBody
     public List<Reservation> reservations() {
         return reservationService.reservations();
     }
