@@ -26,15 +26,17 @@ public class ReservationController {
 
     @GetMapping("/reservations")
     @ResponseBody
-    public List<Reservation> reservationList() {
+    public List<Reservation> getReservations() {
         return reservations; // 더미데이터(Reservation의 리스트)를 반환합니다.
     }
 
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservation){
-        if (reservation.getId() == null || reservation.getDate() == null || reservation.getTime() == null) {
-            throw new InvalidReservationException("Invalid reservation data");
+
+        if(reservation.getName().isEmpty() || reservation.getTime().isEmpty() || reservation.getDate().isEmpty()){
+            throw new InvalidReservationException("Invalid reservation data, Field Empty");
         }
+
         Reservation newReservation = Reservation.toEntity(reservation, index.getAndIncrement());
         reservations.add(newReservation);
         return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);

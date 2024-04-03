@@ -8,7 +8,7 @@ public class Reservation {
     private String date;
     private String time;
 
-    public Reservation(){
+    private Reservation(){
 
     }
 
