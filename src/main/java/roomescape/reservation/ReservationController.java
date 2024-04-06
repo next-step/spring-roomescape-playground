@@ -17,11 +17,6 @@ public class ReservationController {
     private List<Reservation> reservations = new ArrayList<>();
     private AtomicLong index = new AtomicLong(1);
 
-    @GetMapping("/reservation")
-    public String world() {
-        return "reservation";
-    }
-
     @GetMapping("/reservations")
     public ResponseEntity<List<Reservation>> read() {
         return ResponseEntity.ok().body(reservations);
@@ -38,11 +33,11 @@ public class ReservationController {
         ReservationDTO newReservationDTO = new ReservationDTO(index.getAndIncrement(), reservationDTO.getName(), reservationDTO.getDate(), reservationDTO.getTime());
         Reservation newReservation = ReservationDTOMapper.toEntity(newReservationDTO);
         reservations.add(newReservation);
+
         return ResponseEntity.created(URI.create("/reservations/" + newReservationDTO.getId())).body(newReservationDTO);
     }
 
     @PutMapping("/reservations/{id}")
-    @ResponseBody
     public ResponseEntity<ReservationDTO> update(@PathVariable long id, @RequestBody ReservationDTO reservationDTO) {
         Reservation reservation = reservations.stream()
                 .filter(it -> Objects.equals(it.getId(), id))
@@ -53,7 +48,9 @@ public class ReservationController {
         reservation.setDate(reservationDTO.getDate());
         reservation.setTime(reservationDTO.getTime());
 
-        return ResponseEntity.ok(ReservationDTOMapper.toDTO(reservation));
+        ReservationDTO newReservationDTO = ReservationDTOMapper.toDTO(reservation);
+
+        return ResponseEntity.ok(newReservationDTO);
     }
 
     @DeleteMapping("/reservations/{id}")
