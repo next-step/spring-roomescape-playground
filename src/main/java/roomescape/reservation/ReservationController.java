@@ -28,7 +28,6 @@ public class ReservationController {
     }
 
     @PostMapping("/reservations")
-    @ResponseBody
     public ResponseEntity<ReservationDTO> create(@RequestBody ReservationDTO reservationDTO) {
         if (reservationDTO.getName() == null || reservationDTO.getName().trim().isEmpty() ||
                 reservationDTO.getDate() == null || reservationDTO.getDate().trim().isEmpty() ||
