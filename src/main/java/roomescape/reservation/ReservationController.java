@@ -1,28 +1,21 @@
 package roomescape.reservation;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import roomescape.reservation.exception.NotFoundReservationException;
 
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Controller
-@ControllerAdvice
 public class ReservationController {
 
-    ReservationService reservationService;
-    List<Reservation> reservations = new ArrayList<>();
+    private List<Reservation> reservations = new ArrayList<>();
     private AtomicLong index = new AtomicLong(1);
-
-    public ReservationController(ReservationService reservationService) {
-        this.reservationService = reservationService;
-    }
 
     @GetMapping("/reservation")
     public String world() {
@@ -40,7 +33,7 @@ public class ReservationController {
         if (reservationDTO.getName() == null || reservationDTO.getName().trim().isEmpty() ||
                 reservationDTO.getDate() == null || reservationDTO.getDate().trim().isEmpty() ||
                 reservationDTO.getTime() == null || reservationDTO.getTime().trim().isEmpty()) {
-            throw new IllegalArgumentException("Reservation name, date, and time must be provided");
+            throw new IllegalArgumentException("값이 비어 있음.");
         }
 
         ReservationDTO newReservationDTO = new ReservationDTO(index.getAndIncrement(), reservationDTO.getName(), reservationDTO.getDate(), reservationDTO.getTime());
@@ -64,7 +57,6 @@ public class ReservationController {
         return ResponseEntity.ok(ReservationDTOMapper.toDTO(reservation));
     }
 
-
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> delete(@PathVariable long id) {
         Reservation reservation = reservations.stream()
@@ -75,17 +67,6 @@ public class ReservationController {
         reservations.remove(reservation);
 
         return ResponseEntity.noContent().build();
-    }
-
-    @ExceptionHandler(NotFoundReservationException.class)
-    public ResponseEntity handleException(NotFoundReservationException e) {
-        return ResponseEntity.badRequest().build();
-    }
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException e) {
-        // BadRequest(400) 상태 코드와 함께 예외 메시지 반환
-        return ResponseEntity.badRequest().body(e.getMessage());
     }
 
 }
