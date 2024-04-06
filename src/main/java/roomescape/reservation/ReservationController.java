@@ -1,4 +1,4 @@
-package roomescape.controller;
+package roomescape.reservation;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -10,7 +10,12 @@ import java.util.List;
 @Controller
 public class ReservationController {
 
-    List<Reservation> reservations = new ArrayList<>();
+    ReservationService reservationService;
+    List<ReservationDTO> reservationDTOs = new ArrayList<>();
+
+    public ReservationController(ReservationService reservationService) {
+        this.reservationService = reservationService;
+    }
 
     @GetMapping("/reservation")
     public String world() {
@@ -18,8 +23,8 @@ public class ReservationController {
     }
 
     @GetMapping("/reservations")
-    public ResponseEntity<List<Reservation>> read() {
-        return ResponseEntity.ok().body(reservations);
+    public ResponseEntity<List<ReservationDTO>> read() {
+        return ResponseEntity.ok().body(reservationDTOs);
     }
 
 
