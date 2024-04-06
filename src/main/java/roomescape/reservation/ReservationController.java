@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 
-@Controller
+@RestController
 public class ReservationController {
 
     private List<Reservation> reservations = new ArrayList<>();
