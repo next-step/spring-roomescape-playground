@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriBuilder;
 import org.springframework.web.util.UriComponentsBuilder;
 import roomescape.dto.ReservationDto;
+import roomescape.exception.CustomException;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -38,7 +39,11 @@ public class ReservationController {
 
     @ResponseBody
     @PostMapping("/reservations")
-    public ResponseEntity<?> postReservation(@RequestBody ReservationDto reservationDto) throws URISyntaxException {
+    public ResponseEntity<?> postReservation(@RequestBody ReservationDto reservationDto) {
+        if(reservationDto.getDate() == null || reservationDto.getTime() == null|| reservationDto.getName().isBlank()){
+            throw new CustomException();
+        }
+
         reservationDto.setId(index.incrementAndGet());
         list.add(reservationDto);
         HttpHeaders httpHeaders = new HttpHeaders();
@@ -55,7 +60,12 @@ public class ReservationController {
     @ResponseBody
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<?> deleteReservations(@PathVariable(value = "id") Long id){
-        list.removeIf(reservationDto -> Objects.equals(reservationDto.getId(), id));
+        if(id == null){
+            throw new CustomException();
+        }
+        if(!list.removeIf(reservationDto -> Objects.equals(reservationDto.getId(), id))){
+            throw new CustomException();
+        }
         return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
     }
 
