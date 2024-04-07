@@ -43,7 +43,7 @@ public class ReservationController {
         }
         Reservation reservation = new Reservation(index.incrementAndGet(), reqeust.getName(), reqeust.getDate(), reqeust.getTime());
         reservations.add(reservation);
-        return ResponseEntity.status(HttpStatus.CREATED).header("Location", "reservations/"+index.get()).body(reservation);
+        return ResponseEntity.status(HttpStatus.CREATED).header("Location", "/reservations/"+index.get()).body(reservation);
     }
 
     @GetMapping("/reservations")
