@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import roomescape.exception.NoArgsException;
+import roomescape.exception.NotFoundReservationException;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -62,32 +64,61 @@ public class ReservationController {
     @PostMapping("/reservations")
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Reservations> reservations(@RequestBody Reservations request) {
+    public ResponseEntity<Reservations> reservations(@RequestBody Reservations request) throws Exception {
         /**
          * DB 가 없으니 일단, Controller 의 Static 변수에 저장하자.
          */
 
+
+        /**
+         * 필요한 값이 모두 받아졌는지 확인.
+         */
+        if (request.date.isEmpty() ||  request.name.isEmpty() || request.time.isEmpty()) {
+            throw new NoArgsException();
+        }
+
         // AtomicLong 을 사용하는 것보단,
         // DB 의 크기를 알고, 직접 가져온다면 더 좋지 않을까?
         int index = db.size();
-
         // Index 설정.
         request.id = index + 1;
+
+
 
         // DB 에 저장.
         db.add(request);
         return reservations(request.id);
     }
     @GetMapping("/reservations/{id}")
-    public ResponseEntity<Reservations> reservations(@PathVariable int id) {
+    public ResponseEntity<Reservations> reservations(@PathVariable int id) throws Exception {
+        Reservations response;
+        try {
+            response = db.get(id - 1);
 
-        System.out.println("/reservations/" + id);
-        return ResponseEntity.created(URI.create("/reservations/" + id)).body(db.get(id - 1));
+        } catch (Exception err) {
+          throw new NotFoundReservationException();
+
+        }
+        return ResponseEntity.created(URI.create("/reservations/" + id)).body(response);
     }
 
     @DeleteMapping("/reservations/{id}")
-    public ResponseEntity<Object> reservationDelete(@PathVariable int id) {
-        db.remove(id - 1); // 제거.
+    public ResponseEntity<Object> reservationDelete(@PathVariable int id) throws Exception {
+        try {db.remove(id - 1);} catch (Exception err) {
+            throw new NotFoundReservationException();
+        }
+
         return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+    }
+
+
+    @ExceptionHandler(NotFoundReservationException.class)
+    public ResponseEntity<Object> handleException(NotFoundReservationException e) {
+        return ResponseEntity.badRequest().build();
+    }
+
+    @ExceptionHandler(NoArgsException.class)
+    public ResponseEntity<Object> handleException(NoArgsException e) {
+        return ResponseEntity.badRequest().build();
     }
 }
