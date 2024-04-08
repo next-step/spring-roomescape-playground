@@ -17,17 +17,23 @@ public class JdbcReservationRepository implements ReservationRepository {
 
     @Override
     public List<Reservation> findAll() {
-        return jdbcTemplate.query("select * from reservation", reservationRowMapper());
+        return jdbcTemplate.query("SELECT * FROM reservation", reservationRowMapper());
     }
 
     @Override
     public Reservation save(Reservation request) {
-        return null;
+        String sql = "INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)";
+        jdbcTemplate.update(sql, request.getName(), request.getDate(), request.getTime());
+
+        Long id = jdbcTemplate.queryForObject("SELECT MAX(id) FROM reservation", Long.class);
+        return new Reservation(id, request.getName(), request.getDate(), request.getTime());
     }
 
     @Override
     public void deleteById(Long id) {
-
+        String sql = "DELETE FROM reservation WHERE id = ?";
+        if(jdbcTemplate.update(sql, id) == 0)
+            throw new IllegalArgumentException("존재하지 않는 예약입니다.");
     }
 
     private RowMapper<Reservation> reservationRowMapper() {
