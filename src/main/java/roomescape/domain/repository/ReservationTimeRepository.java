@@ -28,7 +28,7 @@ public class ReservationTimeRepository {
     private final RowMapper<ReservationTime> reservationTimeRowMapper = (rs, rowNum) -> {
         return new ReservationTime(
                 rs.getLong("id"),
-                rs.getString("time"));
+                rs.getTime("time").toLocalTime());
     };
     public List<ReservationTime> findAll() {
         return jdbcTemplate.query(FIND_ALL.getQuery(), reservationTimeRowMapper);

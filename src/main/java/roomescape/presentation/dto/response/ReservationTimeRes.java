@@ -4,11 +4,13 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import roomescape.application.dto.ReservationTimeInfoDto;
 
+import java.time.LocalTime;
+
 @Getter
 @RequiredArgsConstructor
 public class ReservationTimeRes {
     private final Long id;
-    private final String time;
+    private final LocalTime time;
 
     public static ReservationTimeRes from(final ReservationTimeInfoDto reservationTimeInfoDto){
         return new ReservationTimeRes(
