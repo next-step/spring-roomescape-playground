@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Service;
+import roomescape.Dao.ReservationDao;
 import roomescape.Domain.Reservation;
 import roomescape.Domain.Time;
 import roomescape.Exception.NotFoundReservationException;
@@ -20,47 +21,25 @@ import java.util.Map;
 @Service
 public class ReservationServiceImpl implements ReservationService {
 
-    private final JdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsert jdbcInsert;
+    private final ReservationDao reservationDao;
 
     @Autowired
-    public ReservationServiceImpl(DataSource dataSource) {
-        this.jdbcTemplate = new JdbcTemplate(dataSource);
-        this.jdbcInsert = new SimpleJdbcInsert(dataSource)
-                .withTableName("reservation")
-                .usingGeneratedKeyColumns("id");
+    public ReservationServiceImpl(ReservationDao reservationDao) {
+        this.reservationDao = reservationDao;
     }
 
     @Override
     public List<Reservation> getAllReservations() {
-        return jdbcTemplate.query(
-                "SELECT id, name, date, time_id FROM reservation",
-                (resultSet, rowNum) -> new Reservation(
-                        resultSet.getLong("id"),
-                        resultSet.getString("name"),
-                        resultSet.getString("date"),
-                        resultSet.getLong("time_id")));
+        return reservationDao.getAllReservations();
     }
 
     @Override
     public ResponseEntity<Reservation> addReservation(Reservation reservation) {
         validateReservation(reservation);
 
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("name", reservation.getName());
-        parameters.put("date", reservation.getDate());
-        parameters.put("time_id", reservation.getTimeId());
+        long newId = reservationDao.addReservation(reservation);
 
-        Number newId = jdbcInsert.executeAndReturnKey(parameters);
-
-        Reservation addedReservation = jdbcTemplate.queryForObject(
-                "SELECT id, name, date, time_id FROM reservation WHERE id = ?",
-                new Object[]{newId},
-                (resultSet, rowNum) -> new Reservation(
-                        resultSet.getLong("id"),
-                        resultSet.getString("name"),
-                        resultSet.getString("date"),
-                        resultSet.getLong("time_id")));
+        Reservation addedReservation = reservationDao.getReservationById(newId);
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Location", "/reservations/" + newId);
@@ -70,7 +49,7 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public void cancelReservation(Long id) {
-        int rowsAffected = jdbcTemplate.update("DELETE FROM reservation WHERE id = ?", id);
+        int rowsAffected = reservationDao.cancelReservation(id);
         if (rowsAffected == 0) {
             throw new NotFoundReservationException("Reservation not found with id: " + id);
         }
@@ -80,7 +59,7 @@ public class ReservationServiceImpl implements ReservationService {
         if (reservation == null ||
                 reservation.getName() == null || reservation.getName().isEmpty() ||
                 reservation.getDate() == null || reservation.getDate().isEmpty() ||
-                reservation.getTimeId() <= 0) { // TimeId가 0 또는 음수인 경우를 검사
+                reservation.getTimeId() <= 0) {
             throw new NotFoundReservationException("Required fields are missing.");
         }
     }
