@@ -3,12 +3,15 @@ package roomescape;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 
 import java.net.URI;
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -19,10 +22,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class RoomescapeController {
     @Autowired
     private JdbcTemplate jdbcTemplate;
-
-    private List<Reservation> reservations = new ArrayList<>();
-
-    AtomicInteger atomic = new AtomicInteger(0);
 
     @GetMapping("/")
     public String home() {
@@ -42,7 +41,7 @@ public class RoomescapeController {
                 (resultSet, rowNum) -> {
 
                     Reservation reservation = new Reservation(
-                            resultSet.getInt("id"),
+                            resultSet.getLong("id"),
                             resultSet.getString("name"),
                             resultSet.getString("time"),
                             resultSet.getString("date")
@@ -59,25 +58,33 @@ public class RoomescapeController {
         if(reservation.getName().isEmpty() || reservation.getDate().isEmpty() || reservation.getDate().isEmpty()){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(
+                    "insert into reservation (name, time, date) values (?, ?, ?)",
+                    new String[]{"id"});
+            ps.setString(1, reservation.getName());
+            ps.setString(2, reservation.getTime());
+            ps.setString(3, reservation.getDate());
 
+            return ps;
+        }, keyHolder);
 
-        Reservation newReservation = new Reservation(atomic.incrementAndGet(), reservation.getName(), reservation.getDate(), reservation.getTime());
-        reservations.add(newReservation);
+        Long id = keyHolder.getKey().longValue();
+        Reservation newReservation = new Reservation(id, reservation.getName(), reservation.getDate(), reservation.getTime());
 
-        return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
+        return ResponseEntity.created(URI.create("/reservations/" + id)).body(newReservation);
     }
 
     @DeleteMapping("/reservations/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> delete(@PathVariable() int id) {
-        if(reservations.isEmpty()){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        Reservation deletedReservation = reservations.stream()
-                .filter(it -> Objects.equals(it.getId(), id))
-                .findFirst()
-                .orElseThrow(() -> new NoSuchElementException("삭제할 예약이 없습니다."));
-        reservations.remove(deletedReservation);
+        String sql = "DELETE FROM reservation WHERE id = ?";
+
+        Integer count = jdbcTemplate.queryForObject("SELECT count(*) from reservation where id = ?", Integer.class, id);
+        if (count == 0) return ResponseEntity.badRequest().build();
+
+        jdbcTemplate.update(sql, id);
 
         return null;
     }
