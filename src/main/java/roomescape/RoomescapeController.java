@@ -1,9 +1,12 @@
 package roomescape;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.jdbc.core.JdbcTemplate;
+
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -14,6 +17,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 @Controller
 public class RoomescapeController {
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
     private List<Reservation> reservations = new ArrayList<>();
 
     AtomicInteger atomic = new AtomicInteger(0);
@@ -31,7 +37,20 @@ public class RoomescapeController {
     @GetMapping("/reservations")
     @ResponseBody
     public ResponseEntity<List<Reservation>> read() {
-        return ResponseEntity.ok(reservations);
+        List<Reservation> reservationList = jdbcTemplate.query(
+                "select id, name, time, date from reservation",
+                (resultSet, rowNum) -> {
+
+                    Reservation reservation = new Reservation(
+                            resultSet.getInt("id"),
+                            resultSet.getString("name"),
+                            resultSet.getString("time"),
+                            resultSet.getString("date")
+                            );
+                    return reservation;
+                });
+
+        return ResponseEntity.ok(reservationList);
     }
 
     @PostMapping("/reservations")
@@ -40,6 +59,7 @@ public class RoomescapeController {
         if(reservation.getName().isEmpty() || reservation.getDate().isEmpty() || reservation.getDate().isEmpty()){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+
 
         Reservation newReservation = new Reservation(atomic.incrementAndGet(), reservation.getName(), reservation.getDate(), reservation.getTime());
         reservations.add(newReservation);
