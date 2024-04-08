@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import roomescape.domain.Reservation;
 
-@Repository
+// @Repository
 public class MemoryReservationRepository implements ReservationRepository {
 
     private static final AtomicLong index = new AtomicLong(0);
