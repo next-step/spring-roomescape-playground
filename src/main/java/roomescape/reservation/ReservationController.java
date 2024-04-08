@@ -44,11 +44,11 @@ public class ReservationController {
                 .findFirst()
                 .orElseThrow(NotFoundReservationException::new);
 
-        reservation.setName(reservationDTO.getName());
-        reservation.setDate(reservationDTO.getDate());
-        reservation.setTime(reservationDTO.getTime());
+        reservations.remove(reservation);
+        Reservation updatedReservation = new Reservation(id, reservationDTO.getName(), reservationDTO.getDate(), reservationDTO.getTime());
+        reservations.add(updatedReservation);
 
-        ReservationDTO newReservationDTO = ReservationDTOMapper.toDTO(reservation);
+        ReservationDTO newReservationDTO = ReservationDTOMapper.toDTO(updatedReservation);
 
         return ResponseEntity.ok(newReservationDTO);
     }

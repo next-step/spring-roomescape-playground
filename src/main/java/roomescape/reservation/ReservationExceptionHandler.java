@@ -9,12 +9,12 @@ import roomescape.reservation.exception.NotFoundReservationException;
 public class ReservationExceptionHandler {
 
     @ExceptionHandler(NotFoundReservationException.class)
-    public ResponseEntity<String> handleException(NotFoundReservationException e) {
+    public ResponseEntity<Void> handleException(NotFoundReservationException e) {
         return ResponseEntity.badRequest().build();
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException e) {
+    public ResponseEntity<Void> handleIllegalArgumentException(IllegalArgumentException e) {
         return ResponseEntity.badRequest().build();
     }
 }
