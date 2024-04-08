@@ -2,54 +2,27 @@ package roomescape.Domain;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class Reservation {
     private long id;
     private String name;
     private String date;
-    private String time;
+    private long timeId; // 수정된 부분: Time 객체 대신 time_id를 직접 저장
 
     public Reservation() {
     }
 
-    public Reservation(long id, String name, String date, String time) {
+    public Reservation(long id, String name, String date, long timeId) { // 수정된 부분: Time 객체 대신 time_id를 직접 받음
         this.id = id;
         this.name = name;
         this.date = date;
-        this.time = time;
+        this.timeId = timeId;
     }
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
-
-    public String getTime() {
-        return time;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
-    }
     @Override
     public String toString() {
         try {
@@ -58,14 +31,11 @@ public class Reservation {
             reservationJson.put("id", this.id);
             reservationJson.put("name", this.name);
             reservationJson.put("date", this.date);
-            reservationJson.put("time", this.time);
+            reservationJson.put("timeId", this.timeId); // 수정된 부분: Time 객체 대신 time_id를 직접 출력
             return objectMapper.writeValueAsString(reservationJson);
         } catch (JsonProcessingException e) {
             System.err.println("Error converting Reservation object to JSON: " + e.getMessage());
             return "{\"error\": \"Failed to convert object to JSON\"}";
         }
     }
-
 }
-
-

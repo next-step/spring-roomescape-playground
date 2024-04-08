@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Service;
 import roomescape.Domain.Reservation;
+import roomescape.Domain.Time;
 import roomescape.Exception.NotFoundReservationException;
 import roomescape.Service.ReservationService;
 
@@ -33,12 +34,12 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     public List<Reservation> getAllReservations() {
         return jdbcTemplate.query(
-                "SELECT id, name, date, time FROM reservation",
+                "SELECT id, name, date, time_id FROM reservation",
                 (resultSet, rowNum) -> new Reservation(
                         resultSet.getLong("id"),
                         resultSet.getString("name"),
                         resultSet.getString("date"),
-                        resultSet.getString("time")));
+                        resultSet.getLong("time_id")));
     }
 
     @Override
@@ -48,18 +49,18 @@ public class ReservationServiceImpl implements ReservationService {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("name", reservation.getName());
         parameters.put("date", reservation.getDate());
-        parameters.put("time", reservation.getTime());
+        parameters.put("time_id", reservation.getTimeId());
 
         Number newId = jdbcInsert.executeAndReturnKey(parameters);
 
         Reservation addedReservation = jdbcTemplate.queryForObject(
-                "SELECT id, name, date, time FROM reservation WHERE id = ?",
+                "SELECT id, name, date, time_id FROM reservation WHERE id = ?",
                 new Object[]{newId},
                 (resultSet, rowNum) -> new Reservation(
                         resultSet.getLong("id"),
                         resultSet.getString("name"),
                         resultSet.getString("date"),
-                        resultSet.getString("time")));
+                        resultSet.getLong("time_id")));
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Location", "/reservations/" + newId);
@@ -79,7 +80,7 @@ public class ReservationServiceImpl implements ReservationService {
         if (reservation == null ||
                 reservation.getName() == null || reservation.getName().isEmpty() ||
                 reservation.getDate() == null || reservation.getDate().isEmpty() ||
-                reservation.getTime() == null || reservation.getTime().isEmpty()) {
+                reservation.getTimeId() <= 0) { // TimeId가 0 또는 음수인 경우를 검사
             throw new NotFoundReservationException("Required fields are missing.");
         }
     }
