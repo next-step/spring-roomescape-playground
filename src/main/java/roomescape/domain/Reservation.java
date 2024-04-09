@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import java.sql.Time;
 import java.time.LocalDate;
 
 @Getter
@@ -17,9 +16,6 @@ public class Reservation {
     @NotNull
     private final LocalDate date;
     @NotNull
-    private final Time time;
+    private final ReservationTime time;
 
-    public static Reservation toEntity(Reservation reservation, Long id) {
-        return new Reservation(id, reservation.name, reservation.date, reservation.time);
-    }
 }

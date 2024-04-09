@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
+import roomescape.domain.ReservationTime;
 
 import java.util.HashMap;
 import java.util.List;
@@ -29,7 +30,7 @@ public class ReservationRepository {
                 rs.getLong("id"),
                 rs.getString("name"),
                 rs.getDate("date").toLocalDate(),
-                rs.getTime("time"));
+                new ReservationTime(rs.getLong("time_id"), rs.getTime("time").toLocalTime()));
     };
 
     public List<Reservation> findAll() {
@@ -40,7 +41,7 @@ public class ReservationRepository {
         final Map<String, Object> params = new HashMap<>();
         params.put("name", reservation.getName());
         params.put("date", reservation.getDate());
-        params.put("time", reservation.getTime());
+        params.put("time_id", reservation.getTime().getId());
 
         final long savedId = simpleJdbcInsert.executeAndReturnKey(params).longValue();
 

@@ -22,12 +22,12 @@ public class ReservationRes {
     @JsonFormat(pattern = "HH:mm")
     private final LocalTime time;
 
-    public static ReservationRes from(final ReservationInfoDto reservationInfoDto) {
+    public static ReservationRes from(final ReservationInfoDto  reservationInfoDto) {
         return new ReservationRes(
                 reservationInfoDto.getId(),
                 reservationInfoDto.getName(),
                 reservationInfoDto.getDate(),
-                reservationInfoDto.getTime().toLocalTime()
+                reservationInfoDto.getTime().getTime()
         );
     }
 }

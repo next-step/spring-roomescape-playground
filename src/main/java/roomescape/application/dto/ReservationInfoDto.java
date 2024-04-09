@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import roomescape.domain.Reservation;
 
-import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -15,14 +14,14 @@ public class ReservationInfoDto {
     private final Long id;
     private final String name;
     private final LocalDate date;
-    private final Time time;
+    private final ReservationTimeInfoDto time;
 
     public static ReservationInfoDto from(final Reservation reservation) {
         return new ReservationInfoDto(
                 reservation.getId(),
                 reservation.getName(),
                 reservation.getDate(),
-                reservation.getTime()
+                ReservationTimeInfoDto.from(reservation.getTime())
         );
     }
 }
