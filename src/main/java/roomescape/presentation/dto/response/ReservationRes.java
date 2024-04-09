@@ -27,7 +27,7 @@ public class ReservationRes {
                 reservationInfoDto.getId(),
                 reservationInfoDto.getName(),
                 reservationInfoDto.getDate(),
-                reservationInfoDto.getTime()
+                reservationInfoDto.getTime().getTime()
         );
     }
 }

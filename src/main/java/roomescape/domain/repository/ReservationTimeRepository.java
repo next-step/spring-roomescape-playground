@@ -4,12 +4,12 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import roomescape.domain.Reservation;
 import roomescape.domain.ReservationTime;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static roomescape.domain.repository.query.ReservationTimeQuery.*;
 
@@ -33,6 +33,12 @@ public class ReservationTimeRepository {
     public List<ReservationTime> findAll() {
         return jdbcTemplate.query(FIND_ALL.getQuery(), reservationTimeRowMapper);
 
+    }
+
+    public Optional<ReservationTime> findById(Long id) {
+        return jdbcTemplate.query(FIND_BY_ID.getQuery(), reservationTimeRowMapper, id)
+                .stream()
+                .findAny();
     }
 
     public ReservationTime save(final ReservationTime reservationTime) {
