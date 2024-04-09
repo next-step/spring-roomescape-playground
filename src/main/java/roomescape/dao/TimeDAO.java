@@ -17,6 +17,18 @@ public class TimeDAO {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    public Time findTimeById(Long id) {
+        return jdbcTemplate.queryForObject(
+                "SELECT id, time FROM time where id = ?",
+                (resultSet, rowNum) -> {
+                    Time time = new Time(
+                            resultSet.getLong("id"),
+                            resultSet.getString("time")
+                    );
+                    return time;
+                }, id);
+    }
+
     public List<Time> findAllTimes() {
         String sql = "SELECT id, time FROM time";
         return jdbcTemplate.query(
@@ -30,20 +42,10 @@ public class TimeDAO {
                 });
     }
 
-    public void insert(Time time) {
-        String sql = "INSERT INTO time (time) VALUES (?)";
-        jdbcTemplate.update(sql, time.getTime());
-    }
-
-    public int delete(Long id) {
-        String sql = "DELETE FROM time WHERE id = ?";
-        return jdbcTemplate.update(sql, Long.valueOf(id));
-    }
-
     public Long insertWithKeyHolder(Time time) {
         String sql = "INSERT INTO time (time) VALUES (?)";
-
         KeyHolder keyHolder = new GeneratedKeyHolder();
+
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(
                     "INSERT INTO time (time) VALUES (?)",
@@ -53,8 +55,17 @@ public class TimeDAO {
         }, keyHolder);
 
         Long id = keyHolder.getKey().longValue();
-
         return id;
+    }
+
+    public void insert(Time time) {
+        String sql = "INSERT INTO time (time) VALUES (?)";
+        jdbcTemplate.update(sql, time.getTime());
+    }
+
+    public int delete(Long id) {
+        String sql = "DELETE FROM time WHERE id = ?";
+        return jdbcTemplate.update(sql, Long.valueOf(id));
     }
 
 }

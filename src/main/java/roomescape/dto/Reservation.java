@@ -7,19 +7,19 @@ public class Reservation {
     private Long id;
     private String name;
     private LocalDate date;
-    private String time;
+    private Time time;
 
     protected Reservation() {
     }
 
-    public Reservation(Long id, String name, LocalDate date, String time) {
+    public Reservation(Long id, String name, LocalDate date, Time time) {
         this.id = id;
         this.name = name;
         this.date = date;
         this.time = time;
     }
 
-    public Reservation(String name, LocalDate date, String time) {
+    public Reservation(String name, LocalDate date, Time time) {
         this.name = name;
         this.date = date;
         this.time = time;
@@ -37,12 +37,12 @@ public class Reservation {
         return date;
     }
 
-    public String getTime() {
+    public Time getTime() {
         return time;
     }
 
-    public static Reservation toEntity(Reservation reservation, Long id) {
-        return new Reservation(id, reservation.name, reservation.date, reservation.time);
+    public static Reservation toEntity(Reservation reservation, Time time, Long id) {
+        return new Reservation(id, reservation.name, reservation.date, time);
     }
 
 }

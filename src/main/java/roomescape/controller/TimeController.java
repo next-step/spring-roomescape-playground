@@ -36,7 +36,6 @@ public class TimeController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         // TODO: url 상의 id 정보를 받아 time을 삭제한다.
         timeDAO.delete(id);
-
         return ResponseEntity.noContent().build();
     }
 
