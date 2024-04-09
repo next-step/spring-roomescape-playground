@@ -4,52 +4,22 @@ package roomescape.Domain;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class Reservation {
     private long id;
     private String name;
     private String date;
-    private String time;
+    private Time time;
 
-    public Reservation() {
-    }
 
-    public Reservation(long id, String name, String date, String time) {
+    public Reservation(long id, String name, String date, Time time) {
         this.id = id;
         this.name = name;
         this.date = date;
-        this.time = time;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
-
-    public String getTime() {
-        return time;
-    }
-
-    public void setTime(String time) {
         this.time = time;
     }
 
@@ -62,7 +32,9 @@ public class Reservation {
             reservationJson.put("id", this.id);
             reservationJson.put("name", this.name);
             reservationJson.put("date", this.date);
-            reservationJson.put("time", this.time);
+            // time 객체 Json으로 변환
+            String timeJson = objectMapper.writeValueAsString(this.time);
+            reservationJson.put("time", timeJson);
             return objectMapper.writeValueAsString(reservationJson);
         } catch (JsonProcessingException e) {
             System.err.println("Error converting Reservation object to JSON: " + e.getMessage());

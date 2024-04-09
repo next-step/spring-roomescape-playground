@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Service;
 import roomescape.Domain.Reservation;
+import roomescape.Domain.Time;
 import roomescape.Exception.NotFoundReservationException;
 
 import javax.sql.DataSource;
@@ -32,12 +33,21 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     public List<Reservation> getAllReservations() {
         return jdbcTemplate.query(
-                "SELECT id, name, date, time FROM reservation",
-                (resultSet, rowNum) -> new Reservation(
-                        resultSet.getLong("id"),
-                        resultSet.getString("name"),
-                        resultSet.getString("date"),
-                        resultSet.getString("time")));
+                "SELECT \n" +
+                        "    r.id as reservation_id, \n" +
+                        "    r.name, \n" +
+                        "    r.date, \n" +
+                        "    t.id as time_id, \n" +
+                        "    t.time as time_value \n" +
+                        "FROM reservation as r inner join time as t on r.time_id = t.id",
+                (resultSet, rowNum) -> {
+                    Time time = new Time(resultSet.getLong("time_id"), resultSet.getString("time_value"));
+                    return new Reservation(
+                            resultSet.getLong("reservation_id"),
+                            resultSet.getString("name"),
+                            resultSet.getString("date"),
+                            time);
+                });
     }
 
     @Override
@@ -52,13 +62,17 @@ public class ReservationServiceImpl implements ReservationService {
         Number newId = jdbcInsert.executeAndReturnKey(parameters);
 
         Reservation addedReservation = jdbcTemplate.queryForObject(
-                "SELECT id, name, date, time FROM reservation WHERE id = ?",
+                "SELECT r.id as reservation_id, r.name, r.date, t.id as time_id, t.time as time_value FROM reservation as r inner join time as t on r.time_id = t.id WHERE r.id = ?",
                 new Object[]{newId},
-                (resultSet, rowNum) -> new Reservation(
-                        resultSet.getLong("id"),
-                        resultSet.getString("name"),
-                        resultSet.getString("date"),
-                        resultSet.getString("time")));
+                (resultSet, rowNum) -> {
+                    Time time = new Time(resultSet.getLong("time_id"), resultSet.getString("time_value"));
+                    return new Reservation(
+                            resultSet.getLong("reservation_id"),
+                            resultSet.getString("name"),
+                            resultSet.getString("date"),
+                            time);
+                }
+        );
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Location", "/reservations/" + newId);
@@ -78,7 +92,7 @@ public class ReservationServiceImpl implements ReservationService {
         if (reservation == null ||
                 reservation.getName() == null || reservation.getName().isEmpty() ||
                 reservation.getDate() == null || reservation.getDate().isEmpty() ||
-                reservation.getTime() == null || reservation.getTime().isEmpty()) {
+                reservation.getTime() == null || reservation.getTime().getTime().isEmpty() ){
             throw new NotFoundReservationException("Required fields are missing.");
         }
     }
