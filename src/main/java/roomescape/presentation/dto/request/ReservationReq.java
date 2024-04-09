@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -19,5 +20,5 @@ public class ReservationReq {
     private LocalDate date;
 
     @NotNull(message = "예약 시간을 입력해주세요.")
-    private LocalTime time;
+    private Time time;
 }

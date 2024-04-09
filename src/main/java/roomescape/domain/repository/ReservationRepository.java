@@ -29,7 +29,7 @@ public class ReservationRepository {
                 rs.getLong("id"),
                 rs.getString("name"),
                 rs.getDate("date").toLocalDate(),
-                rs.getTime("time").toLocalTime());
+                rs.getTime("time"));
     };
 
     public List<Reservation> findAll() {
