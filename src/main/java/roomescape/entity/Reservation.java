@@ -1,4 +1,4 @@
-package roomescape.dto;
+package roomescape.entity;
 
 import java.time.LocalDate;
 
@@ -9,17 +9,8 @@ public class Reservation {
     private LocalDate date;
     private Time time;
 
-    protected Reservation() {
-    }
-
     public Reservation(Long id, String name, LocalDate date, Time time) {
         this.id = id;
-        this.name = name;
-        this.date = date;
-        this.time = time;
-    }
-
-    public Reservation(String name, LocalDate date, Time time) {
         this.name = name;
         this.date = date;
         this.time = time;
@@ -41,8 +32,30 @@ public class Reservation {
         return time;
     }
 
-    public static Reservation toEntity(Reservation reservation, Time time, Long id) {
-        return new Reservation(id, reservation.name, reservation.date, time);
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    public void setTime(Time time) {
+        this.time = time;
+    }
+
+    @Override
+    public String toString() {
+        return "Reservation{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", date=" + date +
+                ", time=" + time +
+                '}';
     }
 
 }

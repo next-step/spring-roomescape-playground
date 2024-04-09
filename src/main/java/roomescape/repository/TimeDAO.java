@@ -1,10 +1,10 @@
-package roomescape.dao;
+package roomescape.repository;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import roomescape.dto.Time;
+import roomescape.entity.Time;
 
 import java.sql.PreparedStatement;
 import java.util.List;
@@ -29,7 +29,7 @@ public class TimeDAO {
                 }, id);
     }
 
-    public List<Time> findAllTimes() {
+    public List<Time> findAll() {
         String sql = "SELECT id, time FROM time";
         return jdbcTemplate.query(
                 sql,
@@ -44,8 +44,8 @@ public class TimeDAO {
 
     public Long insertWithKeyHolder(Time time) {
         String sql = "INSERT INTO time (time) VALUES (?)";
-        KeyHolder keyHolder = new GeneratedKeyHolder();
 
+        KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(
                     "INSERT INTO time (time) VALUES (?)",
@@ -55,12 +55,8 @@ public class TimeDAO {
         }, keyHolder);
 
         Long id = keyHolder.getKey().longValue();
-        return id;
-    }
 
-    public void insert(Time time) {
-        String sql = "INSERT INTO time (time) VALUES (?)";
-        jdbcTemplate.update(sql, time.getTime());
+        return id;
     }
 
     public int delete(Long id) {

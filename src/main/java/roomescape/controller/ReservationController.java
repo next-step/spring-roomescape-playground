@@ -1,45 +1,41 @@
 package roomescape.controller;
 
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import roomescape.dao.ReservationDAO;
-import roomescape.dao.TimeDAO;
-import roomescape.dto.Reservation;
-import roomescape.dto.Time;
+import roomescape.dto.ReservationDTO;
+import roomescape.entity.Reservation;
+import roomescape.service.ReservationService;
 
 import java.net.URI;
 import java.util.List;
 
+@Slf4j
 @Controller
 public class ReservationController {
 
-    private ReservationDAO reservationDAO;
-    private TimeDAO timeDAO;
-    public ReservationController(ReservationDAO reservationDAO, TimeDAO timeDAO) {
-        this.reservationDAO = reservationDAO;
-        this.timeDAO = timeDAO;
-    }
+    @Autowired
+    private ReservationService reservationService;
 
     @GetMapping("/reservations")
     public ResponseEntity<List<Reservation>> read() {
         // TODO: 저장된 모든 reservation 정보를 반환한다.
-        return ResponseEntity.ok(reservationDAO.findAllReservations());
+        return ResponseEntity.ok(reservationService.findAllReservations());
     }
 
     @PostMapping("/reservations")
-    public ResponseEntity<Reservation> create(@RequestBody Reservation reservation) {
+    public ResponseEntity<Reservation> create(@RequestBody ReservationDTO reservationDTO) {
         // TODO: reservation 정보를 받아서 생성한다.
-        Long id = reservationDAO.insertWithKeyHolder(reservation);
-        Time time = timeDAO.findTimeById(Long.parseLong(reservation.getTime().getTime()));
-        Reservation newReservation = Reservation.toEntity(reservation, time, id);
-        return ResponseEntity.created(URI.create("/reservations/" + id)).body(newReservation);
+        Reservation reservation = reservationService.saveReservation(reservationDTO);
+        return ResponseEntity.created(URI.create("/reservations/" + reservation.getId())).body(reservation);
     }
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         // TODO: url 상의 id 정보를 받아 reservation을 삭제한다.
-        reservationDAO.delete(id);
+        reservationService.deleteReservation(id);
         return ResponseEntity.noContent().build();
     }
 
