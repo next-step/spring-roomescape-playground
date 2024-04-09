@@ -1,9 +1,12 @@
 package roomescape.reservation.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import roomescape.mapper.ReservationRowMapper;
 import roomescape.reservation.domain.Reservation;
 import roomescape.reservation.exception.InvalidReservationException;
 
@@ -15,6 +18,9 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @Controller
 public class ReservationController {
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
     private List<Reservation> reservations = new ArrayList<>();
 
     private AtomicLong index = new AtomicLong(1);
@@ -27,7 +33,8 @@ public class ReservationController {
     @GetMapping("/reservations")
     @ResponseBody
     public List<Reservation> getReservations() {
-        return reservations; // 더미데이터(Reservation의 리스트)를 반환합니다.
+        String sql = "SELECT * FROM reservation";
+        return jdbcTemplate.query(sql, new ReservationRowMapper());
     }
 
     @PostMapping("/reservations")

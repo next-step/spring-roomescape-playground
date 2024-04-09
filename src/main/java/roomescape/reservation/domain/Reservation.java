@@ -1,14 +1,12 @@
 package roomescape.reservation.domain;
 
-import jakarta.annotation.Nullable;
-
 public class Reservation {
     private Long id;
     private String name;
     private String date;
     private String time;
 
-    private Reservation(){
+    public Reservation(){
 
     }
 
@@ -39,6 +37,22 @@ public class Reservation {
 
     public String getTime() {
         return time;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
     }
 
     public static Reservation toEntity(Reservation reservation, Long id) {
