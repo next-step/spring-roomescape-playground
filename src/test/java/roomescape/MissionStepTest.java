@@ -3,6 +3,7 @@ package roomescape;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import lombok.extern.slf4j.Slf4j;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -136,7 +137,6 @@ public class MissionStepTest {
         }
     }
 
-<<<<<<< HEAD
     @Test
     void 육단계() {
         log.info("육단계");
@@ -185,6 +185,31 @@ public class MissionStepTest {
         assertThat(countAfterDelete).isEqualTo(0);
     }
 
-=======
->>>>>>> 0522ab1a62da6a59ef08a835cabdbdfa192feabf
+    @Test
+    void 팔단계() {
+        log.info("팔단계");
+
+        Map<String, String> params = new HashMap<>();
+        params.put("time", "10:00");
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/times")
+                .then().log().all()
+                .statusCode(201)
+                .header("Location", "/times/1");
+
+        RestAssured.given().log().all()
+                .when().get("/times")
+                .then().log().all()
+                .statusCode(200)
+                .body("size()", Matchers.is(1));
+
+        RestAssured.given().log().all()
+                .when().delete("/times/1")
+                .then().log().all()
+                .statusCode(204);
+    }
+
 }
