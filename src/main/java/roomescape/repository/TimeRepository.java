@@ -1,9 +1,11 @@
 package roomescape.repository;
 
 import static roomescape.exception.ExceptionMessage.NOT_EXIST_RESERVATION;
+import static roomescape.query.TimeQuery.FIND_ALL;
 import static roomescape.query.TimeQuery.FIND_BY_ID;
 
 import java.util.Objects;
+import java.util.List;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -41,4 +43,9 @@ public class TimeRepository {
         return time;
     }
 
+    public List<Time> findAll() {
+        return jdbcTemplate.query(FIND_ALL.getQuery(),
+                (rs, rowNum) -> new Time(rs.getLong("id"),
+                        rs.getString("time")));
+    }
 }
