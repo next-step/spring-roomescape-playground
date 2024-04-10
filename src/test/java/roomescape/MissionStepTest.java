@@ -24,6 +24,11 @@ import static org.hamcrest.Matchers.is;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class MissionStepTest {
 
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+    @Autowired
+    private ReservationController reservationController;
+
     @Test
     void 일단계() {
         RestAssured.given().log().all()
@@ -71,8 +76,6 @@ public class MissionStepTest {
                 .then().log().all()
                 .statusCode(400);
     }
-    @Autowired
-    private ReservationController reservationController;
 
     @Test
     void 십단계() {
