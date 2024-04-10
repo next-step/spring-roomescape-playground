@@ -74,15 +74,6 @@ public class ReservationController {
     public ResponseEntity<Reservations> reservations(@RequestBody @Valid Reservations request) throws Exception {
         int index = db.size() + 1;
         request.id = index;
-        System.out.println("-------Request Start  " );
-        System.out.println(request.id);
-        System.out.println(request.name);
-        System.out.println(request.date);
-        System.out.println(request.time);
-
-
-        System.out.println("-------Request ENd  " );
-
         db.add(request);
         return ResponseEntity.created(URI.create("/reservations/" + index)).body(request);
     }

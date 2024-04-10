@@ -18,7 +18,7 @@ public class MissionStepTest {
     @Test
     void 일단계() {
 
-
+        Map<String , String> params = new HashMap<>();
 
         RestAssured.given().log().all()
                 .when().get("/")
@@ -40,11 +40,25 @@ public class MissionStepTest {
     @Test
     void 이단계2() {
 
+        Map<String, String> params = new HashMap<>();
+
+        params.put("name", "브라운");
+        params.put("date", "2023-08-05");
+        params.put("time", "15:40");
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(201);
+
+
         RestAssured.given().log().all()
                 .when().get("/reservations")
                 .then().log().all()
                 .statusCode(200)
-                .body("size()", is(0)); // Static List 를 사용함으로써, 0 으로 교체.
+                .body("size()", is(1)); // Static List 를 사용함으로써, 0 으로 교체.
     }
 
     @Test
