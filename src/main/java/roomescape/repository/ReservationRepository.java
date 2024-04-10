@@ -1,7 +1,6 @@
 package roomescape.repository;
 
 import static roomescape.exception.ExceptionMessage.NOT_EXIST_RESERVATION;
-import static roomescape.query.ReservationQuery.*;
 
 import java.util.List;
 import java.util.Objects;
@@ -32,7 +31,11 @@ public class ReservationRepository {
     }
 
     public List<Reservation> findAll() {
-        return jdbcTemplate.query(FIND_ALL.getQuery(),
+        return jdbcTemplate.query("""
+           SELECT r.id as id,
+           r.name as name, r.date as date, t.id as time_id, t.time as times
+           FROM reservation as r inner join time as t on r.time_id = t.id
+           """,
                 (rs, rowNum) -> new Reservation(rs.getLong("id"),
                         rs.getString("name"), rs.getString("date"), new Time(rs.getLong("time_id"), rs.getString("times"))));
     }
@@ -48,7 +51,11 @@ public class ReservationRepository {
     public Reservation findById(Long id) {
         Reservation reservation;
         try {
-            reservation = jdbcTemplate.queryForObject(FIND_BY_ID.getQuery(),
+            reservation = jdbcTemplate.queryForObject("""
+            SELECT r.id as id,
+            r.name as name, r.date as date, t.id as time_id, t.time as times
+            FROM reservation as r inner join time as t on r.time_id = t.id WHERE r.id = ?
+            """,
                     ((rs, rowNum) -> new Reservation(rs.getLong("id"), rs.getString("name"),
                             rs.getString("date"), new Time(rs.getLong("time_id"), rs.getString("times")))), id);
         } catch (EmptyResultDataAccessException e) {
@@ -59,6 +66,8 @@ public class ReservationRepository {
 
     public void delete(Long id) {
         findById(id);
-        jdbcTemplate.update(DELETE.getQuery(), id);
+        jdbcTemplate.update("""
+        delete from reservation where id = ?
+        """, id);
     }
 }
