@@ -7,14 +7,12 @@ import java.util.Objects;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import roomescape.domain.Time;
-import roomescape.dto.request.TimeRequest;
 import roomescape.exception.BaseException;
 
 @Repository
@@ -30,10 +28,10 @@ public class TimeRepository {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public Long create(TimeRequest timeRequest) {
-        SqlParameterSource params = new BeanPropertySqlParameterSource(timeRequest);
-        return jdbcInsert.executeAndReturnKey(params).longValue();
-    }
+//    public Long create(TimeRequest timeRequest) {
+//        SqlParameterSource params = new BeanPropertySqlParameterSource(timeRequest);
+//        return jdbcInsert.executeAndReturnKey(params).longValue();
+//    }
 
     public Time findById(Long id) {
         Time time;

@@ -19,7 +19,7 @@ public class TimeService {
     }
 
     public Long createTime(TimeRequest timeRequest) {
-        return timeRepository.create(timeRequest);
+        return timeRepository.create(timeRequest.getTime());
     }
 
     public TimeResponse getTime(Long id) {

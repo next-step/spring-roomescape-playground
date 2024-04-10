@@ -14,7 +14,6 @@ import org.springframework.stereotype.Repository;
 
 import roomescape.domain.Reservation;
 import roomescape.domain.Time;
-import roomescape.dto.request.ReservationRequest;
 import roomescape.exception.BaseException;
 
 @Repository
@@ -40,10 +39,10 @@ public class ReservationRepository {
                         rs.getString("name"), rs.getString("date"), new Time(rs.getLong("time_id"), rs.getString("times"))));
     }
 
-    public Long create(ReservationRequest reservationRequest, Long timeId) {
+    public Long create(String name, String date, Long timeId) {
         SqlParameterSource params = new MapSqlParameterSource()
-                .addValue("name", reservationRequest.getName())
-                .addValue("date", reservationRequest.getDate())
+                .addValue("name", name)
+                .addValue("date", date)
                 .addValue("time_id", timeId);
         return jdbcInsert.executeAndReturnKey(params).longValue();
     }
