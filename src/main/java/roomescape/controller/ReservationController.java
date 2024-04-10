@@ -28,6 +28,7 @@ public class ReservationController {
 
     @GetMapping("/reservation")
     public String getReservation() {
+        //reservation -> new-reservation 으로 변경
         return "new-reservation";
     }
 

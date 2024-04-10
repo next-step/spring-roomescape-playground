@@ -1,19 +1,23 @@
 package roomescape.repository;
 
 import static roomescape.exception.ExceptionMessage.NOT_EXIST_RESERVATION;
+import static roomescape.query.ReservationQuery.*;
 
 import java.util.List;
 import java.util.Objects;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import roomescape.domain.Reservation;
+import roomescape.domain.ReservationTime;
 import roomescape.domain.Time;
+import roomescape.dto.request.ReservationRequest;
 import roomescape.exception.BaseException;
 
 @Repository
@@ -30,33 +34,23 @@ public class ReservationRepository {
     }
 
     public List<Reservation> findAll() {
-        return jdbcTemplate.query("""
-           SELECT r.id as id,
-           r.name as name, r.date as date, t.id as time_id, t.time as times
-           FROM reservation as r inner join time as t on r.time_id = t.id
-           """,
+        return jdbcTemplate.query(FIND_ALL.getQuery(),
                 (rs, rowNum) -> new Reservation(rs.getLong("id"),
                         rs.getString("name"), rs.getString("date"), new Time(rs.getLong("time_id"), rs.getString("times"))));
     }
 
-    public Long create(String name, String date, Long timeId) {
+    public Long create(ReservationRequest reservationRequest, Long timeId) {
         SqlParameterSource params = new MapSqlParameterSource()
-                .addValue("name", name)
-                .addValue("date", date)
+                .addValue("name", reservationRequest.getName())
+                .addValue("date", reservationRequest.getDate())
                 .addValue("time_id", timeId);
         return jdbcInsert.executeAndReturnKey(params).longValue();
     }
 
     public Reservation findById(Long id) {
-        // 원래는 reservation이 null값이면 예외로 처리했지만
-        // EmptyResultDataAccessException으로 예외 처리
         Reservation reservation;
         try {
-            reservation = jdbcTemplate.queryForObject("""
-            SELECT r.id as id,
-            r.name as name, r.date as date, t.id as time_id, t.time as times
-            FROM reservation as r inner join time as t on r.time_id = t.id WHERE r.id = ?
-            """,
+            reservation = jdbcTemplate.queryForObject(FIND_BY_ID.getQuery(),
                     ((rs, rowNum) -> new Reservation(rs.getLong("id"), rs.getString("name"),
                             rs.getString("date"), new Time(rs.getLong("time_id"), rs.getString("times")))), id);
         } catch (EmptyResultDataAccessException e) {
@@ -67,8 +61,6 @@ public class ReservationRepository {
 
     public void delete(Long id) {
         findById(id);
-        jdbcTemplate.update("""
-        delete from reservation where id = ?
-        """, id);
+        jdbcTemplate.update(DELETE.getQuery(), id);
     }
 }

@@ -71,7 +71,6 @@ public class MissionStepTest {
                 .then().log().all()
                 .statusCode(400);
     }
-
     @Autowired
     private ReservationController reservationController;
 
