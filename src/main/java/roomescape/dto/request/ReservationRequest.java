@@ -12,7 +12,8 @@ public class ReservationRequest {
     private String date;
     @NotNull(message = "시간은 공백이 아니어야 합니다.")
     private Long time;
-
+    @NotEmpty(message = "시간은 공백이 아니어야 합니다.")
+    private String time;
     public String getName() {
         return name;
     }
@@ -22,6 +23,7 @@ public class ReservationRequest {
     }
 
     public Long getTime() {
+    public String getTime() {
         return time;
     }
 }

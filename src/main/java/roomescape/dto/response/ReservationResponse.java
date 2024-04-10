@@ -10,7 +10,10 @@ public class ReservationResponse {
     private final String date;
     private final Time time;
 
-    private ReservationResponse(Long id, String name, String date, Time time) {
+    private ReservationResponse(Long id, String name, String date, Time time) 
+    private final String time;
+
+    private ReservationResponse(Long id, String name, String date, String time) {
         this.id = id;
         this.name = name;
         this.date = date;
@@ -35,6 +38,7 @@ public class ReservationResponse {
     }
 
     public Time getTime() {
+    public String getTime() {
         return time;
     }
 }
