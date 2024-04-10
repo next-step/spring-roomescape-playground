@@ -2,6 +2,7 @@ package roomescape.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 public class ReservationRequest {
 
@@ -9,8 +10,8 @@ public class ReservationRequest {
     private String name;
     @NotEmpty(message = "날짜는 공백이 아니어야 합니다.")
     private String date;
-    @NotEmpty(message = "시간은 공백이 아니어야 합니다.")
-    private String time;
+    @NotNull(message = "시간은 공백이 아니어야 합니다.")
+    private Long time;
 
     public String getName() {
         return name;
@@ -20,7 +21,7 @@ public class ReservationRequest {
         return date;
     }
 
-    public String getTime() {
+    public Long getTime() {
         return time;
     }
 }

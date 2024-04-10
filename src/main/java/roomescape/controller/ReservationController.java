@@ -1,7 +1,6 @@
 package roomescape.controller;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -13,7 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-//import jakarta.validation.Valid;
+import jakarta.validation.Valid;
 import roomescape.dto.request.ReservationRequest;
 import roomescape.dto.response.ReservationResponse;
 import roomescape.service.ReservationService;
@@ -29,7 +28,7 @@ public class ReservationController {
 
     @GetMapping("/reservation")
     public String getReservation() {
-        return "reservation";
+        return "new-reservation";
     }
 
     @ResponseBody
@@ -41,10 +40,10 @@ public class ReservationController {
     @ResponseBody
     @PostMapping("/reservations")
     public ResponseEntity<ReservationResponse> createReservation(
-            @RequestBody ReservationRequest reservationRequest) throws
-            URISyntaxException {
-        ReservationResponse reservationResponse = reservationService.createReservation(reservationRequest);
-        return ResponseEntity.created(new URI("/reservations/" + reservationResponse.getId()))
+            @Valid @RequestBody ReservationRequest reservationRequest) {
+        Long id = reservationService.createReservation(reservationRequest);
+        ReservationResponse reservationResponse = reservationService.getReservation(id);
+        return ResponseEntity.created(URI.create("/reservations/" + reservationResponse.getId()))
                 .body(reservationResponse);
     }
 

@@ -21,8 +21,8 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(e.getMessage(), e.getStatusCode());
     }
 
-    @ExceptionHandler(EmptyResultDataAccessException.class)
-    public ResponseEntity<String> handleException() {
-        return new ResponseEntity<>(NOT_EXIST_RESERVATION.getMessage(), NOT_EXIST_RESERVATION.getStatus());
-    }
+//    @ExceptionHandler(EmptyResultDataAccessException.class)
+//    public ResponseEntity<String> handleException() {
+//        return new ResponseEntity<>(NOT_EXIST_RESERVATION.getMessage(), NOT_EXIST_RESERVATION.getStatus());
+//    }
 }

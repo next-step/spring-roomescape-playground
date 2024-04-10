@@ -1,24 +1,25 @@
 package roomescape.service;
 
-import static roomescape.exception.ExceptionMessage.*;
-
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
 import roomescape.domain.Reservation;
+import roomescape.domain.Time;
 import roomescape.dto.request.ReservationRequest;
 import roomescape.dto.response.ReservationResponse;
-import roomescape.exception.BaseException;
 import roomescape.repository.ReservationRepository;
+import roomescape.repository.TimeRepository;
 
 @Service
 public class ReservationService {
 
     private final ReservationRepository reservationRepository;
+    private final TimeRepository timeRepository;
 
-    public ReservationService(ReservationRepository reservationRepository) {
+    public ReservationService(ReservationRepository reservationRepository, TimeRepository timeRepository) {
         this.reservationRepository = reservationRepository;
+        this.timeRepository = timeRepository;
     }
 
     public List<ReservationResponse> getReservations() {
@@ -27,16 +28,17 @@ public class ReservationService {
                 .toList();
     }
 
-    public ReservationResponse createReservation(ReservationRequest reservationRequest) {
-        Long id = reservationRepository.create(reservationRequest);
+    public ReservationResponse getReservation(Long id) {
         Reservation reservation = reservationRepository.findById(id);
         return ReservationResponse.from(reservation);
     }
 
+    public Long createReservation(ReservationRequest reservationRequest) {
+        Time time = timeRepository.findById(reservationRequest.getTime());
+        return reservationRepository.create(reservationRequest.getName(), reservationRequest.getDate(), time.getId());
+    }
+
     public void deleteReservation(Long id) {
-        if (reservationRepository.findById(id) == null) {
-            throw new BaseException(NOT_EXIST_RESERVATION);
-        }
         reservationRepository.delete(id);
     }
 }
