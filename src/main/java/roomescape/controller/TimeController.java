@@ -32,11 +32,10 @@ public class TimeController {
     }
 
     @PostMapping("/times")
-    public ResponseEntity<TimeResponse> createTime(@Valid @RequestBody TimeRequest timeRequest) throws
-            URISyntaxException {
+    public ResponseEntity<TimeResponse> createTime(@Valid @RequestBody TimeRequest timeRequest) {
         Long id = timeService.createTime(timeRequest);
         TimeResponse timeResponse = timeService.getTime(id);
-        return ResponseEntity.created(new URI("/times/" + timeResponse.getId())).body(timeResponse);
+        return ResponseEntity.created(URI.create("/times/" + timeResponse.getId())).body(timeResponse);
     }
 
     @GetMapping("/times")
