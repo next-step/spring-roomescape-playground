@@ -48,6 +48,8 @@ public class ReservationRepository {
     }
 
     public Reservation findById(Long id) {
+        // 원래는 reservation이 null값이면 예외로 처리했지만
+        // EmptyResultDataAccessException으로 예외 처리
         Reservation reservation;
         try {
             reservation = jdbcTemplate.queryForObject("""

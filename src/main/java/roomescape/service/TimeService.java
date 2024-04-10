@@ -33,4 +33,8 @@ public class TimeService {
                 .map(TimeResponse::from)
                 .toList();
     }
+
+    public void deleteTime(Long id) {
+        timeRepository.deleteTime(id);
+    }
 }

@@ -1,8 +1,5 @@
 package roomescape.exception;
 
-import static roomescape.exception.ExceptionMessage.NOT_EXIST_RESERVATION;
-
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
