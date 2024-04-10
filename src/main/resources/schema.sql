@@ -13,4 +13,3 @@ CREATE TABLE time
     time VARCHAR(255) NOT NULL,
     PRIMARY KEY (id)
 );
-
