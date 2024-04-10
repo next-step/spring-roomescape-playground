@@ -10,7 +10,6 @@ import java.time.LocalTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@Setter
 @Builder
 public class ReservationDto {
     private Long id;
@@ -19,4 +18,8 @@ public class ReservationDto {
     private LocalDate date;
     @JsonFormat(pattern = "HH:mm")
     private LocalTime time;
+
+    public void setIdentifyKey(Long id){
+        this.id = id;
+    }
 }
