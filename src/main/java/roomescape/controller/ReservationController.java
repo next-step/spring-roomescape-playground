@@ -1,20 +1,14 @@
 package roomescape.controller;
 
-import org.apache.catalina.connector.Response;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriBuilder;
-import org.springframework.web.util.UriComponentsBuilder;
 import roomescape.dto.ReservationDto;
 import roomescape.exception.CustomException;
 
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -22,8 +16,8 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @Controller
 public class ReservationController {
-    private AtomicLong index = new AtomicLong(0);
-    private List<ReservationDto> list = new ArrayList<>();
+    private final AtomicLong index = new AtomicLong(0);
+    private final List<ReservationDto> list = new ArrayList<>();
 
     @GetMapping("/reservation")
     public String reservation(){
@@ -32,19 +26,19 @@ public class ReservationController {
 
     @ResponseBody
     @GetMapping("/reservations")
-    public ResponseEntity<?> getReservations(){
+    public ResponseEntity<List<ReservationDto>> getReservations(){
         return ResponseEntity.ok(list);
 
     }
 
     @ResponseBody
     @PostMapping("/reservations")
-    public ResponseEntity<?> postReservation(@RequestBody ReservationDto reservationDto) {
+    public ResponseEntity<ReservationDto> postReservation(@RequestBody ReservationDto reservationDto) {
         if(reservationDto.getDate() == null || reservationDto.getTime() == null|| reservationDto.getName().isBlank()){
             throw new CustomException();
         }
 
-        reservationDto.setId(index.incrementAndGet());
+        reservationDto.setIdentifyKey(index.incrementAndGet());
         list.add(reservationDto);
         HttpHeaders httpHeaders = new HttpHeaders();
 
@@ -59,7 +53,7 @@ public class ReservationController {
 
     @ResponseBody
     @DeleteMapping("/reservations/{id}")
-    public ResponseEntity<?> deleteReservations(@PathVariable(value = "id") Long id){
+    public ResponseEntity<Void> deleteReservations(@PathVariable(value = "id") Long id){
         if(id == null){
             throw new CustomException();
         }
