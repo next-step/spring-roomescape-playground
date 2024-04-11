@@ -78,7 +78,7 @@ public class RoomescapeController {
 
     @DeleteMapping("/reservations/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<Void> deleteReservation(@PathVariable() int id) {
+    public ResponseEntity<Void> deleteReservation(@PathVariable() Long id) {
         String sql = "DELETE FROM reservation WHERE id = ?";
 
         Integer count = jdbcTemplate.queryForObject("SELECT count(*) from reservation where id = ?", Integer.class, id);
