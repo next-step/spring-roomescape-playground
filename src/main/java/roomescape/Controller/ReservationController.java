@@ -1,9 +1,9 @@
-package roomescape.Controller;
+package roomescape.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import roomescape.Domain.Reservation;
-import roomescape.Service.ReservationService;
+import roomescape.domain.Reservation;
+import roomescape.service.ReservationService;
 
 import java.util.List;
 
@@ -25,7 +25,7 @@ public class ReservationController {
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> addReservation(@RequestBody Reservation reservation) {
         ResponseEntity<Reservation> responseEntity = reservationService.addReservation(reservation);
-        return ResponseEntity.created(responseEntity.getHeaders().getLocation()).body(responseEntity.getBody());
+        return responseEntity;
     }
 
     @DeleteMapping("/reservations/{id}")
@@ -33,5 +33,4 @@ public class ReservationController {
         reservationService.cancelReservation(id);
         return ResponseEntity.noContent().build();
     }
-
 }

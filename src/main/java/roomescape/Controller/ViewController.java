@@ -1,4 +1,4 @@
-package roomescape.Controller;
+package roomescape.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +15,7 @@ public class ViewController {
     }
 
     @GetMapping("/time")
-    public void time(){
+    public String showtimePage(){ return "time.html";
     }
 
 }

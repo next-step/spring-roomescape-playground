@@ -1,4 +1,4 @@
-package roomescape.Domain;
+package roomescape.domain;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -8,6 +8,13 @@ import lombok.Setter;
 public class Time {
     private Long id;
     private String time;
+
+    public Time() {
+    }
+
+    public Time(String time) {
+        this.time = time;
+    }
 
     public Time(Long id, String time) {
         this.id = id;

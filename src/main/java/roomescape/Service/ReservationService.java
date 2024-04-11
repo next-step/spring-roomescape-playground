@@ -1,7 +1,7 @@
-package roomescape.Service;
+package roomescape.service;
 
 import org.springframework.http.ResponseEntity;
-import roomescape.Domain.Reservation;
+import roomescape.domain.Reservation;
 
 import java.util.List;
 
