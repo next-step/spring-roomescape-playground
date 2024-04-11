@@ -4,8 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import roomescape.mapper.ReservationRowMapper;
@@ -13,16 +12,15 @@ import roomescape.reservation.domain.Reservation;
 import roomescape.reservation.exception.InvalidReservationException;
 
 import java.net.URI;
-import java.sql.PreparedStatement;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.*;
 
 @Controller
 public class ReservationController {
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private ReservationRowMapper reservationRowMapper;
 
     @GetMapping("/reservation")
     public String reservation(){
@@ -32,8 +30,8 @@ public class ReservationController {
     @GetMapping("/reservations")
     @ResponseBody
     public List<Reservation> getReservations() {
-        String sql = "SELECT * FROM reservation";
-        return jdbcTemplate.query(sql, new ReservationRowMapper());
+        String sql = "SELECT id, name, date, time FROM reservation"; // 컬럼을 명시적으로 가져오도록 수정하였습니다.
+        return jdbcTemplate.query(sql, reservationRowMapper);
     }
 
     @PostMapping("/reservations")
@@ -42,22 +40,24 @@ public class ReservationController {
         String reservationDate = reservation.getDate();
         String reservationTime = reservation.getTime();
 
-        if(reservationName.isEmpty() || reservationDate.isEmpty() || reservationTime.isEmpty()){
+        if (Optional.ofNullable(reservationName).orElse("").isEmpty() ||
+                Optional.ofNullable(reservationDate).orElse("").isEmpty() ||
+                Optional.ofNullable(reservationTime).orElse("").isEmpty()) {
             throw new InvalidReservationException("Invalid reservation data, Field Empty");
         }
 
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(
-                    "insert into reservation (name, date, time) values (?, ?, ?)",
-                    new String[]{"id"});
-            ps.setString(1, reservationName);
-            ps.setString(2, reservationDate);
-            ps.setString(3, reservationTime);
-            return ps;
-        }, keyHolder);
+        // KeyHolder -> SimpleJdbcInsert를 이용한 방식으로 변경
+        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("reservation")
+                .usingGeneratedKeyColumns("id");
 
-        Long id = Objects.requireNonNull(keyHolder.getKey()).longValue();
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("name", reservationName);
+        parameters.put("date", reservationDate);
+        parameters.put("time", reservationTime);
+
+        Number newId = simpleJdbcInsert.executeAndReturnKey(parameters);
+        Long id = newId.longValue();
 
         Reservation newReservation = Reservation.toEntity(reservation, id);
 
