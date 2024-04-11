@@ -35,7 +35,7 @@ public class RoomescapeController {
 
     @GetMapping("/reservations")
     @ResponseBody
-    public ResponseEntity<List<Reservation>> read() {
+    public ResponseEntity<List<Reservation>> findReservations() {
         List<Reservation> reservationList = jdbcTemplate.query(
                 "select id, name, time, date from reservation",
                 (resultSet, rowNum) -> {
@@ -78,7 +78,7 @@ public class RoomescapeController {
 
     @DeleteMapping("/reservations/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<Void> delete(@PathVariable() int id) {
+    public ResponseEntity<Void> deleteReservation(@PathVariable() int id) {
         String sql = "DELETE FROM reservation WHERE id = ?";
 
         Integer count = jdbcTemplate.queryForObject("SELECT count(*) from reservation where id = ?", Integer.class, id);
