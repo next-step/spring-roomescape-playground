@@ -23,16 +23,6 @@ public class RoomescapeController {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    @GetMapping("/")
-    public String home() {
-        return "home";
-    }
-
-    @GetMapping("/reservation")
-    public String reservation() {
-        return "reservation";
-    }
-
     @GetMapping("/reservations")
     @ResponseBody
     public ResponseEntity<List<Reservation>> findReservations() {
