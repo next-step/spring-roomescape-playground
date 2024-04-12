@@ -1,5 +1,6 @@
 package roomescape.reservation;
 
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -23,12 +24,7 @@ public class ReservationController {
     }
 
     @PostMapping("/reservations")
-    public ResponseEntity<ReservationDTO> create(@RequestBody ReservationDTO reservationDTO) {
-        if (reservationDTO.getName() == null || reservationDTO.getName().trim().isEmpty() ||
-                reservationDTO.getDate() == null || reservationDTO.getDate().trim().isEmpty() ||
-                reservationDTO.getTime() == null || reservationDTO.getTime().trim().isEmpty()) {
-            throw new IllegalArgumentException("값이 비어 있음.");
-        }
+    public ResponseEntity<ReservationDTO> create(@Valid @RequestBody ReservationDTO reservationDTO) {
 
         ReservationDTO newReservationDTO = new ReservationDTO(index.getAndIncrement(), reservationDTO.getName(), reservationDTO.getDate(), reservationDTO.getTime());
         Reservation newReservation = ReservationDTOMapper.toEntity(newReservationDTO);
