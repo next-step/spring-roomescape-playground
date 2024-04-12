@@ -10,10 +10,8 @@ import roomescape.dto.Reservation;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicLong;
 
 @RestController
 public class ReservationController
@@ -80,15 +78,15 @@ public class ReservationController
     @DeleteMapping("/reservations/{id}") // 'reservaions/1' 이런 식으로 맵핑함
     public ResponseEntity<?> deleteReservation(@PathVariable Long id) {
         // ID와 일치하는 예약을 찾아서 삭제합니다.
-        for (Reservation reservation : reservations) {
-            if (reservation.getId().equals(id)) {
-                reservations.remove(reservation);
-                return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-            }
+        Reservation existingReservation = getReservationByDB(id); // 삭제할 예약 정보 가져오기
+        if(existingReservation != null) {
+            String sql = "DELETE FROM reservation WHERE id = ?";
+            jdbcTemplate.update(sql, id);
+            return ResponseEntity.noContent().build();
+        } else {
+            // ID와 일치하는 예약을 찾지 못한 경우, 예외를 던집니다.
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error! 회원 ID와 일치하는 예약을 찾지 못했습니다.");
         }
-
-        // ID와 일치하는 예약을 찾지 못한 경우, 예외를 던집니다.
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error! 회원 ID와 일치하는 예약을 찾지 못했습니다.");
     }
 
 }
