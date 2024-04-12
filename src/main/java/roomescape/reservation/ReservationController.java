@@ -15,48 +15,45 @@ import java.util.concurrent.atomic.AtomicLong;
 @RestController
 public class ReservationController {
 
-    private List<Reservation> reservations = new ArrayList<>();
+    private List<ReservationDTO> reservationDTOs = new ArrayList<>();
     private AtomicLong index = new AtomicLong(1);
 
     @GetMapping("/reservations")
-    public ResponseEntity<List<Reservation>> read() {
-        return ResponseEntity.ok().body(reservations);
+    public ResponseEntity<List<ReservationDTO>> read() {
+        return ResponseEntity.ok().body(reservationDTOs);
     }
 
     @PostMapping("/reservations")
     public ResponseEntity<ReservationDTO> create(@Valid @RequestBody ReservationDTO reservationDTO) {
 
         ReservationDTO newReservationDTO = new ReservationDTO(index.getAndIncrement(), reservationDTO.getName(), reservationDTO.getDate(), reservationDTO.getTime());
-        Reservation newReservation = ReservationDTOMapper.toEntity(newReservationDTO);
-        reservations.add(newReservation);
+        reservationDTOs.add(reservationDTO);
 
         return ResponseEntity.created(URI.create("/reservations/" + newReservationDTO.getId())).body(newReservationDTO);
     }
 
     @PutMapping("/reservations/{id}")
-    public ResponseEntity<ReservationDTO> update(@PathVariable long id, @RequestBody ReservationDTO reservationDTO) {
-        Reservation reservation = reservations.stream()
+    public ResponseEntity<ReservationDTO> update(@Valid @RequestBody ReservationDTO reservationDTO, @PathVariable long id) {
+        ReservationDTO removeReservationDTO = reservationDTOs.stream()
                 .filter(it -> Objects.equals(it.getId(), id))
                 .findFirst()
                 .orElseThrow(NotFoundReservationException::new);
 
-        reservations.remove(reservation);
-        Reservation updatedReservation = new Reservation(id, reservationDTO.getName(), reservationDTO.getDate(), reservationDTO.getTime());
-        reservations.add(updatedReservation);
+        reservationDTOs.remove(removeReservationDTO);
+        ReservationDTO updatedReservationDTO = new ReservationDTO(id, reservationDTO.getName(), reservationDTO.getDate(), reservationDTO.getTime());
+        reservationDTOs.add(updatedReservationDTO);
 
-        ReservationDTO newReservationDTO = ReservationDTOMapper.toDTO(updatedReservation);
-
-        return ResponseEntity.ok(newReservationDTO);
+        return ResponseEntity.ok(updatedReservationDTO);
     }
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> delete(@PathVariable long id) {
-        Reservation reservation = reservations.stream()
+        ReservationDTO reservationDTO = reservationDTOs.stream()
                 .filter(it -> Objects.equals(it.getId(), id))
                 .findFirst()
                 .orElseThrow(NotFoundReservationException::new);
 
-        reservations.remove(reservation);
+        reservationDTOs.remove(reservationDTO);
 
         return ResponseEntity.noContent().build();
     }
