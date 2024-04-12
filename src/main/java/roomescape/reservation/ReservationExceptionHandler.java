@@ -1,22 +1,16 @@
 package roomescape.reservation;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import roomescape.reservation.exception.NotFoundReservationException;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class ReservationExceptionHandler {
 
     @ExceptionHandler(NotFoundReservationException.class)
-    public ResponseEntity<Void> handleException(NotFoundReservationException e) {
-        return ResponseEntity.badRequest().build();
-    }
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<Void> handleIllegalArgumentException(IllegalArgumentException e) {
-        return ResponseEntity.badRequest().build();
+    public ResponseEntity<String> handleException(NotFoundReservationException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
     }
 
 }
