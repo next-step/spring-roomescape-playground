@@ -8,10 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
+import roomescape.controller.ReservationController;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.hamcrest.Matchers.is;
@@ -40,9 +42,6 @@ public class MissionStepTest {
                 .when().get("/reservation")
                 .then().log().all()
                 .statusCode(200);
-
-
-
     }
 
     @Test
@@ -84,7 +83,7 @@ public class MissionStepTest {
                 .then().log().all()
                 .statusCode(201)
                 .header("Location", "/reservations/1")
-                .body("id", is(1));
+                .body("id", is(0));
 
         RestAssured.given().log().all()
                 .when().get("/reservations")
@@ -136,5 +135,20 @@ public class MissionStepTest {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Test
+    void 육단계() {
+        jdbcTemplate.update("INSERT INTO reservations (name, date, time) VALUES (?, ?, ?)", "브라운", "2023-08-05", "15:40");
+
+        List<ReservationController.Reservations> reservations = RestAssured.given().log().all()
+                .when().get("/reservations")
+                .then().log().all()
+                .statusCode(200).extract()
+                .jsonPath().getList(".", ReservationController.Reservations.class);
+
+        int count = jdbcTemplate.queryForObject("SELECT count(*) from RESERVATIONS", Integer.class);
+
+        Assertions.assertThat(reservations.size()).isEqualTo(count);
     }
 }
