@@ -75,7 +75,6 @@ public class ReservationController {
     // DB에 예약 정보 추가하기
     public void saveReservationDB(Reservation reservation) {
         String sql = "INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)";
-        // KeyHolder을 통해 만든 key가 id값을 대체
         KeyHolder keyHolder = new GeneratedKeyHolder(); // KeyHolder 생성
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
