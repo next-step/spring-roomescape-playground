@@ -18,8 +18,6 @@ import java.util.concurrent.atomic.AtomicLong;
 @RestController
 public class ReservationController
 {
-    private List<Reservation> reservations = new ArrayList<>(); // 예약 정보들이 들어있는 리스트
-    private AtomicLong index = new AtomicLong(1); // 예약자 번호
 
 
     // 6단계 : JdbcTemplate을 이용하여 DataSource객체에 접근
