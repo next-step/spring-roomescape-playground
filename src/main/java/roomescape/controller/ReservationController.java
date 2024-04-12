@@ -5,24 +5,25 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.web.bind.annotation.*;
 import roomescape.dto.Reservation;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 import java.util.Objects;
 
 @RestController
-public class ReservationController
-{
-
-
+public class ReservationController {
     // 6단계 : JdbcTemplate을 이용하여 DataSource객체에 접근
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    // ReservationRowmapper 클래스가 RowMapper 인터페이스를 구현한다.
+    // ReservationRowmapper 클래스가 RowMapper 인터페이스를 구현
     public class ReservationRowmapper implements RowMapper<Reservation> {
         @Override
         public Reservation mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -63,16 +64,30 @@ public class ReservationController
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error! 예약 추가 시 필요한 인자값이 비어 있습니다.");
         }
 
-        // 객체를 할당하고 리스트에 넣자! (index의 initialvalue가 1이기에 getAndIncrement를 해야함)
-        Reservation newReservation = new Reservation(index.getAndIncrement(), reservation.getName(), reservation.getDate(), reservation.getTime());
-        reservations.add(newReservation);
+        saveReservationDB(reservation);
 
         // 생성된 예약 정보와 함께 201 Created 응답 반환 (CREATED : 201, body : API 응답 정보 반환)
         return ResponseEntity.status(HttpStatus.CREATED)
-                .header("Location", "/reservations/" + newReservation.getId())
-                .body(newReservation);
+                .header("Location", "/reservations/" + reservation.getId())
+                .body(reservation);
     }
 
+    // DB에 예약 정보 추가하기
+    public void saveReservationDB(Reservation reservation) {
+        String sql = "INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)";
+        // KeyHolder을 통해 만든 key가 id값을 대체
+        KeyHolder keyHolder = new GeneratedKeyHolder(); // KeyHolder 생성
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, reservation.getName());
+            ps.setString(2, reservation.getDate().toString());
+            ps.setString(3, reservation.getTime().toString());
+            return ps;
+        }, keyHolder);
+
+        Long generatedId = keyHolder.getKey().longValue();
+        reservation.setId(generatedId);
+    }
 
     // 예약 취소
     @DeleteMapping("/reservations/{id}") // 'reservaions/1' 이런 식으로 맵핑함
