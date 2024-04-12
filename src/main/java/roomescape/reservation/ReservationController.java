@@ -15,8 +15,13 @@ import java.util.concurrent.atomic.AtomicLong;
 @RestController
 public class ReservationController {
 
+    private ReservationService reservationService;
     private List<ReservationDTO> reservationDTOs = new ArrayList<>();
     private AtomicLong index = new AtomicLong(1);
+
+    public ReservationController(ReservationService reservationService) {
+        this.reservationService = reservationService;
+    }
 
     @GetMapping("/reservations")
     public ResponseEntity<List<ReservationDTO>> read() {
@@ -26,7 +31,7 @@ public class ReservationController {
     @PostMapping("/reservations")
     public ResponseEntity<ReservationDTO> create(@Valid @RequestBody ReservationDTO reservationDTO) {
 
-        ReservationDTO newReservationDTO = new ReservationDTO(index.getAndIncrement(), reservationDTO.getName(), reservationDTO.getDate(), reservationDTO.getTime());
+        ReservationDTO newReservationDTO = reservationService.createReservationDTO(index.getAndIncrement(), reservationDTO);
         reservationDTOs.add(reservationDTO);
 
         return ResponseEntity.created(URI.create("/reservations/" + newReservationDTO.getId())).body(newReservationDTO);
@@ -34,13 +39,14 @@ public class ReservationController {
 
     @PutMapping("/reservations/{id}")
     public ResponseEntity<ReservationDTO> update(@Valid @RequestBody ReservationDTO reservationDTO, @PathVariable long id) {
-        ReservationDTO removeReservationDTO = reservationDTOs.stream()
+        ReservationDTO reservationDTOtoRemove = reservationDTOs.stream()
                 .filter(it -> Objects.equals(it.getId(), id))
                 .findFirst()
                 .orElseThrow(NotFoundReservationException::new);
 
-        reservationDTOs.remove(removeReservationDTO);
-        ReservationDTO updatedReservationDTO = new ReservationDTO(id, reservationDTO.getName(), reservationDTO.getDate(), reservationDTO.getTime());
+        reservationDTOs.remove(reservationDTOtoRemove);
+
+        ReservationDTO updatedReservationDTO = reservationService.updateReservationDTO(id, reservationDTO);
         reservationDTOs.add(updatedReservationDTO);
 
         return ResponseEntity.ok(updatedReservationDTO);
