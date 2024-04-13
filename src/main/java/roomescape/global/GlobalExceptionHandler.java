@@ -1,14 +1,27 @@
 package roomescape.global;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@RestControllerAdvice
+@RestControllerAdvice("roomescape")
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler({IllegalStateException.class, IllegalArgumentException.class})
-    public ResponseEntity<Void> handleException(Exception e) {
-        return ResponseEntity.badRequest().build();
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> handleException(IllegalArgumentException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<List<String>> handleValidationException(MethodArgumentNotValidException e) {
+        List<String> errors = new ArrayList<>();
+        e.getBindingResult().getFieldErrors().forEach(error ->
+            errors.add(error.getDefaultMessage())
+        );
+        return ResponseEntity.badRequest().body(errors);
     }
 }
