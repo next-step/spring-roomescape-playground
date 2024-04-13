@@ -151,4 +151,32 @@ public class MissionStepTest {
 
         Assertions.assertThat(reservations.size()).isEqualTo(count);
     }
+
+    @Test
+    void 칠단계() {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", "브라운");
+        params.put("date", "2023-08-05");
+        params.put("time", "10:00");
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(201)
+                .header("Location", "/reservations/1");
+
+        int count = jdbcTemplate.queryForObject("SELECT count(*) from RESERVATIONS", Integer.class);
+        Assertions.assertThat(count).isEqualTo(1);
+
+        RestAssured.given().log().all()
+                .when().delete("/reservations/1")
+                .then().log().all()
+                .statusCode(204);
+
+
+        int countAfterDelete = jdbcTemplate.queryForObject("SELECT count(*) from RESERVATIONS", Integer.class);
+        Assertions.assertThat(countAfterDelete).isEqualTo(0);
+    }
 }
