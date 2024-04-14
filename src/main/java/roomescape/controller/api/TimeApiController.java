@@ -14,30 +14,30 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import roomescape.domain.Reservation;
-import roomescape.service.ReservationService;
+import roomescape.domain.Time;
+import roomescape.service.TimeService;
 
 @RestController
-@RequestMapping("reservations")
+@RequestMapping("times")
 @RequiredArgsConstructor
-public class ReservationApiController {
+public class TimeApiController {
 
-    private final ReservationService reservationService;
+    private final TimeService timeService;
 
     @GetMapping
-    public List<Reservation> reservations() {
-        return reservationService.reservations();
+    public List<Time> times() {
+        return timeService.times();
     }
 
     @PostMapping
-    public ResponseEntity<Reservation> addReservation(@Valid @RequestBody Reservation request) {
-        Reservation reservation = reservationService.addReservation(request);
-        return ResponseEntity.created(URI.create("/reservations/" + reservation.getId())).body(reservation);
+    public ResponseEntity<Time> addTime(@Valid @RequestBody Time request) {
+        Time time = timeService.addTime(request);
+        return ResponseEntity.created(URI.create("/times/" + time.getId())).body(time);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
-        reservationService.deleteReservation(id);
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void> deleteTime(@PathVariable Long id) {
+        timeService.deleteTime(id);
         return ResponseEntity.noContent().build();
     }
 }
