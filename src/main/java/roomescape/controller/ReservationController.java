@@ -45,6 +45,7 @@ public class ReservationController {
         HttpHeaders httpHeaders = new HttpHeaders();
         URI uri = URI.create("/reservations/" + id);
         httpHeaders.setLocation(uri);
+        reservationVO.setIdentifyKey((long) id);
 
         return new ResponseEntity<ReservationVO>(reservationVO, httpHeaders, HttpStatus.CREATED);
 
@@ -53,8 +54,13 @@ public class ReservationController {
     @ResponseBody
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> deleteReservations(@PathVariable(value = "id", required = true) Long id){
-        reservationDAO.getReservationbyId(id).orElseThrow(CustomException::new);
-        reservationDAO.deleteReservations(id);
+
+        try {
+            reservationDAO.getReservationById(id);
+            reservationDAO.deleteReservations(id);
+        }catch(Exception e){
+            throw new CustomException();
+        }
         return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
     }
 

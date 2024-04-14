@@ -32,8 +32,8 @@ public class ReservationDAO{
         return jdbcTemplate.query("SELECT * FROM reservation", rowMapper);
     }
 
-    public Optional<ReservationVO> getReservationbyId(Long id){
-        return Optional.ofNullable(jdbcTemplate.queryForObject("SELECT * FROM reservation where id = ?", rowMapper , id));
+    public ReservationVO getReservationById(Long id) throws Exception{
+        return jdbcTemplate.queryForObject("SELECT * FROM reservation where id = ?", rowMapper , id);
     }
 
     public int postReservation(ReservationVO reservationVO){
@@ -42,7 +42,7 @@ public class ReservationDAO{
 
 
 
-    public void deleteReservations(Long id) {
+    public void deleteReservations(Long id) throws Exception{
         jdbcTemplate.update("DELETE FROM reservation WHERE id = ?", id);
     }
 
