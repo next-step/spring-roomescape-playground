@@ -1,11 +1,14 @@
 package roomescape.controller;
 
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import roomescape.dto.ReservationDto;
+import roomescape.dao.ReservationDAO;
+import roomescape.dto.ReservationVO;
 import roomescape.exception.CustomException;
 
 import java.net.URI;
@@ -15,9 +18,10 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Controller
+@RequiredArgsConstructor
 public class ReservationController {
-    private final AtomicLong index = new AtomicLong(0);
-    private final List<ReservationDto> list = new ArrayList<>();
+
+    private final ReservationDAO reservationDAO;
 
     @GetMapping("/reservation")
     public String reservation(){
@@ -26,40 +30,31 @@ public class ReservationController {
 
     @ResponseBody
     @GetMapping("/reservations")
-    public ResponseEntity<List<ReservationDto>> getReservations(){
-        return ResponseEntity.ok(list);
+    public ResponseEntity<List<ReservationVO>> getReservations(){
+        List<ReservationVO> result = reservationDAO.getReservations();
+        return ResponseEntity.ok(result);
 
     }
 
     @ResponseBody
     @PostMapping("/reservations")
-    public ResponseEntity<ReservationDto> postReservation(@RequestBody ReservationDto reservationDto) {
-        if(reservationDto.getDate() == null || reservationDto.getTime() == null|| reservationDto.getName().isBlank()){
-            throw new CustomException();
-        }
+    public ResponseEntity<ReservationVO> postReservation(@RequestBody @Valid ReservationVO reservationVO) {
 
-        reservationDto.setIdentifyKey(index.incrementAndGet());
-        list.add(reservationDto);
+        int id = reservationDAO.postReservation(reservationVO);
+
         HttpHeaders httpHeaders = new HttpHeaders();
-
-
-        URI uri = URI.create("/reservations/" + reservationDto.getId());
-
-        // 기본 URI 설정
+        URI uri = URI.create("/reservations/" + id);
         httpHeaders.setLocation(uri);
-        return new ResponseEntity<ReservationDto>(reservationDto, httpHeaders, HttpStatus.CREATED);
+
+        return new ResponseEntity<ReservationVO>(reservationVO, httpHeaders, HttpStatus.CREATED);
 
     }
 
     @ResponseBody
     @DeleteMapping("/reservations/{id}")
-    public ResponseEntity<Void> deleteReservations(@PathVariable(value = "id") Long id){
-        if(id == null){
-            throw new CustomException();
-        }
-        if(!list.removeIf(reservationDto -> Objects.equals(reservationDto.getId(), id))){
-            throw new CustomException();
-        }
+    public ResponseEntity<Void> deleteReservations(@PathVariable(value = "id", required = true) Long id){
+        reservationDAO.getReservationbyId(id).orElseThrow(CustomException::new);
+        reservationDAO.deleteReservations(id);
         return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
     }
 
