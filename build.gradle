@@ -24,7 +24,10 @@ dependencies {
     // Spring jdbc Starter 의존성 추가
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     runtimeOnly 'com.h2database:h2'
-    // 테스트 코드 내부 import lombok.extern.slf4j.Slf4j
+    // import lombok.extern.slf4j.Slf4js
+    implementation 'org.projectlombok:lombok'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
     testCompileOnly 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
 }

@@ -13,7 +13,11 @@ public class ViewController {
 
     @GetMapping("/reservation")
     public String reservationView() {
-        return "reservation";
+        return "new-reservation";
     }
 
+    @GetMapping("/time")
+    public String timeView() {
+        return "time";
+    }
 }
