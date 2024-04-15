@@ -27,7 +27,7 @@ public class ReservationDto {
     public String getTime() {
         return time;
     }
-
+  
     public void setName(String name) {
         this.name = name;
     }
