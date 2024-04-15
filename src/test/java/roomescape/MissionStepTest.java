@@ -2,6 +2,7 @@ package roomescape;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,6 +24,7 @@ import static org.hamcrest.Matchers.is;
 public class MissionStepTest {
 
     @Test
+    @DisplayName("localhost:8080 요청 시 아래 화면과 같이 어드민 메인 페이지가 응답할 수 있도록 구현하기")
     void 일단계() {
         RestAssured.given().log().all()
                 .when().get("/")
@@ -31,6 +33,7 @@ public class MissionStepTest {
     }
 
     @Test
+    @DisplayName("/reservation 요청 시 예약 관리 페이지가 응답할 수 있도록 구현하고 예약 관리 페이지 로드 시 호출되는 예약 목록 조회 API도 함께 구현하기")
     void 이단계() {
         RestAssured.given().log().all()
                 .when().get("/reservation")
@@ -45,6 +48,7 @@ public class MissionStepTest {
     }
 
     @Test
+    @DisplayName("API 명세를 따라 예약 추가 API 와 삭제 API를 구현하기")
     void 삼단계() {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
@@ -79,6 +83,7 @@ public class MissionStepTest {
     }
 
     @Test
+    @DisplayName("예약 관련 API 호출 시 에러가 발생하는 경우 중 요청의 문제인 경우 Status Code를 400으로 응답하기")
     void 사단계() {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
@@ -105,6 +110,7 @@ public class MissionStepTest {
     private JdbcTemplate jdbcTemplate;
 
     @Test
+    @DisplayName("h2 데이터베이스를 활용하여 데이터를 저장하도록 수정하기")
     void 오단계() {
         try (Connection connection = jdbcTemplate.getDataSource().getConnection()) {
             assertThat(connection).isNotNull();
@@ -116,6 +122,7 @@ public class MissionStepTest {
     }
 
     @Test
+    @DisplayName("예약 조회 API 처리 로직에서 저장된 예약을 조회할 때 데이터베이스를 활용하도록 수정하기")
     void 육단계() {
         jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "브라운", "2023-08-05", "15:40");
 
@@ -132,6 +139,7 @@ public class MissionStepTest {
 
 
     @Test
+    @DisplayName("예약 추가/취소 API 처리 로직에서 데이터베이스를 활용하도록 수정하기")
     void 칠단계() {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
