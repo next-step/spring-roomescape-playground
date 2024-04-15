@@ -6,10 +6,12 @@ public class Reservation {
     private final Long id;
     private final String name;
     private final String date;
+    private final Time time;
+
+    public Reservation(Long id, String name, String date, Time time) {
     private final String time;
 
     public Reservation(Long id, String name, String date, String time) {
-=======
 package roomescape;
 
 import java.time.LocalDate;
@@ -26,7 +28,6 @@ public class Reservation {
     }
 
     public Reservation(Long id, String name, LocalDate date, LocalTime time){
-
         this.id = id;
         this.name = name;
         this.date = date;
@@ -36,7 +37,6 @@ public class Reservation {
     public static Reservation of(long id, String name, String date, String time) {
         return new Reservation(id, name, date, time);
     }
-
     public Long getId() {
         return id;
     }
@@ -48,7 +48,9 @@ public class Reservation {
     public String getDate() {
         return date;
     }
-
+    public Time getTime() {
+        return time;
+    }
     public String getTime() {
         return time;
     }
