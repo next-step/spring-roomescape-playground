@@ -1,4 +1,4 @@
-merge요청합니다
+
 일단 여기에다가 나눌 부분 적겠습니다
 controller vs requestioncontroller 에 차이점에 대해서 좀 더 공부해야할 것 같습니다 
 controller로 json 파일 불러오려면 responsebody를 가져와야하고 
@@ -11,5 +11,3 @@ get방식은 reservation
 post방식은 reservations로 해서 이 데이터들을 reservation 에 연결된 html에 전달하는 식으로 진행했는데 다른 분들은 어떻게 하셨는지? 같은 url을 사용하면 안되는 건지? 좀 더 알아보고자 합니다
 사실 단순하게 생각하면 같은 화면에서 일어나는 일이니까 url을 똑같이 쓰는게 좋다고 생각했습니다.
 
-
-화이팅!
