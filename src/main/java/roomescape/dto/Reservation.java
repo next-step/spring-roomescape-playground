@@ -8,6 +8,14 @@ public class Reservation {
     private String date;
     private String time;
 
+    // 생성자
+    public Reservation(Long id, String name, String date, String time) {
+        this.id = id;
+        this.name = name;
+        this.date = date;
+        this.time = time;
+    }
+
     // getter and setter
     public Long getId() {
         return id;
@@ -41,11 +49,5 @@ public class Reservation {
         this.time = time;
     }
 
-    // 생성자
-    public Reservation(Long id, String name, String date, String time) {
-        this.id = id;
-        this.name = name;
-        this.date = date;
-        this.time = time;
-    }
+
 }
