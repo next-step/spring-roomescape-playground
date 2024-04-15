@@ -2,7 +2,7 @@ package roomescape;
 
 import java.net.URI;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,12 +13,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
+@RequiredArgsConstructor
 public class ReservationController {
   private final ReservationService reservationService;
-  @Autowired
-  public ReservationController(ReservationService reservationService) {
-    this.reservationService = reservationService;
-  }
 
   @GetMapping("/")
   public String home() {

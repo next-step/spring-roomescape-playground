@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,6 +24,7 @@ public class MissionStepTest {
     private JdbcTemplate jdbcTemplate;
 
     @Test
+    @DisplayName("1단계 - 홈화면")
     void 일단계() {
         RestAssured.given().log().all()
                 .when().get("/")
@@ -31,6 +33,7 @@ public class MissionStepTest {
     }
 
     @Test
+    @DisplayName("2단계 - 예약 조회")
     void 이단계() {
         RestAssured.given().log().all()
             .when().get("/reservation")
@@ -45,6 +48,7 @@ public class MissionStepTest {
     }
 
     @Test
+    @DisplayName("3단계 - 예약 추가 / 취소")
     void 삼단계() {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
@@ -79,6 +83,7 @@ public class MissionStepTest {
     }
 
     @Test
+    @DisplayName("4단계 - 예외 처리")
     void 사단계() {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
@@ -99,6 +104,7 @@ public class MissionStepTest {
     }
 
     @Test
+    @DisplayName("5단계 - 데이터베이스 적용하기")
     void 오단계() {
         try (Connection connection = jdbcTemplate.getDataSource().getConnection()) {
             assertThat(connection).isNotNull();
@@ -110,6 +116,7 @@ public class MissionStepTest {
     }
 
     @Test
+    @DisplayName("6단계 - 데이터 조회하기")
     void 육단계() {
         jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "브라운", "2023-08-05", "15:40");
 
@@ -125,6 +132,7 @@ public class MissionStepTest {
     }
 
     @Test
+    @DisplayName("7단계 - 데이터 추가/삭제하기")
     void 칠단계() {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");

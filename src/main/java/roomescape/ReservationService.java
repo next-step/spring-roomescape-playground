@@ -3,7 +3,7 @@ package roomescape;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.Objects;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -12,19 +12,17 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ReservationService {
+  private final JdbcTemplate jdbcTemplate;
 
-  @Autowired
-  private JdbcTemplate jdbcTemplate;
-
-  private final RowMapper<Reservation> rowMapper = (rs, rowNum) -> {
-    Reservation reservation = new Reservation();
-    reservation.setId(rs.getLong("id"));
-    reservation.setName(rs.getString("name"));
-    reservation.setDate(rs.getString("date"));
-    reservation.setTime(rs.getString("time"));
-    return reservation;
-  };
+  private final RowMapper<Reservation> rowMapper = (rs, rowNum) ->
+      new Reservation(
+          rs.getLong("id"),
+          rs.getString("name"),
+          rs.getString("date"),
+          rs.getString("time")
+      );
 
   public List<Reservation> getReservations() {
     String sql = "SELECT * FROM reservation";
