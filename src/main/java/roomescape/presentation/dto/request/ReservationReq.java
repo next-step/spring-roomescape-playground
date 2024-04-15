@@ -1,5 +1,6 @@
 package roomescape.presentation.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -18,6 +19,7 @@ public class ReservationReq {
     @NotNull(message = "예약 날짜를 입력해주세요.")
     private LocalDate date;
 
-    @NotNull(message = "예약 시간을 입력해주세요.")
-    private LocalTime time;
+    @NotNull(message = "예약 시간을 선택해주세요.")
+    @JsonProperty("time")
+    private Long timeId;
 }

@@ -8,7 +8,8 @@ import org.springframework.http.HttpStatus;
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 @Getter
 public enum ErrorCode {
-    NOT_FOUND_RESERVATION("존재하지 않는 예약입니다.", HttpStatus.valueOf(400));
+    NOT_FOUND_RESERVATION("존재하지 않는 예약입니다.", HttpStatus.valueOf(400)),
+    NOT_FOUND_TIME("존재하지 않는 시간입니다.", HttpStatus.valueOf(400));
 
     private final String message;
     private final HttpStatus httpStatus;

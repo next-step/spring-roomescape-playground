@@ -14,14 +14,14 @@ public class ReservationInfoDto {
     private final Long id;
     private final String name;
     private final LocalDate date;
-    private final LocalTime time;
+    private final ReservationTimeInfoDto time;
 
     public static ReservationInfoDto from(final Reservation reservation) {
         return new ReservationInfoDto(
                 reservation.getId(),
                 reservation.getName(),
                 reservation.getDate(),
-                reservation.getTime()
+                ReservationTimeInfoDto.from(reservation.getTime())
         );
     }
 }

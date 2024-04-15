@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import roomescape.application.ReservationService;
 import roomescape.application.dto.ReservationDto;
 import roomescape.application.dto.ReservationInfoDto;
+import roomescape.domain.ReservationTime;
 import roomescape.presentation.dto.request.ReservationReq;
 import roomescape.presentation.dto.response.ReservationRes;
 
@@ -39,10 +40,10 @@ public class ReservationController {
         final ReservationDto reservationDto = new ReservationDto(
                 request.getName(),
                 request.getDate(),
-                request.getTime()
+                request.getTimeId()
         );
-        ReservationInfoDto saved = reservationService.save(reservationDto);
-        ReservationRes response = ReservationRes.from(saved);
+        final ReservationInfoDto saved = reservationService.save(reservationDto);
+        final ReservationRes response = ReservationRes.from(saved);
 
         return ResponseEntity.created(URI.create("/reservations/" + saved.getId())).body(response);
     }
