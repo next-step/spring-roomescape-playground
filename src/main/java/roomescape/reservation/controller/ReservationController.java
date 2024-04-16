@@ -1,55 +1,82 @@
 package roomescape.reservation.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import roomescape.mapper.ReservationRowMapper;
 import roomescape.reservation.domain.Reservation;
 import roomescape.reservation.exception.InvalidReservationException;
 
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.*;
 
 @Controller
 public class ReservationController {
-    private List<Reservation> reservations = new ArrayList<>();
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
-    private AtomicLong index = new AtomicLong(1);
+    @Autowired
+    private ReservationRowMapper reservationRowMapper;
 
     @GetMapping("/reservation")
     public String reservation(){
-        return "reservation"; //reservation.html 파일을 반환합니다.
+        return "reservation";
     }
 
     @GetMapping("/reservations")
     @ResponseBody
     public List<Reservation> getReservations() {
-        return reservations; // 더미데이터(Reservation의 리스트)를 반환합니다.
+        String sql = "SELECT id, name, date, time FROM reservation"; // 컬럼을 명시적으로 가져오도록 수정하였습니다.
+        return jdbcTemplate.query(sql, reservationRowMapper);
     }
 
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservation){
+        String reservationName = reservation.getName();
+        String reservationDate = reservation.getDate();
+        String reservationTime = reservation.getTime();
 
-        if(reservation.getName().isEmpty() || reservation.getTime().isEmpty() || reservation.getDate().isEmpty()){
+        if (Optional.ofNullable(reservationName).orElse("").isEmpty() ||
+                Optional.ofNullable(reservationDate).orElse("").isEmpty() ||
+                Optional.ofNullable(reservationTime).orElse("").isEmpty()) {
             throw new InvalidReservationException("Invalid reservation data, Field Empty");
         }
 
-        Reservation newReservation = Reservation.toEntity(reservation, index.getAndIncrement());
-        reservations.add(newReservation);
-        return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
+        // KeyHolder -> SimpleJdbcInsert를 이용한 방식으로 변경
+        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("reservation")
+                .usingGeneratedKeyColumns("id");
+
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("name", reservationName);
+        parameters.put("date", reservationDate);
+        parameters.put("time", reservationTime);
+
+        Number newId = simpleJdbcInsert.executeAndReturnKey(parameters);
+        Long id = newId.longValue();
+
+        Reservation newReservation = Reservation.toEntity(reservation, id);
+
+        return ResponseEntity.created(URI.create("/reservations/" + id)).body(newReservation);
     }
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable Long id){
-        Reservation reservation = reservations.stream()
-                .filter(item -> Objects.equals(item.getId(), id))
-                .findFirst()
-                .orElseThrow(() -> new InvalidReservationException("Reservation not found with id: " + id));
 
-        reservations.remove(reservation);
+        String selectQuery = "SELECT COUNT(*) FROM reservation WHERE id = ?";
+        int count = jdbcTemplate.queryForObject(selectQuery, Integer.class, id);
+
+        if (count == 0) {
+            throw new InvalidReservationException("Reservation not found with id: " + id);
+        }
+
+        String deleteQuery = "DELETE FROM reservation WHERE id = ?";
+
+        jdbcTemplate.update(deleteQuery, id);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
