@@ -14,7 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import roomescape.domain.Time;
+import roomescape.dto.TimeRequest;
+import roomescape.dto.TimeResponse;
 import roomescape.service.TimeService;
 
 @RestController
@@ -25,13 +26,13 @@ public class TimeApiController {
     private final TimeService timeService;
 
     @GetMapping
-    public List<Time> times() {
+    public List<TimeResponse> times() {
         return timeService.times();
     }
 
     @PostMapping
-    public ResponseEntity<Time> addTime(@Valid @RequestBody Time request) {
-        Time time = timeService.addTime(request);
+    public ResponseEntity<TimeResponse> addTime(@Valid @RequestBody TimeRequest request) {
+        TimeResponse time = timeService.addTime(request);
         return ResponseEntity.created(URI.create("/times/" + time.getId())).body(time);
     }
 

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class TimeController {
 
     @GetMapping
-    public String time(){
+    public String time() {
         return "time";
     }
 }

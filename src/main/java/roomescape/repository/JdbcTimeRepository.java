@@ -14,21 +14,16 @@ import roomescape.domain.Time;
 
 @Repository
 @RequiredArgsConstructor
-public class TimeRepository {
+public class JdbcTimeRepository implements TimeRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
+    @Override
     public List<Time> findAll() {
         return jdbcTemplate.query("SELECT * FROM time", timeRowMapper());
     }
 
-    private RowMapper<Time> timeRowMapper() {
-        return (rs, rowNum) -> new Time(
-            rs.getLong("id"),
-            rs.getTime("time").toLocalTime()
-        );
-    }
-
+    @Override
     public Time save(Time request) {
         String sql = "INSERT INTO time (time) VALUES (?)";
 
@@ -45,9 +40,17 @@ public class TimeRepository {
         return new Time(id, request.getTime());
     }
 
+    @Override
     public void deleteById(Long id) {
         String sql = "DELETE FROM time WHERE id = ?";
         if (jdbcTemplate.update(sql, id) == 0)
             throw new IllegalArgumentException("존재하지 않는 시간입니다.");
+    }
+
+    private RowMapper<Time> timeRowMapper() {
+        return (rs, rowNum) -> new Time(
+            rs.getLong("id"),
+            rs.getTime("time").toLocalTime()
+        );
     }
 }

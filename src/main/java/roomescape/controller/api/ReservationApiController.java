@@ -14,7 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import roomescape.domain.Reservation;
+import roomescape.dto.ReservationRequest;
+import roomescape.dto.ReservationResponse;
 import roomescape.service.ReservationService;
 
 @RestController
@@ -25,14 +26,14 @@ public class ReservationApiController {
     private final ReservationService reservationService;
 
     @GetMapping
-    public List<Reservation> reservations() {
+    public List<ReservationResponse> reservations() {
         return reservationService.reservations();
     }
 
     @PostMapping
-    public ResponseEntity<Reservation> addReservation(@Valid @RequestBody Reservation request) {
-        Reservation reservation = reservationService.addReservation(request);
-        return ResponseEntity.created(URI.create("/reservations/" + reservation.getId())).body(reservation);
+    public ResponseEntity<ReservationResponse> addReservation(@Valid @RequestBody ReservationRequest request) {
+        ReservationResponse response = reservationService.addReservation(request);
+        return ResponseEntity.created(URI.create("/reservations/" + response.getId())).body(response);
     }
 
     @DeleteMapping("/{id}")

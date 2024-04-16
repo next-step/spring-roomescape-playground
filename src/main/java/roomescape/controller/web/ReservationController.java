@@ -10,6 +10,6 @@ public class ReservationController {
 
     @GetMapping
     public String reservation() {
-        return "reservation";
+        return "new-reservation";
     }
 }

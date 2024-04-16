@@ -20,7 +20,15 @@ public class MemoryReservationRepository implements ReservationRepository {
     }
 
     @Override
-    public Reservation save(Reservation request) {
+    public Reservation findById(Long id) {
+        return reservations.stream()
+            .filter(it -> it.getId().equals(id))
+            .findAny()
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 예약입니다."));
+    }
+
+    @Override
+    public Long save(Reservation request) {
         Reservation reservation = new Reservation(
             index.incrementAndGet(),
             request.getName(),
@@ -28,15 +36,11 @@ public class MemoryReservationRepository implements ReservationRepository {
             request.getTime()
         );
         reservations.add(reservation);
-        return reservation;
+        return index.get();
     }
 
     @Override
     public void deleteById(Long id) {
-        Reservation reservation = reservations.stream()
-            .filter(it -> it.getId().equals(id))
-            .findAny()
-            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 예약입니다."));
-        reservations.remove(reservation);
+        reservations.remove(findById(id));
     }
 }

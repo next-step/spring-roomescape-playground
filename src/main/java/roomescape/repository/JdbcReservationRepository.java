@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import lombok.RequiredArgsConstructor;
 import roomescape.domain.Reservation;
+import roomescape.domain.Time;
 
 @Repository
 @RequiredArgsConstructor
@@ -20,12 +21,38 @@ public class JdbcReservationRepository implements ReservationRepository {
 
     @Override
     public List<Reservation> findAll() {
-        return jdbcTemplate.query("SELECT * FROM reservation", reservationRowMapper());
+        String sql = """
+            SELECT
+                r.id as reservation_id,
+                r.name,
+                r.date,
+                t.id AS time_id,
+                t.time AS time_value
+            FROM reservation AS r 
+            INNER JOIN time AS t ON r.time_id = t.id
+            """;
+        return jdbcTemplate.query(sql, reservationRowMapper());
     }
 
     @Override
-    public Reservation save(Reservation request) {
-        String sql = "INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)";
+    public Reservation findById(Long id) {
+        String sql = """
+            SELECT
+                r.id as reservation_id,
+                r.name,
+                r.date,
+                t.id AS time_id,
+                t.time AS time_value
+            FROM reservation AS r 
+            INNER JOIN time AS t ON r.time_id = t.id
+            WHERE r.id = ?
+            """;
+        return jdbcTemplate.queryForObject(sql, reservationRowMapper(), id);
+    }
+
+    @Override
+    public Long save(Reservation request) {
+        String sql = "INSERT INTO reservation (name, date, time_id) VALUES (?, ?, ?)";
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
@@ -33,12 +60,11 @@ public class JdbcReservationRepository implements ReservationRepository {
                 sql, new String[] {"id"});
             ps.setString(1, request.getName());
             ps.setObject(2, request.getDate());
-            ps.setObject(3, request.getTime());
+            ps.setLong(3, request.getTime().getId());
             return ps;
         }, keyHolder);
 
-        Long id = keyHolder.getKey().longValue();
-        return new Reservation(id, request.getName(), request.getDate(), request.getTime());
+        return keyHolder.getKey().longValue();
     }
 
     @Override
@@ -50,10 +76,10 @@ public class JdbcReservationRepository implements ReservationRepository {
 
     private RowMapper<Reservation> reservationRowMapper() {
         return (rs, rowNum) -> new Reservation(
-            rs.getLong("id"),
+            rs.getLong("reservation_id"),
             rs.getString("name"),
             rs.getDate("date").toLocalDate(),
-            rs.getTime("time").toLocalTime()
+            new Time(rs.getLong("time_id"), rs.getTime("time_value").toLocalTime())
         );
     }
 }
