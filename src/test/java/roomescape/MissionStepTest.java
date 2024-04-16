@@ -3,6 +3,7 @@ package roomescape;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.hamcrest.Matchers.is;
 
+import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -11,6 +12,7 @@ import java.util.Map;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import roomescape.controller.api.ReservationApiController;
 import roomescape.domain.Reservation;
 
 import org.junit.jupiter.api.Test;
@@ -202,5 +204,22 @@ public class MissionStepTest {
             .when().post("/reservations")
             .then().log().all()
             .statusCode(400);
+    }
+
+    @Autowired
+    private ReservationApiController reservationApiController;
+
+    @Test
+    void 십단계() {
+        boolean isJdbcTemplateInjected = false;
+
+        for (Field field : reservationApiController.getClass().getDeclaredFields()) {
+            if (field.getType().equals(JdbcTemplate.class)) {
+                isJdbcTemplateInjected = true;
+                break;
+            }
+        }
+
+        assertThat(isJdbcTemplateInjected).isFalse();
     }
 }
