@@ -2,6 +2,7 @@ package roomescape.reservation;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import roomescape.reservation.exception.NotFoundReservationException;
 
 import java.util.List;
 
@@ -22,12 +23,16 @@ public class ReservationService {
         return reservationDTOMapper.convertToDtoList(reservations);
     }
 
-    public ReservationDTO createReservationDTO(long id, ReservationDTO reservationDTO) {
+    public ReservationDTO insertReservationDTO(ReservationDTO reservationDTO) {
+        Long id = reservationDAO.insertWithKeyHolder(reservationDTO);
         return new ReservationDTO(id, reservationDTO.getName(), reservationDTO.getDate(), reservationDTO.getTime());
     }
 
-    public ReservationDTO updateReservationDTO(long id, ReservationDTO reservationDTO) {
-        return createReservationDTO(id, reservationDTO);
-    }
+//    public void updateReservationDTO(long id, ReservationDTO reservationDTO) {
+//        reservationDAO.update(id, reservationDTO);
+//    }
 
+    public void deleteReservationDTO(long id) {
+        reservationDAO.delete(id);
+    }
 }
