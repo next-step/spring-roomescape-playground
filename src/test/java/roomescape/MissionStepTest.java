@@ -65,7 +65,7 @@ public class MissionStepTest {
                 .when().get("/reservations")
                 .then().log().all()
                 .statusCode(200)
-                .body("size()", is(1)); // Static List 를 사용함으로써, 0 으로 교체.
+                .body("size()", is(1));
     }
 
     @Test
@@ -110,7 +110,7 @@ public class MissionStepTest {
         params.put("date", "");
         params.put("time", "");
 
-        // 필요한 인자가 없는 경우
+
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(params)
@@ -118,7 +118,7 @@ public class MissionStepTest {
                 .then().log().all()
                 .statusCode(400);
 
-        // 삭제할 예약이 없는 경우
+
         RestAssured.given().log().all()
                 .when().delete("/reservations/1")
                 .then().log().all()

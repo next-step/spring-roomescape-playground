@@ -32,8 +32,6 @@ import java.util.List;
 import java.util.Objects;
 
 
-// 현재는 데이터베이스가 없으니, 임의의 DTO 를 컨트롤러에 생성!
-
 @Controller
 public class ReservationController {
 
@@ -87,8 +85,6 @@ public class ReservationController {
     public ResponseEntity<Reservations> reservations(@RequestBody @Valid Reservations request) throws Exception {
 
         int id = reservationRepo.insert(request);
-
-        System.out.println("id - - -- - - " + id);
 
 
         return ResponseEntity.created(URI.create("/reservations/" + id)).body(request);

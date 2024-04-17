@@ -1,6 +1,5 @@
 package roomescape.repository;
 
-import jakarta.validation.constraints.Null;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
