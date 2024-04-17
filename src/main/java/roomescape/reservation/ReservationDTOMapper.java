@@ -1,14 +1,26 @@
 package roomescape.reservation;
 
 
+import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Component
 public class ReservationDTOMapper {
 
-    public static Reservation toEntity(ReservationDTO reservationDTO) {
+    public List<ReservationDTO> convertToDtoList(List<Reservation> reservations) {
+        return reservations.stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    public Reservation toEntity(ReservationDTO reservationDTO) {
         Reservation reservation = new Reservation(reservationDTO.getId(), reservationDTO.getName(), reservationDTO.getDate(), reservationDTO.getTime());
         return reservation;
     }
 
-    public static ReservationDTO toDTO(Reservation reservation) {
+    public ReservationDTO toDTO(Reservation reservation) {
         ReservationDTO reservationDTO = new ReservationDTO(reservation.getId(), reservation.getName(), reservation.getDate(), reservation.getTime());
         return reservationDTO;
     }

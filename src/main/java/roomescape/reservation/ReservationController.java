@@ -25,7 +25,7 @@ public class ReservationController {
 
     @GetMapping("/reservations")
     public ResponseEntity<List<ReservationDTO>> read() {
-        return ResponseEntity.ok().body(reservationDTOs);
+        return ResponseEntity.ok().body(reservationService.read());
     }
 
     @PostMapping("/reservations")
