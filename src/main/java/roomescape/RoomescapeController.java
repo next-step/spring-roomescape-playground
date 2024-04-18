@@ -28,6 +28,8 @@ public class RoomescapeController {
   public String home() {
     return "home";
   }
+  @GetMapping("/time")
+  public String time() { return "time"; }
 
   @GetMapping("/reservation")
   public String reservation() {
