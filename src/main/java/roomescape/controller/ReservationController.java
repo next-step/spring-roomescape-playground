@@ -2,34 +2,26 @@ package roomescape.controller;
 
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
+
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
+
 import org.springframework.http.ResponseEntity;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.lang.NonNull;
+
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.annotation.Validated;
+
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import roomescape.entity.Reservations;
 import roomescape.exception.NoArgsException;
 import roomescape.exception.NotFoundReservationException;
 import roomescape.repository.ReservationRepo;
 
 import java.net.URI;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Objects;
+
 
 
 @Controller
@@ -37,33 +29,6 @@ public class ReservationController {
 
     @Autowired
     private ReservationRepo reservationRepo;
-
-
-
-
-
-    public static class Reservations {
-
-        public int id;
-
-        @NotEmpty
-        public String name;
-        @DateTimeFormat(pattern = "yyyy-MM-dd")
-        @NotNull
-        public LocalDate date;
-        @DateTimeFormat(pattern = "HH:mm")
-        @NotNull
-        public LocalTime time;
-
-        public Reservations(int id, String name,  LocalDate date,  LocalTime time)  {
-            this.id = id;
-            this.name = name;
-            this.date = date;
-            this.time = time;
-        }
-    }
-
-
 
     @GetMapping("/reservation")
     public String reservation() {
