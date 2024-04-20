@@ -1,16 +1,16 @@
 package roomescape;
 
 public class Time {
-  private long id;
+  private Long id;
   private String time;
   public Time(String time) {
     this.time = time;
   }
-  public Time (long id, String time) {
+  public Time (Long id, String time) {
     this.id = id;
     this.time = time;
   }
-  public long getId() {
+  public Long getId() {
     return this.id;
   }
 

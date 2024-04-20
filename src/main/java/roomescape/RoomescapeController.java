@@ -33,19 +33,19 @@ public class RoomescapeController {
 
   @GetMapping("/reservation")
   public String reservation() {
-    return "reservation";
+    return "new-reservation";
   }
 
   @GetMapping("/reservations")
   @ResponseBody
   public List<Reservation> reservationList() {
-    String sql = "select id, name, date, time from reservation";
+    String sql = "select r.id as reservation_id, r.name, r.date, t.id as time_id, t.time as time_value from reservation as r inner join time as t on r.time_id = t.id";
     List<Reservation >reservations = jdbcTemplate.query(sql, (result, row) -> {
       Reservation reservation = new Reservation(
               result.getLong("id"),
               result.getString("name"),
               result.getString("date"),
-              result.getString("time")
+              new Time(result.getLong("time_id"), result.getString("time_value"))
       );
       return reservation;
     });
@@ -55,11 +55,12 @@ public class RoomescapeController {
   @PostMapping("/reservations")
   @ResponseBody
   public ResponseEntity<Reservation> newReservation(@RequestBody Reservation reservation) {
-    if (reservation.getDate().isEmpty() || reservation.getName().isEmpty() || reservation.getTime().isEmpty()) {
+    if (reservation.getDate().isEmpty() || reservation.getName().isEmpty() || reservation.getTime().getId() == null) {
       return ResponseEntity.badRequest().build();
     }
+
     KeyHolder keyHolder = new GeneratedKeyHolder();
-    String sql = "insert into reservation (name, date, time) values (?, ?, ?)";
+    String sql = "insert into reservation (name, date, time_id) values (?, ?, ?)";
     jdbcTemplate.update(con -> {
       PreparedStatement ps = con.prepareStatement(
               sql,
@@ -67,11 +68,11 @@ public class RoomescapeController {
       );
       ps.setString(1, reservation.getName());
       ps.setString(2, reservation.getDate());
-      ps.setString(3, reservation.getTime());
+      ps.setLong(3, reservation.getTime().getId());
       return ps;
     }, keyHolder);
     Long id = keyHolder.getKey().longValue();
-    Reservation added = new Reservation(id, reservation.getName(), reservation.getDate(), reservation.getName());
+    Reservation added = new Reservation(id, reservation.getName(), reservation.getDate(), reservation.getTime());
     return ResponseEntity.created(URI.create("/reservations/" + id)).body(added);
   }
 
