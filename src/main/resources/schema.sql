@@ -6,4 +6,5 @@ CREATE TABLE reservation
     date    VARCHAR(255) NOT NULL,
     time    VARCHAR(255) NOT NULL,
     PRIMARY KEY (id)
+
 );

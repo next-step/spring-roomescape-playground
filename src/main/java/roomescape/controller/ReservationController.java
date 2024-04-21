@@ -25,6 +25,7 @@ public class ReservationController {
 
     @GetMapping("/reservation")
     public String reservation(){
+
         return "reservation";
     }
 
@@ -32,14 +33,13 @@ public class ReservationController {
     @GetMapping("/reservations")
     public ResponseEntity<List<ReservationVO>> getReservations(){
         List<ReservationVO> result = reservationDAO.getReservations();
-        return ResponseEntity.ok(result);
 
+        return ResponseEntity.ok(result);
     }
 
     @ResponseBody
     @PostMapping("/reservations")
     public ResponseEntity<ReservationVO> postReservation(@RequestBody @Valid ReservationVO reservationVO) {
-
         int id = reservationDAO.postReservation(reservationVO);
 
         HttpHeaders httpHeaders = new HttpHeaders();
@@ -48,23 +48,19 @@ public class ReservationController {
         reservationVO.setIdentifyKey((long) id);
 
         return new ResponseEntity<ReservationVO>(reservationVO, httpHeaders, HttpStatus.CREATED);
-
     }
 
     @ResponseBody
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> deleteReservations(@PathVariable(value = "id", required = true) Long id){
-
         try {
             reservationDAO.getReservationById(id);
             reservationDAO.deleteReservations(id);
         }catch(Exception e){
             throw new CustomException();
         }
+
         return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
     }
-
-
-
 
 }
