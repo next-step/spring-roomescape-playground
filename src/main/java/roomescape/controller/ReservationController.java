@@ -45,7 +45,6 @@ public class ReservationController {
 
 
     @PostMapping("/reservations")
-    @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Reservations> reservations(@RequestBody @Valid Reservations request) throws Exception {
 

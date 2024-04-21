@@ -1,5 +1,6 @@
 package roomescape.entity;
 
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -8,6 +9,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class Reservations {
+    @Min(value = 0)
     private int id;
 
     @NotEmpty
