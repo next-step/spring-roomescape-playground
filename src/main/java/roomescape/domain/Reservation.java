@@ -1,5 +1,7 @@
 package roomescape.domain;
 
+import lombok.Builder;
+
 public class Reservation {
 
     // 필드
@@ -9,6 +11,7 @@ public class Reservation {
     private String time;
 
     // 생성자
+    @Builder
     public Reservation(Long id, String name, String date, String time) {
         this.id = id;
         this.name = name;

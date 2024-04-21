@@ -14,10 +14,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
+import static java.util.Objects.requireNonNull;
+
 @Repository
 public class ReservationDB {
     // 6단계 : JdbcTemplate을 이용하여 DataSource객체에 접근
-    @Autowired
     private JdbcTemplate jdbcTemplate;
 
     public ReservationDB(JdbcTemplate jdbcTemplate) {
@@ -51,21 +52,25 @@ public class ReservationDB {
     }
 
     // 7단계 : DB에 예약 정보 추가하기
-    public Long saveReservationDB(Reservation reservation) {
+    public Reservation saveReservationDB(Reservation reservation) {
         String sql = "INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)";
-        // KeyHolder을 통해 만든 key가 id값을 대체
-        KeyHolder keyHolder = new GeneratedKeyHolder(); // KeyHolder 생성
+        // KeyHolder 객체를 이용하여 생성된 id값을 받아옴
+        KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
             ps.setString(1, reservation.getName());
-            ps.setString(2, reservation.getDate().toString());
-            ps.setString(3, reservation.getTime().toString());
+            ps.setString(2, String.valueOf(reservation.getDate()));
+            ps.setString(3, String.valueOf(reservation.getTime()));
             return ps;
         }, keyHolder);
 
-        Long generatedId = keyHolder.getKey().longValue();
-
-        return generatedId;
+        // 생성된 id값을 이용하여 Reservation 객체를 생성하여 반환
+        return Reservation.builder()
+                .id(requireNonNull(keyHolder.getKey()).longValue())
+                .name(reservation.getName())
+                .date(reservation.getDate())
+                .time(reservation.getTime())
+                .build();
     }
 
 

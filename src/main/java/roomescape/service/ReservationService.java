@@ -19,8 +19,17 @@ public class ReservationService {
         return reservationDB.getReservationByDB(id);
     }
 
-    public Long saveReservation(Reservation reservation) {
+    public Reservation saveReservation(String name, String date, String time) {
+        Reservation reservation = generateReservation(name, date, time);
         return reservationDB.saveReservationDB(reservation);
+    }
+
+    private Reservation generateReservation(String name, String date, String time) {
+        return Reservation.builder()
+                .name(name)
+                .date(date)
+                .time(time)
+                .build();
     }
 
     public void deleteReservation(Long id) {

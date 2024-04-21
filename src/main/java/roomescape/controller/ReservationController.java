@@ -33,13 +33,13 @@ public class ReservationController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error! 예약 추가 시 필요한 인자값이 비어 있습니다.");
         }
 
-        Long generatedId = reservationService.saveReservation(reservation);
-        reservation.setId(generatedId);
+        // 예약 추가
+        Reservation savedReservation = reservationService.saveReservation(reservation.getName(), reservation.getDate(), reservation.getTime());
 
         // 생성된 예약 정보와 함께 201 Created 응답 반환 (CREATED : 201, body : API 응답 정보 반환)
         return ResponseEntity.status(HttpStatus.CREATED)
-                .header("Location", "/reservations/" + reservation.getId())
-                .body(reservation);
+                .header("Location", "/reservations/" + savedReservation.getId())
+                .body(savedReservation);
     }
 
     // 예약 삭제
