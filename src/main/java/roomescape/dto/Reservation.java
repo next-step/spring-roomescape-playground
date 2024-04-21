@@ -2,13 +2,21 @@ package roomescape.dto;
 
 public class Reservation {
 
-    // 객체 정보
+    // 필드
     private Long id;
     private String name;
     private String date;
     private String time;
 
-    // getter and setter
+    // 생성자
+    public Reservation(Long id, String name, String date, String time) {
+        this.id = id;
+        this.name = name;
+        this.date = date;
+        this.time = time;
+    }
+
+    // getter, setter
     public Long getId() {
         return id;
     }
@@ -41,11 +49,5 @@ public class Reservation {
         this.time = time;
     }
 
-    // 생성자
-    public Reservation(Long id, String name, String date, String time) {
-        this.id = id;
-        this.name = name;
-        this.date = date;
-        this.time = time;
-    }
+
 }
