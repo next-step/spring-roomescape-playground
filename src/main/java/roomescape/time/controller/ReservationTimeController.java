@@ -9,7 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import roomescape.exception.InvalidReservationException;
 import roomescape.mapper.ReservationTimeRowMapper;
-import roomescape.time.domain.ReservationTime;
+import roomescape.time.domain.Time;
 
 import java.net.URI;
 import java.util.HashMap;
@@ -26,13 +26,20 @@ public class ReservationTimeController {
     private final ReservationTimeRowMapper reservationTimeRowMapper = new ReservationTimeRowMapper();
 
     @GetMapping("/time")
-    public String reservationTime(){
+    public String time(){
         return "time";
     }
 
+    @GetMapping("/times")
+    @ResponseBody
+    public List<Time> getReservationTimes(){
+        String sql = "SELECT id, time FROM time";
+        return jdbcTemplate.query(sql, reservationTimeRowMapper);
+    }
+
     @PostMapping("/times")
-    public ResponseEntity<ReservationTime> createReservationTime(@RequestBody ReservationTime reservationTime){
-        String time = reservationTime.getReservationTime();
+    public ResponseEntity<Time> createReservationTime(@RequestBody Time reservationTime){
+        String time = reservationTime.getTime();
 
         if (Optional.ofNullable(time).orElse("").isEmpty()) {
             throw new InvalidReservationException("Invalid Reservation Time data, Time Field Empty");
@@ -48,16 +55,9 @@ public class ReservationTimeController {
         Number newId = simpleJdbcInsert.executeAndReturnKey(parameters);
         Long id = newId.longValue();
 
-        ReservationTime newReservationTime = ReservationTime.toEntity(reservationTime, id);
+        Time newTime = Time.toEntity(reservationTime, id);
 
-        return ResponseEntity.created(URI.create("/times/" + id)).body(newReservationTime);
-    }
-
-    @GetMapping("/times")
-    @ResponseBody
-    public List<ReservationTime> getReservationTimes(){
-        String sql = "SELECT id, time FROM time";
-        return jdbcTemplate.query(sql, reservationTimeRowMapper);
+        return ResponseEntity.created(URI.create("/times/" + id)).body(newTime);
     }
 
     @DeleteMapping("/times/{id}")
