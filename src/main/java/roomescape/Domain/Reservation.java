@@ -1,4 +1,6 @@
-package roomescape;
+package roomescape.Domain;
+
+import roomescape.Domain.Time;
 
 public class Reservation {
   private Long id;
@@ -24,9 +26,5 @@ public class Reservation {
   }
   public Time getTime() {
     return this.time;
-  }
-
-  public static Reservation toEntity(Reservation reservation, Long id) {
-    return new Reservation(id, reservation.getName(), reservation.getDate(), reservation.getTime());
   }
 }

@@ -13,6 +13,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import roomescape.Domain.Reservation;
 
 import static org.hamcrest.Matchers.is;
 import static org.assertj.core.api.Assertions.assertThat;

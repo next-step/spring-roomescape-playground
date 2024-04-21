@@ -1,4 +1,4 @@
-package roomescape;
+package roomescape.Domain;
 
 public class Time {
   private Long id;
@@ -13,10 +13,7 @@ public class Time {
   public Long getId() {
     return this.id;
   }
-
   public String getTime() {
     return this.time;
   }
-
-
 }
