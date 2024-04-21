@@ -1,7 +1,10 @@
-package roomescape.time.domain;
+package roomescape.time.dto;
+
+import jakarta.validation.constraints.NotBlank;
 
 public class Time {
     private Long id;
+    @NotBlank(message = "Time Field is Required")
     private String time;
 
     public Time(Long id){

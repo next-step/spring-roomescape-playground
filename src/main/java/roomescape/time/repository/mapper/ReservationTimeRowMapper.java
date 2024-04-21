@@ -1,11 +1,13 @@
-package roomescape.mapper;
+package roomescape.time.repository.mapper;
 
 import org.springframework.jdbc.core.RowMapper;
-import roomescape.time.domain.Time;
+import org.springframework.stereotype.Component;
+import roomescape.time.dto.Time;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+@Component
 public class ReservationTimeRowMapper implements RowMapper<Time> {
     @Override
     public Time mapRow(ResultSet rs, int rowNum) throws SQLException {

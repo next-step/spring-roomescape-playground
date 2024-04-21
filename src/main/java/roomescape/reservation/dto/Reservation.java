@@ -1,12 +1,18 @@
-package roomescape.reservation.domain;
+package roomescape.reservation.dto;
 
 
-import roomescape.time.domain.Time;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import roomescape.time.dto.Time;
 
 public class Reservation {
+
     private Long id;
+    @NotBlank(message = "Name Field is Required")
     private String name;
+    @NotBlank(message = "Date Field is Required")
     private String date;
+    @NotNull(message = "Time Field is Required")
     private Time time;
 
     public Reservation() {
