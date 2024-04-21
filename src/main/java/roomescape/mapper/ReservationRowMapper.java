@@ -7,7 +7,6 @@ import roomescape.reservation.domain.Reservation;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-@Component
 public class ReservationRowMapper implements RowMapper<Reservation> {
     @Override
     public Reservation mapRow(ResultSet rs, int rowNum) throws SQLException {

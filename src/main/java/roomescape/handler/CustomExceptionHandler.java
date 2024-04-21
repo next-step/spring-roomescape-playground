@@ -1,10 +1,10 @@
-package roomescape.reservation.handler;
+package roomescape.handler;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import roomescape.reservation.exception.InvalidReservationException;
+import roomescape.exception.InvalidReservationException;
 
 @RestControllerAdvice
 public class CustomExceptionHandler {

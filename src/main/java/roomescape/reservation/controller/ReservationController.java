@@ -9,7 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import roomescape.mapper.ReservationRowMapper;
 import roomescape.reservation.domain.Reservation;
-import roomescape.reservation.exception.InvalidReservationException;
+import roomescape.exception.InvalidReservationException;
 
 import java.net.URI;
 import java.util.*;
@@ -19,8 +19,7 @@ public class ReservationController {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    @Autowired
-    private ReservationRowMapper reservationRowMapper;
+    private final ReservationRowMapper reservationRowMapper = new ReservationRowMapper();
 
     @GetMapping("/reservation")
     public String reservation(){
