@@ -1,4 +1,4 @@
-package roomescape.dto;
+package roomescape.domain;
 
 public class Reservation {
 
@@ -34,5 +34,6 @@ public class Reservation {
         return time;
     }
 
-
+    public void setId(Long generatedId) {
+    }
 }

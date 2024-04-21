@@ -8,7 +8,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.web.bind.annotation.*;
-import roomescape.dto.Reservation;
+import roomescape.domain.Reservation;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
