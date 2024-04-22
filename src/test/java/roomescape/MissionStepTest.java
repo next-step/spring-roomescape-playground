@@ -2,6 +2,7 @@ package roomescape;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -79,6 +80,7 @@ public class MissionStepTest {
     }
 
     @Test
+    @DisplayName("사단계 : 필요한 인자가 없는 경우, 삭제할 예약이 없는 경우")
     void 사단계() {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
