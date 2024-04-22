@@ -16,7 +16,7 @@ import java.util.List;
 @RequestMapping(value = "/times")
 public class TimeController {
     @Autowired
-    JdbcTemplate jdbcTemplate;
+    private JdbcTemplate jdbcTemplate;
 
     @GetMapping
     public List<Time> getAllTime() {
