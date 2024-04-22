@@ -14,4 +14,7 @@ public class WebController {
     public String Reservation() {
         return "reservation";
     }
+
+    @GetMapping("/time")
+    public String Time() { return "time"; }
 }
