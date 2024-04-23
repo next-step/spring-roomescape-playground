@@ -60,7 +60,7 @@ public class ReservationController {
             response = reservationRepo.findById(id);
 
         } catch (Exception err) {
-          throw new NotFoundReservationException();
+            throw new NotFoundReservationException();
 
         }
         return ResponseEntity.ok().body(response);
