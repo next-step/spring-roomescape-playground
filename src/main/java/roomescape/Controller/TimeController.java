@@ -23,7 +23,7 @@ public class TimeController {
     @PostMapping
     public ResponseEntity<Time> createTime(@RequestBody Time time){
         Time newTime = timeService.createdTime(time);
-        return ResponseEntity.created(URI.create("/times" + newTime.getId())).body(newTime);
+        return ResponseEntity.created(URI.create("/times/" + newTime.getId())).body(newTime);
     }
 
     @DeleteMapping("/{id}")
