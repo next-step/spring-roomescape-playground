@@ -1,4 +1,4 @@
-package roomescape;
+package roomescape.Controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,4 +17,5 @@ public class WebController {
 
     @GetMapping("/time")
     public String Time() { return "time"; }
+
 }

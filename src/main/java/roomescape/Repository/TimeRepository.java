@@ -1,24 +1,22 @@
-package roomescape;
+package roomescape.Repository;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Repository;
+import roomescape.Domain.Time;
 
-import java.net.URI;
 import java.sql.PreparedStatement;
 import java.util.List;
 
-@RestController
-@RequestMapping(value = "/times")
-public class TimeController {
+@Repository
+public class TimeRepository {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    @GetMapping
     public List<Time> getAllTime() {
         List<Time> timeList = jdbcTemplate.query(
                 "select id, time from time",
@@ -33,11 +31,7 @@ public class TimeController {
         return timeList;
     }
 
-    @PostMapping
-    public ResponseEntity<Time> createTime(@RequestBody Time time) {
-        if(time.getTime().isEmpty() ){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+    public Time createTime(Time time) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(
@@ -50,19 +44,18 @@ public class TimeController {
         Long id = keyHolder.getKey().longValue();
         Time newTime = new Time(id, time.getTime());
 
-        return ResponseEntity.created(URI.create("/times/" + id)).body(newTime);
+        return newTime;
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTime(@PathVariable Long id) {
-        String sql = "DELETE FROM time WHERE id = ?";
+    public void deleteTimeById(Long id) {
+        try {
+            String sql = "DELETE FROM time WHERE id = ?";
 
-        Integer count = jdbcTemplate.queryForObject("SELECT count(*) from time where id = ?", Integer.class, id);
-        if (count == 0) return ResponseEntity.badRequest().build();
+            Integer count = jdbcTemplate.queryForObject("SELECT count(*) from time where id = ?", Integer.class, id);
 
-        jdbcTemplate.update(sql, id);
-
-        return ResponseEntity.noContent().build();
+            jdbcTemplate.update(sql, id);
+        } catch (IncorrectResultSizeDataAccessException error) {
+            throw error;
+        }
     }
-
 }

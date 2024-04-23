@@ -1,31 +1,24 @@
-package roomescape;
+package roomescape.Repository;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
+import roomescape.Domain.Reservation;
+import roomescape.Domain.Time;
 
-
-import java.net.URI;
 import java.sql.PreparedStatement;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
 
-@Controller
-public class RoomescapeController {
+@Repository
+public class ReservationRepository {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    @GetMapping("/reservations")
-    @ResponseBody
-    public ResponseEntity<List<Reservation>> findReservations() {
+    public List<Reservation> getAllReservation() {
         List<Reservation> reservationList = jdbcTemplate.query(
                 "SELECT r.id as reservation_id, r.name, r.date, t.id as time_id, t.time as time_value FROM reservation as r inner join time as t on r.time_id = t.id",
                 (resultSet, rowNum) -> {
@@ -34,19 +27,13 @@ public class RoomescapeController {
                             resultSet.getString("name"),
                             resultSet.getString("date"),
                             new Time(resultSet.getLong("time_id"), resultSet.getString("time_value"))
-                            );
+                    );
                     return reservation;
                 });
-
-        return ResponseEntity.ok(reservationList);
+        return reservationList;
     }
 
-    @PostMapping("/reservations")
-    @ResponseBody
-    public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservation) {
-        if(reservation.getName().isEmpty() || reservation.getDate().isEmpty() || reservation.getDate().isEmpty()){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+    public Reservation createdReservation(Reservation reservation) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(
@@ -61,20 +48,22 @@ public class RoomescapeController {
 
         Long id = keyHolder.getKey().longValue();
         Reservation newReservation = new Reservation(id, reservation.getName(), reservation.getDate(), new Time(id, reservation.getTime().getTime()));
-
-        return ResponseEntity.created(URI.create("/reservations/" + id)).body(newReservation);
+        return newReservation;
+    }
+    public void deleteReservationById(Long id){
+        String sql = "DELETE FROM reservation WHERE id = ?";
+        try {
+            Integer count = jdbcTemplate.queryForObject("SELECT count(*) from reservation where id = ?", Integer.class, id);
+            jdbcTemplate.update(sql, id);
+        } catch (IncorrectResultSizeDataAccessException error) {
+            throw error;
+        }
     }
 
-    @DeleteMapping("/reservations/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<Void> deleteReservation(@PathVariable() Long id) {
-        String sql = "DELETE FROM reservation WHERE id = ?";
+    public String getTimeById(Long id) {
+        String sql = "select time from time where id = ?";
 
-        Integer count = jdbcTemplate.queryForObject("SELECT count(*) from reservation where id = ?", Integer.class, id);
-        if (count == 0) return ResponseEntity.badRequest().build();
-
-        jdbcTemplate.update(sql, id);
-
-        return null;
+        String time = jdbcTemplate.queryForObject(sql, String.class, id);
+        return time;
     }
 }
