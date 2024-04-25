@@ -4,12 +4,10 @@ import java.time.LocalDate;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import roomescape.domain.Reservation;
 import roomescape.domain.Time;
 
 @AllArgsConstructor
-@NoArgsConstructor
 @Getter
 public class ReservationResponse {
 
