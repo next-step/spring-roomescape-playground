@@ -3,6 +3,7 @@ package roomescape.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import roomescape.domain.Reservation;
+import roomescape.domain.Time;
 import roomescape.repository.ReservationDB;
 
 import java.util.List;
@@ -19,12 +20,12 @@ public class ReservationService {
         return reservationDB.getReservationByDB(id);
     }
 
-    public Reservation saveReservation(String name, String date, String time) {
+    public Reservation saveReservation(String name, String date, Time time) {
         Reservation reservation = generateReservation(name, date, time);
         return reservationDB.saveReservationDB(reservation);
     }
 
-    private Reservation generateReservation(String name, String date, String time) {
+    private Reservation generateReservation(String name, String date, Time time) {
         return Reservation.builder()
                 .name(name)
                 .date(date)
