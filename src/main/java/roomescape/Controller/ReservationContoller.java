@@ -33,12 +33,7 @@ public class ReservationContoller {
 
   @DeleteMapping("/{id}")
   public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
-    try {
-      reservationService.deleteReservation(id);
-    }
-    catch (IncorrectResultSizeDataAccessException error) {
-      return ResponseEntity.badRequest().build();
-    }
+    if (reservationService.deleteReservation(id)) return ResponseEntity.badRequest().build();
     return ResponseEntity.noContent().build();
   }
 }

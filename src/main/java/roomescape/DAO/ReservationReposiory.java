@@ -59,13 +59,12 @@ public class ReservationReposiory {
     return newReservation;
   }
 
-  public void deleteReservationById(Long id) {
+  public void deleteReservationById(Long id) throws IncorrectResultSizeDataAccessException{
     String sql = "delete from reservation where id = ?";
-    try {
-      jdbcTemplate.queryForObject("select id from reservation where id = ?", Long.class, id);
-      jdbcTemplate.update(sql, id);
-    } catch (IncorrectResultSizeDataAccessException error) {
-      error.printStackTrace();
-    }
+    jdbcTemplate.update(sql, id);
+  }
+
+  public Long findReservationById(Long id) {
+    return jdbcTemplate.queryForObject("select id from reservation where id = ?", Long.class, id);
   }
 }

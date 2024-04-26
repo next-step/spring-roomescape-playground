@@ -1,6 +1,7 @@
 package roomescape.Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import roomescape.DAO.ReservationReposiory;
 import roomescape.DAO.TimeRepository;
@@ -27,7 +28,11 @@ public class ReservationService {
     return reservationReposiory.makeNewReservation(new Reservation(null, reservation.name(), reservation.date(), time));
   }
 
-  public void deleteReservation(Long id) {
+  public boolean deleteReservation(Long id) {
+    Long exist = reservationReposiory.findReservationById(id);
+    if (exist == null)
+      return false;
     reservationReposiory.deleteReservationById(id);
+    return true;
   }
 }
