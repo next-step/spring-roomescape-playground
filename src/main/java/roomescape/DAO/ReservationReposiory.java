@@ -65,7 +65,7 @@ public class ReservationReposiory {
       jdbcTemplate.queryForObject("select id from reservation where id = ?", Long.class, id);
       jdbcTemplate.update(sql, id);
     } catch (IncorrectResultSizeDataAccessException error) {
-      throw error;
+      error.printStackTrace();
     }
   }
 }
