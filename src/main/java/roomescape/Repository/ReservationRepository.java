@@ -2,7 +2,6 @@ package roomescape.Repository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
-import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -19,16 +18,17 @@ public class ReservationRepository {
     private JdbcTemplate jdbcTemplate;
 
     public List<Reservation> getAllReservation() {
+        String sql = """
+                select 
+                  r.id as reservation_id, 
+                  r.name, r.date, 
+                  t.id as time_id, 
+                  t.time as time_value 
+                from reservation as r 
+                inner join time as t on r.time_id = t.id
+                """;
         List<Reservation> reservationList = jdbcTemplate.query(
-    String sql = """
-    select 
-      r.id as reservation_id, 
-      r.name, r.date, 
-      t.id as time_id, 
-      t.time as time_value 
-    from reservation as r 
-    inner join time as t on r.time_id = t.id
-    """;
+                sql,
                 (resultSet, rowNum) -> {
                     Reservation reservation = new Reservation(
                             resultSet.getLong("reservation_id"),
@@ -58,7 +58,8 @@ public class ReservationRepository {
         Reservation newReservation = new Reservation(id, reservation.getName(), reservation.getDate(), new Time(id, reservation.getTime().getTime()));
         return newReservation;
     }
-    public void deleteReservationById(Long id){
+
+    public void deleteReservationById(Long id) {
         String sql = "DELETE FROM reservation WHERE id = ?";
         try {
             Integer count = jdbcTemplate.queryForObject("SELECT count(*) from reservation where id = ?", Integer.class, id);
