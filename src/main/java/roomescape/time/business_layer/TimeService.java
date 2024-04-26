@@ -1,31 +1,31 @@
-package roomescape.service;
+package roomescape.time.business_layer;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import roomescape.domain.Time;
-import roomescape.repository.TimeDB;
+import roomescape.time.domain_model_layer.TimeEntity;
+import roomescape.time.data_access_layer.TimeDAO;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class TimeService {
-    private final TimeDB timeDB;
-    public List<Time> getTimes() {
+    private final TimeDAO timeDB;
+    public List<TimeEntity> getTimes() {
         return timeDB.getTimeByDB();
     }
 
-    public Time getTime(Long id) {
+    public TimeEntity getTime(Long id) {
         return timeDB.getTimeByDB(id);
     }
 
-    public Time saveTime(String time) {
-        Time generade_time = generateTime(time);
+    public TimeEntity saveTime(String time) {
+        TimeEntity generade_time = generateTime(time);
         return timeDB.saveTimeDB(generade_time);
     }
 
-    private Time generateTime(String time) {
-        return Time.builder()
+    private TimeEntity generateTime(String time) {
+        return TimeEntity.builder()
                 .time(time)
                 .build();
     }

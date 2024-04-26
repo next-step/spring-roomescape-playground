@@ -1,18 +1,19 @@
-package roomescape.domain;
+package roomescape.reservation.domain_model_layer;
 
 import lombok.Builder;
+import roomescape.time.domain_model_layer.TimeEntity;
 
-public class Reservation {
+public class ReservationEntity {
 
     // 필드
     private Long id;
     private String name;
     private String date;
-    private Time time;
+    private TimeEntity time;
 
     // 생성자
     @Builder
-    public Reservation(Long id, String name, String date, Time time) {
+    public ReservationEntity(Long id, String name, String date, TimeEntity time) {
         this.id = id;
         this.name = name;
         this.date = date;
@@ -33,7 +34,7 @@ public class Reservation {
     }
 
 
-    public Time getTime() {
+    public TimeEntity getTime() {
         return time;
     }
 
