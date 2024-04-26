@@ -7,6 +7,8 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
+import roomescape.domain.Time;
+import roomescape.service.TimeService;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,9 +22,10 @@ import static java.util.Objects.requireNonNull;
 public class ReservationDB {
     // 6단계 : JdbcTemplate을 이용하여 DataSource객체에 접근
     private JdbcTemplate jdbcTemplate;
-
-    public ReservationDB(JdbcTemplate jdbcTemplate) {
+    private TimeService timeService;
+    public ReservationDB(JdbcTemplate jdbcTemplate, TimeService timeService) {
         this.jdbcTemplate = jdbcTemplate;
+        this.timeService = timeService;
     }
 
     // ReservationRowmapper 클래스가 RowMapper 인터페이스를 구현
@@ -32,7 +35,7 @@ public class ReservationDB {
             Long id = rs.getLong("id");
             String name = rs.getString("name");
             String date = rs.getString("date");
-            String time = rs.getString("time");
+            Time time = timeService.getTime(id); // 시간 정보를 가져오기 위해 TimeService 객체를 이용하여 시간 정보를 가져옴
 
             return new Reservation(id, name, date, time);
         }
@@ -40,7 +43,7 @@ public class ReservationDB {
 
     // 6단계 : 데이터 조회하기 : DB에서 전체 데이터 조회하기
     public List<Reservation> getReservationByDB() {
-        String sql = "SELECT * FROM reservation";
+        String sql = "SELECT r.id AS reservation_id, r.name, r.date, t.id AS time_id, t.time AS time_value FROM reservation AS r INNER JOIN time AS t ON r.time_id = t.id";
         return jdbcTemplate.query(sql, new ReservationRowmapper());
     }
 
