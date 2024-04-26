@@ -1,5 +1,6 @@
 package roomescape.Controller;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +26,7 @@ public class ReservationContoller {
   }
 
   @PostMapping
-  public ResponseEntity<Reservation> postReservation(@RequestBody ReservationDTO reservationDTO) {
+  public ResponseEntity<Reservation> postReservation(@Valid @RequestBody ReservationDTO reservationDTO) {
 
     Reservation newReservation = reservationService.newReservation(reservationDTO);
     return ResponseEntity.created(URI.create("/reservation/" + newReservation.getId())).body(newReservation);

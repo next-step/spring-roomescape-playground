@@ -1,9 +1,11 @@
 package roomescape.DTO;
 
+import jakarta.validation.constraints.NotBlank;
+
 public record ReservationDTO (
-        String name,
-        String date,
-        Long time
+        @NotBlank  String name,
+        @NotBlank String date,
+        @NotBlank Long time
 ){
     public ReservationDTO(String name, String date, Long time) {
       this.name = name;
