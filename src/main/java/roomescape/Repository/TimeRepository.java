@@ -56,7 +56,7 @@ public class TimeRepository {
 
             jdbcTemplate.update(sql, id);
         } catch (IncorrectResultSizeDataAccessException error) {
-            error.getStackTrace();
+            error.printStackTrace();
         }
     }
 }
