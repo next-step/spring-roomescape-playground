@@ -8,11 +8,11 @@ public class Reservation {
     private Long id;
     private String name;
     private String date;
-    private String time;
+    private Time time;
 
     // 생성자
     @Builder
-    public Reservation(Long id, String name, String date, String time) {
+    public Reservation(Long id, String name, String date, Time time) {
         this.id = id;
         this.name = name;
         this.date = date;
@@ -33,7 +33,7 @@ public class Reservation {
     }
 
 
-    public String getTime() {
+    public Time getTime() {
         return time;
     }
 
