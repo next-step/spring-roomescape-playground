@@ -74,7 +74,7 @@ public class ReservationDAO {
                 .build();
     }
 
-
+    // 수정하기
     // 7단계 : 예약 취소
     public void deleteReservationDB(Long id) {
         String sql = "DELETE FROM reservation WHERE id = ?";
