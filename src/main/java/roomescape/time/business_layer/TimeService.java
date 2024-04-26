@@ -15,6 +15,7 @@ public class TimeService {
         return timeDB.getTimeByDB();
     }
 
+    // getter
     public TimeEntity getTime(Long id) {
         return timeDB.getTimeByDB(id);
     }
