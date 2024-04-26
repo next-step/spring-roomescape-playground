@@ -9,6 +9,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.Domain.Time;
 
+import java.io.FileNotFoundException;
 import java.sql.PreparedStatement;
 import java.util.List;
 
@@ -55,7 +56,7 @@ public class TimeRepository {
 
             jdbcTemplate.update(sql, id);
         } catch (IncorrectResultSizeDataAccessException error) {
-            throw error;
+            error.getStackTrace();
         }
     }
 }
