@@ -13,10 +13,10 @@ public class PageController {
         return "home";
     }
 
-    // localhost:8080/reservation 요청 시 예약 페이지가 응답할 수 있도록 구현 (templates/reservation.html 연결)
+    // localhost:8080/reservation 요청 시 예약 페이지가 응답할 수 있도록 구현 (templates/new-reservation.html 연결)
     @GetMapping("/reservation")
     public String reservation(){
-        return "reservation";
+        return "new-reservation";
     }
 
     // localhost:8080/reservation 요청 시 시간관리 페이지가 응답할 수 있도록 구현 (templates/time.html 연결)
