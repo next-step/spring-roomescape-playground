@@ -18,4 +18,10 @@ public class PageController {
     public String reservation(){
         return "reservation";
     }
+
+    // localhost:8080/reservation 요청 시 시간관리 페이지가 응답할 수 있도록 구현 (templates/time.html 연결)
+    @GetMapping("/time")
+    public String time(){
+        return "time";
+    }
 }
