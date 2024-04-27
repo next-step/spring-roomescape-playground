@@ -51,7 +51,10 @@ public class RoomscapeController {
     @ResponseBody
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity deleteReservation(@PathVariable Long id) {
-        reservations.removeIf(reservation -> reservation.getId().equals(id));
+        Reservation foundReservation = reservations.stream().filter(reservation -> reservation.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new NotFoundReservationException(id));
+        reservations.remove(foundReservation);
         return ResponseEntity.noContent().build();
     }
 
@@ -59,5 +62,11 @@ public class RoomscapeController {
     public ResponseEntity handleIllegalArgumentException(IllegalArgumentException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
+
+    @ExceptionHandler(NotFoundReservationException.class)
+    public ResponseEntity handleException(NotFoundReservationException e) {
+        return ResponseEntity.badRequest().build();
+    }
+
 
 }
