@@ -13,6 +13,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import roomescape.Domain.Reservation;
 
 import static org.hamcrest.Matchers.is;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -141,12 +142,12 @@ public class MissionStepTest {
         Integer count = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
         assertThat(count).isEqualTo(1);
 
-        /*RestAssured.given().log().all()
+        RestAssured.given().log().all()
                 .when().delete("/reservations/1")
                 .then().log().all()
                 .statusCode(204);
 
         Integer countAfterDelete = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
-        assertThat(countAfterDelete).isEqualTo(0);*/
+        assertThat(countAfterDelete).isEqualTo(0);
     }
 }
