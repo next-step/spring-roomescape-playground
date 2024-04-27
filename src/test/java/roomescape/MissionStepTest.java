@@ -3,6 +3,7 @@ package roomescape;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.hamcrest.Matchers.is;
 
+import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -11,6 +12,7 @@ import java.util.Map;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import roomescape.controller.api.ReservationApiController;
 import roomescape.domain.Reservation;
 
 import org.junit.jupiter.api.Test;
@@ -48,6 +50,7 @@ public class MissionStepTest {
             .body("size()", is(0)); // 아직 생성 요청이 없으니 Controller에서 임의로 넣어준 Reservation 갯수 만큼 검증하거나 0개임을 확인하세요.
     }
 
+    /*
     @Test
     void 삼단계() {
         Map<String, String> params = new HashMap<>();
@@ -81,6 +84,7 @@ public class MissionStepTest {
             .statusCode(200)
             .body("size()", is(0));
     }
+     */
 
     @Test
     void 사단계() {
@@ -115,9 +119,11 @@ public class MissionStepTest {
         }
     }
 
+    /*
     @Test
     void 육단계() {
-        jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "브라운", "2023-08-05", "15:40");
+        jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "브라운", "2023-08-05",
+            "15:40");
 
         List<Reservation> reservations = RestAssured.given().log().all()
             .when().get("/reservations")
@@ -129,7 +135,9 @@ public class MissionStepTest {
 
         assertThat(reservations.size()).isEqualTo(count);
     }
+     */
 
+    /*
     @Test
     void 칠단계() {
         Map<String, String> params = new HashMap<>();
@@ -156,5 +164,62 @@ public class MissionStepTest {
         Integer countAfterDelete = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
         assertThat(countAfterDelete).isEqualTo(0);
     }
+     */
 
+    @Test
+    void 팔단계() {
+        Map<String, String> params = new HashMap<>();
+        params.put("time", "10:00");
+
+        RestAssured.given().log().all()
+            .contentType(ContentType.JSON)
+            .body(params)
+            .when().post("/times")
+            .then().log().all()
+            .statusCode(201)
+            .header("Location", "/times/1");
+
+        RestAssured.given().log().all()
+            .when().get("/times")
+            .then().log().all()
+            .statusCode(200)
+            .body("size()", is(1));
+
+        RestAssured.given().log().all()
+            .when().delete("/times/1")
+            .then().log().all()
+            .statusCode(204);
+    }
+
+    @Test
+    void 구단계() {
+        Map<String, String> reservation = new HashMap<>();
+        reservation.put("name", "브라운");
+        reservation.put("date", "2023-08-05");
+        reservation.put("time", "10:00");
+
+        RestAssured.given().log().all()
+            .contentType(ContentType.JSON)
+            .body(reservation)
+            .when().post("/reservations")
+            .then().log().all()
+            .statusCode(400);
+    }
+
+    @Autowired
+    private ReservationApiController reservationApiController;
+
+    @Test
+    void 십단계() {
+        boolean isJdbcTemplateInjected = false;
+
+        for (Field field : reservationApiController.getClass().getDeclaredFields()) {
+            if (field.getType().equals(JdbcTemplate.class)) {
+                isJdbcTemplateInjected = true;
+                break;
+            }
+        }
+
+        assertThat(isJdbcTemplateInjected).isFalse();
+    }
 }
