@@ -1,10 +1,13 @@
 package roomescape.reservation.domain_model_layer;
 
 import lombok.Builder;
+import lombok.Getter;
 import roomescape.time.domain_model_layer.TimeEntity;
 
+@Getter
 public class ReservationEntity {
 
+    // getter
     // 필드
     private Long id;
     private String name;
@@ -20,24 +23,4 @@ public class ReservationEntity {
         this.time = time;
     }
 
-    // getter
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-
-    public TimeEntity getTime() {
-        return time;
-    }
-
-    public void setId(Long generatedId) {
-    }
 }
