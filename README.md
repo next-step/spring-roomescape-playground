@@ -43,7 +43,7 @@ Content-Type: application/json
 ## 3단계 요구사항
 
 API 명세를 따라 예약 추가 API 와 삭제 API를 구현하세요.
-- [ ] 예약 추가 API
+- [x] 예약 추가 API
 - [ ] 예약 삭제 API
 
 ### 예약 추가 API
