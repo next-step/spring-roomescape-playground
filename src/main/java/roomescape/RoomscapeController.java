@@ -1,7 +1,6 @@
 package roomescape;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -18,7 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("/")
 public class RoomscapeController {
 
-    private List<Reservation> reservations = new ArrayList<>();
+    private final Reservations reservations = new Reservations();
 
     @GetMapping
     public String home() {
@@ -33,16 +32,14 @@ public class RoomscapeController {
     @ResponseBody
     @GetMapping("/reservations")
     public List<Reservation> readAllReservations() {
-        return reservations;
+        return reservations.getReservations();
     }
 
     @ResponseBody
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> addReservation(@RequestBody ReservationAddRequest request) {
-        Reservation newReservation =
-                new Reservation(reservations.size() + 1L, request.getName(), request.getDate(),
-                request.getTime());
-        reservations.add(newReservation);
+        Reservation newReservation = new Reservation(request.getName(), request.getDate(), request.getTime());
+        reservations.register(newReservation);
         return ResponseEntity
                 .created(URI.create("/reservations/" + newReservation.getId()))
                 .body(newReservation);
@@ -51,10 +48,7 @@ public class RoomscapeController {
     @ResponseBody
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity deleteReservation(@PathVariable Long id) {
-        Reservation foundReservation = reservations.stream().filter(reservation -> reservation.getId().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new NotFoundReservationException(id));
-        reservations.remove(foundReservation);
+        reservations.cancel(id);
         return ResponseEntity.noContent().build();
     }
 
