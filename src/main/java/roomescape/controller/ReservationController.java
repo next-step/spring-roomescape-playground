@@ -32,7 +32,7 @@ public class ReservationController {
 
     @GetMapping("/reservation")
     public String reservation() {
-        return "reservation";
+        return "new-reservation";
     }
 
     @GetMapping("/reservations")
@@ -41,7 +41,6 @@ public class ReservationController {
         List<Reservations> reservations = reservationRepo.findAll();
         return new ResponseEntity<>(reservations, HttpStatus.OK);
     }
-
 
 
     @PostMapping("/reservations")

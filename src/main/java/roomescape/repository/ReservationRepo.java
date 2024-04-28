@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import roomescape.controller.ReservationController;
 import roomescape.entity.Reservations;
+import roomescape.entity.Time;
 import roomescape.exception.NotFoundReservationException;
 
 import java.sql.ResultSet;
@@ -16,9 +17,11 @@ import java.util.List;
 @Repository
 public class ReservationRepo {
     private JdbcTemplate jdbcTemplate;
+    private TimeRepo timeRepo;
 
-    public ReservationRepo(JdbcTemplate jdbcTemplate) {
+    public ReservationRepo(JdbcTemplate jdbcTemplate, TimeRepo timeRepo) {
         this.jdbcTemplate = jdbcTemplate;
+        this.timeRepo = timeRepo;
     }
 
 
@@ -26,9 +29,7 @@ public class ReservationRepo {
 
         @Override
         public Reservations mapRow(ResultSet rs, int rowNum) throws SQLException {
-
-            return new Reservations(rs.getInt("id"),rs.getString("name"), rs.getDate("date").toLocalDate(), rs.getTime("time").toLocalTime());
-
+            return new Reservations(rs.getInt("id"), rs.getString("name"), rs.getString("date"), timeRepo.findById(rs.getLong("time_id")));
         }
     }
 
