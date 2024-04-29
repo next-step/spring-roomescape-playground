@@ -15,7 +15,6 @@ public class TimeServiceImpl implements TimeService {
     private final TimeRepository timeRepository;
     private final ReservationRepository reservationRepository;
 
-    @Autowired
     public TimeServiceImpl(TimeRepository timeRepository, ReservationRepository reservationRepository) {
         this.timeRepository = timeRepository;
         this.reservationRepository = reservationRepository;

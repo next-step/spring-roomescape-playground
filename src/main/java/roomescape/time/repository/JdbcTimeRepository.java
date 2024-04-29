@@ -18,7 +18,6 @@ public class JdbcTimeRepository implements TimeRepository {
     private final JdbcTemplate jdbcTemplate;
     private final ReservationTimeRowMapper reservationTimeRowMapper;
 
-    @Autowired
     public JdbcTimeRepository(JdbcTemplate jdbcTemplate, ReservationTimeRowMapper reservationTimeRowMapper) {
         this.jdbcTemplate = jdbcTemplate;
         this.reservationTimeRowMapper = reservationTimeRowMapper;

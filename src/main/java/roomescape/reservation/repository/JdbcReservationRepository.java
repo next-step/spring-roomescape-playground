@@ -18,7 +18,6 @@ public class JdbcReservationRepository implements ReservationRepository {
     private final JdbcTemplate jdbcTemplate;
     private final ReservationRowMapper reservationRowMapper;
 
-    @Autowired
     public JdbcReservationRepository(JdbcTemplate jdbcTemplate, ReservationRowMapper reservationRowMapper) {
         this.jdbcTemplate = jdbcTemplate;
         this.reservationRowMapper = reservationRowMapper;

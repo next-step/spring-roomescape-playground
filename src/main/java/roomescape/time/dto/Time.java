@@ -3,7 +3,7 @@ package roomescape.time.dto;
 import jakarta.validation.constraints.NotBlank;
 
 public class Time {
-    private Long id;
+    private final Long id;
     @NotBlank(message = "Time Field is Required")
     private String time;
 

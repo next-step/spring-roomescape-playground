@@ -6,20 +6,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import roomescape.time.exception.InvalidTimeException;
 import roomescape.time.dto.Time;
 import roomescape.time.service.TimeService;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 public class TimeController {
 
     private final TimeService timeService;
 
-    @Autowired
     public TimeController(TimeService timeService) {
         this.timeService = timeService;
     }
