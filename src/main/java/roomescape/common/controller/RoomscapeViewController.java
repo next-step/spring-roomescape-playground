@@ -7,17 +7,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class RoomscapeViewController {
 
     @GetMapping("/")
-    public String home(){
+    public String home() {
         return "home";
     }
 
     @GetMapping("/reservation")
-    public String reservation(){
+    public String reservation() {
         return "new-reservation";
     }
 
     @GetMapping("/time")
-    public String time(){
+    public String time() {
         return "time";
     }
 }

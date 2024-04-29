@@ -13,7 +13,7 @@ import roomescape.time.repository.TimeRepository;
 import java.util.List;
 
 @Service
-public class ReservationServiceImpl implements ReservationService{
+public class ReservationServiceImpl implements ReservationService {
 
     private final ReservationRepository reservationRepository;
     private final TimeRepository timeRepository;
@@ -33,7 +33,7 @@ public class ReservationServiceImpl implements ReservationService{
     public Reservation createReservation(Reservation reservation) {
         String reservationName = reservation.getName();
         String reservationDate = reservation.getDate();
-        Time reservationTime= reservation.getTime();
+        Time reservationTime = reservation.getTime();
         SqlRowSet rowSet = timeRepository.getTimeRowSet(reservationTime);
         /*  id에 해당하는 Time 객체가 여러 개라면 Exception 발생 */
         if (!rowSet.next()) {

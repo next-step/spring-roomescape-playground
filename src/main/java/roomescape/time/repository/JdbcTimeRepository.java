@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
-public class JdbcTimeRepository implements TimeRepository{
+public class JdbcTimeRepository implements TimeRepository {
     private final JdbcTemplate jdbcTemplate;
     private final ReservationTimeRowMapper reservationTimeRowMapper;
 

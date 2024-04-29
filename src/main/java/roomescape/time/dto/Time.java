@@ -7,11 +7,11 @@ public class Time {
     @NotBlank(message = "Time Field is Required")
     private String time;
 
-    public Time(Long id){
+    public Time(Long id) {
         this.id = id;
     }
 
-    public Time(Long id, String time){
+    public Time(Long id, String time) {
         this.id = id;
         this.time = time;
     }
@@ -24,7 +24,7 @@ public class Time {
         return time;
     }
 
-    public static Time toEntity(Time time, Long id){
+    public static Time toEntity(Time time, Long id) {
         return new Time(id, time.time);
     }
 }
