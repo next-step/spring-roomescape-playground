@@ -39,7 +39,7 @@ public class TimeController {
     @PostMapping("/times")
     public ResponseEntity<TimeDTO> create(@RequestBody @Valid TimeDTO request) {
         int id = timeService.create(request);
-        return ResponseEntity.created(URI.create("/time/" + id)).build();
+        return ResponseEntity.created(URI.create("/times/" + id)).build();
     }
 
     @DeleteMapping("/times/{id}")

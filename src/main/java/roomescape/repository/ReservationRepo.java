@@ -40,7 +40,7 @@ public class ReservationRepo {
         return jdbcTemplate.query("SELECT * FROM RESERVATIONS", new ReservationMapper());
     }
 
-    public Reservations findById(int id) {
+    public Reservations findById(long id) {
         String sql = "SELECT * FROM RESERVATIONS WHERE id = ?";
         return jdbcTemplate.queryForObject(sql, new ReservationMapper(), id);
     }
@@ -59,7 +59,7 @@ public class ReservationRepo {
     }
 
 
-    public void delete(int id) throws NotFoundReservationException {
+    public void delete(long id) throws NotFoundReservationException {
         try {
             Reservations r = this.findById(id);
         } catch (Exception e) {

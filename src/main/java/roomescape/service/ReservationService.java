@@ -3,8 +3,11 @@ package roomescape.service;
 
 import org.springframework.stereotype.Service;
 import roomescape.dto.ReservationDTO;
+import roomescape.entity.Reservations;
 import roomescape.repository.ReservationRepo;
 import roomescape.repository.TimeRepo;
+
+import java.util.List;
 
 @Service
 public class ReservationService {
@@ -14,11 +17,22 @@ public class ReservationService {
 
     public ReservationService(ReservationRepo reservationRepo, TimeRepo timeRepo) {
         this.reservationRepo = reservationRepo;
-        this.timeRepo = timeRepo;
     }
 
 
-    public void insert(ReservationDTO reservationDTO) {
+    public List<Reservations> findAll() {
+        return reservationRepo.findAll();
+    }
 
+    public int insert(ReservationDTO reservationDTO) {
+        return reservationRepo.insert(reservationDTO);
+    }
+
+    public Reservations findById(long id) {
+        return reservationRepo.findById(id);
+    }
+
+    public void deleteById(long id) {
+        reservationRepo.delete(id);
     }
 }
