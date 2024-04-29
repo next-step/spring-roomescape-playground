@@ -2,28 +2,19 @@ package roomescape.controller;
 
 
 import jakarta.validation.Valid;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.http.HttpStatus;
-
 import org.springframework.http.ResponseEntity;
-
 import org.springframework.stereotype.Controller;
-
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
-
 import roomescape.dto.ReservationDTO;
 import roomescape.entity.Reservations;
 import roomescape.exception.NoArgsException;
 import roomescape.exception.NotFoundReservationException;
-import roomescape.repository.ReservationRepo;
 import roomescape.service.ReservationService;
 
 import java.net.URI;
 import java.util.List;
-
 
 
 @Controller
@@ -55,6 +46,7 @@ public class ReservationController {
         int id = reservationService.insert(request);
         return ResponseEntity.created(URI.create("/reservations/" + id)).body(request);
     }
+
     @GetMapping("/reservations/{id}")
     public ResponseEntity<Reservations> reservations(@PathVariable long id) throws Exception {
         Reservations response;

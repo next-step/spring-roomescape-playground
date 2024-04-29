@@ -23,8 +23,6 @@ public class TimeController {
     }
 
 
-
-
     @GetMapping("/time")
     public String time() {
         return "time";
@@ -32,7 +30,6 @@ public class TimeController {
 
     @GetMapping("/times")
     public ResponseEntity<List<Time>> showAll() {
-
         return new ResponseEntity<>(timeService.findAll(), HttpStatus.OK);
     }
 
@@ -45,7 +42,6 @@ public class TimeController {
     @DeleteMapping("/times/{id}")
     public ResponseEntity<TimeDTO> delete(@PathVariable Long id) {
         timeService.delete(id);
-
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

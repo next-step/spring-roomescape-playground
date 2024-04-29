@@ -8,9 +8,6 @@ import roomescape.entity.Time;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 
 
@@ -19,16 +16,16 @@ public class TimeRepo {
 
     private JdbcTemplate jdbcTemplate;
 
-    public TimeRepo(JdbcTemplate jdbcTemplate) {this.jdbcTemplate = jdbcTemplate;}
+    public TimeRepo(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     public class TimeMapper implements RowMapper<Time> {
         @Override
         public Time mapRow(ResultSet rs, int rowNum) throws SQLException {
-            System.out.println("Mapper : " + rs.getLong("id"));
             return new Time(rs.getLong("id"), rs.getString(("time")));
         }
     }
-
 
 
     public Time findById(long id) {

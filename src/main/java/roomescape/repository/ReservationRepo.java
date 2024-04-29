@@ -3,16 +3,13 @@ package roomescape.repository;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-import roomescape.controller.ReservationController;
 import roomescape.dto.ReservationDTO;
 import roomescape.entity.Reservations;
-import roomescape.entity.Time;
 import roomescape.exception.NotFoundReservationException;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-
 
 
 @Repository
@@ -35,7 +32,6 @@ public class ReservationRepo {
     }
 
 
-
     public List<Reservations> findAll() {
         return jdbcTemplate.query("SELECT * FROM RESERVATIONS", new ReservationMapper());
     }
@@ -46,16 +42,13 @@ public class ReservationRepo {
     }
 
     public int count() {
-            String sql = "SELECT count(*) FROM RESERVATIONS";
-            return jdbcTemplate.queryForObject(sql, Integer.class);
+        String sql = "SELECT count(*) FROM RESERVATIONS";
+        return jdbcTemplate.queryForObject(sql, Integer.class);
     }
 
     public int insert(ReservationDTO reservations) {
         String sql = "INSERT INTO RESERVATIONS (name, date, time_id) values(?, ?, ?)";
-
-        System.out.println("test : " + reservations.getTimeId());
-
-        return jdbcTemplate.update(sql,  reservations.getName(), reservations.getDate(), reservations.getTimeId());
+        return jdbcTemplate.update(sql, reservations.getName(), reservations.getDate(), reservations.getTimeId());
     }
 
 

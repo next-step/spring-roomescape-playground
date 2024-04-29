@@ -6,8 +6,6 @@ import roomescape.dto.TimeDTO;
 import roomescape.entity.Time;
 import roomescape.repository.TimeRepo;
 
-import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service

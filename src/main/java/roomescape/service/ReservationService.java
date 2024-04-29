@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import roomescape.dto.ReservationDTO;
 import roomescape.entity.Reservations;
 import roomescape.repository.ReservationRepo;
-import roomescape.repository.TimeRepo;
 
 import java.util.List;
 
@@ -13,9 +12,8 @@ import java.util.List;
 public class ReservationService {
 
     private ReservationRepo reservationRepo;
-    private TimeRepo timeRepo;
 
-    public ReservationService(ReservationRepo reservationRepo, TimeRepo timeRepo) {
+    public ReservationService(ReservationRepo reservationRepo) {
         this.reservationRepo = reservationRepo;
     }
 
