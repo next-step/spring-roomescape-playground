@@ -4,6 +4,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import roomescape.controller.ReservationController;
+import roomescape.dto.ReservationDTO;
 import roomescape.entity.Reservations;
 import roomescape.entity.Time;
 import roomescape.exception.NotFoundReservationException;
@@ -49,9 +50,12 @@ public class ReservationRepo {
             return jdbcTemplate.queryForObject(sql, Integer.class);
     }
 
-    public int insert(Reservations reservations) {
-        String sql = "INSERT INTO RESERVATIONS (name, date, time) values(?, ?, ?)";
-        return jdbcTemplate.update(sql,  reservations.getName(), reservations.getDate(), reservations.getTime());
+    public int insert(ReservationDTO reservations) {
+        String sql = "INSERT INTO RESERVATIONS (name, date, time_id) values(?, ?, ?)";
+
+        System.out.println("test : " + reservations.getTimeId());
+
+        return jdbcTemplate.update(sql,  reservations.getName(), reservations.getDate(), reservations.getTimeId());
     }
 
 

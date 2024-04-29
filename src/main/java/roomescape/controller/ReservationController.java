@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import roomescape.dto.ReservationDTO;
 import roomescape.entity.Reservations;
 import roomescape.exception.NoArgsException;
 import roomescape.exception.NotFoundReservationException;
@@ -45,11 +46,9 @@ public class ReservationController {
 
     @PostMapping("/reservations")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Reservations> reservations(@RequestBody @Valid Reservations request) throws Exception {
+    public ResponseEntity<ReservationDTO> reservations(@RequestBody @Valid ReservationDTO request) throws Exception {
 
         int id = reservationRepo.insert(request);
-
-
         return ResponseEntity.created(URI.create("/reservations/" + id)).body(request);
     }
     @GetMapping("/reservations/{id}")
@@ -70,7 +69,6 @@ public class ReservationController {
         reservationRepo.delete(id);
         return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
     }
-
 
     @ExceptionHandler(NotFoundReservationException.class)
     public ResponseEntity<Object> handleException(NotFoundReservationException e) {
