@@ -13,6 +13,8 @@ public class ExceptionAdvisor {
     @ExceptionHandler(CustomException.class)
     protected ResponseEntity<?> handleCustomException(CustomException exception) {
         log.info("handleCustomException ::{}", exception.getMessage());
+
         return ResponseEntity.badRequest().build();
     }
+
 }
