@@ -23,8 +23,4 @@ public class Time {
     public String getTime() {
         return time;
     }
-
-    public static Time toEntity(Time time, Long id) {
-        return new Time(id, time.time);
-    }
 }

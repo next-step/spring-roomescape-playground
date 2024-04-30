@@ -29,7 +29,7 @@ public class TimeServiceImpl implements TimeService {
     @Transactional
     public Time createTime(Time time) {
         Long id = timeRepository.createTime(time);
-        return Time.toEntity(time, id);
+        return new Time(id, time.getTime());
     }
 
     @Override
