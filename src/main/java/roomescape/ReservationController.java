@@ -3,12 +3,11 @@ package roomescape;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -40,5 +39,19 @@ public class ReservationController {
         URI location = URI.create("/reservations/" + id);
 
         return ResponseEntity.created(location).body(newReservation);
+    }
+
+    @DeleteMapping("/reservations/{id}")
+    public ResponseEntity delete (@PathVariable Long id) {
+        Iterator<Reservation> iterator = reservations.iterator();
+
+        while(iterator.hasNext()) {
+            Reservation reservation = iterator.next();
+            if(reservation.getId() == id) {
+                iterator.remove();
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }
