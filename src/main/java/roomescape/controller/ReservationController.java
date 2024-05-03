@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Stream;
 
 import roomescape.domain.Reservation;
 
@@ -20,12 +21,11 @@ import static java.lang.String.valueOf;
 
 @Controller
 public class ReservationController {
-    private List<Reservation> reservations = new ArrayList<>();
-//    private List<Reservation> reservations = new ArrayList<>(Arrays.asList(
-//            new Reservation("브라운", "2023-01-01", "10:00"),
-//            new Reservation("블루", "2023-02-01", "11:00"),
-//            new Reservation("옐로우", "2023-05-01", "12:00")
-//    ));
+    private List<Reservation> reservations = new ArrayList<>(Arrays.asList(
+            new Reservation("브라운", "2023-01-01", "10:00"),
+            new Reservation("블루", "2023-02-01", "11:00"),
+            new Reservation("옐로우", "2023-05-01", "12:00")
+    ));
 
     @GetMapping("/reservation")
     public String reservation() {
@@ -52,6 +52,10 @@ public class ReservationController {
     @PostMapping("/reservations")
     @ResponseBody
     public ResponseEntity<Reservation> createReservation(@RequestBody Reservation newReservation, HttpServletRequest request) {
+        if (Stream.of(newReservation.getName(), newReservation.getDate(), newReservation.getTime())
+                .anyMatch(value -> value == null || value.isEmpty()))   {
+            return ResponseEntity.badRequest().build();
+        }
         this.reservations.add(newReservation);
         String uri = "/reservations/" + valueOf(newReservation.getId());
         return ResponseEntity.created(URI.create(uri)).body(newReservation);
@@ -62,10 +66,10 @@ public class ReservationController {
         for (Reservation reservation : this.reservations) {
             if (reservation.getId() == id) {
                 this.reservations.remove(reservation);
-                break;
+                return ResponseEntity.noContent().build();
             }
         }
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.badRequest().build();
     }
 
 }
