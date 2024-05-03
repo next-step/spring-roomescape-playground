@@ -20,11 +20,12 @@ import static java.lang.String.valueOf;
 
 @Controller
 public class ReservationController {
-    private List<Reservation> reservations = new ArrayList<>(Arrays.asList(
-            new Reservation("브라운", "2023-01-01", "10:00"),
-            new Reservation("블루", "2023-02-01", "11:00"),
-            new Reservation("옐로우", "2023-05-01", "12:00")
-    ));
+    private List<Reservation> reservations = new ArrayList<>();
+//    private List<Reservation> reservations = new ArrayList<>(Arrays.asList(
+//            new Reservation("브라운", "2023-01-01", "10:00"),
+//            new Reservation("블루", "2023-02-01", "11:00"),
+//            new Reservation("옐로우", "2023-05-01", "12:00")
+//    ));
 
     @GetMapping("/reservation")
     public String reservation() {
