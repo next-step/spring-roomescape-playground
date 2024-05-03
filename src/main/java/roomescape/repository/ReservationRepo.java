@@ -11,7 +11,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-
 @Repository
 public class ReservationRepo {
     private JdbcTemplate jdbcTemplate;
@@ -24,7 +23,6 @@ public class ReservationRepo {
 
 
     public class ReservationMapper implements RowMapper<Reservations> {
-
         @Override
         public Reservations mapRow(ResultSet rs, int rowNum) throws SQLException {
             return new Reservations(rs.getInt("id"), rs.getString("name"), rs.getString("date"), timeRepo.findById(rs.getLong("time_id")));

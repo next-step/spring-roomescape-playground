@@ -29,4 +29,5 @@ public class Reservations {
     public String getDate() {
         return date;
     }
+
 }

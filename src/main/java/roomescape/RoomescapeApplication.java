@@ -15,5 +15,4 @@ public class RoomescapeApplication {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
-
 }
