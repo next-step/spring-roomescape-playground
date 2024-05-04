@@ -1,8 +1,11 @@
 package roomescape;
 
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.ErrorResponse;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -10,6 +13,17 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
+
+@ControllerAdvice
+class ReservationExceptionHandler {
+    @ExceptionHandler(NotFoundReservationException.class)
+    public ResponseEntity handleException(NotFoundReservationException e) {
+        String errorMessage = e.getMessage();
+        ResponseDto errorResponse = new ResponseDto(HttpStatus.BAD_REQUEST.value(), e.getMessage(), null);
+        return ResponseEntity.badRequest().body(errorResponse);
+    }
+}
+
 
 @Controller
 public class ReservationController {
@@ -52,6 +66,7 @@ public class ReservationController {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
         }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        throw new NotFoundReservationException("Reservation with id " + id + " not found." );
     }
 }
