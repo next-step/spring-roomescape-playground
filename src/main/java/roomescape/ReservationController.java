@@ -41,15 +41,13 @@ public class ReservationController {
     private AtomicLong index = new AtomicLong(0);
 
     @GetMapping("/reservations")
-    public ResponseEntity<List<Reservation>> read() {
-//        reservations.add(new Reservation(1,"브라운", "2023-01-01", "10:00"));
-//        reservations.add(new Reservation(2,"브라운", "2023-01-02", "11:00"));
-
-        return new ResponseEntity<>(reservations, HttpStatus.OK);
+    public ResponseEntity<ResponseDto> read() {
+        ResponseDto response = new ResponseDto(HttpStatus.OK.value(), "요청이 성공적으로 처리되었습니다.", reservations );
+        return ResponseEntity.ok().body(response);
     }
 
     @PostMapping("/reservations")
-    public ResponseEntity<Reservation> create (@RequestBody ReservationRequestDto request) {
+    public ResponseEntity<ResponseDto> create (@RequestBody ReservationRequestDto request) {
         String name = request.getName();
         String date = request.getDate();
         String time = request.getTime();
@@ -71,7 +69,8 @@ public class ReservationController {
 
         URI location = URI.create("/reservations/" + id);
 
-        return ResponseEntity.created(location).body(newReservation);
+        ResponseDto response = new ResponseDto(HttpStatus.CREATED.value(), "예약이 성공적으로 추가되었습니다.", newReservation);
+        return ResponseEntity.created(location).body(response);
     }
 
     @DeleteMapping("/reservations/{id}")
