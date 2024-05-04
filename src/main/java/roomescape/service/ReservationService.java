@@ -1,52 +1,56 @@
 package roomescape.service;
 
-
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import roomescape.dao.QueryingDAO;
-import roomescape.dao.UpdatingDAO;
+import roomescape.dao.ReservationQueryingDAO;
 import roomescape.domain.Reservation;
-import roomescape.domain.dto.ReservationDto;
+import roomescape.domain.dto.ReservationRequestDto;
+import roomescape.domain.dto.ReservationResponseDto;
+import roomescape.exception.BadRequestException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class ReservationService {
 
-    private QueryingDAO queryingDAO;
-    private UpdatingDAO updatingDAO;
+    private ReservationQueryingDAO reservationQueryingDAO;
 
-    public ReservationService(QueryingDAO queryingDAO, UpdatingDAO updatingDAO) {
-        this.queryingDAO = queryingDAO;
-        this.updatingDAO = updatingDAO;
+    public ReservationService(ReservationQueryingDAO reservationQueryingDAO) {
+        this.reservationQueryingDAO = reservationQueryingDAO;
     }
 
-    public ResponseEntity<List<Reservation>> findAllReservation() {
-        return ResponseEntity.ok(queryingDAO.findAllReservation());
-    }
+    public List<ReservationResponseDto.Get> findAllReservation() {
+        List<Reservation> reservationList = reservationQueryingDAO.findAllReservation();
 
-    public ResponseEntity<?> createReservation(ReservationDto request){
-
-        if (request.getName().isEmpty() || request.getDate().isEmpty() || request.getTime().isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("예약 추가 시 필요한 인자값이 비어있습니다.");
+        List<ReservationResponseDto.Get> resultList = new ArrayList<>();
+        for(Reservation reservation: reservationList){
+            resultList.add(new ReservationResponseDto.Get(reservation.getId(), reservation.getName(),
+                    reservation.getDate(), reservation.getTime().getTime()));
         }
-        Reservation reservation = updatingDAO.insertReservation(request);
-
-        return ResponseEntity.status(HttpStatus.CREATED).header("Location", "/reservations/" + reservation.getId()).body(reservation);
+        return resultList;
     }
 
-    public ResponseEntity<?> deleteReservation(Long id){
+    public ReservationResponseDto.Create createReservation(ReservationRequestDto.Create request){
 
-        List<Reservation> reservationList = queryingDAO.findAllReservation();
+
+        if (request.getName().isEmpty() || request.getDate().isEmpty() || !String.valueOf(request.getTimeId()).matches("\\d+")) {
+            throw new BadRequestException("예약 추가 시 필요한 인자값이 비어있습니다.");
+        }
+
+        Reservation reservation = reservationQueryingDAO.insertReservation(request);
+
+        return new ReservationResponseDto.Create(reservation.getId(), reservation.getName(),
+                reservation.getDate(), reservation.getTime().getTime());
+    }
+
+    public void deleteReservation(Long id){
+
+        List<Reservation> reservationList = reservationQueryingDAO.findAllReservation();
 
         if (id <= 0 || id > reservationList.size()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("삭제 할 예약의 식별자로 저장된 예약을 찾을 수 없습니다.");
+            throw new BadRequestException("삭제 할 예약의 식별자로 저장된 예약을 찾을 수 없습니다.");
         }
 
-        updatingDAO.delete(id);
-
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-
+        reservationQueryingDAO.delete(id);
     }
 }
