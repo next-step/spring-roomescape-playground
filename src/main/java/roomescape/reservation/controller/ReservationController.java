@@ -1,8 +1,11 @@
-package roomescape.reservation;
+package roomescape.reservation.controller;
 
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import roomescape.reservation.ReservationDTO;
+import roomescape.reservation.service.ReservationService;
 
 import java.net.URI;
 import java.util.List;
@@ -12,6 +15,7 @@ public class ReservationController {
 
     private ReservationService reservationService;
 
+    @Autowired
     public ReservationController(ReservationService reservationService) {
         this.reservationService = reservationService;
     }
@@ -27,13 +31,6 @@ public class ReservationController {
 
         return ResponseEntity.created(URI.create("/reservations/" + insertedReservationDTO.getId())).body(insertedReservationDTO);
     }
-
-//    @PutMapping("/reservations/{id}")
-//    public ResponseEntity<ReservationDTO> update(@Valid @RequestBody ReservationDTO reservationDTO, @PathVariable long id) {
-//        reservationService.updateReservationDTO(id, reservationDTO);
-//
-//        return ResponseEntity.ok(reservationDTO);
-//    }
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> delete(@PathVariable long id) {

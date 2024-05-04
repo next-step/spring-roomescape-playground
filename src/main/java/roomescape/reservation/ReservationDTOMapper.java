@@ -2,6 +2,7 @@ package roomescape.reservation;
 
 
 import org.springframework.stereotype.Component;
+import roomescape.reservation.domain.Reservation;
 
 import java.util.List;
 import java.util.stream.Collectors;
