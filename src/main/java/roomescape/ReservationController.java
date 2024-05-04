@@ -18,7 +18,12 @@ import java.util.concurrent.atomic.AtomicLong;
 class ReservationExceptionHandler {
     @ExceptionHandler(NotFoundReservationException.class)
     public ResponseEntity handleException(NotFoundReservationException e) {
-        String errorMessage = e.getMessage();
+        ResponseDto errorResponse = new ResponseDto(HttpStatus.BAD_REQUEST.value(), e.getMessage(), null);
+        return ResponseEntity.badRequest().body(errorResponse);
+    }
+
+    @ExceptionHandler(BadRequestCreateReservationException.class)
+    public ResponseEntity handleException(BadRequestCreateReservationException e) {
         ResponseDto errorResponse = new ResponseDto(HttpStatus.BAD_REQUEST.value(), e.getMessage(), null);
         return ResponseEntity.badRequest().body(errorResponse);
     }
@@ -45,9 +50,23 @@ public class ReservationController {
 
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> create (@RequestBody ReservationRequestDto request) {
+        String name = request.getName();
+        String date = request.getDate();
+        String time = request.getTime();
+
+        if(name == "" || name == null) {
+            throw new BadRequestCreateReservationException("The 'name' field is missing.");
+        }
+        if(date == "" || date == null) {
+            throw new BadRequestCreateReservationException("The 'date' field is missing.");
+        }
+        if(time == "" || time == null) {
+            throw new BadRequestCreateReservationException("The 'time' field is missing.");
+        }
+
         long id = index.incrementAndGet();
 
-        Reservation newReservation = new Reservation(id, request.getName(), request.getDate(), request.getTime());
+        Reservation newReservation = new Reservation(id, name, date, time);
         reservations.add(newReservation);
 
         URI location = URI.create("/reservations/" + id);
