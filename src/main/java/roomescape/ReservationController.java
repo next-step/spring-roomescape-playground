@@ -31,6 +31,11 @@ public ResponseEntity<Void> create(@PathVariable int id) {
     return ResponseEntity.status(204).build();
 }
 
+@ExceptionHandler(IllegalArgumentException.class)
+public ResponseEntity<Void> handleException(IllegalArgumentException e) {
+        return ResponseEntity.badRequest().build();
+}
+
 
 
     @GetMapping("/reservation")
