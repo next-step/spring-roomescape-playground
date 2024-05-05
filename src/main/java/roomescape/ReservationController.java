@@ -2,25 +2,36 @@ package roomescape;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.net.URI;
+import java.util.concurrent.atomic.AtomicLong;
 
 @RestController
 public class ReservationController {
+    private List<Reservation> reservations = new ArrayList<>();
+    private AtomicLong atomicLong = new AtomicLong(0);
+
+    @PostMapping("/reservations")
+    public ResponseEntity<Reservation> create(@RequestBody CreateReservationRequestDto request) {
+        Reservation reservation = new Reservation(atomicLong.incrementAndGet(), request.getName(), request.getDate(), request.getTime());
+        reservations.add(reservation);
+        return ResponseEntity.status(201).location(URI.create("/reservations/"+reservation.getId())).body(reservation);
+    }
+
+
+
+
 
     @GetMapping("/reservation")
-    public void reservation () {
+    public String reservation () {
+        return "home";
     }
 
     @GetMapping("/reservations")
     public ResponseEntity<List<Reservation>> getReservations() {
-        // 예약 목록 생성
-        List<Reservation> reservations = new ArrayList<>();
-        reservations.add(new Reservation(1, "브라운", "2023-01-01", "10:00"));
-        reservations.add(new Reservation(2, "브라운", "2023-01-02", "11:00"));
 
         // 응답 생성 및 반환
         return ResponseEntity.status(HttpStatus.OK).body(reservations);
