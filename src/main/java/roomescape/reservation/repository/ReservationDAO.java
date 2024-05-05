@@ -51,7 +51,6 @@ public class ReservationDAO {
         }, keyHolder);
 
         Long id = keyHolder.getKey().longValue();
-        System.out.printf(String.valueOf(id));
         return id;
     }
 
