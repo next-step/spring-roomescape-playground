@@ -86,9 +86,9 @@ public class MissionStepTest {
                 .statusCode(400);
 
         // 삭제할 예약이 없는 경우
-        //RestAssured.given().log().all()
-          //      .when().delete("/reservations/1")
-            //    .then().log().all()
-              //  .statusCode(400);
+        RestAssured.given().log().all()
+                .when().delete("/reservations/1")
+                .then().log().all()
+                .statusCode(400);
     }
 }

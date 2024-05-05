@@ -26,7 +26,7 @@ public ResponseEntity<Void> create(@PathVariable int id) {
     Reservation reservation1 = reservations.stream()
             .filter(reservation -> reservation.getId() == id)
             .findFirst()
-            .orElseThrow();
+            .orElseThrow(IllegalArgumentException::new);
     reservations.remove(reservation1);
     return ResponseEntity.status(204).build();
 }
