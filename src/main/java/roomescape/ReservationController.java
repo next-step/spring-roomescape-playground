@@ -21,7 +21,15 @@ public class ReservationController {
         return ResponseEntity.status(201).location(URI.create("/reservations/"+reservation.getId())).body(reservation);
     }
 
-
+@DeleteMapping("/reservations/{id}")
+public ResponseEntity<Void> create(@PathVariable int id) {
+    Reservation reservation1 = reservations.stream()
+            .filter(reservation -> reservation.getId() == id)
+            .findFirst()
+            .orElseThrow();
+    reservations.remove(reservation1);
+    return ResponseEntity.status(204).build();
+}
 
 
 
