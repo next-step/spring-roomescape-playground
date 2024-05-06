@@ -29,18 +29,18 @@ public class TimeController {
     }
 
     @GetMapping("/times")
-    public ResponseEntity<List<Time>> showAll() {
+    public ResponseEntity<List<Time>> getTimes() {
         return new ResponseEntity<>(timeService.findAll(), HttpStatus.OK);
     }
 
     @PostMapping("/times")
-    public ResponseEntity<TimeDTO> create(@RequestBody @Valid TimeDTO request) {
+    public ResponseEntity<TimeDTO> postTime(@RequestBody @Valid TimeDTO request) {
         int id = timeService.create(request);
         return ResponseEntity.created(URI.create("/times/" + id)).build();
     }
 
     @DeleteMapping("/times/{id}")
-    public ResponseEntity<TimeDTO> delete(@PathVariable Long id) {
+    public ResponseEntity<TimeDTO> deleteTime(@PathVariable Long id) {
         timeService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

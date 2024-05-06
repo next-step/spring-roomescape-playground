@@ -32,19 +32,19 @@ public class ReservationController {
 
     @GetMapping("/reservations")
     @ResponseBody
-    public ResponseEntity<List<Reservations>> reservations() {
+    public ResponseEntity<List<Reservations>> getReservations() {
         return new ResponseEntity<>(reservationService.findAll(), HttpStatus.OK);
     }
 
 
     @PostMapping("/reservations")
-    public ResponseEntity<ReservationDTO> reservations(@RequestBody @Valid ReservationDTO request) throws Exception {
+    public ResponseEntity<ReservationDTO> postReservation(@RequestBody @Valid ReservationDTO request) throws Exception {
         long id = reservationService.insert(request);
         return ResponseEntity.created(URI.create("/reservations/" + id)).body(request);
     }
 
     @GetMapping("/reservations/{id}")
-    public ResponseEntity<Reservations> reservations(@PathVariable long id) throws Exception {
+    public ResponseEntity<Reservations> getReservation(@PathVariable long id) throws Exception {
         Reservations response;
         try {
             response = reservationService.findById(id);
@@ -57,7 +57,7 @@ public class ReservationController {
     }
 
     @DeleteMapping("/reservations/{id}")
-    public ResponseEntity<Object> reservationDelete(@PathVariable int id) throws Exception {
+    public ResponseEntity<Void> deleteReservation(@PathVariable int id) throws Exception {
         reservationService.deleteById(id);
         return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
     }
