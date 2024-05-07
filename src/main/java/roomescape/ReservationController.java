@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.*;
+import org.thymeleaf.util.StringUtils;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -52,13 +53,13 @@ public class ReservationController {
         String date = request.getDate();
         String time = request.getTime();
 
-        if(name == "" || name == null) {
+        if(StringUtils.isEmpty(name)) {
             throw new BadRequestCreateReservationException("The 'name' field is missing.");
         }
-        if(date == "" || date == null) {
+        if(StringUtils.isEmpty(date)) {
             throw new BadRequestCreateReservationException("The 'date' field is missing.");
         }
-        if(time == "" || time == null) {
+        if(StringUtils.isEmpty(time)) {
             throw new BadRequestCreateReservationException("The 'time' field is missing.");
         }
 
