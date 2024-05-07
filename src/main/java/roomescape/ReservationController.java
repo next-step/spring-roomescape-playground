@@ -18,13 +18,13 @@ import java.util.concurrent.atomic.AtomicLong;
 @ControllerAdvice
 class ReservationExceptionHandler {
     @ExceptionHandler(NotFoundReservationException.class)
-    public ResponseEntity handleException(NotFoundReservationException e) {
+    public ResponseEntity<ResponseDto> handleException(NotFoundReservationException e) {
         ResponseDto errorResponse = new ResponseDto(HttpStatus.BAD_REQUEST.value(), e.getMessage(), null);
         return ResponseEntity.badRequest().body(errorResponse);
     }
 
     @ExceptionHandler(BadRequestCreateReservationException.class)
-    public ResponseEntity handleException(BadRequestCreateReservationException e) {
+    public ResponseEntity<ResponseDto> handleException(BadRequestCreateReservationException e) {
         ResponseDto errorResponse = new ResponseDto(HttpStatus.BAD_REQUEST.value(), e.getMessage(), null);
         return ResponseEntity.badRequest().body(errorResponse);
     }
@@ -75,7 +75,7 @@ public class ReservationController {
     }
 
     @DeleteMapping("/reservations/{id}")
-    public ResponseEntity delete (@PathVariable Long id) {
+    public ResponseEntity<Void> delete (@PathVariable Long id) {
         Iterator<Reservation> iterator = reservations.iterator();
 
         while(iterator.hasNext()) {
