@@ -1,5 +1,6 @@
 package roomescape.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -8,18 +9,17 @@ public class Reservation {
 
     private final Long id;
     private String name;
-
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
-
-    @DateTimeFormat(pattern = "HH:mm")
+    @JsonFormat(pattern = "HH:mm")
     private LocalTime time;
 
-    public Reservation(final Long id, final String name) {
+    public Reservation(final Long id, final String name, final LocalDate date,
+                       final LocalTime time) {
         this.id = id;
         this.name = name;
-        this.date = LocalDate.now();
-        this.time = LocalTime.now().withNano(0);
+        this.date = date;
+        this.time = time;
     }
 
     public Long getId() {
