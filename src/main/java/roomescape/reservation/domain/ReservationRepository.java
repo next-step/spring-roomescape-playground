@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.stereotype.Repository;
+import roomescape.reservation.domain.exception.NotExistReservationException;
 
 @Repository
 public class ReservationRepository {
@@ -25,6 +26,9 @@ public class ReservationRepository {
     }
 
     public void deleteById(Long id) {
+        if (!reservations.containsKey(id)) {
+            throw new NotExistReservationException("해당 예약을 찾을 수 없습니다.");
+        }
         reservations.remove(id);
     }
 }
