@@ -18,11 +18,7 @@ public class ReservationService {
 		reservations.add(new Reservation(2L, "치킨", "2024-05-10", "20:00"));
 		reservations.add(new Reservation(3L, "피자", "2024-05-10", "22:00"));
 		return reservations.stream()
-			.map(reservation -> new ReservationResponse(
-				reservation.getId(),
-				reservation.getName(),
-				reservation.getDate(),
-				reservation.getTime()))
+			.map(ReservationResponse::from)
 			.toList();
 	}
 }
