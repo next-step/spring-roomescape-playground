@@ -4,6 +4,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import roomescape.domain.Reservation;
+import roomescape.service.ReservationValidation;
+import roomescape.exception.NotFoundReservationException;
 import roomescape.service.ReservationService;
 
 import java.net.URI;
@@ -14,7 +16,6 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @Controller
 public class ReservationController {
-
     private List<Reservation> reservations = new ArrayList<>();
     private AtomicLong index = new AtomicLong(0);
 
@@ -30,18 +31,18 @@ public class ReservationController {
     }
 
     @PostMapping("/reservations")
-    public ResponseEntity<Reservation> makeReservation(@RequestBody Map<String, String> params){
+    public ResponseEntity<Reservation> makeReservation(@RequestBody Map<String, String> params) {
+        ReservationValidation.validateReservationRequestFormat(params);
         Reservation reservation = ReservationService.makeMapToReservation((int) index.incrementAndGet(), params);
         reservations.add(reservation);
         return ResponseEntity.created(URI.create("/reservations/" + reservation.getId())).body(reservation);
     }
 
     @DeleteMapping("/reservations/{id}")
-    public ResponseEntity<String> deleteReservation(@PathVariable int id){
+    public ResponseEntity<String> deleteReservation(@PathVariable int id) throws NotFoundReservationException {
         boolean res = reservations.removeIf(reservation -> reservation.getId() == id);
-        if(!res){
-            throw new IllegalArgumentException();
-        }
+        ReservationValidation.validateReservationExists(res);
         return ResponseEntity.noContent().build();
     }
+
 }
