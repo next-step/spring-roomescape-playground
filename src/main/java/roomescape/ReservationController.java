@@ -53,16 +53,6 @@ public class ReservationController {
         String date = request.getDate();
         String time = request.getTime();
 
-        if(StringUtils.isEmpty(name)) {
-            throw new BadRequestCreateReservationException("The 'name' field is missing.");
-        }
-        if(StringUtils.isEmpty(date)) {
-            throw new BadRequestCreateReservationException("The 'date' field is missing.");
-        }
-        if(StringUtils.isEmpty(time)) {
-            throw new BadRequestCreateReservationException("The 'time' field is missing.");
-        }
-
         long id = index.incrementAndGet();
 
         Reservation newReservation = new Reservation(id, name, date, time);
