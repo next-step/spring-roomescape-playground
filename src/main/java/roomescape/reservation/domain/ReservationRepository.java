@@ -23,4 +23,8 @@ public class ReservationRepository {
         reservations.put(reservation.id(), reservation);
         return reservation;
     }
+
+    public void deleteById(Long id) {
+        reservations.remove(id);
+    }
 }
