@@ -10,8 +10,8 @@ import roomescape.reservation.domain.exception.NotExistReservationException;
 @Repository
 public class ReservationRepository {
 
-    private AtomicLong idGenerator = new AtomicLong(0);
     private final Map<Long, Reservation> reservations = new ConcurrentHashMap<>();
+    private final AtomicLong idGenerator = new AtomicLong(0);
 
     public List<Reservation> findAll() {
         return List.copyOf(reservations.values());
