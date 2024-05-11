@@ -7,20 +7,20 @@ public class Reservation {
     private Long id;
     private String name;
     private Date date;
-    private Time time;
+    private String time;
 
     public Reservation() {
 
     }
 
-    public Reservation(Long id, String name, Date date, Time time) {
+    public Reservation(Long id, String name, Date date, String time) {
         this.id = id;
         this.name = name;
         this.date = date;
         this.time = time;
     }
 
-    public Reservation(String name, Date date, Time time) {
+    public Reservation(String name, Date date, String time) {
         this.name = name;
         this.date = date;
         this.time = time;
@@ -38,7 +38,7 @@ public class Reservation {
         return date;
     }
 
-    public Time getTime() {
+    public String getTime() {
         return time;
     }
 
