@@ -37,7 +37,7 @@ public class ReservationController {
         return ResponseEntity.ok().body(reservation);
     }
 
-    // 예약 추가
+    // 예약 생성
     @PostMapping("/reservations")
     public ResponseEntity<Void> create(@RequestBody Reservation reservation) {
         Reservation newReservation = Reservation.toEntity(reservation, index.getAndIncrement());

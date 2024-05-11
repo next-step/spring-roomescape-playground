@@ -72,4 +72,34 @@ public class MissionStepTest {
                 .statusCode(200)
                 .body("size()", is(0));
     }
+
+    @Test
+    void id에_맞게_생성되었는지_테스트() {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", "브라운");
+        params.put("date", "2023-08-05");
+        params.put("time", "15:40");
+
+        // Make POST request
+        String location = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(201)
+                .extract().header("Location");
+
+        // Assert that location is not null
+        assert location != null;
+
+        // Send GET request to the location
+        RestAssured.given().log().all()
+                .when().get(location)
+                .then().log().all()
+                .statusCode(200)
+                .body("id", is(1),
+                        "name", is("브라운"),
+                        "date", is("2023-08-05"),
+                        "time", is("15:40"));
+    }
 }
