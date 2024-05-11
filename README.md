@@ -1,8 +1,4 @@
-## step 2 요구사항
-- [x] /reservation 요청시 예약 관리 페이지 응답 
-- [x] templates/reservation.html 파일 이용
-- [x] Thymeleaf 템플릿엔진 활용
-  
-
-- [x] 예약 페이지 요청 메서드 구현
-- [x] 예약 목록 조회 api 구현
+## step 3 요구사항
+- [ ] 예약 추가 API
+- [ ] 예약 삭제 API
+- [ ] AtomicLong을 활용하여 식별자 처리
