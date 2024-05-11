@@ -1,63 +1,53 @@
 package roomescape.controller;
 
-
 import jakarta.validation.Valid;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.http.HttpStatus;
-
 import org.springframework.http.ResponseEntity;
-
 import org.springframework.stereotype.Controller;
-
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
-
+import roomescape.dto.ReservationDTO;
 import roomescape.entity.Reservations;
 import roomescape.exception.NoArgsException;
 import roomescape.exception.NotFoundReservationException;
-import roomescape.repository.ReservationRepo;
+import roomescape.service.ReservationService;
 
 import java.net.URI;
 import java.util.List;
 
 
-
 @Controller
 public class ReservationController {
 
-    @Autowired
-    private ReservationRepo reservationRepo;
+    private ReservationService reservationService;
+
+    public ReservationController(ReservationService reservationService) {
+        this.reservationService = reservationService;
+    }
 
     @GetMapping("/reservation")
     public String reservation() {
-        return "reservation";
+        return "new-reservation";
     }
 
     @GetMapping("/reservations")
     @ResponseBody
-    public ResponseEntity<List<Reservations>> reservations() {
-        List<Reservations> reservations = reservationRepo.findAll();
-        return new ResponseEntity<>(reservations, HttpStatus.OK);
+    public ResponseEntity<List<Reservations>> getReservations() {
+        return new ResponseEntity<>(reservationService.findAll(), HttpStatus.OK);
     }
-
 
 
     @PostMapping("/reservations")
-    @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Reservations> reservations(@RequestBody @Valid Reservations request) throws Exception {
-
-        int id = reservationRepo.insert(request);
-
-
+    public ResponseEntity<ReservationDTO> postReservation(@RequestBody @Valid ReservationDTO request) throws Exception {
+        long id = reservationService.insert(request);
         return ResponseEntity.created(URI.create("/reservations/" + id)).body(request);
     }
+
     @GetMapping("/reservations/{id}")
-    public ResponseEntity<Reservations> reservations(@PathVariable int id) throws Exception {
+    public ResponseEntity<Reservations> getReservation(@PathVariable long id) throws Exception {
         Reservations response;
         try {
-            response = reservationRepo.findById(id);
+            response = reservationService.findById(id);
 
         } catch (Exception err) {
             throw new NotFoundReservationException();
@@ -67,11 +57,10 @@ public class ReservationController {
     }
 
     @DeleteMapping("/reservations/{id}")
-    public ResponseEntity<Object> reservationDelete(@PathVariable int id) throws Exception {
-        reservationRepo.delete(id);
+    public ResponseEntity<Void> deleteReservation(@PathVariable int id) throws Exception {
+        reservationService.deleteById(id);
         return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
     }
-
 
     @ExceptionHandler(NotFoundReservationException.class)
     public ResponseEntity<Object> handleException(NotFoundReservationException e) {

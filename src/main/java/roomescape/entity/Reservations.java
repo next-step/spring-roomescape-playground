@@ -1,34 +1,20 @@
 package roomescape.entity;
 
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import org.springframework.format.annotation.DateTimeFormat;
-
-import java.time.LocalDate;
-import java.time.LocalTime;
-
 public class Reservations {
-    @Min(value = 0)
-    private int id;
 
-    @NotEmpty
+    private long id;
     private String name;
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @NotNull
-    private LocalDate date;
-    @DateTimeFormat(pattern = "HH:mm")
-    @NotNull
-    private LocalTime time;
+    private String date;
+    private Time time;
 
-    public Reservations(int id, String name,  LocalDate date,  LocalTime time)  {
+    public Reservations(long id, String name, String date, Time time) {
         this.id = id;
         this.name = name;
         this.date = date;
         this.time = time;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
@@ -36,11 +22,12 @@ public class Reservations {
         return name;
     }
 
-    public LocalDate getDate() {
+    public Time getTime() {
+        return time;
+    }
+
+    public String getDate() {
         return date;
     }
 
-    public LocalTime getTime() {
-        return time;
-    }
 }
