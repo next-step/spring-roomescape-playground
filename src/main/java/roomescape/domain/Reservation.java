@@ -5,12 +5,12 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class Reservation {
-    private final int id;
+    private final Long id;
     private final String name;
     private final LocalDate date;
     private final LocalTime time;
 
-    public Reservation(int id,
+    public Reservation(Long id,
                        String name,
                        LocalDate date,
                        LocalTime time) {
@@ -20,7 +20,7 @@ public class Reservation {
         this.time = time;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
@@ -34,5 +34,12 @@ public class Reservation {
 
     public LocalTime getTime() {
         return time;
+    }
+
+    public static Reservation toEntity(Reservation reservation, Long id) {
+        return new Reservation(id,
+                reservation.name,
+                reservation.date,
+                reservation.time);
     }
 }
