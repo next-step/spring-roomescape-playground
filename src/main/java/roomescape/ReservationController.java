@@ -31,15 +31,11 @@ public class ReservationController {
     @PostMapping("/reservations")
     public ResponseEntity<Void> create(@RequestBody Reservation reservation) {
         Reservation newReservation = Reservation.toEntity(reservation, index.getAndIncrement());
-
-
-        System.out.println(newReservation.getName());
-
         reservations.add(newReservation);
-        return ResponseEntity.created(URI.create("/members/" + newReservation.getId())).build();
+        return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).build();
     }
 
-
+    // 예약 삭제
     @DeleteMapping("reservations/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         Reservation reservation = reservations.stream()
