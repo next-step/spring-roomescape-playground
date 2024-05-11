@@ -25,9 +25,4 @@ public class Reservation {
     public String getName() {return this.name;}
     public String getDate() {return this.date;}
     public String getTime() {return this.time;}
-
-    public long setId() {return this.id = index.incrementAndGet();}
-    public String setName(String name) {return this.name = name;}
-    public String setDate(String date) {return this.date = date;}
-    public String setTime(String time) {return this.time = time;}
 }
