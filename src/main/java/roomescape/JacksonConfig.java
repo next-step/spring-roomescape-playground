@@ -10,7 +10,6 @@ public class JacksonConfig {
     @Bean
     public ObjectMapper objectMapper() {
         return new ObjectMapper()
-                .enable(SerializationFeature.INDENT_OUTPUT)
-                .configure(SerializationFeature.INDENT_OUTPUT, true);
+                .enable(SerializationFeature.INDENT_OUTPUT);
     }
 }

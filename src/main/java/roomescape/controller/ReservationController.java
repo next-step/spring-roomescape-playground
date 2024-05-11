@@ -1,31 +1,25 @@
 package roomescape.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Stream;
 
 import roomescape.domain.Reservation;
+import roomescape.exception.ReservationNotFoundException;
 
 import static java.lang.String.valueOf;
 
 
 @Controller
 public class ReservationController {
-    private List<Reservation> reservations = new ArrayList<>(Arrays.asList(
-            new Reservation("브라운", "2023-01-01", "10:00"),
-            new Reservation("블루", "2023-02-01", "11:00"),
-            new Reservation("옐로우", "2023-05-01", "12:00")
-    ));
+    private List<Reservation> reservations = new ArrayList<>();
 
     @GetMapping("/reservation")
     public String reservation() {
@@ -46,7 +40,7 @@ public class ReservationController {
                 return ResponseEntity.ok(reservation);
             }
         }
-        return ResponseEntity.notFound().build();
+        throw new ReservationNotFoundException("Reservation with id " + id + " not found");
     }
 
     @PostMapping("/reservations")
@@ -54,10 +48,10 @@ public class ReservationController {
     public ResponseEntity<Reservation> createReservation(@RequestBody Reservation newReservation, HttpServletRequest request) {
         if (Stream.of(newReservation.getName(), newReservation.getDate(), newReservation.getTime())
                 .anyMatch(value -> value == null || value.isEmpty()))   {
-            return ResponseEntity.badRequest().build();
+            throw new IllegalArgumentException("Reservation arguments are either null or empty");
         }
         this.reservations.add(newReservation);
-        String uri = "/reservations/" + valueOf(newReservation.getId());
+        String uri = "/reservations/" + newReservation.getId();
         return ResponseEntity.created(URI.create(uri)).body(newReservation);
     }
 
@@ -69,7 +63,7 @@ public class ReservationController {
                 return ResponseEntity.noContent().build();
             }
         }
-        return ResponseEntity.badRequest().build();
+        throw new ReservationNotFoundException("Reservation with id " + id + " not found");
     }
 
 }
