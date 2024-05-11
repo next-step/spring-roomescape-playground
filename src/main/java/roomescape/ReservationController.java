@@ -27,6 +27,16 @@ public class ReservationController {
         return ResponseEntity.ok().body(reservations);
     }
 
+    // id에 따른 예약 조회
+    @GetMapping("/reservations/{id}")
+    public ResponseEntity<Reservation> readEach(@PathVariable Long id) {
+        Reservation reservation = reservations.stream()
+                .filter(it -> Objects.equals(it.getId(), id))
+                .findFirst()
+                .orElseThrow(RuntimeException::new);
+        return ResponseEntity.ok().body(reservation);
+    }
+
     // 예약 추가
     @PostMapping("/reservations")
     public ResponseEntity<Void> create(@RequestBody Reservation reservation) {
