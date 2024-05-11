@@ -24,8 +24,8 @@ public class RoomescapeController {
     }
 
     @GetMapping("/reservations")
-    public ResponseEntity<List<Reservation>> checkReservations(){
-        reservations.add(new Reservation(1L,"hkj","2024","05-11"));
+    public ResponseEntity<List<Reservation>> checkReservations() {
+        reservations.add(new Reservation(1L, "hkj", "2024", "05-11"));
         return ResponseEntity.ok(reservations);
     }
 }
