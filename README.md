@@ -37,3 +37,4 @@ return ResponseEntity.created(URI.create("/reservations/" + reservation.getId())
 - @RequestBody로 받은 `Map<String, String> params`의 경우 `@Valid`를 사용할 수 없다.
 - 따라서, 이를 일급 컬렉션으로 Wrapping 후, Validation Annotation을 활용하여 처리가 가능한지 궁금하다.
 - 이번 코드에선 Validation을 처리하는 클래스를 만들어, 해당 static 메서드를 통해 Exception을 호출하도록 설계하였다.
+https://zoetechlog.tistory.com/m/116
