@@ -9,6 +9,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Stream;
 
 import roomescape.domain.Reservation;
@@ -19,6 +20,7 @@ import static java.lang.String.valueOf;
 
 @Controller
 public class ReservationController {
+    private static AtomicLong index = new AtomicLong(0);
     private List<Reservation> reservations = new ArrayList<>();
 
     @GetMapping("/reservation")
@@ -35,6 +37,7 @@ public class ReservationController {
     @GetMapping("/reservations/{id}")
     @ResponseBody
     public ResponseEntity<Reservation> getReservation(@PathVariable long id){
+
         for (Reservation reservation : this.reservations) {
             if (reservation.getId() == id) {
                 return ResponseEntity.ok(reservation);
@@ -47,7 +50,7 @@ public class ReservationController {
     @ResponseBody
     public ResponseEntity<Reservation> createReservation(@RequestBody Reservation newReservation, HttpServletRequest request) {
         if (Stream.of(newReservation.getName(), newReservation.getDate(), newReservation.getTime())
-                .anyMatch(value -> value == null || value.isEmpty()))   {
+                .anyMatch(value -> value.isEmpty()))   {
             throw new IllegalArgumentException("Reservation arguments are either null or empty");
         }
         this.reservations.add(newReservation);
@@ -57,13 +60,11 @@ public class ReservationController {
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> deleteReservatioin(@PathVariable long id){
-        for (Reservation reservation : this.reservations) {
-            if (reservation.getId() == id) {
-                this.reservations.remove(reservation);
-                return ResponseEntity.noContent().build();
-            }
+        boolean removed = this.reservations.removeIf(reservation -> reservation.getId() == id);
+        if (removed) {
+            return ResponseEntity.noContent().build();
+        } else {
+            throw new ReservationNotFoundException("Reservation with id " + id + " not found");
         }
-        throw new ReservationNotFoundException("Reservation with id " + id + " not found");
     }
-
 }
