@@ -9,6 +9,7 @@ import java.time.LocalTime;
 public class Reservation {
     private long id;
     private String name;
+
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
 

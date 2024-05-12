@@ -3,6 +3,8 @@ package roomescape.service;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import roomescape.domain.Reservation;
+import roomescape.exception.InvalidReservationFormException;
+import roomescape.exception.NotFoundReservationException;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -21,6 +23,7 @@ public class ReservationService {
     }
 
     public ResponseEntity<Reservation> createReservation(Reservation reservation) {
+        validateReservation(reservation);
         long reservationId = index.incrementAndGet();
         reservation.setId(reservationId);
         reservations.add(reservation);
@@ -36,6 +39,13 @@ public class ReservationService {
             reservations.remove(reservationOptional.get());
             return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.notFound().build();
+        throw new NotFoundReservationException("예약을 찾을 수 없습니다.");
     }
+
+    private void validateReservation(Reservation reservation) {
+        if (reservation.getName() == null || reservation.getDate() == null || reservation.getTime() == null) {
+            throw new InvalidReservationFormException("필수 정보가 비어있습니다.");
+        }
+    }
+
 }
