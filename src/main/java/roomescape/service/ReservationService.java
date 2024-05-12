@@ -7,6 +7,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import roomescape.domain.Reservation;
 import roomescape.dto.request.ReservationSaveRequest;
@@ -34,7 +35,10 @@ public class ReservationService {
 	}
 
 	public ResponseEntity<Void> deleteReservation(Long id) {
-		reservations.removeIf(reservation -> reservation.getId() == id);
+		boolean isRemoved = reservations.removeIf(reservation -> reservation.getId() == id);
+		if (!isRemoved) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Reservation not found");
+		}
 		return ResponseEntity.noContent().build();
 	}
 }

@@ -13,7 +13,7 @@ public class Reservation {
 		this.date = date;
 		this.time = time;
 	}
-
+	
 	public long getId() {
 		return id;
 	}
