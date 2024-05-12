@@ -11,25 +11,13 @@ public record ReservationSaveRequest(
 ) {
 
 	public ReservationSaveRequest {
-		validate();
+		validate(name, date, time);
 	}
 
-	private void validate() {
-		boolean isBlank = Arrays.stream(new String[] {name, date, time}).anyMatch(String::isBlank);
+	private void validate(String... fields) {
+		boolean isBlank = Arrays.stream(fields).anyMatch(String::isBlank);
 		if (isBlank) {
 			throw new BadReservationSaveRequestException("예약 정보에 공백이 입력되었습니다.");
 		}
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public String getDate() {
-		return date;
-	}
-
-	public String getTime() {
-		return time;
 	}
 }

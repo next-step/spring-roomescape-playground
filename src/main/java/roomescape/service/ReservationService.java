@@ -19,15 +19,19 @@ public class ReservationService {
 	private final List<Reservation> reservations = new ArrayList<>();
 	private AtomicLong index = new AtomicLong(0);
 
-	public List<ReservationResponse> getReservations() {
-		return reservations.stream()
+	public ResponseEntity<List<ReservationResponse>> getReservations() {
+		List<ReservationResponse> response = reservations.stream()
 			.map(ReservationResponse::from)
 			.toList();
+		return ResponseEntity.ok().body(
+			response
+		);
+
 	}
 
 	public ResponseEntity<ReservationResponse> saveReservation(ReservationSaveRequest request) {
-		Reservation reservation = new Reservation(index.incrementAndGet(), request.getName(), request.getDate(),
-			request.getTime());
+		Reservation reservation = new Reservation(index.incrementAndGet(), request.name(), request.date(),
+			request.time());
 		reservations.add(reservation);
 		return ResponseEntity.status(HttpStatus.CREATED)
 			.header("Location", "/reservations/" + index.get())
