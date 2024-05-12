@@ -1,12 +1,12 @@
 package roomescape.controller;
 
-import org.springframework.http.HttpStatus;
+import io.micrometer.common.util.StringUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import roomescape.domain.Reservation;
+import roomescape.exception.InvalidRequestException;
 
-import java.lang.reflect.Member;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +32,10 @@ public class ReservationController {
 
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> addReservation(@RequestBody Reservation request) {
+        if (StringUtils.isBlank(request.getName()) || StringUtils.isBlank(request.getDate()) || StringUtils.isBlank(request.getTime())) {
+            throw new InvalidRequestException("예약 정보에 공백이 입력되었습니다.");
+        }
+
         long id = index.incrementAndGet();
         Reservation reservation = new Reservation(id, request.getName(), request.getDate(), request.getTime());
         reservations.add(reservation);
@@ -40,6 +44,7 @@ public class ReservationController {
 
         return ResponseEntity.created(location).body(reservation);
     }
+
 
 
     @DeleteMapping("/reservations/{id}")
@@ -51,7 +56,7 @@ public class ReservationController {
 
         reservations.remove(reservation);
 
-        return ResponseEntity.noContent().build(); // 성공(204) 상태 코드 반환
+        return ResponseEntity.noContent().build();
     }
 
 
