@@ -50,5 +50,4 @@ public class RoomEscapeController {
 	public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
 		return reservationService.deleteReservation(id);
 	}
-
 }
