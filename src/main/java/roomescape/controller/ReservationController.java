@@ -8,7 +8,9 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -24,7 +26,7 @@ public class ReservationController {
     private final AtomicLong idMaker = new AtomicLong();
 
     public ReservationController() {
-        this.reservations = new ArrayList<>(createReservations());
+        this.reservations = new ArrayList<>();
     }
 
     @GetMapping("/reservation")
@@ -55,6 +57,13 @@ public class ReservationController {
                 .body(responseDto);
     }
 
+    @DeleteMapping("/reservations/{id}")
+    public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
+        reservations.removeIf(reservation -> reservation.getId().equals(id));
+        return ResponseEntity.noContent().build();
+    }
+    
+    // 테스트 데이터 삽입용 메서드
     private List<Reservation> createReservations() {
         return List.of(
                 new Reservation(idMaker.incrementAndGet(), "해쉬", LocalDate.now(), LocalTime.now()),
