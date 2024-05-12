@@ -33,4 +33,8 @@ public class ReservationService {
 			.body(ReservationResponse.from(reservation));
 	}
 
+	public ResponseEntity<Void> deleteReservation(Long id) {
+		reservations.removeIf(reservation -> reservation.getId() == id);
+		return ResponseEntity.noContent().build();
+	}
 }
