@@ -1,27 +1,23 @@
 package roomescape.dto.request;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
+import java.util.Arrays;
 
-public class ReservationSaveRequest {
+import roomescape.exception.BadReservationSaveRequestException;
 
-	private String name;
-	private String date;
-	private String time;
+public record ReservationSaveRequest(
+	String name,
+	String date,
+	String time
+) {
 
-	public ReservationSaveRequest() {
+	public ReservationSaveRequest {
 		validate();
 	}
 
 	private void validate() {
-		if (name == null || name.isBlank()) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Name cannot be empty");
-		}
-		if (date == null || date.isBlank()) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Date cannot be empty");
-		}
-		if (time == null || time.isBlank()) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Time cannot be empty");
+		boolean isBlank = Arrays.stream(new String[] {name, date, time}).anyMatch(String::isBlank);
+		if (isBlank) {
+			throw new BadReservationSaveRequestException("예약 정보에 공백이 입력되었습니다.");
 		}
 	}
 

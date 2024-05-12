@@ -7,11 +7,11 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import roomescape.domain.Reservation;
 import roomescape.dto.request.ReservationSaveRequest;
 import roomescape.dto.response.ReservationResponse;
+import roomescape.exception.NotFoundReservationException;
 
 @Service
 public class ReservationService {
@@ -37,7 +37,7 @@ public class ReservationService {
 	public ResponseEntity<Void> deleteReservation(Long id) {
 		boolean isRemoved = reservations.removeIf(reservation -> reservation.getId() == id);
 		if (!isRemoved) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Reservation not found");
+			throw new NotFoundReservationException("존재하지 않는 예약정보 입니다.");
 		}
 		return ResponseEntity.noContent().build();
 	}
