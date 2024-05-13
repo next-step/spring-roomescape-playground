@@ -1,6 +1,6 @@
 package roomescape.dto;
 
-import roomescape.exception.NotFoundReservationException;
+import roomescape.dto.exception.NotFoundReservationException;
 
 public class Reservation {
     private Long id;
