@@ -8,6 +8,7 @@ import roomescape.domain.Reservation;
 import roomescape.domain.ReservationRepository;
 import roomescape.dto.ReservationRequestDto;
 import roomescape.dto.ReservationResponseDto;
+import roomescape.exception.BadRequestException;
 import roomescape.service.ReservationService;
 
 import java.net.URI;
@@ -30,20 +31,30 @@ public class ReservationApiController {
 
     @PostMapping("/reservations")
     public ResponseEntity<ReservationResponseDto> addReservation(@RequestBody ReservationRequestDto reservationRequestDto){
-
-        ReservationResponseDto responseDto = reservationService.addReservation(reservationRequestDto);
-        return ResponseEntity.created(URI.create("/reservations/" + responseDto.getId()))
-                .body(responseDto);
+        try {
+            ReservationResponseDto responseDto = reservationService.addReservation(reservationRequestDto);
+            return ResponseEntity.created(URI.create("/reservations/" + responseDto.getId()))
+                    .body(responseDto);
+        } catch (BadRequestException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException("예약 추가 중 오류가 발생했습니다.", e);
+        }
     }
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> cancleReservation(@PathVariable Long id){
-        boolean canceled = reservationService.cancelReservation(id);
-
-        if (canceled) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
+        try {
+            boolean canceled = reservationService.cancelReservation(id);
+            if (canceled) {
+                return ResponseEntity.noContent().build();
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (BadRequestException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException("예약 취소 중 오류가 발생했습니다.", e);
         }
     }
 }

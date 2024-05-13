@@ -6,6 +6,7 @@ import roomescape.domain.Reservation;
 import roomescape.domain.ReservationRepository;
 import roomescape.dto.ReservationRequestDto;
 import roomescape.dto.ReservationResponseDto;
+import roomescape.exception.BadRequestException;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -34,7 +35,11 @@ public class ReservationService {
         LocalDate date = reservationRequestDto.getDate();
         LocalTime time = reservationRequestDto.getTime();
 
-        // 예약 객체 생성
+
+        if (name == null || name.isEmpty() || date == null || time == null) {
+            throw new BadRequestException("예약 정보가 올바르지 않습니다.");
+        }
+
         Reservation reservation = new Reservation();
         reservation.setId(index.incrementAndGet());
         reservation.setName(name);
@@ -49,9 +54,10 @@ public class ReservationService {
     public boolean cancelReservation(Long id) {
         Reservation reservation = reservationRepository.findById(id);
         if (reservation != null) {
-            reservationRepository.deleteById(reservation.getId());
+            reservationRepository.deleteById(id);
             return true;
+        } else {
+            throw new BadRequestException("취소할 예약을 찾을 수 없습니다. (id=" + id + ")");
         }
-        return false;
     }
 }
