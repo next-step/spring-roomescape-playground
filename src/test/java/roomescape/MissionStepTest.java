@@ -102,4 +102,13 @@ public class MissionStepTest {
                         "date", is("2023-08-05"),
                         "time", is("15:40"));
     }
+
+    @Test
+    void 사단계() {
+        // 삭제할 예약이 없는 경우 (객체가 존재하지 않는 경우)
+        RestAssured.given().log().all()
+                .when().delete("reservations/1")
+                .then().log().all()
+                .statusCode(400);
+    }
 }
