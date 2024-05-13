@@ -7,6 +7,7 @@ import roomescape.exception.InvalidReservationFormException;
 import roomescape.exception.NotFoundReservationException;
 
 import java.net.URI;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -40,11 +41,17 @@ public class ReservationService {
             return ResponseEntity.noContent().build();
         }
         throw new NotFoundReservationException("예약을 찾을 수 없습니다.");
+
+
     }
 
     private void validateReservation(Reservation reservation) {
-        if (reservation.getName() == null || reservation.getDate() == null || reservation.getTime() == null) {
+        if (reservation.getName() == null || reservation.getDate() == null || reservation.getTime() == null || reservation.getName().isEmpty()) {
             throw new InvalidReservationFormException("필수 정보가 비어있습니다.");
+        }
+
+        if (reservation.getDate().isBefore(LocalDate.now())) {
+            throw new InvalidReservationFormException("예약 날짜는 오늘보다 이전일 수 없습니다.");
         }
     }
 
