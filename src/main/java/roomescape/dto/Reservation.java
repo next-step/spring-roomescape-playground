@@ -2,6 +2,12 @@ package roomescape.dto;
 
 import roomescape.dto.exception.NotFoundReservationException;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.zip.DataFormatException;
+
 public class Reservation {
     private Long id;
     private String name;
@@ -13,8 +19,8 @@ public class Reservation {
 
     public Reservation(Long id, String name, String date, String time) {
         validateEmpty(name);
-        validateEmpty(date);
-        validateEmpty(time);
+        validateDate(date);
+        validateTime(time);
 
         this.id = id;
         this.name = name;
@@ -24,8 +30,8 @@ public class Reservation {
 
     public Reservation(String name, String date, String time) {
         validateEmpty(name);
-        validateEmpty(date);
-        validateEmpty(time);
+        validateDate(date);
+        validateTime(time);
 
         this.name = name;
         this.date = date;
@@ -57,4 +63,25 @@ public class Reservation {
             throw new NotFoundReservationException("값이 존재하지 않습니다.");
         }
     }
+
+    private void validateDate(String dateString) {
+        DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        try {
+            LocalDate.parse(dateString, DATE_FORMATTER);
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("날짜 형식이 맞지 않습니다.");
+        }
+    }
+
+    private void validateTime(String timeString) {
+        DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("hh:mm");
+
+        try {
+            LocalTime.parse(timeString, TIME_FORMATTER);
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("시간 형식이 맞지 않습니다.");
+        }
+    }
+
 }

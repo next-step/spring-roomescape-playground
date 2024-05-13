@@ -81,9 +81,9 @@ public class MissionStepTest {
     @Test
     void 사단계() {
         Map<String, String> params = new HashMap<>();
-        params.put("name", "브라운");
-        params.put("date", "");
-        params.put("time", "");
+        params.put("name", "");
+        params.put("date", "2024-02-30");
+        params.put("time", "25:11");
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -97,5 +97,7 @@ public class MissionStepTest {
                 .when().delete("/reservations/1")
                 .then().log().all()
                 .statusCode(400);
+
+
     }
 }
