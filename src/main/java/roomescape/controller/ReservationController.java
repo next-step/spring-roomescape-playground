@@ -18,20 +18,17 @@ public class ReservationController {
     private List<Reservation> reservations = new ArrayList<>();
     private AtomicLong index = new AtomicLong(1);
 
-//    @GetMapping("/reservations")
-//    public ResponseEntity<List<Reservation>> getReservations() {
-//        reservations.add(Reservation.toEntity(index.getAndIncrement(), "브라운", "2023-01-01", "10:00"));
-//        reservations.add(Reservation.toEntity(index.getAndIncrement(), "브라운", "2023-01-02", "11:00"));
-//        reservations.add(Reservation.toEntity(index.getAndIncrement(), "브라운", "2023-01-03", "12:00"));
-//
-//        return ResponseEntity.ok().body(reservations);
-//    }
+    @GetMapping("/reservations")
+    public ResponseEntity<List<Reservation>> getReservations() {
+
+        return ResponseEntity.ok().body(reservations);
+    }
 
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservation) {
         Reservation newReservation = Reservation.toEntity(index.getAndIncrement(), reservation);
         reservations.add(newReservation);
-        
+
         return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
     }
 
