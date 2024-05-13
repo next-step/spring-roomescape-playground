@@ -21,18 +21,14 @@ public class ReservationApiController {
 
     @GetMapping("/reservations")
     public ResponseEntity<List<ReservationResponseDto>> reservations(){
-        List<Reservation> reservations = reservationService.findAllReservations();
-
-        List<ReservationResponseDto> responseDtoList = reservations.stream()
-                .map(ReservationResponseDto::from)
-                .collect(Collectors.toList());
+        List<ReservationResponseDto> responseDtoList = reservationService.findAllReservations();
 
         return ResponseEntity.ok(responseDtoList);
     }
 
-//    @PostMapping("/reservations")
-//    public ResponseEntity<ReservationResponseDto> addReservation(@RequestBody ReservationRequestDto reservationRequestDto){
-//
-//
-//    }
+    @PostMapping("/reservations")
+    public ResponseEntity<ReservationResponseDto> addReservation(@RequestBody ReservationRequestDto reservationRequestDto){
+
+
+    }
 }
