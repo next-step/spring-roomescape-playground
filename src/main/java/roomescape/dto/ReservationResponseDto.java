@@ -17,8 +17,8 @@ public class ReservationResponseDto {
         ReservationResponseDto dto = new ReservationResponseDto();
         dto.setId(reservation.getId());
         dto.setName(reservation.getName());
-        dto.setDate(reservation.getDateTime().toLocalDate().toString());
-        dto.setTime(reservation.getDateTime().toLocalTime().toString());
+        dto.setDate(reservation.getDate().toString());
+        dto.setTime(reservation.getTime().toString());
         return dto;
     }
 }

@@ -10,7 +10,9 @@ import roomescape.dto.ReservationRequestDto;
 import roomescape.dto.ReservationResponseDto;
 import roomescape.service.ReservationService;
 
+import java.net.URI;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 @RestController
@@ -29,6 +31,19 @@ public class ReservationApiController {
     @PostMapping("/reservations")
     public ResponseEntity<ReservationResponseDto> addReservation(@RequestBody ReservationRequestDto reservationRequestDto){
 
+        ReservationResponseDto responseDto = reservationService.addReservation(reservationRequestDto);
+        return ResponseEntity.created(URI.create("/reservations/" + responseDto.getId()))
+                .body(responseDto);
+    }
 
+    @DeleteMapping("/reservations/{id}")
+    public ResponseEntity<Void> cancleReservation(@PathVariable Long id){
+        boolean canceled = reservationService.cancelReservation(id);
+
+        if (canceled) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

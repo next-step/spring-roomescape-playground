@@ -1,16 +1,15 @@
-package roomescape.domain;
+package roomescape.dto;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-@Data
-public class Reservation {
-    private Long id;
+@Getter
+@Setter
+public class ReservationRequestDto {
     private String name;
     private LocalDate date;
     private LocalTime time;
-
 }

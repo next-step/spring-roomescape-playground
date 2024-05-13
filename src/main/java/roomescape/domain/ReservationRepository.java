@@ -15,4 +15,24 @@ public class ReservationRepository {
     public List<Reservation> findAll() {
         return new ArrayList<>(reservations.values());
     }
+    public Reservation save(Reservation reservation) {
+        if (reservation == null) {
+            throw new IllegalArgumentException("예약 정보가 없습니다.");
+        }
+
+        if (reservation.getId() != null && reservations.containsKey(reservation.getId())) {
+            throw new IllegalArgumentException("이미 등록된 예약입니다.");
+        }
+
+        reservations.put(reservation.getId(), reservation);
+        return reservation;
+    }
+
+    public Reservation findById(Long id) {
+        return reservations.get(id);
+    }
+
+    public void deleteById(Long id) {
+        reservations.remove(id);
+    }
 }
