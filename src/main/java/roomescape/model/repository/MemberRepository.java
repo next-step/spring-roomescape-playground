@@ -13,11 +13,8 @@ public class MemberRepository {
     private static int id = 0;
     private static final Map<Integer, MemberDTO> reservationStore = new HashMap<>();
 
-    public MemberDTO MemberAdd(MemberDTO memberDTO, String name, String date, String time) {
+    public MemberDTO MemberAdd(MemberDTO memberDTO) {
         memberDTO.setId(++id);
-        memberDTO.setName(name);
-        memberDTO.setDate(date);
-        memberDTO.setTime(time);
         reservationStore.put(memberDTO.getId(), memberDTO);
         return memberDTO;
     }

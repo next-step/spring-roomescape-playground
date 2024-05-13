@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import roomescape.model.MemberDTO;
 import roomescape.model.repository.MemberRepository;
 
@@ -17,7 +18,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class HomeController {
 
-    private List<MemberDTO> reservations = new ArrayList<>();
     private final MemberRepository memberRepository;
 
     @GetMapping("/")
@@ -41,7 +41,7 @@ public class HomeController {
 
     @PostConstruct
     public void init() {
-        memberRepository.MemberAdd(new MemberDTO(), "브라운", "2023-01-01", "10:00");
-        memberRepository.MemberAdd(new MemberDTO(), "브라운", "2023-02-01", "10:00");
+        memberRepository.MemberAdd(new MemberDTO("브라운", "2023-01-01", "10:00"));
+        memberRepository.MemberAdd(new MemberDTO("브라운", "2023-02-01", "10:00"));
     }
 }
