@@ -3,7 +3,6 @@ package roomescape.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import org.springframework.format.annotation.DateTimeFormat;
 
 public class ReservationResponseDto {
 

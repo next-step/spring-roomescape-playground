@@ -24,4 +24,4 @@
   - (필요한 경우, 더 만들어보기)
 - [x] 400을 반환하도록 하는 커스텀 예외를 생성한다.
 
-- [ ] `@ControllerAdvice` 학습하기 
+- [x] `@ControllerAdvice` 학습하기 
