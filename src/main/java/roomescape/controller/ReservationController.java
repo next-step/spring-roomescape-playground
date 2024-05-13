@@ -44,7 +44,6 @@ public class ReservationController {
     }
 
     @PostMapping("/reservations")
-    @ResponseBody
     public ResponseEntity<ReservationResponseDto> saveReservation(@RequestBody ReservationRequestDto dto) {
         RequestValidator.validateSaveRequest(dto);
         final Reservation reservation = new Reservation(
