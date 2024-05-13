@@ -33,7 +33,12 @@ public class RoomescapeController {
 
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservation) {
+        if (!reservation.validate()) {
+            return ResponseEntity.status(400).build();
+        }
+
         Reservation newReservation = new Reservation(id.getAndIncrement(), reservation.getName(), reservation.getDate(), reservation.getTime());
+
         reservations.add(newReservation);
         URI location = URI.create("/reservations/" + newReservation.getId());
         return ResponseEntity.created(location).body(newReservation);
@@ -41,12 +46,16 @@ public class RoomescapeController {
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
-        Reservation reservation = reservations.stream()
-                .filter(it -> Objects.equals(it.getId(), id))
-                .findFirst()
-                .orElseThrow(RuntimeException::new);
-        reservations.remove(reservation);
+        try {
+            Reservation reservation = reservations.stream()
+                    .filter(it -> Objects.equals(it.getId(), id))
+                    .findFirst()
+                    .orElseThrow(RuntimeException::new);
 
+            reservations.remove(reservation);
+        }catch (RuntimeException e){
+            return ResponseEntity.status(400).build();
+        }
         return ResponseEntity.noContent().build();
     }
 }

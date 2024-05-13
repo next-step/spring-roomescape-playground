@@ -13,6 +13,13 @@ public class Reservation {
         this.time = time;
     }
 
+    public boolean validate() {
+        if(this.getDate() == "" || this.getTime() == ""){
+            return false;
+        }
+        return true;
+    }
+
     public Long getId() {
         return id;
     }
