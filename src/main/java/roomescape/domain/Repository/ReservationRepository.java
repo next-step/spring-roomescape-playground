@@ -16,15 +16,9 @@ public class ReservationRepository {
 
 
     public Reservation save(Reservation reservation) {
-        validateReservation(reservation);
         reservation.setId(++sequence);
         store.put(reservation.getId(),reservation);
         return reservation;
-    }
-
-    private void validateReservation(Reservation reservation) {
-        if(reservation.getTime().isBlank() || reservation.getDate().isBlank() || reservation.getName().isBlank())
-            throw new NoDataException("데이터가 비어있습니다.");
     }
 
     public Reservation findById(Long id) {

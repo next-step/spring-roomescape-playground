@@ -8,7 +8,7 @@ import roomescape.domain.Model.Reservation;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-@Getter @Setter
+@Data
 public class RequestDto {
     private String name;
     private String date;

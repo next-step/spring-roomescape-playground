@@ -11,6 +11,7 @@ import roomescape.domain.Dto.RequestDto;
 import roomescape.domain.Dto.ResponseDto;
 import roomescape.domain.Model.Reservation;
 import roomescape.domain.Repository.ReservationRepository;
+import roomescape.web.Service.ReservationService;
 
 
 import java.lang.reflect.Member;
@@ -25,7 +26,7 @@ import static java.util.stream.Collectors.toList;
 @Controller
 @RequiredArgsConstructor
 public class ReservationController {
-    private final ReservationRepository reservationRepository;
+    private final ReservationService reservationService;
 
     @GetMapping("/reservation")
     public String reservation(){
@@ -35,7 +36,7 @@ public class ReservationController {
     @GetMapping ("/reservations")
     @ResponseBody
     public ResponseEntity<List<ResponseDto>> checkReservation(){
-        List<Reservation> reservations = reservationRepository.findAll();
+        List<Reservation> reservations = reservationService.findAll();
         List<ResponseDto> responseDtos = reservations.stream()
                 .map(ResponseDto::makeResponse)
                 .toList();
@@ -45,7 +46,7 @@ public class ReservationController {
     @ResponseBody
     public ResponseEntity<ResponseDto> addReservation(@RequestBody RequestDto requestDto){
 
-        Reservation reservation = reservationRepository.save(requestDto.toReservation());
+        Reservation reservation = reservationService.join(requestDto.toReservation());
         ResponseDto responseDto = ResponseDto.makeResponse(reservation);
         URI location = URI.create("/reservations/"+responseDto.getId());
         return ResponseEntity.created(location).body(responseDto);
@@ -53,7 +54,7 @@ public class ReservationController {
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable("id") Long id) {
-        reservationRepository.deleteReservation(id);
+        reservationService.delete(id);
         return ResponseEntity.noContent().build();
     }
 
