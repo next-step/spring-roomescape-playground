@@ -1,5 +1,12 @@
 package roomescape;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import io.restassured.RestAssured;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,9 +18,11 @@ public class MissionStepTest {
 
     @Test
     void 일단계() {
-        RestAssured.given().log().all()
+        var response = RestAssured.given().log().all()
                 .when().get("/")
-                .then().log().all()
-                .statusCode(200);
+                .then().log().all().extract();
+//                .statusCode(200);
+
+        assertThat(response.asString()).contains("어드민 페이지");
     }
 }
