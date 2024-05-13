@@ -3,6 +3,7 @@ package roomescape.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import roomescape.domain.Reservation;
 import roomescape.domain.ReservationRepository;
@@ -21,13 +22,16 @@ public class ReservationApiController {
     }
 
     @GetMapping("/reservations")
-    public ResponseEntity<List<Reservation>> reservations(){
+    public ResponseEntity<List<ReservationResponseDto>> reservations(){
         List<Reservation> reservations = reservationRepository.findAll();
 
         List<ReservationResponseDto> responseDtoList = reservations.stream()
                 .map(ReservationResponseDto::from)
                 .collect(Collectors.toList());
 
-        return ResponseEntity.ok(reservations);
+        return ResponseEntity.ok(responseDtoList);
     }
+
+    @PostMapping("/reservations")
+    public ResponseEntity<>
 }
