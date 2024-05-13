@@ -24,6 +24,7 @@ public class HomeController {
     }
 
 
+    @ResponseBody
     @GetMapping("/reservations")
     public List<MemberDTO> allReservationsController() {
         List<MemberDTO> reservations = memberRepository.findAll();
