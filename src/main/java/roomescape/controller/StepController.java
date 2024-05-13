@@ -12,4 +12,10 @@ public class StepController {
 
         return "home";
     }
+
+    @GetMapping("/reservation")
+    public String viewReservation(){
+
+        return "reservation";
+    }
 }
