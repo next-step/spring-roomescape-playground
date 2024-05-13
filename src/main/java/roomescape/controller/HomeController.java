@@ -1,11 +1,14 @@
 package roomescape.controller;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.NoHandlerFoundException;
 import roomescape.model.MemberDTO;
 import roomescape.model.repository.MemberRepository;
 
@@ -42,7 +45,7 @@ public class HomeController {
 
     @ResponseBody
     @PostMapping("/reservations")
-    public MemberDTO reservationAddController(@RequestBody MemberDTO memberDTO) {
+    public MemberDTO reservationAddController(@Valid @RequestBody MemberDTO memberDTO) {
         memberRepository.MemberAdd(memberDTO);
         log.info("memberDTO = {}", memberDTO);
         return memberDTO;
@@ -57,5 +60,10 @@ public class HomeController {
     public void init() {
         memberRepository.MemberAdd(new MemberDTO("브라운", "2023-01-01", "10:00"));
         memberRepository.MemberAdd(new MemberDTO("브라운", "2023-02-01", "10:00"));
+    }
+
+    @ExceptionHandler(NoHandlerFoundException.class)
+    public ResponseEntity handleException(NoHandlerFoundException e) {
+        return ResponseEntity.badRequest().build();
     }
 }
