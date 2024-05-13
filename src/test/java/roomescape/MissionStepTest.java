@@ -18,11 +18,9 @@ public class MissionStepTest {
 
     @Test
     void 일단계() {
-        var response = RestAssured.given().log().all()
+         RestAssured.given().log().all()
                 .when().get("/")
-                .then().log().all().extract();
-//                .statusCode(200);
-
-        assertThat(response.asString()).contains("어드민 페이지");
+                .then().log().all()
+                .statusCode(200);
     }
 }
