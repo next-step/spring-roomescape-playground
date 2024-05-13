@@ -5,12 +5,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import roomescape.model.MemberDTO;
 import roomescape.model.repository.MemberRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -25,18 +23,33 @@ public class HomeController {
         return "home";
     }
 
+
     @GetMapping("/reservations")
-    public List<MemberDTO> reservationsController() {
+    public List<MemberDTO> allReservationsController() {
         List<MemberDTO> reservations = memberRepository.findAll();
         log.info("reservations = {}", reservations);
         return reservations;
     }
+
 
     @GetMapping("/reservation")
     public String reservationController(Model model) {
         List<MemberDTO> reservations = memberRepository.findAll();
         model.addAttribute("members", reservations);
         return "reservation";
+    }
+
+    @ResponseBody
+    @PostMapping("/reservations")
+    public MemberDTO reservationAddController(@RequestBody MemberDTO memberDTO) {
+        memberRepository.MemberAdd(memberDTO);
+        log.info("memberDTO = {}", memberDTO);
+        return memberDTO;
+    }
+
+    @DeleteMapping("/reservations/{id}")
+    public void deleteController(@PathVariable int id) {
+        memberRepository.delete(id);
     }
 
     @PostConstruct

@@ -22,4 +22,8 @@ public class MemberRepository {
     public List<MemberDTO> findAll() {
         return new ArrayList<>(reservationStore.values());
     }
+
+    public void delete(int id) {
+        reservationStore.remove(id);
+    }
 }
