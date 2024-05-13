@@ -1,5 +1,7 @@
 package roomescape.dto;
 
+import roomescape.exception.NotFoundReservationException;
+
 public class Reservation {
     private Long id;
     private String name;
@@ -10,6 +12,10 @@ public class Reservation {
     }
 
     public Reservation(Long id, String name, String date, String time) {
+        validateEmpty(name);
+        validateEmpty(date);
+        validateEmpty(time);
+
         this.id = id;
         this.name = name;
         this.date = date;
@@ -17,6 +23,10 @@ public class Reservation {
     }
 
     public Reservation(String name, String date, String time) {
+        validateEmpty(name);
+        validateEmpty(date);
+        validateEmpty(time);
+
         this.name = name;
         this.date = date;
         this.time = time;
@@ -42,4 +52,9 @@ public class Reservation {
         return new Reservation(id, reservation.name, reservation.date, reservation.time);
     }
 
+    private void validateEmpty(String data) {
+        if (data.isEmpty()) {
+            throw new NotFoundReservationException("값이 존재하지 않습니다.");
+        }
+    }
 }
