@@ -47,7 +47,6 @@ public class ReservationController {
     }
 
 
-
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> cancelReservation(@PathVariable long id) {
         Reservation reservation = reservations.stream()
@@ -59,6 +58,5 @@ public class ReservationController {
 
         return ResponseEntity.noContent().build();
     }
-
 
 }
