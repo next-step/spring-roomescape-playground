@@ -34,11 +34,6 @@ public class ReservationService {
         LocalDate date = reservationRequest.getDate();
         LocalTime time = reservationRequest.getTime();
 
-
-        if (name == null || name.isEmpty() || date == null || time == null) {
-            throw new BadRequestException("예약 정보가 올바르지 않습니다.");
-        }
-
         Reservation reservation = new Reservation();
         reservation.setName(name);
         reservation.setDate(date);
