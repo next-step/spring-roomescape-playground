@@ -6,15 +6,15 @@ import roomescape.domain.Reservation;
 
 @Setter
 @Getter
-public class ReservationResponseDto {
+public class ReservationResponse {
 
     public Long id;
     public String name;
     public String date;
     public String time;
 
-    public static ReservationResponseDto from(Reservation reservation) {
-        ReservationResponseDto dto = new ReservationResponseDto();
+    public static ReservationResponse from(Reservation reservation) {
+        ReservationResponse dto = new ReservationResponse();
         dto.setId(reservation.getId());
         dto.setName(reservation.getName());
         dto.setDate(reservation.getDate().toString());

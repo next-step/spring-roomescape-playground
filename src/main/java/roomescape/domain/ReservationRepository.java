@@ -11,6 +11,7 @@ import java.util.Map;
 @Repository
 public class ReservationRepository {
     private final Map<Long, Reservation> reservations = new HashMap<>();
+    private Long index = 0L;
 
     public List<Reservation> findAll() {
         return new ArrayList<>(reservations.values());
@@ -23,8 +24,9 @@ public class ReservationRepository {
         if (reservation.getId() != null && reservations.containsKey(reservation.getId())) {
             throw new IllegalArgumentException("이미 등록된 예약입니다.");
         }
-
+        reservation.setId(++index);
         reservations.put(reservation.getId(), reservation);
+
         return reservation;
     }
 
