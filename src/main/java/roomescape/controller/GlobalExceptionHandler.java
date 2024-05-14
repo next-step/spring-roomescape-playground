@@ -19,10 +19,4 @@ public class GlobalExceptionHandler {
         System.out.println(error.getMessage());
         return ResponseEntity.badRequest().build();
     }
-
-    @ExceptionHandler
-    public ResponseEntity<Void> dateTimeParseExceptionHandler(DateTimeParseException error) {
-        System.out.println(error.getMessage());
-        return ResponseEntity.badRequest().build();
-    }
 }

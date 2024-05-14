@@ -20,3 +20,10 @@
 - 예약 관련 API 호출 시 에러가 발생하는 경우 요청의 문제인 경우 StatusCode(400) 반환
   - 예약 추가 시 필요한 인자값이 비어있는 경우
   - 삭제 할 예약의 식별자로 저장된 예약을 찾을 수 없는 경우
+
+코드 리뷰 반영 (리팩터링)
+- Reservation 객체의 name field 유효성 검사 추가
+  - 이름 입력이 안되었을 때
+  - 이름이 숫자로만 구성되어 있을 때
+- 예약 삭제 예외처리 수정
+  - IllegalArgumentException -> NotFoundException

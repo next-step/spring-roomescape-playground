@@ -1,9 +1,6 @@
 package roomescape.controller;
 
 import java.net.URI;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -23,6 +20,7 @@ import roomescape.domain.Reservation;
 
 @Controller
 public class ReservationController {
+    private final String Not_Found_Reservation_Announcement = "삭제할 예약 정보가 없습니다.";
     private final List<Reservation> reservations = new ArrayList<>();
     private final AtomicLong index = new AtomicLong(1);
 
@@ -33,8 +31,6 @@ public class ReservationController {
 
     @GetMapping(value = "/reservations")
     public ResponseEntity<List<Reservation>> reservations() {
-        if(reservations.isEmpty())
-            throw new NotFoundException("예약된 정보가 없습니다.");
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         return new ResponseEntity<>(reservations, headers, HttpStatus.OK);
@@ -57,7 +53,7 @@ public class ReservationController {
         Reservation reservation = reservations.stream()
                 .filter(it -> Objects.equals(it.getId(), id))
                 .findFirst()
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new NotFoundException(Not_Found_Reservation_Announcement));
         reservations.remove(reservation);
 
         return ResponseEntity.noContent().build();
