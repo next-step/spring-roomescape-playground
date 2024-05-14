@@ -12,8 +12,8 @@ class ReservationExceptionHandler {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 
-    @ExceptionHandler(BadRequestReservation.class)
-    public ResponseEntity handleBadRequestReservation(BadRequestReservation e) {
+    @ExceptionHandler(BadRequestReservationException.class)
+    public ResponseEntity handleBadRequestReservation(BadRequestReservationException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 }

@@ -1,13 +1,11 @@
 package roomescape.Model;
 
-
-
 public class Reservation {
 
     private Long id;
     private String name;
-    private String time;
     private String date;
+    private String time;
 
     public Reservation(){
 
@@ -27,12 +25,12 @@ public class Reservation {
         return name;
     }
 
-    public String getTime() {
+   public String getTime(){
         return time;
-    }
+   }
 
-    public String getDate() {
+   public String getDate(){
         return date;
-    }
+   }
 
 }
