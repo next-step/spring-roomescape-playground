@@ -21,10 +21,6 @@ public class ReservationRepository {
         return reservation;
     }
 
-    public Reservation findById(Long id) {
-        return store.get(id);
-    }
-
     public List<Reservation> findAll() {
         return new ArrayList<>(store.values());
     }
