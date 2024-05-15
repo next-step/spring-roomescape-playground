@@ -16,7 +16,6 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @Controller
 public class ReservationController {
-    private final String INVALID_REQUEST_MESSAGE = "예약 정보에 공백이 입력되었습니다.";
     private final String NOT_FOUND_RESERVATION_MESSAGE = "삭제할 예약을 찾을 수 없습니다.";
 
     private List<Reservation> reservations = new ArrayList<>();
@@ -36,9 +35,7 @@ public class ReservationController {
 
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> addReservation(@RequestBody Reservation request) {
-        if (StringUtils.isBlank(request.getName()) || StringUtils.isBlank(request.getDate()) || StringUtils.isBlank(request.getTime())) {
-            throw new InvalidRequestException(INVALID_REQUEST_MESSAGE);
-        }
+        request.validate();
 
         long id = index.incrementAndGet();
         Reservation reservation = new Reservation(id, request.getName(), request.getDate(), request.getTime());
