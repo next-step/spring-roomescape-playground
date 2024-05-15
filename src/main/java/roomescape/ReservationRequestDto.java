@@ -1,5 +1,6 @@
 package roomescape;
 
+
 import org.thymeleaf.util.StringUtils;
 
 public class ReservationRequestDto {
@@ -21,7 +22,7 @@ public class ReservationRequestDto {
         this.date = date;
         this.time = time;
     }
-
+  
     public String getTime() {
         return time;
     }

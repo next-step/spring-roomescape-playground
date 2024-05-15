@@ -28,6 +28,7 @@ class ReservationExceptionHandler {
 @Controller
 public class ReservationController {
 
+
     private ReservationQueryingDAO queryingDAO;
 
     public ReservationController(ReservationQueryingDAO queryingDAO) {
@@ -37,6 +38,7 @@ public class ReservationController {
     @GetMapping("/reservation")
     public void reservation () {
     }
+
 
     @GetMapping("/reservations")
     public ResponseEntity<List<Reservation>> read() {
