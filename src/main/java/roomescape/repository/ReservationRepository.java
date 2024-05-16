@@ -10,7 +10,7 @@ import java.util.List;
 
 @Repository
 public class ReservationRepository {
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
     public ReservationRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -29,5 +29,21 @@ public class ReservationRepository {
                     );
                     return reservation;
                 });
+    }
+
+    public int save(Reservation reservation) {
+        return jdbcTemplate.update(
+                "INSERT INTO reservation(name, date, time) VALUES (?, ?, ?)",
+                reservation.getName(),
+                reservation.getDate(),
+                reservation.getTime()
+        );
+    }
+
+    public int deleteById(int id){
+        return jdbcTemplate.update(
+                "delete from reservation where id = ?",
+                id
+        );
     }
 }

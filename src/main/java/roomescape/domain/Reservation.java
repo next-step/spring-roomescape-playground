@@ -13,6 +13,12 @@ public class Reservation {
     @DateTimeFormat(pattern = "HH:mm")
     private LocalTime time;
 
+    public Reservation(String name, LocalDate date, LocalTime time) {
+        this.name = name;
+        this.date = date;
+        this.time = time;
+    }
+
     public Reservation(int id, String name, LocalDate date, LocalTime time) {
         this.id = id;
         this.name = name;
