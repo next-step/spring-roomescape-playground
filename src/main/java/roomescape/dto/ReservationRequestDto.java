@@ -15,20 +15,20 @@ public class ReservationRequestDto {
     private LocalTime time;
 
     public ReservationRequestDto(final LocalDate date, final String name, final LocalTime time) {
-        validateRequestField();
+        validateRequestField(date, name, time);
         this.date = date;
         this.name = name;
         this.time = time;
     }
 
-    private void validateRequestField() {
-        if (this.date == null) {
+    private void validateRequestField(final LocalDate date, final String name, final LocalTime time) {
+        if (date == null) {
             throw new ReservationException(ErrorMessage.EMPTY_DATE);
         }
-        if (this.name.isEmpty()) {
+        if (name.isEmpty()) {
             throw new ReservationException(ErrorMessage.EMPTY_NAME);
         }
-        if (this.time == null) {
+        if (time == null) {
             throw new ReservationException(ErrorMessage.EMPTY_TIME);
         }
     }
