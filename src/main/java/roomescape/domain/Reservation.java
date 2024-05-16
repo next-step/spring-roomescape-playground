@@ -7,14 +7,17 @@ public class Reservation {
 	private String date;
 	private String time;
 
-	public Reservation(Long id, String name, String date, String time) {
-		this.id = id;
+	public Reservation(String name, String date, String time) {
 		this.name = name;
 		this.date = date;
 		this.time = time;
 	}
-	
-	public long getId() {
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public Long getId() {
 		return id;
 	}
 
