@@ -9,12 +9,12 @@ import java.util.NoSuchElementException;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(NoSuchElementException.class)
+    @ExceptionHandler
     public ResponseEntity handleNoSuchElementException(NoSuchElementException e) {
         return ResponseEntity.badRequest().build();
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
+    @ExceptionHandler
     public ResponseEntity handleIllegalArgumentException(IllegalArgumentException e) {
         return ResponseEntity.badRequest().build();
     }

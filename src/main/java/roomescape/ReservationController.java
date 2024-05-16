@@ -41,13 +41,10 @@ public class ReservationController {
 
     // 예약 생성
     @PostMapping("/reservations")
-    public ResponseEntity<Void> create(@RequestBody Reservation reservation) {
-        if (reservation.getName().isEmpty() || reservation.getTime().isEmpty() || reservation.getDate().equals("")){
-            throw new IllegalArgumentException("필요한 인자가 없습니다");
-        }
+    public ResponseEntity<Reservation> create(@RequestBody Reservation reservation) {
         Reservation newReservation = Reservation.toEntity(reservation, index.getAndIncrement());
         reservations.add(newReservation);
-        return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).build();
+        return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
     }
 
     // 예약 삭제

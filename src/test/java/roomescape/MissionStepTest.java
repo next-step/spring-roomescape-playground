@@ -50,10 +50,10 @@ public class MissionStepTest {
                 .body(params)
                 .when().post("/reservations")
                 .then().log().all()
-                .statusCode(201);
+                .statusCode(201)
         // test 중 아래 코드에서 오류 발생하여 주석으로 지운 후 실행. -> 성공
-//                .header("Location", "/reservations/1")
-//                .body("id", is(1));
+                .header("Location", "/reservations/1")
+                .body("id", is(1));
 
         RestAssured.given().log().all()
                 .when().get("/reservations")

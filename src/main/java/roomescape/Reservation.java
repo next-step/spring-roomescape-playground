@@ -43,6 +43,9 @@ public class Reservation {
     }
 
     public static Reservation toEntity(Reservation reservation, Long id) {
+        if (reservation.getName().isEmpty() || reservation.getTime().isEmpty() || reservation.getDate().equals("")){
+            throw new IllegalArgumentException("필요한 인자가 없습니다");
+        }
         return new Reservation(id, reservation.name, reservation.date, reservation.time);
     }
 }
