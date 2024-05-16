@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import roomescape.domain.Reservation;
 import roomescape.service.ReservationService;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -18,16 +19,19 @@ public class ReservationController {
 
     @GetMapping("/reservations")
     public ResponseEntity<List<Reservation>> getReservations() {
-        return reservationService.getReservations();
+        List<Reservation> reservations = reservationService.getReservations();
+        return ResponseEntity.ok(reservations);
     }
 
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservation) {
-        return reservationService.createReservation(reservation);
+        Reservation createdReservation = reservationService.createReservation(reservation);
+        return ResponseEntity.created(URI.create("/reservations/" + createdReservation.getId())).body(createdReservation);
     }
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable long id) {
-        return reservationService.deleteReservation(id);
+        reservationService.deleteReservation(id);
+        return ResponseEntity.noContent().build();
     }
 }
