@@ -1,9 +1,24 @@
 package roomescape.domain;
 
-public record Reservation(
-        Long id,
-        String name,
-        String date,
-        String time
-) {
+import java.util.concurrent.atomic.AtomicLong;
+
+public class Reservation {
+
+    private static AtomicLong ID_INDEX = new AtomicLong(1);
+
+    private Long id;
+    private String name;
+    private String date;
+    private String time;
+
+    public Reservation(String name, String date, String time) {
+        id = ID_INDEX.getAndIncrement();
+        this.name = name;
+        this.date = date;
+        this.time = time;
+    }
+
+    public Long getId() {
+        return id;
+    }
 }

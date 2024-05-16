@@ -9,9 +9,11 @@ import java.util.List;
 public class ReservationRepository {
     private final List<Reservation> reservations = new ArrayList<>();
 
-
-    public List<Reservation> findAll() {
-        return List.copyOf(reservations);
+    public void addReservation(Reservation reservation) {
+        reservations.add(reservation);
     }
 
+    public List<Reservation> findAll() {
+        return reservations;
+    }
 }
