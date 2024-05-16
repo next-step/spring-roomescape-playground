@@ -108,22 +108,8 @@ public class MissionStepTest{
         }
     }
 
-
-
-
-
     @Test
-    void 육단계() {
-        jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "브라운", "2023-08-05", "15:40");
 
-        ReservationController reservationController = new ReservationController(jdbcTemplate);
-        List<Reservation> reservationList = reservationController.findReservation();
-
-        Integer count = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
-
-        assertThat(reservationList.size()).isEqualTo(count); //가져온 목록의 크기와 데이터베이스에 있는 예약의 수를 비교하여 일치하는지 확인
-    }
-    /*
     void 육단계() {
         jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "브라운", "2023-08-05", "15:40");
 
@@ -136,7 +122,7 @@ public class MissionStepTest{
         Integer count = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
 
         assertThat(reservationList.size()).isEqualTo(count);
-     */
+    }
 
     @Test
     void 칠단계() {

@@ -28,17 +28,23 @@ import static java.lang.String.valueOf;
 @Controller
 public class ReservationController {
 
-    private List<Reservation> reservations = new ArrayList<>();
-    private AtomicLong index = new AtomicLong(0);
+    private final RowMapper<Reservation> reservationRowMapper = (resultSet, rowNum) -> {
+        Reservation reservation = new Reservation(
+                resultSet.getLong("id"),
+                resultSet.getString("name"),
+                resultSet.getString("time"),
+                resultSet.getString("date")
+        );
+        return reservation;
+    };
+    private JdbcTemplate jdbcTemplate;
 
-
-    @GetMapping("/reservation")
-    public String reservation() {
-        return "reservation.html";
+    public ReservationController(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
 
-    // 예약 목록 조회 API
+    //데이터 베이스 조회
     @GetMapping("/reservations")
     @ResponseBody
     public ResponseEntity<List<ReadReservationResponse>> readAll() {
@@ -131,7 +137,7 @@ public class ReservationController {
     }
 
 
-    @DeleteMapping("/reservations/{id}") // 여기도 마찬가지. HTTP 메서드가 Delete 이고, URL이 /reservations/{id} 일 때 요청 처리를 해라.
+    @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable long id) throws Exception {
 
         // 요청으로 들어온 id의 reservation이 없는 경우 기존 로직은 예외를 던진다.
