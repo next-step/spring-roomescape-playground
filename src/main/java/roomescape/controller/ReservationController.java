@@ -3,6 +3,7 @@ package roomescape.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import roomescape.domain.Reservation;
 import roomescape.domain.ReservationRepository;
 
@@ -15,11 +16,6 @@ public class ReservationController {
 
     public ReservationController(ReservationRepository repository) {
         this.reservationRepository = repository;
-    }
-
-    @GetMapping("/reservation")
-    public String reservationPage() {
-        return "reservation";
     }
 
     @GetMapping("/reservations")
