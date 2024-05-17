@@ -14,10 +14,10 @@ public record SaveReservationRequest(
 ) {
 
     public SaveReservationRequest {
-        validate();
+        validate(name, date, time);
     }
 
-    private void validate() {
+    private void validate(String name, String date, String time) {
         validateBlanks(name, date, time);
     }
 
