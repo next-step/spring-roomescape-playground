@@ -8,7 +8,7 @@ public class Reservation {
     private final LocalDateTime reservationDateTime;
     private Long id;
 
-    private Reservation(Long id, String name, LocalDateTime reservationDateTime) {
+    public Reservation(Long id, String name, LocalDateTime reservationDateTime) {
         this.id = id;
         this.name = name;
         this.reservationDateTime = reservationDateTime;
