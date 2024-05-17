@@ -2,6 +2,7 @@ package roomescape.reservation.presentation;
 
 import java.net.URI;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,7 +22,7 @@ public class ReservationController {
 
     private final ReservationRepository reservationRepository;
 
-    public ReservationController(ReservationRepository reservationRepository) {
+    public ReservationController(@Qualifier("jdbcReservationRepository") ReservationRepository reservationRepository) {
         this.reservationRepository = reservationRepository;
     }
 
