@@ -1,10 +1,12 @@
 package roomescape.reservation.domain;
 
 import java.sql.PreparedStatement;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
+import roomescape.reservation.domain.exception.NotExistReservationException;
 
 @Repository
 public class JdbcReservationRepository implements ReservationRepository {
@@ -17,8 +19,12 @@ public class JdbcReservationRepository implements ReservationRepository {
 
     @Override
     public List<Reservation> findAll() {
-        // TODO
-        return List.of();
+        String sql = "SELECT * FROM reservation";
+        return jdbcTemplate.query(sql, (rs, rowNum) -> new Reservation(
+                rs.getLong("id"),
+                rs.getString("name"),
+                rs.getObject("reservation_date_time", LocalDateTime.class)
+        ));
     }
 
     @Override
@@ -39,6 +45,10 @@ public class JdbcReservationRepository implements ReservationRepository {
 
     @Override
     public void deleteById(final Long id) {
-        // TODO
+        String sql = "DELETE FROM reservation WHERE id = ?";
+        int updatedRowCount = jdbcTemplate.update(sql, id);
+        if (updatedRowCount == 0) {
+            throw new NotExistReservationException("해당 예약을 찾을 수 없습니다.");
+        }
     }
 }
