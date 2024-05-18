@@ -5,12 +5,10 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.springframework.stereotype.Repository;
-
 import roomescape.domain.Reservation;
 
-@Repository
-public class ReservationMemoryRespository implements ReservationRepository {
+@org.springframework.stereotype.Repository
+public class MemoryRespository implements Repository {
 
 	private final Map<Long, Reservation> reservations = new ConcurrentHashMap<>();
 	private final AtomicLong index = new AtomicLong(0);

@@ -8,31 +8,31 @@ import roomescape.domain.Reservation;
 import roomescape.dto.request.ReservationSaveRequest;
 import roomescape.dto.response.ReservationResponse;
 import roomescape.exception.NotFoundReservationException;
-import roomescape.repository.ReservationRepository;
+import roomescape.repository.Repository;
 
 @Service
 public class ReservationService {
 
-	private final ReservationRepository reservationRepository;
+	private final Repository repository;
 
-	public ReservationService(ReservationRepository reservationRepository) {
-		this.reservationRepository = reservationRepository;
+	public ReservationService(Repository repository) {
+		this.repository = repository;
 	}
 
 	public ReservationResponse saveReservation(ReservationSaveRequest request) {
 		Reservation reservation = new Reservation(request.name(), request.date(), request.time());
-		reservationRepository.save(reservation);
+		repository.save(reservation);
 		return ReservationResponse.from(reservation);
 	}
 
 	public List<ReservationResponse> getReservations() {
-		return reservationRepository.findAll().stream().map(ReservationResponse::from).toList();
+		return repository.findAll().stream().map(ReservationResponse::from).toList();
 	}
 
 	public void deleteReservation(Long id) {
-		if (reservationRepository.findById(id) == null) {
+		if (repository.findById(id) == null) {
 			throw new NotFoundReservationException("존재하지 않는 예약정보 입니다.");
 		}
-		reservationRepository.delete(id);
+		repository.delete(id);
 	}
 }
