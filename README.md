@@ -55,4 +55,4 @@
 - 기존에 사용하던 List 및 AtomicLong 을 제거
 - 예약 관리 기능이 정상 동작하도록 기능을 완성
 - 예약 번호 불러오기 활성화
-  - KeyHolder 이용
+  - KeyHolder를 활용해 id 받기
