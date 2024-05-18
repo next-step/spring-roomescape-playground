@@ -4,7 +4,7 @@ import java.util.List;
 
 import roomescape.domain.Reservation;
 
-public interface Repository {
+public interface ReservationRepository {
 
 	List<Reservation> findAll();
 

@@ -8,31 +8,31 @@ import roomescape.domain.Reservation;
 import roomescape.dto.request.ReservationSaveRequest;
 import roomescape.dto.response.ReservationResponse;
 import roomescape.exception.NotFoundReservationException;
-import roomescape.repository.Repository;
+import roomescape.repository.ReservationRepository;
 
 @Service
 public class ReservationService {
 
-	private final Repository repository;
+	private final ReservationRepository reservationRepository;
 
-	public ReservationService(Repository repository) {
-		this.repository = repository;
-	}
-
-	public ReservationResponse saveReservation(ReservationSaveRequest request) {
-		Reservation reservation = new Reservation(request.name(), request.date(), request.time());
-		repository.save(reservation);
-		return ReservationResponse.from(reservation);
+	public ReservationService(ReservationRepository reservationRepository) {
+		this.reservationRepository = reservationRepository;
 	}
 
 	public List<ReservationResponse> getReservations() {
-		return repository.findAll().stream().map(ReservationResponse::from).toList();
+		return reservationRepository.findAll().stream().map(ReservationResponse::from).toList();
+	}
+	
+	public ReservationResponse saveReservation(ReservationSaveRequest request) {
+		Reservation reservation = new Reservation(request.name(), request.date(), request.time());
+		reservationRepository.save(reservation);
+		return ReservationResponse.from(reservation);
 	}
 
 	public void deleteReservation(Long id) {
-		if (repository.findById(id) == null) {
+		if (reservationRepository.findById(id) == null) {
 			throw new NotFoundReservationException("존재하지 않는 예약정보 입니다.");
 		}
-		repository.delete(id);
+		reservationRepository.delete(id);
 	}
 }
