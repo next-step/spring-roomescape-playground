@@ -1,8 +1,12 @@
 package roomescape.domain.dao;
 
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.List;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.RequestReservationDTO;
 import roomescape.domain.Reservation;
@@ -34,7 +38,18 @@ public class JdbcReservationDAO implements ReservationDAO {
     @Override
     public Reservation insert(Reservation reservation) {
         String sql = "insert into reservation (name, date, time) values (?, ?, ?)";
-        jdbcTemplate.update(sql, reservation.getName(), reservation.getDate(), reservation.getTime());
+
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, reservation.getName());
+            ps.setString(2, reservation.getDate().toString());
+            ps.setString(3, reservation.getTime().toString());
+            return ps;
+        }, keyHolder);
+
+        reservation.setId(keyHolder.getKey().longValue());
         return reservation;
     }
 

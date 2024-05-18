@@ -42,7 +42,6 @@ public class ReservationController {
     public ResponseEntity<Reservation> create(@RequestBody RequestReservationDTO request) {
         Reservation reservation = request.toReservaiton();
         Reservation newReservation = jdbcReservationDAO.insert(reservation);
-
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(URI.create("/reservations/" + Long.toString(newReservation.getId())));
         headers.setContentType(MediaType.APPLICATION_JSON);
