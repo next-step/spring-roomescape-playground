@@ -1,10 +1,7 @@
 package roomescape.controller;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -15,14 +12,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import roomescape.controller.exception.NotFoundException;
+import roomescape.domain.RequestReservationDTO;
+import roomescape.domain.ReservationDTO;
 import roomescape.domain.Reservation;
+import roomescape.domain.dao.JdbcReservationDAO;
 
 @Controller
 public class ReservationController {
-    private final String Not_Found_Reservation_Announcement = "삭제할 예약 정보가 없습니다.";
-    private final List<Reservation> reservations = new ArrayList<>();
-    private final AtomicLong index = new AtomicLong(1);
+    private final JdbcReservationDAO jdbcReservationDAO;
+
+    public ReservationController(JdbcReservationDAO jdbcReservationDAO) {
+        this.jdbcReservationDAO = jdbcReservationDAO;
+    }
 
     @GetMapping(value = "/reservation")
     public String reservation() {
@@ -30,17 +31,17 @@ public class ReservationController {
     }
 
     @GetMapping(value = "/reservations")
-    public ResponseEntity<List<Reservation>> reservations() {
+    public ResponseEntity<List<ReservationDTO>> reservations() {
+        List<ReservationDTO> reservations = jdbcReservationDAO.findAll();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         return new ResponseEntity<>(reservations, headers, HttpStatus.OK);
     }
 
     @PostMapping(value = "/reservations")
-    public ResponseEntity<Reservation> create(@RequestBody Reservation reservation) {
-        System.out.println("\n\ntest : " +reservation + "\n\n");
-        Reservation newReservation = Reservation.toEntity(reservation, index.getAndIncrement());
-        reservations.add(newReservation);
+    public ResponseEntity<Reservation> create(@RequestBody RequestReservationDTO request) {
+        Reservation reservation = request.toReservaiton();
+        Reservation newReservation = jdbcReservationDAO.insert(reservation);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(URI.create("/reservations/" + Long.toString(newReservation.getId())));
@@ -50,12 +51,7 @@ public class ReservationController {
 
     @DeleteMapping(value = "/reservations/{id}")
     public ResponseEntity<Void> delete(@PathVariable long id) {
-        Reservation reservation = reservations.stream()
-                .filter(it -> Objects.equals(it.getId(), id))
-                .findFirst()
-                .orElseThrow(() -> new NotFoundException(Not_Found_Reservation_Announcement));
-        reservations.remove(reservation);
-
+        jdbcReservationDAO.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 }

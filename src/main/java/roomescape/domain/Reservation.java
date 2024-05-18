@@ -5,21 +5,25 @@ import java.time.LocalTime;
 import java.util.Objects;
 
 public class Reservation {
-    private final Long id;
+    private Long id;
     private final String name;
     private final LocalDate date;
     private final LocalTime time;
 
-    private final String INVALID_DATE_FORMAT_MSG = "올바르지 않은 날짜 형식입니다.";
-    private final String INVALID_TIME_FORMAT_MSG = "올바르지 않은 시간 형식입니다.";
-    private final String INVALID_NAME_NULL_MSG = "이름을 입력해주세요.";
+    private final String INVALID_NULL_MSG = "입력받은 값이 없습니다..";
     private final String INVALID_NAME_FORMAT_MSG = "이름이 올바르지 않습니다.";
 
-    public Reservation(Long id, String name, LocalDate date, LocalTime time) {
+    public Reservation(Long id, String name, String date, String time) {
         this.id = id;
         this.name = validateName(name);
-        this.date = validateDateIsNotNull(date);
-        this.time = validateTimeIsNotNull(time);
+        this.date = validateDate(date);
+        this.time = validateTime(time);
+    }
+
+    public Reservation(String name, String date, String time) {
+        this.name = validateName(name);
+        this.date = validateDate(date);
+        this.time = validateTime(time);
     }
 
     public Long getId() {
@@ -38,17 +42,30 @@ public class Reservation {
         return time;
     }
 
-    public static Reservation toEntity(Reservation reservation, Long id) {
-        return new Reservation(id,
-                reservation.name,
-                reservation.date,
-                reservation.time);
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String validateName(String name) {
-        validateNameIsNotNull(name);
+        validateIsNotNull(name);
         validateNameIsNotNumber(name);
         return name;
+    }
+
+    public LocalDate validateDate(String date) {
+        validateIsNotNull(date);
+        return LocalDate.parse(date);
+    }
+
+    public LocalTime validateTime(String time) {
+        validateIsNotNull(time);
+        return LocalTime.parse(time);
+    }
+
+    public void validateIsNotNull(String value) {
+        if(value.isEmpty()) {
+            throw new IllegalArgumentException((INVALID_NULL_MSG));
+        }
     }
 
     public void validateNameIsNotNumber(String name) {
@@ -57,25 +74,5 @@ public class Reservation {
         if (isNumeric) {
             throw new IllegalArgumentException(INVALID_NAME_FORMAT_MSG);
         }
-    }
-
-    public void validateNameIsNotNull(String name) {
-        if(name.isEmpty()) {
-            throw new IllegalArgumentException((INVALID_NAME_NULL_MSG));
-        }
-    }
-
-    public LocalDate validateDateIsNotNull(LocalDate date) {
-        if(Objects.isNull(date)) {
-            throw new IllegalArgumentException(INVALID_DATE_FORMAT_MSG);
-        }
-        return date;
-    }
-
-    public LocalTime validateTimeIsNotNull(LocalTime time) {
-        if(Objects.isNull(time)){
-            throw new IllegalArgumentException(INVALID_TIME_FORMAT_MSG);
-        }
-        return time;
     }
 }
