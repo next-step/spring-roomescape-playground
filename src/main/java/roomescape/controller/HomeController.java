@@ -26,7 +26,6 @@ public class HomeController {
         return "home";
     }
 
-
     @ResponseBody
     @GetMapping("/reservations")
     public List<MemberDTO> allReservationsController() {
@@ -35,11 +34,8 @@ public class HomeController {
         return reservations;
     }
 
-
     @GetMapping("/reservation")
-    public String reservationController(Model model) {
-        List<MemberDTO> reservations = memberRepository.findAll();
-        model.addAttribute("members", reservations);
+    public String reservationController() {
         return "reservation";
     }
 
@@ -59,7 +55,8 @@ public class HomeController {
     @PostConstruct
     public void init() {
         memberRepository.MemberAdd(new MemberDTO("브라운", "2023-01-01", "10:00"));
-        memberRepository.MemberAdd(new MemberDTO("브라운", "2023-02-01", "10:00"));
+        memberRepository.MemberAdd(new MemberDTO("브라운", "2023-01-02", "11:00"));
+        memberRepository.MemberAdd(new MemberDTO("브라운", "2023-01-03", "12:00"));
     }
 
     @ExceptionHandler(NoHandlerFoundException.class)
