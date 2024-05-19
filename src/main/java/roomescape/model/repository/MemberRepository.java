@@ -13,7 +13,7 @@ public class MemberRepository {
     private static int id = 0;
     private static final Map<Integer, MemberDTO> reservationStore = new HashMap<>();
 
-    public MemberDTO MemberAdd(MemberDTO memberDTO) {
+    public MemberDTO memberAdd(MemberDTO memberDTO) {
         memberDTO.setId(++id);
         reservationStore.put(memberDTO.getId(), memberDTO);
         return memberDTO;

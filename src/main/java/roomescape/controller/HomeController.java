@@ -8,7 +8,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import roomescape.model.MemberDTO;
@@ -45,7 +44,7 @@ public class HomeController {
     @ResponseBody
     @PostMapping("/reservations")
     public ResponseEntity<MemberDTO> reservationAddController(@Valid @RequestBody MemberDTO memberDTO) {
-        MemberDTO responseDTO = memberRepository.MemberAdd(memberDTO);
+        MemberDTO responseDTO = memberRepository.memberAdd(memberDTO);
         HttpHeaders headers = new HttpHeaders();
         String uri = "/reservations/" + responseDTO.getId();
         headers.setLocation(URI.create(uri));
@@ -62,9 +61,9 @@ public class HomeController {
 
     @PostConstruct
     public void init() {
-        memberRepository.MemberAdd(new MemberDTO("브라운", "2023-01-01", "10:00"));
-        memberRepository.MemberAdd(new MemberDTO("브라운", "2023-01-02", "11:00"));
-        memberRepository.MemberAdd(new MemberDTO("브라운", "2023-01-03", "12:00"));
+        memberRepository.memberAdd(new MemberDTO("브라운", "2023-01-01", "10:00"));
+        memberRepository.memberAdd(new MemberDTO("브라운", "2023-01-02", "11:00"));
+        memberRepository.memberAdd(new MemberDTO("브라운", "2023-01-03", "12:00"));
     }
 
     @ExceptionHandler(NoHandlerFoundException.class)
