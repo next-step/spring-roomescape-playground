@@ -1,10 +1,7 @@
 package roomescape.controller;
 
 import java.net.URI;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,8 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import roomescape.dto.ReservationRequest;
-import roomescape.dto.ReservationResponseDto;
-import roomescape.mapper.DtoMapper;
+import roomescape.dto.ReservationResponse;
 import roomescape.model.Reservation;
 import roomescape.repository.ReservationRepository;
 
@@ -23,8 +19,6 @@ import roomescape.repository.ReservationRepository;
 public class ReservationController {
 
     private final ReservationRepository repository;
-
-    private final AtomicLong idMaker = new AtomicLong();
 
     public ReservationController(final ReservationRepository repository) {
         this.repository = repository;
@@ -37,20 +31,21 @@ public class ReservationController {
 
     @GetMapping("/reservations")
     @ResponseBody
-    public List<ReservationResponseDto> getReservations() {
+    public List<ReservationResponse> getReservations() {
         return repository.findAll().stream()
-                .map(DtoMapper::convertToDTO)
+                .map(ReservationResponse::from)
                 .toList();
     }
 
     @PostMapping("/reservations")
-    public ResponseEntity<ReservationResponseDto> saveReservation(@RequestBody ReservationRequest dto) {
-        final Reservation reservation = dto.convertReservation();
+    public ResponseEntity<ReservationResponse> saveReservation(
+            @RequestBody ReservationRequest request) {
+        final Reservation reservation = request.convertReservation();
         final Reservation savedReservation = repository.save(reservation);
-        final ReservationResponseDto responseDto = DtoMapper.convertToDTO(savedReservation);
+        final ReservationResponse response = ReservationResponse.from(savedReservation);
         return ResponseEntity
-                .created(URI.create("/reservations/" + responseDto.getId()))
-                .body(responseDto);
+                .created(URI.create("/reservations/" + response.id()))
+                .body(response);
     }
 
     @DeleteMapping("/reservations/{id}")
