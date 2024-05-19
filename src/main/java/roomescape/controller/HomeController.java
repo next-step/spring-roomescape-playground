@@ -55,8 +55,9 @@ public class HomeController {
     }
 
     @DeleteMapping("/reservations/{id}")
-    public void deleteController(@PathVariable int id) {
+    public ResponseEntity<Void> deleteController(@PathVariable int id) {
         memberRepository.delete(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PostConstruct
