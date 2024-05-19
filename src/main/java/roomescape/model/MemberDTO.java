@@ -1,5 +1,6 @@
 package roomescape.model;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 
@@ -7,13 +8,13 @@ import lombok.Data;
 public class MemberDTO {
     int id;
 
-    @NotEmpty
+    @NotBlank
     String name;
 
-    @NotEmpty
+    @NotBlank
     String date;
 
-    @NotEmpty
+    @NotBlank
     String time;
 
     public MemberDTO(String name, String date, String time) {
