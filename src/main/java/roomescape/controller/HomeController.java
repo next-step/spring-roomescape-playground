@@ -4,6 +4,8 @@ import jakarta.annotation.PostConstruct;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,6 +14,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 import roomescape.model.MemberDTO;
 import roomescape.model.repository.MemberRepository;
 
+import java.net.URI;
 import java.util.List;
 
 @Slf4j
@@ -41,10 +44,14 @@ public class HomeController {
 
     @ResponseBody
     @PostMapping("/reservations")
-    public MemberDTO reservationAddController(@Valid @RequestBody MemberDTO memberDTO) {
-        memberRepository.MemberAdd(memberDTO);
+    public ResponseEntity<MemberDTO> reservationAddController(@Valid @RequestBody MemberDTO memberDTO) {
+        MemberDTO responseDTO = memberRepository.MemberAdd(memberDTO);
+        HttpHeaders headers = new HttpHeaders();
+        String uri = "/reservations/" + responseDTO.getId();
+        headers.setLocation(URI.create(uri));
+        ResponseEntity<MemberDTO> response = new ResponseEntity<>(responseDTO, headers, HttpStatus.CREATED);
         log.info("memberDTO = {}", memberDTO);
-        return memberDTO;
+        return response;
     }
 
     @DeleteMapping("/reservations/{id}")
