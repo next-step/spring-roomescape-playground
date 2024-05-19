@@ -24,8 +24,8 @@ public class ReservationService {
 	}
 
 	public ReservationResponse saveReservation(ReservationSaveRequest request) {
-		Reservation reservation = reservationRepository.save(
-			new Reservation(request.name(), request.date(), request.time()));
+		Reservation reservation = new Reservation(request.name(), request.date(), request.time());
+		reservationRepository.save(reservation);
 		return ReservationResponse.from(reservation);
 	}
 
