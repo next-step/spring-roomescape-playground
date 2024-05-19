@@ -24,6 +24,8 @@ public class MemberRepository {
     }
 
     public void delete(int id) {
-        reservationStore.remove(id);
+        if (reservationStore.containsKey(id)) {
+            reservationStore.remove(id);
+        }
     }
 }
