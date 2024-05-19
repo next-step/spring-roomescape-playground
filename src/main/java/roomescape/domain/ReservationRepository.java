@@ -13,6 +13,10 @@ public class ReservationRepository {
         reservations.add(reservation);
     }
 
+    public void deleteReservation(Reservation reservation) {
+        reservations.remove(reservation);
+    }
+
     public List<Reservation> findAll() {
         return reservations;
     }
