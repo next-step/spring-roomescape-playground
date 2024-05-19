@@ -19,9 +19,10 @@ public class ReservationMemoryRepository implements ReservationRepository {
 	}
 
 	@Override
-	public void save(Reservation reservation) {
+	public Reservation save(Reservation reservation) {
 		reservation.setId(index.incrementAndGet());
 		reservations.put(reservation.getId(), reservation);
+		return reservation;
 	}
 
 	@Override

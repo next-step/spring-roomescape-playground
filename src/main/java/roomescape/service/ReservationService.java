@@ -22,10 +22,10 @@ public class ReservationService {
 	public List<ReservationResponse> getReservations() {
 		return reservationRepository.findAll().stream().map(ReservationResponse::from).toList();
 	}
-	
+
 	public ReservationResponse saveReservation(ReservationSaveRequest request) {
-		Reservation reservation = new Reservation(request.name(), request.date(), request.time());
-		reservationRepository.save(reservation);
+		Reservation reservation = reservationRepository.save(
+			new Reservation(request.name(), request.date(), request.time()));
 		return ReservationResponse.from(reservation);
 	}
 
