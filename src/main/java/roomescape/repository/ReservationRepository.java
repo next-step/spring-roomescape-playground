@@ -16,7 +16,6 @@ public class ReservationRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    //TODO DB에서 reservation LIST 찾아서 반환
     public List<Reservation> findAll() {
         return jdbcTemplate.query(
                 "select * from reservation",

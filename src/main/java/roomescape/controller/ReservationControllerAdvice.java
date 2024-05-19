@@ -3,6 +3,7 @@ package roomescape.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import roomescape.exception.IllegalSaveReservaionException;
 import roomescape.exception.NotFoundReservationException;
 
 import java.time.format.DateTimeParseException;
@@ -22,5 +23,10 @@ public class ReservationControllerAdvice {
     @ExceptionHandler(DateTimeParseException.class)
     public ResponseEntity<Object> handleDateTimeParseException(DateTimeParseException ex) {
         return ResponseEntity.badRequest().body("날짜/시간 형식이 잘못되었습니다.");
+    }
+
+    @ExceptionHandler(IllegalSaveReservaionException.class)
+    public ResponseEntity handleIllegalSaveReservationException(IllegalSaveReservaionException e){
+        return ResponseEntity.badRequest().build();
     }
 }

@@ -1,6 +1,6 @@
 package roomescape.exception;
 
-public class NotFoundReservationException extends Exception {
+public class NotFoundReservationException extends RuntimeException {
     public NotFoundReservationException(){
         super();
     }

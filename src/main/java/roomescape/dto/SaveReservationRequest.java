@@ -2,9 +2,11 @@ package roomescape.dto;
 
 import roomescape.domain.Reservation;
 import roomescape.domain.TimeFormatter;
+import roomescape.exception.IllegalSaveReservaionException;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Arrays;
 
 public record SaveReservationRequest(
         String name,
@@ -15,7 +17,14 @@ public record SaveReservationRequest(
         validate();
     }
     private void validate() {
-        // TODO validation 추가하기
+        validateBlank(this.name, this.date, this.time);
+    }
+    private void validateBlank(String... fields) {
+        boolean isBlankExist = Arrays.stream(fields)
+                   .anyMatch(String::isBlank);
+        if(isBlankExist){
+            throw new IllegalSaveReservaionException("빈 값을 포함하면 안됩니다.");
+        }
     }
 
     public Reservation toReservation(){
