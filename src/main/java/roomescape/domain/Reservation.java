@@ -1,7 +1,10 @@
 package roomescape.domain;
 
+import lombok.Data;
+
 import java.util.concurrent.atomic.AtomicLong;
 
+@Data
 public class Reservation {
 
     private static AtomicLong ID_INDEX = new AtomicLong(1);
@@ -18,19 +21,4 @@ public class Reservation {
         this.time = time;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public String getTime() {
-        return time;
-    }
 }

@@ -3,9 +3,10 @@ package roomescape.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import roomescape.domain.RequestReservation;
+import roomescape.domain.dto.RequestReservation;
 import roomescape.domain.Reservation;
 import roomescape.domain.ReservationRepository;
+import roomescape.domain.dto.ResponseReservation;
 
 import java.net.URI;
 import java.util.List;
@@ -29,14 +30,15 @@ public class ReservationController {
     }
 
     @PostMapping
-    public ResponseEntity<Reservation> addReservation(@RequestBody RequestReservation request){
+    public ResponseEntity<ResponseReservation> addReservation(@RequestBody RequestReservation request){
 
         Reservation newReservation = request.toReservation();
         reservationRepository.addReservation(newReservation);
 
         URI location = URI.create("/reservations/" + newReservation.getId());
+        ResponseReservation responseReservation = ResponseReservation.from(newReservation);
 
-        return ResponseEntity.created(location).body(newReservation);
+        return ResponseEntity.created(location).body(responseReservation);
     }
 
     @DeleteMapping("/{id}")
