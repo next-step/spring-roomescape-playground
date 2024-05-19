@@ -18,7 +18,7 @@ public class H2ReservationRepository implements ReservationRepository {
 
     @Override
     public List<Reservation> findAll() {
-        String sql = "select * from reservation";
+        String sql = "select * from reservations";
         return jdbcTemplate.query(
                 sql,
                 (rs, rowNum) -> new Reservation(
