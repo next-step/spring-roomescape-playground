@@ -46,12 +46,11 @@ public class ReservationController {
     @PostMapping("/reservations")
     public ResponseEntity<ReservationResponseDto> saveReservation(@RequestBody ReservationRequestDto dto) {
         final Reservation reservation = new Reservation(
-                idMaker.incrementAndGet(),
                 dto.getName(),
                 dto.getDate(),
                 dto.getTime());
-        repository.save(reservation);
-        final ReservationResponseDto responseDto = DtoMapper.convertToDTO(reservation);
+        final Reservation savedReservation = repository.save(reservation);
+        final ReservationResponseDto responseDto = DtoMapper.convertToDTO(savedReservation);
         return ResponseEntity
                 .created(URI.create("/reservations/" + responseDto.getId()))
                 .body(responseDto);
