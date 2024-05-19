@@ -1,4 +1,4 @@
-package roomescape.domain.dto;
+package roomescape.presentation.dto;
 
 import roomescape.domain.Reservation;
 
@@ -8,7 +8,7 @@ public record ResponseReservation(
         String date,
         String time
 ) {
-    public static ResponseReservation from (Reservation reservation) {
+    public static ResponseReservation from(Reservation reservation) {
         return new ResponseReservation(
                 reservation.getId(),
                 reservation.getName(),
