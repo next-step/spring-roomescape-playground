@@ -14,7 +14,7 @@ import io.restassured.http.ContentType;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-public class MvcMissionStepTest {
+public class MissionStepTest {
 
 	@Test
 	void 일단계() {
