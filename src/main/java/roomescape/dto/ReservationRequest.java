@@ -22,19 +22,15 @@ public record ReservationRequest(
     private void validateRequestField(final String name,
                                       final LocalDate date,
                                       final LocalTime time) {
-        if (date == null) {
-            throw new ReservationException(ErrorMessage.EMPTY_DATE);
-        }
         if (name.isEmpty()) {
             throw new ReservationException(ErrorMessage.EMPTY_NAME);
+        }
+        if (date == null) {
+            throw new ReservationException(ErrorMessage.EMPTY_DATE);
         }
         if (time == null) {
             throw new ReservationException(ErrorMessage.EMPTY_TIME);
         }
-    }
-
-    public Reservation convertReservation() {
-        return new Reservation(name, date, time);
     }
 
 }
