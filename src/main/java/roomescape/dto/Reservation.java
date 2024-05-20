@@ -1,6 +1,6 @@
 package roomescape.dto;
 
-import roomescape.domain.exception.NotFoundReservationException;
+import roomescape.exception.NotFoundReservationException;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
