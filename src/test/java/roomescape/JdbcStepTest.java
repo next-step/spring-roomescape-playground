@@ -58,7 +58,7 @@ public class JdbcStepTest {
         params.put("date", "2023-08-05");
         params.put("time", "10:00");
 
-        final int newDataId = TEST_DATA_COUNT + 1;
+        final int newId = TEST_DATA_COUNT + 1;
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -66,13 +66,13 @@ public class JdbcStepTest {
                 .when().post("/reservations")
                 .then().log().all()
                 .statusCode(201)
-                .header("Location", "/reservations/" + newDataId); // 스프링부트 실행 시, 테스트 데이터 3개가 기본으로 추가됨 (data.sql)
+                .header("Location", "/reservations/" + newId); // 스프링부트 실행 시, 테스트 데이터 3개가 기본으로 추가됨 (data.sql)
 
         Integer count = jdbcTemplate.queryForObject("SELECT count(1) from reservations", Integer.class);
-        assertThat(count).isEqualTo(newDataId);
+        assertThat(count).isEqualTo(newId);
 
         RestAssured.given().log().all()
-                .when().delete("/reservations/" + newDataId)
+                .when().delete("/reservations/" + newId)
                 .then().log().all()
                 .statusCode(204);
 
