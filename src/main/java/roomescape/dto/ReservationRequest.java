@@ -14,11 +14,12 @@ public record ReservationRequest(
     private final static String datePattern="\\d{4}-\\d{2}-\\d{2}";
 
     public ReservationRequest {
-        validate();
+        validate(name,date,time);
     }
 
-    private void validate() {
+    private void validate(String name,String date,String time) {
         validateBlank(name, date, time);
+        validateFormat(date,time);
     }
 
     private void validateBlank(String name,String date,String time) {
@@ -38,7 +39,7 @@ public record ReservationRequest(
         }
     }
     public Reservation makeReservation(){
-        return new Reservation(null,name, date, time);
+        return new Reservation(name, date, time);
     }
 
 }
