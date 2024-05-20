@@ -7,6 +7,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class InMemoryReservationRepository implements ReservationRepository {
+
     private final Map<Long, ReservationDTO> reservations = new HashMap<>();
     private final AtomicLong index = new AtomicLong(1);
 

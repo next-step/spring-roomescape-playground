@@ -10,6 +10,7 @@ import javax.sql.DataSource;
 
 @Configuration
 public class ApplicationConfig {
+
     @Bean
     public ReservationRepository reservationRepository(DataSource dataSource) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);

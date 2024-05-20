@@ -9,6 +9,7 @@ import roomescape.exception.ReservationNotFoundException;
 
 @ControllerAdvice
 public class ReservationControllerAdvice {
+
     @ExceptionHandler(ReservationNotFoundException.class)
     public ResponseEntity<String> handleReservationNotFoundException(ReservationNotFoundException ex) {
         return ResponseEntity.badRequest().body(ex.getMessage());
