@@ -9,15 +9,15 @@ import java.time.LocalTime;
 import java.util.Arrays;
 
 public record SaveReservationRequest(
-        String name,
         String date,
+        String name,
         String time
 ) {
     public SaveReservationRequest {
-        validate();
+        validate(name, date, time);
     }
-    private void validate() {
-        validateBlank(this.name, this.date, this.time);
+    private void validate(String name, String date, String time) {
+        validateBlank(name, date, time);
     }
     private void validateBlank(String... fields) {
         boolean isBlankExist = Arrays.stream(fields)
