@@ -35,14 +35,14 @@ public class MissionStepTest {
                 .when().get("/reservations")
                 .then().log().all()
                 .statusCode(200)
-                .body("size()", is(3)); // 아직 생성 요청이 없으니 Controller에서 임의로 넣어준 Reservation 갯수 만큼 검증하거나 0개임을 확인하세요.
+                .body("size()", is(0)); // 아직 생성 요청이 없으니 Controller에서 임의로 넣어준 Reservation 갯수 만큼 검증하거나 0개임을 확인하세요.
     }
 
     @Test
     void 삼단계() {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
-        params.put("date", "2023-08-05");
+        params.put("date", "2025-08-05");
         params.put("time", "15:40");
 
         RestAssured.given().log().all()
@@ -90,6 +90,34 @@ public class MissionStepTest {
         // 삭제할 예약이 없는 경우
         RestAssured.given().log().all()
                 .when().delete("/reservations/1")
+                .then().log().all()
+                .statusCode(400);
+
+        // 현재 시간 이전으로 예약 시도
+        params.put("date", "2023-05-19");
+        params.put("time", "10:00");
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(400);
+
+        // 이미 예약된 시간으로 예약 시도
+        params.put("date", "2025-08-05");
+        params.put("time", "15:40");
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(201)
+                .header("Location", "/reservations/1");
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/reservations")
                 .then().log().all()
                 .statusCode(400);
     }
