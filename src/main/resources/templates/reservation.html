@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
 <head>
   <meta charset="UTF-8">
@@ -56,6 +56,13 @@
         </tr>
         </thead>
         <tbody id="reservation-table-body">
+        <tr th:each="reservation : ${reservations}">
+          <td th:text="${reservation.id}"></td>
+          <td th:text="${reservation.name}"></td>
+          <td th:text="${reservation.date}"></td>
+          <td th:text="${reservation.time}"></td>
+          <td></td>
+        </tr>
         </tbody>
       </table>
     </div>
