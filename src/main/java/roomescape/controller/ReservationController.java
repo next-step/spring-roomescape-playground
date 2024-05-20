@@ -1,10 +1,13 @@
 package roomescape.controller;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,8 +18,12 @@ import roomescape.model.Reservation;
 
 @Controller
 public class ReservationController {
-    private List<Reservation> reservations = new ArrayList<>();
-    private int nextId = 1;
+    private final JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    public ReservationController(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     @GetMapping("/reservation")
     public String reservation() {
@@ -26,6 +33,8 @@ public class ReservationController {
     // 조회
     @GetMapping("/reservations")
     public ResponseEntity<List<Reservation>> reservations() {
+        String sql = "SELECT * FROM reservation";
+        List<Reservation> reservations = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Reservation.class));
         return new ResponseEntity<>(reservations, HttpStatus.OK);
     }
 
