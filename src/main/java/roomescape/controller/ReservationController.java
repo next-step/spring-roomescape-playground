@@ -3,8 +3,9 @@ package roomescape.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import roomescape.dto.Reservation;
+import roomescape.domain.ReservationRepository;
 import roomescape.domain.exception.NotFoundReservationException;
+import roomescape.dto.Reservation;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -14,18 +15,23 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @Controller
 public class ReservationController {
-    private List<Reservation> reservations = new ArrayList<>();
-    private AtomicLong index = new AtomicLong(1);
+    private final List<Reservation> reservations = new ArrayList<>();
+    private final AtomicLong index = new AtomicLong(1);
+    private ReservationRepository reservationRepository;
+
+    public ReservationController(ReservationRepository reservationRepository) {
+        this.reservationRepository = reservationRepository;
+    }
 
     @GetMapping("/reservations")
-    public ResponseEntity<List<Reservation>> getReservations() {
-
+    public ResponseEntity<List<Reservation>> getReservations(){
+        final List<Reservation> reservations = reservationRepository.findReservation();
         return ResponseEntity.ok().body(reservations);
     }
 
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservation) {
-        Reservation newReservation = Reservation.toEntity(index.getAndIncrement(), reservation);
+        Reservation newReservation = Reservation.toEntity((int) index.getAndIncrement(), reservation);
 
         reservations.add(newReservation);
 
@@ -33,7 +39,7 @@ public class ReservationController {
     }
 
     @DeleteMapping("/reservations/{id}")
-    public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteReservation(@PathVariable int id) {
         Reservation reservation = reservations.stream()
                 .filter(it -> Objects.equals(it.getId(), id))
                 .findFirst()
