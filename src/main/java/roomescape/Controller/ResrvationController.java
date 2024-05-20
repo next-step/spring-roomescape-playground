@@ -10,13 +10,13 @@ import roomescape.Repository.ReservationRepository;
 
 import java.net.URI;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Controller
 public class ResrvationController {
 
-    //private List<Reservation> reservations = new ArrayList<>();
+    private AtomicLong atomicLong = new AtomicLong(0);
     private ReservationRepository reservationRepository;
-    private ReservationService reservationService=new ReservationService();
 
     public ResrvationController(ReservationRepository reservationRepository){
         this.reservationRepository = reservationRepository;
@@ -30,14 +30,20 @@ public class ResrvationController {
     @GetMapping("/reservations")
     public ResponseEntity<List<Reservation>> reservations(){
 
-        return ResponseEntity.ok(reservationRepository.getReservations());
+        return ResponseEntity.ok(reservationRepository.getAllReservations());
     }
-/*
+
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> createReservation(@RequestBody RequestReservation reservation){
 
-        Reservation newReservation=reservationService.saveReservation(reservation,reservations);
-        URI location=URI.create("/reservations/"+newReservation.getId());
+        String name=reservation.getName();
+        String date=reservation.getDate();
+        String time=reservation.getTime();
+
+        Reservation newReservation= new Reservation(atomicLong.incrementAndGet(),name,date,time);
+
+        Long id= reservationRepository.createReservation(newReservation);
+        URI location=URI.create("/reservations/"+id);
 
         return ResponseEntity.created(location).body(newReservation);
     }
@@ -45,20 +51,17 @@ public class ResrvationController {
     @GetMapping("/reservations/{id}")
     public ResponseEntity<Reservation> reservationResult(@PathVariable Long id){
 
-        Reservation reservation=reservationService.viewReservation(reservations,id);
+        Reservation findReservation=reservationRepository.getReservationById(id);
 
-        if(reservation!=null)
-                return ResponseEntity.ok(reservation);
-
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(findReservation);
     }
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<String> deleteReservation(@PathVariable Long id) {
 
-        reservationService.deleteReservation(reservations,id);
+        reservationRepository.deleteReservationById(id);
 
         return ResponseEntity.noContent().build();
     }
-*/
+
 }
