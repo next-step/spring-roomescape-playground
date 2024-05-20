@@ -13,5 +13,5 @@
 - [x] `NamedParameterJdbcTemplate` 학습 후 변경
 - [x] `Record` 타입 변경
 - [x] 정적 팩토리 메서드 변경
-- [ ] `Simplejdbcinsert` 학습 후 변경
+- [x] `Simplejdbcinsert` 학습 후 변경
 - [ ] `MVC` 및 `JDBC` 리뷰 참고하여 로직 수정
