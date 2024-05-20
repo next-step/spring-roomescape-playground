@@ -41,14 +41,18 @@ public class ReservationController {
     }
 
     // id에 따른 예약 조회
-//    @GetMapping("/reservations/{id}")
-//    public ResponseEntity<Reservation> readEach(@PathVariable Long id) {
-//        Reservation reservation = reservations.stream()
-//                .filter(it -> Objects.equals(it.getId(), id))
-//                .findFirst()
-//                .orElseThrow(NoSuchElementException::new);
-//        return ResponseEntity.ok().body(reservation);
-//    }
+    @GetMapping("/reservations/{id}")
+    public ResponseEntity<Reservation> readEach(@PathVariable Long id) {
+        String sql = "SELECT * FROM reservation WHERE id = ?";
+        Reservation reservation = jdbcTemplate.queryForObject(sql,
+                (rs, rowNum) -> new Reservation(
+                        rs.getLong("id"),
+                        rs.getString("name"),
+                        rs.getString("date"),
+                        rs.getString("time")),
+                id);
+        return ResponseEntity.ok().body(reservation);
+    }
 
     // 예약 생성
     @PostMapping("/reservations")
