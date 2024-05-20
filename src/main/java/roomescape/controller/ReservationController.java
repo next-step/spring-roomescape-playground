@@ -46,6 +46,10 @@ public class ReservationController {
     public ResponseEntity<Void> cancelReservation(@PathVariable long id) {
         long deletedId = reservationRepository.deleteById(id);
 
+        if (deletedId == -1) {
+            throw new NotFoundReservationException(NOT_FOUND_RESERVATION_MESSAGE);
+        }
+
         URI location = URI.create("/reservations/" + deletedId);
         ResponseEntity.noContent().location(location).build();
 
