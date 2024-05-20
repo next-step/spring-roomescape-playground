@@ -19,6 +19,7 @@ public class ReservationRepository implements ReservationRepositoryImpl{
         return new ArrayList<>(reservations.values());
     }
 
+    @Override
     public Reservation save(Reservation reservation) {
         if (reservation == null) {
             throw new IllegalArgumentException("예약 정보가 없습니다.");
@@ -33,10 +34,12 @@ public class ReservationRepository implements ReservationRepositoryImpl{
         return reservation;
     }
 
+    @Override
     public Reservation findById(Long id) {
         return reservations.get(id);
     }
 
+    @Override
     public void deleteById(Long id) {
         reservations.remove(id);
     }
