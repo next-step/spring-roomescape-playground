@@ -6,21 +6,21 @@ import java.sql.Date;
 public class Reservation {
     private Long id;
     private String name;
-    private Date date;
+    private String date;
     private String time;
 
     public Reservation() {
 
     }
 
-    public Reservation(Long id, String name, Date date, String time) {
+    public Reservation(Long id, String name, String date, String time) {
         this.id = id;
         this.name = name;
         this.date = date;
         this.time = time;
     }
 
-    public Reservation(String name, Date date, String time) {
+    public Reservation(String name, String date, String time) {
         this.name = name;
         this.date = date;
         this.time = time;
@@ -34,7 +34,7 @@ public class Reservation {
         return name;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 

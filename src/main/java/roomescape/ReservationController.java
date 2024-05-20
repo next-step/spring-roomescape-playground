@@ -1,6 +1,8 @@
 package roomescape;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +20,9 @@ public class ReservationController {
     private List<Reservation> reservations = new ArrayList<>();
     private AtomicLong index = new AtomicLong(1);
 
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
     @RequestMapping("/reservation")
     public String reservation() {
         return "reservation";
@@ -26,6 +31,14 @@ public class ReservationController {
     // 예약 목록 조회
     @GetMapping("/reservations")
     public ResponseEntity<List<Reservation>> read() {
+        String sql = "SELECT * FROM reservation";
+        reservations = jdbcTemplate.query(sql,
+                (rs, rowNum) -> new Reservation(
+                        rs.getLong("id"),
+                        rs.getString("name"),
+                        rs.getString("date"),
+                        rs.getString("time")
+                ));
         return ResponseEntity.ok().body(reservations);
     }
 
