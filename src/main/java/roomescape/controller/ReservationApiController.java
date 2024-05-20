@@ -32,6 +32,7 @@ public class ReservationApiController {
     @GetMapping("/reservations")
     public ResponseEntity<List<ReservationRequest>> reservations() {
 
+
         return ResponseEntity.status(HttpStatus.OK)
                 .body(reservations);
     }
