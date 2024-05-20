@@ -15,5 +15,4 @@ public class ReservationExceptionHandler {
     public ResponseEntity handleNotFoundReservationException(NotFoundReservationException e) {
         return ResponseEntity.badRequest().build();
     }
-
 }
