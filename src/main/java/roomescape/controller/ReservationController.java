@@ -1,62 +1,59 @@
 package roomescape.controller;
 
-import io.micrometer.common.util.StringUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import roomescape.domain.Reservation;
-import roomescape.exception.InvalidRequestException;
+import roomescape.domain.ReservationRepository;
 import roomescape.exception.NotFoundReservationException;
 
+import javax.sql.DataSource;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Controller
 public class ReservationController {
     private final String NOT_FOUND_RESERVATION_MESSAGE = "삭제할 예약을 찾을 수 없습니다.";
+    private final ReservationRepository reservationRepository;
 
-    private List<Reservation> reservations = new ArrayList<>();
-    private final AtomicLong index = new AtomicLong(0);
+    public ReservationController(DataSource dataSource) {
+        this.reservationRepository = new ReservationRepository(dataSource);
+    }
 
     @GetMapping("/reservation")
     public String reservation() {
         return "reservation";
     }
 
+    @ResponseBody
     @GetMapping("/reservations")
     public ResponseEntity<List<Reservation>> getReservations() {
-        List<Reservation> reservationList = new ArrayList<>();
-        return ResponseEntity.ok(reservations);
+        List<Reservation> reservationList = reservationRepository.findAll();
+        return ResponseEntity.ok(reservationList);
     }
 
-
+    @ResponseBody
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> addReservation(@RequestBody Reservation request) {
         request.validate();
 
-        long id = index.incrementAndGet();
-        Reservation reservation = new Reservation(id, request.getName(), request.getDate(), request.getTime());
-        reservations.add(reservation);
-
-        URI location = URI.create("/reservations/" + id);
+        long id = reservationRepository.save(request);
+        Reservation reservation = reservationRepository.findById(id);
+        URI location = URI.create("/reservations/" + id); // 생성된 예약의 ID를 사용하여 위치 헤더 값을 생성
 
         return ResponseEntity.created(location).body(reservation);
     }
 
-
+    @ResponseBody
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> cancelReservation(@PathVariable long id) {
-        Reservation reservation = reservations.stream()
-                .filter(it -> Objects.equals(it.getId(), id))
-                .findFirst()
-                .orElseThrow(() -> new NotFoundReservationException(NOT_FOUND_RESERVATION_MESSAGE));
-
-        reservations.remove(reservation);
-
-        return ResponseEntity.noContent().build();
+        long deletedId = reservationRepository.deleteById(id);
+        if (deletedId != -1) {
+            URI location = URI.create("/reservations/" + deletedId);
+            return ResponseEntity.noContent().location(location).build();
+        } else {
+            throw new NotFoundReservationException(NOT_FOUND_RESERVATION_MESSAGE);
+        }
     }
 
 }
