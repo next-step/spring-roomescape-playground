@@ -27,12 +27,14 @@ public class JdbcReservationRepository implements ReservationRepository {
 
     @Override
     public List<ReservationDTO> findAll() {
-        return jdbcTemplate.query("SELECT * FROM reservation", this::mapRowToReservation);
+        String sql = "SELECT id, name, date, time FROM reservation";
+        return jdbcTemplate.query(sql, this::mapRowToReservation);
     }
 
     @Override
     public Optional<ReservationDTO> findById(Long id) {
-        return jdbcTemplate.query("SELECT * FROM reservation WHERE id = ?", this::mapRowToReservation, id)
+        String sql = "SELECT id, name, date, time FROM reservation WHERE id = ?";
+        return jdbcTemplate.query(sql, this::mapRowToReservation, id)
                 .stream()
                 .findFirst();
     }
@@ -50,7 +52,8 @@ public class JdbcReservationRepository implements ReservationRepository {
 
     @Override
     public void deleteById(Long id) {
-        jdbcTemplate.update("DELETE FROM reservation WHERE id = ?", id);
+        String sql = "DELETE FROM reservation WHERE id = ?";
+        jdbcTemplate.update(sql, id);
     }
 
     private ReservationDTO mapRowToReservation(ResultSet rs, int rowNum) throws SQLException {
