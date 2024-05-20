@@ -1,6 +1,7 @@
 package roomescape.repository;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -55,7 +56,11 @@ public class ReservationJdbcRepository implements ReservationRepositoryImpl{
     @Override
     public Reservation findById(Long id) {
         String sql = "SELECT * FROM reservation WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, new Object[]{id}, reservationRowMapper);
+        try {
+            return jdbcTemplate.queryForObject(sql, reservationRowMapper, id);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 
     @Override
