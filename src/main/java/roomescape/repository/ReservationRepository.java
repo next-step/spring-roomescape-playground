@@ -10,7 +10,7 @@ import java.util.Map;
 
 
 @Repository
-public class ReservationRepository {
+public class ReservationRepository implements ReservationRepositoryImpl{
     private final Map<Long, Reservation> reservations = new HashMap<>();
     private Long index = 0L;
 
