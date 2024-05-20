@@ -19,14 +19,14 @@ import java.util.Optional;
 public class ReservationController {
     private final ReservationRepository reservationRepository;
 
+    public ReservationController(ReservationRepository reservationRepository) {
+        this.reservationRepository = reservationRepository;
+    }
+
     @GetMapping("/reservation")
     public String getReservationPage(Model model) {
         model.addAttribute("reservations", reservationRepository.findAll());
         return "reservation";
-    }
-
-    public ReservationController(ReservationRepository reservationRepository) {
-        this.reservationRepository = reservationRepository;
     }
 
     @GetMapping("/reservations")
@@ -47,8 +47,7 @@ public class ReservationController {
         }
 
         List<ReservationDTO> existingReservations = reservationRepository.findAll();
-        if (existingReservations.stream()
-                .anyMatch(r -> r.date().equals(reservation.date()) && r.time().equals(reservation.time()))) {
+        if (existingReservations.stream().anyMatch(r -> r.date().equals(reservation.date()) && r.time().equals(reservation.time()))) {
             throw new InvalidReservationTimeException("이미 예약된 시간입니다.");
         }
 

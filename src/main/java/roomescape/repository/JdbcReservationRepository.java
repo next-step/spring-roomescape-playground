@@ -14,7 +14,6 @@ import java.util.Optional;
 
 @Repository
 public class JdbcReservationRepository implements ReservationRepository {
-
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
 
