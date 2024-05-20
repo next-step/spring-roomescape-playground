@@ -40,8 +40,7 @@ public class ReservationController {
     @PostMapping("/reservations")
     public ResponseEntity<ReservationResponse> saveReservation(
             @RequestBody ReservationRequest request) {
-        final Reservation reservation = request.convertReservation();
-        final Reservation savedReservation = repository.save(reservation);
+        final Reservation savedReservation = repository.save(request);
         final ReservationResponse response = ReservationResponse.from(savedReservation);
         return ResponseEntity
                 .created(URI.create("/reservations/" + response.id()))

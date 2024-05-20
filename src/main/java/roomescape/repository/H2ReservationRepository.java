@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import roomescape.dto.ReservationRequest;
 import roomescape.exception.ErrorMessage;
 import roomescape.exception.ReservationException;
 import roomescape.model.Reservation;
@@ -42,13 +43,12 @@ public class H2ReservationRepository implements ReservationRepository {
     }
 
     @Override
-    public Reservation save(final Reservation reservation) {
+    public Reservation save(final ReservationRequest request) {
 //        String sql = "insert into reservations (name, date, time) "
 //                + "values (:name, :date, :time)";
-        SqlParameterSource param = new BeanPropertySqlParameterSource(reservation);
+        SqlParameterSource param = new BeanPropertySqlParameterSource(request);
         final long savedId = jdbcInsert.executeAndReturnKey(param).longValue();
-        return new Reservation(savedId, reservation.getName(), reservation.getDate(),
-                reservation.getTime());
+        return new Reservation(savedId, request.name(), request.date(), request.time());
 //        KeyHolder keyHolder = new GeneratedKeyHolder();
 //        jdbcTemplate.update(sql, param, keyHolder);
 //        final long keyId = keyHolder.getKey().longValue();
