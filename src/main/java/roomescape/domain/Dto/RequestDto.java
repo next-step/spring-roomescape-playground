@@ -7,6 +7,7 @@ import roomescape.domain.Model.Reservation;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Data
 public class RequestDto {
@@ -15,10 +16,10 @@ public class RequestDto {
     private String time;
 
     public Reservation toReservation() {
-        Reservation reservation = new Reservation();
-        reservation.setName(name);
-        reservation.setDate(date);
-        reservation.setTime(time);
-        return reservation;
+        LocalDateTime reservationDateTime = LocalDateTime.of(
+                LocalDate.parse(date),
+                LocalTime.parse(time)
+        );
+        return new Reservation(name, reservationDateTime);
     }
 }

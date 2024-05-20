@@ -14,13 +14,21 @@ public class ResponseDto {
     private String date;
     private String time;
 
+    public ResponseDto(Long id, String name, String date, String time) {
+        this.id = id;
+        this.name = name;
+        this.date = date;
+        this.time = time;
+    }
+
     public static ResponseDto makeResponse(Reservation reservation) {
-        ResponseDto responseDto = new ResponseDto();
-        responseDto.id = reservation.getId();
-        responseDto.name = reservation.getName();
-        responseDto.date = reservation.getDate();
-        responseDto.time = reservation.getTime();
-        return responseDto;
+        LocalDateTime reservationDateTime = reservation.getLocalDateTime();
+        return new ResponseDto(
+                reservation.getId(),
+                reservation.getName(),
+                reservationDateTime.toLocalDate().toString(),
+                reservationDateTime.toLocalTime().toString()
+        );
     }
 
 }
