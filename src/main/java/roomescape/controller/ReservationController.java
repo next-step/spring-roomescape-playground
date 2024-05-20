@@ -1,11 +1,10 @@
 package roomescape.controller;
 
-import io.micrometer.common.util.StringUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
 import roomescape.domain.Reservation;
-import roomescape.exception.InvalidRequestException;
 import roomescape.exception.NotFoundReservationException;
 
 import java.net.URI;
@@ -32,7 +31,6 @@ public class ReservationController {
         return ResponseEntity.ok(reservations);
     }
 
-
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> addReservation(@RequestBody Reservation request) {
         request.validate();
@@ -46,7 +44,6 @@ public class ReservationController {
         return ResponseEntity.created(location).body(reservation);
     }
 
-
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> cancelReservation(@PathVariable long id) {
         Reservation reservation = reservations.stream()
@@ -58,5 +55,4 @@ public class ReservationController {
 
         return ResponseEntity.noContent().build();
     }
-
 }
