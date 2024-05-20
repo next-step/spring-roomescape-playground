@@ -7,8 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
+
 @Repository
-public class InMemoryReservationRepository implements ReservationRepository{
+public class InMemoryReservationRepository implements ReservationRepository {
 
     private final List<Reservation> reservations = new ArrayList<>();
     private final AtomicLong index = new AtomicLong(0);
@@ -26,8 +27,9 @@ public class InMemoryReservationRepository implements ReservationRepository{
         reservations.add(reservation);
         return reservation;
     }
+
     @Override
     public void deleteById(Long id) {
-          reservations.removeIf(reservation -> reservation.getId() == id);
+        reservations.removeIf(reservation -> reservation.getId() == id);
     }
 }
