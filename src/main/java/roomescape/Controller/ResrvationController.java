@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import roomescape.Model.RequestReservation;
 import roomescape.Model.Reservation;
 import roomescape.Model.ReservationService;
+import roomescape.Repository.ReservationRepository;
 
 import java.net.URI;
 import java.util.*;
@@ -13,9 +14,13 @@ import java.util.*;
 @Controller
 public class ResrvationController {
 
-    private List<Reservation> reservations = new ArrayList<>();
-
+    //private List<Reservation> reservations = new ArrayList<>();
+    private ReservationRepository reservationRepository;
     private ReservationService reservationService=new ReservationService();
+
+    public ResrvationController(ReservationRepository reservationRepository){
+        this.reservationRepository = reservationRepository;
+    }
 
     @GetMapping("/reservation")
     public String reservation(){
@@ -25,9 +30,9 @@ public class ResrvationController {
     @GetMapping("/reservations")
     public ResponseEntity<List<Reservation>> reservations(){
 
-        return ResponseEntity.ok(reservations);
+        return ResponseEntity.ok(reservationRepository.getReservations());
     }
-
+/*
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> createReservation(@RequestBody RequestReservation reservation){
 
@@ -55,5 +60,5 @@ public class ResrvationController {
 
         return ResponseEntity.noContent().build();
     }
-
+*/
 }
