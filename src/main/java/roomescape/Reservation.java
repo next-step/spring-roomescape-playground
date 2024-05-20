@@ -1,8 +1,5 @@
 package roomescape;
 
-import java.sql.Time;
-import java.sql.Date;
-
 public class Reservation {
     private Long id;
     private String name;
@@ -24,6 +21,10 @@ public class Reservation {
         this.name = name;
         this.date = date;
         this.time = time;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public long getId() {
