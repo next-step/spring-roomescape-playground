@@ -1,28 +1,32 @@
 package roomescape.controller;
 
 import jakarta.validation.Valid;
-import org.springframework.boot.autoconfigure.validation.ValidationAutoConfiguration;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import roomescape.db.ReservationEntity;
 import roomescape.model.ReservationRequest;
+import roomescape.service.QueryingDAO;
+import roomescape.service.UpdatingDAO;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Controller
+@RequiredArgsConstructor
 public class ReservationApiController {
+
+    private final QueryingDAO queryingDAO;
+    private final UpdatingDAO updatingDAO;
 
     private AtomicLong index = new AtomicLong(1);
     private List<ReservationRequest> reservations = new ArrayList<>();
+
 
     @GetMapping("/reservation")
     public String reservation() {
@@ -30,11 +34,12 @@ public class ReservationApiController {
     }
 
     @GetMapping("/reservations")
-    public ResponseEntity<List<ReservationRequest>> reservations() {
+    public ResponseEntity<List<ReservationEntity>> reservations() {
 
+        List<ReservationEntity> lists = queryingDAO.findAllList();
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(reservations);
+                .body(lists);
     }
 
     @PostMapping("/reservations")
