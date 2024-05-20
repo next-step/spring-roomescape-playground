@@ -70,15 +70,11 @@ public class ReservationController {
     }
 
     // 예약 삭제
-//    @DeleteMapping("reservations/{id}")
-//    public ResponseEntity<Void> delete(@PathVariable Long id) {
-//        Reservation reservation = reservations.stream()
-//                .filter(it -> Objects.equals(it.getId(), id))
-//                .findFirst()
-//                .orElseThrow(NoSuchElementException::new);
-//
-//        reservations.remove(reservation);
-//
-//        return ResponseEntity.noContent().build();
-//    }
+    @DeleteMapping("reservations/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        String sql = "DELETE FROM reservation WHERE id = ?";
+        jdbcTemplate.update(sql, id);
+
+        return ResponseEntity.noContent().build();
+    }
 }
