@@ -2,8 +2,6 @@ package roomescape.domain;
 
 import roomescape.exception.InvalidRequestException;
 
-import java.util.Objects;
-
 public class Reservation {
     private long id;
     private String name;

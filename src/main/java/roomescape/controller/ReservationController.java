@@ -25,35 +25,30 @@ public class ReservationController {
         return "reservation";
     }
 
-    @ResponseBody
     @GetMapping("/reservations")
     public ResponseEntity<List<Reservation>> getReservations() {
         List<Reservation> reservationList = reservationRepository.findAll();
         return ResponseEntity.ok(reservationList);
     }
 
-    @ResponseBody
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> addReservation(@RequestBody Reservation request) {
         request.validate();
 
         long id = reservationRepository.save(request);
         Reservation reservation = reservationRepository.findById(id);
-        URI location = URI.create("/reservations/" + id); // 생성된 예약의 ID를 사용하여 위치 헤더 값을 생성
+        URI location = URI.create("/reservations/" + id);
 
         return ResponseEntity.created(location).body(reservation);
     }
 
-    @ResponseBody
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> cancelReservation(@PathVariable long id) {
         long deletedId = reservationRepository.deleteById(id);
-        if (deletedId != -1) {
-            URI location = URI.create("/reservations/" + deletedId);
-            return ResponseEntity.noContent().location(location).build();
-        } else {
-            throw new NotFoundReservationException(NOT_FOUND_RESERVATION_MESSAGE);
-        }
-    }
 
+        URI location = URI.create("/reservations/" + deletedId);
+        ResponseEntity.noContent().location(location).build();
+
+        return ResponseEntity.noContent().build();
+    }
 }
