@@ -14,7 +14,7 @@ public class QueryingDAO {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public final RowMapper<ReservationEntity> actorRowMapper = (resultSet, rowNum)->{
+    public final RowMapper<ReservationEntity> actorRowMapper = (resultSet, rowNum) -> {
         ReservationEntity reservationEntity = new ReservationEntity(
                 resultSet.getLong("id"),
                 resultSet.getString("name"),
@@ -24,21 +24,21 @@ public class QueryingDAO {
         return reservationEntity;
     };
 
-    public List<ReservationEntity> findAllList(){
+    public List<ReservationEntity> findAllList() {
 
         String sql = "select * from reservation";
-        return jdbcTemplate.query(sql,actorRowMapper);
+        return jdbcTemplate.query(sql, actorRowMapper);
     }
 
     public int count() {
 
         String sql = "select count(*) from reservation";
-        return jdbcTemplate.queryForObject(sql,Integer.class);
+        return jdbcTemplate.queryForObject(sql, Integer.class);
     }
 
-    public ReservationEntity findReservationById(Long id){
+    public ReservationEntity findReservationById(Long id) {
 
         String sql = "select * from reservation where id=?";
-        return jdbcTemplate.queryForObject(sql,actorRowMapper,id);
+        return jdbcTemplate.queryForObject(sql, actorRowMapper, id);
     }
 }

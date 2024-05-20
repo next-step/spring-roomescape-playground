@@ -14,11 +14,9 @@ public class ReservationEntity {
 
     private Long id;
 
-
     private String name;
 
     private String date;
-
 
     private String time;
 }

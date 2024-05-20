@@ -24,10 +24,6 @@ public class ReservationApiController {
     private final QueryingDAO queryingDAO;
     private final UpdatingDAO updatingDAO;
 
-    private AtomicLong index = new AtomicLong(1);
-    private List<ReservationRequest> reservations = new ArrayList<>();
-
-
     @GetMapping("/reservation")
     public String reservation() {
         return "reservation";
@@ -43,22 +39,19 @@ public class ReservationApiController {
     }
 
     @PostMapping("/reservations")
-    public ResponseEntity<ReservationRequest> createReservation(
+    public ResponseEntity<ReservationEntity> createReservation(
             @Valid
             @RequestBody ReservationRequest reservationRequest
     ) {
 
-        ReservationRequest reservationEntity = ReservationRequest.builder()
-                .id(index.getAndIncrement())
-                .name(reservationRequest.getName())
-                .date(reservationRequest.getDate())
-                .time(reservationRequest.getTime())
-                .build();
+        Long nowId = Long.valueOf(queryingDAO.count()) + 1;
+
+        updatingDAO.insert(reservationRequest);
+
+        ReservationEntity reservationEntity = queryingDAO.findReservationById(nowId);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(URI.create("/reservations/" + Long.toString(reservationEntity.getId())));
-
-        reservations.add(reservationEntity);
+        headers.setLocation(URI.create("/reservations/" + Long.toString(nowId)));
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .headers(headers)
@@ -69,12 +62,8 @@ public class ReservationApiController {
     public ResponseEntity<Void> deleteReservation(
             @PathVariable Long id
     ) {
-        ReservationRequest reservationRequest = reservations.stream()
-                .filter(it -> it.getId().equals(id))
-                .findFirst()
-                .orElseThrow(IllegalArgumentException::new);
 
-        reservations.remove(reservationRequest);
+        updatingDAO.delete(id);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
