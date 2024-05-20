@@ -43,7 +43,11 @@ public class ReservationRepository {
             return ps;
         }, keyHolder);
 
-        return new Reservation((int)keyHolder.getKey().longValue(), reservation.getName(), reservation.getDate(), reservation.getTime());
+        return new Reservation((int) keyHolder.getKey().longValue(), reservation.getName(), reservation.getDate(), reservation.getTime());
     }
 
+    public int deleteReservation(int id) {
+        String sql = "delete from reservation where id = ?";
+        return jdbcTemplate.update(sql, id);
+    }
 }

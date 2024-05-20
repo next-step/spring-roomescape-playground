@@ -2,10 +2,7 @@ package roomescape.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 import roomescape.domain.ReservationRepository;
 import roomescape.domain.exception.NotFoundReservationException;
 import roomescape.dto.Reservation;
@@ -34,17 +31,12 @@ public class ReservationController {
         return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
     }
 
-//    @DeleteMapping("/reservations/{id}")
-//    public ResponseEntity<Void> deleteReservation(@PathVariable int id) {
-//        Reservation reservation = reservations.stream()
-//                .filter(it -> Objects.equals(it.getId(), id))
-//                .findFirst()
-//                .orElseThrow(() -> new NotFoundReservationException("삭제할 ID" + id + "가 존재하지 않습니다."));
-//
-//        reservations.remove(reservation);
-//
-//        return ResponseEntity.noContent().build();
-//    }
+    @DeleteMapping("/reservations/{id}")
+    public ResponseEntity<Void> deleteReservation(@PathVariable int id) {
+        reservationRepository.deleteReservation(id);
+
+        return ResponseEntity.noContent().build();
+    }
 
     @ExceptionHandler(NotFoundReservationException.class)
     public ResponseEntity<Void> handleException(NotFoundReservationException e) {
