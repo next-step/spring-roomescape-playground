@@ -8,9 +8,9 @@ public class Reservation {
     private String date;
     private String time;
 
-    private final String INVALID_NAME_REQUEST_MESSAGE = "이름 정보에 공백이 입력되었습니다.";
-    private final String INVALID_DATE_REQUEST_MESSAGE = "날짜 정보에 공백이 입력되었습니다.";
-    private final String INVALID_TIME_REQUEST_MESSAGE = "시간 정보에 공백이 입력되었습니다.";
+    private final String INVALID_NAME_REQUEST_MESSAGE = "이름 정보가 유효하지 않습니다.";
+    private final String INVALID_DATE_REQUEST_MESSAGE = "날짜 정보가 유효하지 않습니다.";
+    private final String INVALID_TIME_REQUEST_MESSAGE = "시간 정보가 유효하지 않습니다.";
 
     public Reservation(long id, String name, String date, String time) {
         this.id = id;
