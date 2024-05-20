@@ -1,4 +1,4 @@
-package roomescape.dto.exception;
+package roomescape.domain.exception;
 
 public class NotFoundReservationException extends RuntimeException {
     public NotFoundReservationException(String message) {
