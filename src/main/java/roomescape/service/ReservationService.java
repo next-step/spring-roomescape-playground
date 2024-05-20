@@ -3,6 +3,7 @@ package roomescape.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import roomescape.domain.Reservation;
+import roomescape.repository.ReservationJdbcRepository;
 import roomescape.repository.ReservationRepository;
 import roomescape.dto.ReservationRequest;
 import roomescape.dto.ReservationResponse;
@@ -18,9 +19,9 @@ import java.util.stream.Collectors;
 public class ReservationService {
 
     private final ReservationRepository reservationRepository;
-
+    private final ReservationJdbcRepository reservationJdbcRepository;
     public List<ReservationResponse> findAllReservations() {
-        List<Reservation> reservations = reservationRepository.findAll();
+        List<Reservation> reservations = reservationJdbcRepository.findAll();
         List<ReservationResponse> responseDtoList = reservations.stream()
                 .map(ReservationResponse::from)
                 .collect(Collectors.toList());
@@ -38,18 +39,18 @@ public class ReservationService {
         reservation.setDate(date);
         reservation.setTime(time);
 
-        Reservation savedReservation = reservationRepository.save(reservation);
+        Reservation savedReservation = reservationJdbcRepository.save(reservation);
 
         return ReservationResponse.from(savedReservation);
     }
 
     public void cancelReservation(Long id) {
         ReservationResponse reservationResponse = findById(id);
-        reservationRepository.deleteById(reservationResponse.getId());
+        reservationJdbcRepository.deleteById(reservationResponse.getId());
     }
 
     public ReservationResponse findById(Long id) {
-        Reservation reservation = reservationRepository.findById(id);
+        Reservation reservation = reservationJdbcRepository.findById(id);
         if(reservation == null) {
             throw new BadRequestException("취소할 예약을 찾을 수 없습니다. (id=" + id + ")");
         }
