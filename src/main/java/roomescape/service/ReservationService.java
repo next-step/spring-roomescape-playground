@@ -52,7 +52,7 @@ public class ReservationService {
     public ReservationResponse findById(Long id) {
         Reservation reservation = reservationJdbcRepository.findById(id);
         if(reservation == null) {
-            throw new BadRequestException("취소할 예약을 찾을 수 없습니다. (id=" + id + ")");
+            throw new BadRequestException("예약을 찾을 수 없습니다. (id=" + id + ")");
         }
         return ReservationResponse.from(reservation);
     }
