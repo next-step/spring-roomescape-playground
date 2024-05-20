@@ -41,22 +41,26 @@ public class ReservationController {
     // 추가
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> addReservation(@RequestBody Reservation reservation) {
-        reservation.setId(nextId++);
-        reservations.add(reservation);
+        String sql = "INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)";
+        jdbcTemplate.update(sql, reservation.getName(), reservation.getDate(), reservation.getTime());
 
-        URI location = URI.create("/reservations/" + reservation.getId());
-        return ResponseEntity.created(location).body(reservation);
+        sql = "SELECT * FROM reservation WHERE id = (SELECT MAX(id) FROM reservation)";
+        Reservation newReservation = jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Reservation.class));
+
+        URI location = URI.create("/reservations/" + newReservation.getId());
+        return ResponseEntity.created(location).body(newReservation);
     }
 
     // 취소
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable int id) {
-        for (Reservation reservation : reservations) {
-            if (reservation.getId() == id) {
-                reservations.remove(reservation);
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            }
+        String sql = "DELETE FROM reservation WHERE id = ?";
+        int rowsAffected = jdbcTemplate.update(sql, id);
+
+        if (rowsAffected > 0) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }
