@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.util.List;
 
 import org.springframework.context.annotation.Primary;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -52,7 +53,11 @@ public class ReservationJdbcRepository implements ReservationRepository {
 	@Override
 	public Reservation findById(Long id) {
 		String sql = "select id, name, date, time from reservation where id = ?";
-		return jdbcTemplate.queryForObject(sql, ReservationRowMapper, id);
+		try {
+			return jdbcTemplate.queryForObject(sql, ReservationRowMapper, id);
+		} catch (EmptyResultDataAccessException e) {
+			return null;
+		}
 	}
 
 	@Override
