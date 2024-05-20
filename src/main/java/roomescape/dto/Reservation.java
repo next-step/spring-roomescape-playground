@@ -13,6 +13,9 @@ public class Reservation {
     private String date;
     private String time;
 
+    public Reservation() {
+    }
+
     public Reservation(String name, String date, String time) {
         validateEmpty(name);
         validateDate(date);

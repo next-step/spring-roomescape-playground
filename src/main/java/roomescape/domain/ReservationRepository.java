@@ -1,9 +1,12 @@
 package roomescape.domain;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.dto.Reservation;
 
+import java.sql.PreparedStatement;
 import java.util.List;
 
 @Repository
@@ -27,4 +30,20 @@ public class ReservationRepository {
                         )
         );
     }
+
+    public Reservation insertReservation(Reservation reservation) {
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(
+                    "insert into reservation (name, date, time) values (?, ?, ?)",
+                    new String[]{"id"});
+            ps.setString(1, reservation.getName());
+            ps.setString(2, reservation.getDate());
+            ps.setString(3, reservation.getTime());
+            return ps;
+        }, keyHolder);
+
+        return new Reservation((int)keyHolder.getKey().longValue(), reservation.getName(), reservation.getDate(), reservation.getTime());
+    }
+
 }
