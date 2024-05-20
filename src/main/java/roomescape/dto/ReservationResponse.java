@@ -8,10 +8,10 @@ import roomescape.domain.Reservation;
 @Getter
 public class ReservationResponse {
 
-    public Long id;
-    public String name;
-    public String date;
-    public String time;
+    private Long id;
+    private String name;
+    private String date;
+    private String time;
 
     public static ReservationResponse from(Reservation reservation) {
         ReservationResponse dto = new ReservationResponse();
