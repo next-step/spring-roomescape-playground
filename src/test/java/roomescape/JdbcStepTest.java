@@ -3,9 +3,12 @@ package roomescape;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,6 +19,8 @@ import roomescape.model.Reservation;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class JdbcStepTest {
+
+    private static final int TEST_DATA_COUNT = 3;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -44,6 +49,35 @@ public class JdbcStepTest {
         Integer count = jdbcTemplate.queryForObject("SELECT count(1) from reservations", Integer.class);
 
         assertThat(reservations.size()).isEqualTo(count);
+    }
+
+    @Test
+    void 칠단계() {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", "브라운");
+        params.put("date", "2023-08-05");
+        params.put("time", "10:00");
+
+        final int newDataId = TEST_DATA_COUNT + 1;
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(201)
+                .header("Location", "/reservations/" + newDataId); // 스프링부트 실행 시, 테스트 데이터 3개가 기본으로 추가됨 (data.sql)
+
+        Integer count = jdbcTemplate.queryForObject("SELECT count(1) from reservations", Integer.class);
+        assertThat(count).isEqualTo(newDataId);
+
+        RestAssured.given().log().all()
+                .when().delete("/reservations/" + newDataId)
+                .then().log().all()
+                .statusCode(204);
+
+        Integer countAfterDelete = jdbcTemplate.queryForObject("SELECT count(1) from reservations", Integer.class);
+        assertThat(countAfterDelete).isEqualTo(TEST_DATA_COUNT);
     }
 
 }
