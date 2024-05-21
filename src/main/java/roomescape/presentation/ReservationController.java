@@ -1,5 +1,6 @@
 package roomescape.presentation;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +16,7 @@ import java.util.List;
 @Controller
 public class ReservationController {
 
+    @Autowired
     private final ReservationRepository reservationRepository;
 
     public ReservationController(ReservationRepository repository) {
@@ -40,11 +42,11 @@ public class ReservationController {
         return ResponseEntity.created(location).body(responseReservation);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
-
-        reservationRepository.deleteReservationById(id);
-
-        return ResponseEntity.noContent().build();
-    }
+//    @DeleteMapping("/{id}")
+//    public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
+//
+//        reservationRepository.deleteReservationById(id);
+//
+//        return ResponseEntity.noContent().build();
+//    }
 }
