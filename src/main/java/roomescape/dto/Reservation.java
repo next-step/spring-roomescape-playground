@@ -90,7 +90,7 @@ public class Reservation {
     }
 
     private void validateTime(String timeString) {
-        DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:MM");
+        DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
         try {
             LocalTime.parse(timeString, TIME_FORMATTER);
