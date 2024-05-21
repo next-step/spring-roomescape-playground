@@ -17,7 +17,7 @@ public class ReservationRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public List<Reservation> findReservation() {
+    public List<Reservation> findAll() {
 
         return jdbcTemplate.query(
                 "select * from reservation",
@@ -31,7 +31,7 @@ public class ReservationRepository {
         );
     }
 
-    public Reservation insertReservation(Reservation reservation) {
+    public Reservation save(Reservation reservation) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(
@@ -46,7 +46,7 @@ public class ReservationRepository {
         return new Reservation((int) keyHolder.getKey().longValue(), reservation.getName(), reservation.getDate(), reservation.getTime());
     }
 
-    public int deleteReservation(int id) {
+    public int delete(int id) {
         String sql = "delete from reservation where id = ?";
         return jdbcTemplate.update(sql, id);
     }
