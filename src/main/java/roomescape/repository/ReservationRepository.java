@@ -1,13 +1,14 @@
-package roomescape.domain;
+package roomescape.repository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-import roomescape.domain.exception.NoReservationException;
+import roomescape.domain.Reservation;
+import roomescape.service.ReservationExceptionHandler;
 
 import javax.sql.DataSource;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -43,14 +44,12 @@ public class ReservationRepository {
         );
     }
 
-//    public void deleteReservationById(Long id) {
-//        Optional<Reservation> reservation = reservations.stream()
-//                .filter(it -> it.getId() == 1)
-//                .findFirst();
-//        try {
-//            reservation.get();
-//        } catch (NoSuchElementException e) {
-//            throw new NoReservationException("존재하지 않는 예약입니다.");
-//        }
-//    }
+    public void deleteReservationById(Long id) {
+        String sql = "DELETE FROM RESERVATION WHERE ID = ?";
+        try {
+            jdbcTemplate.update(sql, id);
+        } catch (DataAccessException e) {
+            throw new ReservationExceptionHandler.NoReservationException("존재하지 않는 예약입니다.");
+        }
+    }
 }

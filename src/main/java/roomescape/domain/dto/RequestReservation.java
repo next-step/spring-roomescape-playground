@@ -1,7 +1,7 @@
-package roomescape.presentation.dto;
+package roomescape.domain.dto;
 
 import roomescape.domain.Reservation;
-import roomescape.presentation.exception.BadRequestReservation;
+import roomescape.domain.exception.BadRequestReservation;
 
 public record RequestReservation(
         String name,
