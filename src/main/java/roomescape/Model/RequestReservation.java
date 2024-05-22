@@ -21,7 +21,6 @@ public class RequestReservation {
     }
 
     public void validateReservation(){
-
         if (name.isEmpty() || date.isEmpty() || time.isEmpty() )
             throw new BadRequestReservationException("이름, 날짜, 시간을 모두 입력하세요.");
         LocalDate parsedDate = LocalDate.parse(date, DateTimeFormatter.ISO_DATE);
@@ -39,9 +38,5 @@ public class RequestReservation {
 
     public String getTime(){
         return  time;
-    }
-
-    public LocalDateTime getDateTime(){
-        return dateTime;
     }
 }

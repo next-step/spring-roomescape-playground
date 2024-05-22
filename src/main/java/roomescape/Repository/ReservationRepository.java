@@ -8,7 +8,6 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.Exception.NotFoundReservationException;
 import roomescape.Model.Reservation;
-
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
@@ -17,7 +16,6 @@ import java.util.List;
 public class ReservationRepository {
 
     private JdbcTemplate jdbcTemplate;
-
     public ReservationRepository(JdbcTemplate jdbcTemplate){
         this.jdbcTemplate=jdbcTemplate;
     }
@@ -39,7 +37,6 @@ public class ReservationRepository {
 
     public Reservation getReservationById(Long id){
         String sql = "SELECT id, name, date, time FROM reservation WHERE id = ?";
-
         try{
             return jdbcTemplate.queryForObject(sql,actorRowMapper,id);
         }
@@ -58,7 +55,6 @@ public class ReservationRepository {
             ps.setString(3, reservation.getTime());
             return ps;
         }, keyHolder);
-
         return keyHolder.getKey().longValue();
     }
 
@@ -71,5 +67,4 @@ public class ReservationRepository {
             throw new NotFoundReservationException("예약을 찾을 수 없습니다.");
         }
     }
-
 }
