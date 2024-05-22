@@ -5,7 +5,8 @@ public record RequestReservationDTO(String name,
                                     String time) {
 
     public Reservation toReservaiton() {
-        return new Reservation(name,
+        return new Reservation(
+                name,
                 date,
                 time);
     }

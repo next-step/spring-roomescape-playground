@@ -2,7 +2,6 @@ package roomescape.domain;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Objects;
 
 public class Reservation {
     private Long id;
@@ -24,6 +23,15 @@ public class Reservation {
         this.name = validateName(name);
         this.date = validateDate(date);
         this.time = validateTime(time);
+    }
+
+    public ReservationDTO toReservationDTO() {
+        return new ReservationDTO(
+                this.id,
+                this.name,
+                this.date.toString(),
+                this.time.toString()
+        );
     }
 
     public Long getId() {

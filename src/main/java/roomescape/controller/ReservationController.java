@@ -12,12 +12,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import roomescape.domain.RequestReservationDTO;
 import roomescape.domain.ReservationDTO;
 import roomescape.domain.Reservation;
 import roomescape.domain.dao.JdbcReservationDAO;
 
 @Controller
+@RequestMapping(value = "/reservations")
 public class ReservationController {
     private final JdbcReservationDAO jdbcReservationDAO;
 
@@ -25,12 +27,7 @@ public class ReservationController {
         this.jdbcReservationDAO = jdbcReservationDAO;
     }
 
-    @GetMapping(value = "/reservation")
-    public String reservation() {
-        return "reservation";
-    }
-
-    @GetMapping(value = "/reservations")
+    @GetMapping
     public ResponseEntity<List<ReservationDTO>> reservations() {
         List<ReservationDTO> reservations = jdbcReservationDAO.findAll();
         HttpHeaders headers = new HttpHeaders();
@@ -38,7 +35,7 @@ public class ReservationController {
         return new ResponseEntity<>(reservations, headers, HttpStatus.OK);
     }
 
-    @PostMapping(value = "/reservations")
+    @PostMapping
     public ResponseEntity<Reservation> create(@RequestBody RequestReservationDTO request) {
         Reservation reservation = request.toReservaiton();
         Reservation newReservation = jdbcReservationDAO.insert(reservation);
@@ -48,7 +45,7 @@ public class ReservationController {
         return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(newReservation);
     }
 
-    @DeleteMapping(value = "/reservations/{id}")
+    @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> delete(@PathVariable long id) {
         jdbcReservationDAO.deleteById(id);
         return ResponseEntity.noContent().build();
