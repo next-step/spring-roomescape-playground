@@ -8,6 +8,7 @@ import roomescape.repository.ReservationRepository;
 import roomescape.dto.ReservationRequest;
 import roomescape.dto.ReservationResponse;
 import roomescape.exception.BadRequestException;
+import roomescape.repository.ReservationRepositoryImpl;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -18,10 +19,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ReservationService {
 
-    private final ReservationRepository reservationRepository;
-    private final ReservationJdbcRepository reservationJdbcRepository;
+    private final ReservationRepositoryImpl reservationRepository;
     public List<ReservationResponse> findAllReservations() {
-        List<Reservation> reservations = reservationJdbcRepository.findAll();
+        List<Reservation> reservations = reservationRepository.findAll();
         List<ReservationResponse> responseDtoList = reservations.stream()
                 .map(ReservationResponse::from)
                 .collect(Collectors.toList());
@@ -39,18 +39,18 @@ public class ReservationService {
         reservation.setDate(date);
         reservation.setTime(time);
 
-        Reservation savedReservation = reservationJdbcRepository.save(reservation);
+        Reservation savedReservation = reservationRepository.save(reservation);
 
         return ReservationResponse.from(savedReservation);
     }
 
     public void cancelReservation(Long id) {
         ReservationResponse reservationResponse = findById(id);
-        reservationJdbcRepository.deleteById(reservationResponse.getId());
+        reservationRepository.deleteById(reservationResponse.getId());
     }
 
     public ReservationResponse findById(Long id) {
-        Reservation reservation = reservationJdbcRepository.findById(id);
+        Reservation reservation = reservationRepository.findById(id);
         if(reservation == null) {
             throw new BadRequestException("예약을 찾을 수 없습니다. (id=" + id + ")");
         }
