@@ -9,22 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.util.List;
 
-@ControllerAdvice
-class ReservationExceptionHandler {
-    @ExceptionHandler(NotFoundReservationException.class)
-    public ResponseEntity<ResponseDto> handleException(NotFoundReservationException e) {
-        ResponseDto errorResponse = new ResponseDto(HttpStatus.BAD_REQUEST.value(), e.getMessage(), null);
-        return ResponseEntity.badRequest().body(errorResponse);
-    }
-
-    @ExceptionHandler(BadRequestCreateReservationException.class)
-    public ResponseEntity<ResponseDto> handleException(BadRequestCreateReservationException e) {
-        ResponseDto errorResponse = new ResponseDto(HttpStatus.BAD_REQUEST.value(), e.getMessage(), null);
-        return ResponseEntity.badRequest().body(errorResponse);
-    }
-}
-
-
 @Controller
 public class ReservationController {
 
