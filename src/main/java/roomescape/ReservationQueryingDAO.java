@@ -14,10 +14,6 @@ import java.util.List;
 public class ReservationQueryingDAO {
     private JdbcTemplate jdbcTemplate;
 
-    public ReservationQueryingDAO(JdbcTemplate jdbcTemplate){
-        this.jdbcTemplate = jdbcTemplate;
-    }
-
     private final RowMapper<Reservation> actorRowMapper = (resultSet, rowNum) -> {
         Reservation reservation = new Reservation(
                 resultSet.getLong("id"),
@@ -28,6 +24,9 @@ public class ReservationQueryingDAO {
         return reservation;
     };
 
+    public ReservationQueryingDAO(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
 
     public List<Reservation> getReservations() {
