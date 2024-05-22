@@ -7,14 +7,14 @@ public class ReservationRequestDto {
     private String date;
     private String time;
 
-    public ReservationRequestDto (String name, String date, String time) {
-        if(StringUtils.isEmpty(name)) {
+    public ReservationRequestDto(String name, String date, String time) {
+        if (StringUtils.isEmpty(name)) {
             throw new BadRequestCreateReservationException("The 'name' field is missing.");
         }
-        if(StringUtils.isEmpty(date)) {
+        if (StringUtils.isEmpty(date)) {
             throw new BadRequestCreateReservationException("The 'date' field is missing.");
         }
-        if(StringUtils.isEmpty(time)) {
+        if (StringUtils.isEmpty(time)) {
             throw new BadRequestCreateReservationException("The 'time' field is missing.");
         }
         this.name = name;
