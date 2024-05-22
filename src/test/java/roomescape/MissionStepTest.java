@@ -103,7 +103,7 @@ public class MissionStepTest {
     private JdbcTemplate jdbcTemplate;
 
     @Test
-    void 오단계() {
+    void CHECK_DATABASE_CONNECTION() {
         try (Connection connection = jdbcTemplate.getDataSource().getConnection()) {
             assertThat(connection).isNotNull();
             assertThat(connection.getCatalog()).isEqualTo("DATABASE");
@@ -114,7 +114,7 @@ public class MissionStepTest {
     }
 
     @Test
-    void 육단계() {
+    void GET_RESERVATION() {
         jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "브라운", "2023-08-05", "15:40");
 
         List<Reservation> reservations = RestAssured.given().log().all()
@@ -129,7 +129,7 @@ public class MissionStepTest {
     }
 
     @Test
-    void 칠단계() {
+    void CREATE_AND_DELETE_RESERVATION() {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
         params.put("date", "2023-08-05");
