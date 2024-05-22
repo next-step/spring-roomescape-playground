@@ -44,16 +44,9 @@ public class H2ReservationRepository implements ReservationRepository {
 
     @Override
     public Reservation save(final ReservationRequest request) {
-//        String sql = "insert into reservations (name, date, time) "
-//                + "values (:name, :date, :time)";
         SqlParameterSource param = new BeanPropertySqlParameterSource(request);
         final long savedId = jdbcInsert.executeAndReturnKey(param).longValue();
         return new Reservation(savedId, request.name(), request.date(), request.time());
-//        KeyHolder keyHolder = new GeneratedKeyHolder();
-//        jdbcTemplate.update(sql, param, keyHolder);
-//        final long keyId = keyHolder.getKey().longValue();
-//        return new Reservation(keyId, reservation.getName(), reservation.getDate(),
-//                reservation.getTime());
     }
 
     @Override
