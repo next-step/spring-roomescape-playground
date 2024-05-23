@@ -53,15 +53,6 @@ public class ReservationController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    /*
-    @PostConstruct
-    public void init() {
-        memberRepository.memberAdd(new MemberDTO("브라운", "2023-01-01", "10:00"));
-        memberRepository.memberAdd(new MemberDTO("브라운", "2023-01-02", "11:00"));
-        memberRepository.memberAdd(new MemberDTO("브라운", "2023-01-03", "12:00"));
-    }
-    */
-
     @ExceptionHandler(NoHandlerFoundException.class)
     public ResponseEntity handleException(NoHandlerFoundException e) {
         return ResponseEntity.badRequest().build();
