@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import roomescape.domain.Reservation;
-import roomescape.repository.ReservationRepository;
+import roomescape.repository.JdbcReservationRepository;
 import roomescape.domain.dto.RequestReservation;
 import roomescape.domain.dto.ResponseReservation;
 
@@ -17,9 +17,9 @@ import java.util.List;
 public class ReservationController {
 
     @Autowired
-    private final ReservationRepository reservationRepository;
+    private final JdbcReservationRepository reservationRepository;
 
-    public ReservationController(ReservationRepository repository) {
+    public ReservationController(JdbcReservationRepository repository) {
         this.reservationRepository = repository;
     }
 
