@@ -13,7 +13,7 @@
 private LocalDate date;
 
 @DateTimeFormat(pattern = "HH:mm")
-private LocalTime time;
+private LocalTime times;
 ```
 - 그리고, `String`을 `LocalDate`나 `LocalTime`으로 Parsing하기 위해 `LocalDate.parse()` 을 이용하였다.
 
