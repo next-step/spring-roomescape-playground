@@ -3,10 +3,7 @@ package roomescape.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import roomescape.domain.dto.RequestTime;
 import roomescape.domain.dto.ResponseTime;
 import roomescape.repository.TimeRepository;
@@ -38,6 +35,13 @@ public class TimeController {
         URI location = URI.create("/times/" + responseTime.id());
 
         return ResponseEntity.created(location).body(responseTime);
+    }
+
+    @DeleteMapping("/{id}")
+    ResponseEntity<Void> deleteTime(@PathVariable long id) {
+        timeRepository.deleteReservationById(id);
+
+        return ResponseEntity.noContent().build();
     }
 
 

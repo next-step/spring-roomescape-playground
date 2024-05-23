@@ -53,11 +53,11 @@ public class TimeRepository {
     }
 
     public void deleteReservationById(Long id) {
-        String sql = "DELETE FROM RESERVATION WHERE ID = ?";
+        String sql = "DELETE FROM settingTime WHERE ID = ?";
         try {
             jdbcTemplate.update(sql, id);
         } catch (DataAccessException e) {
-            throw new ReservationExceptionHandler.NoReservationException("존재하지 않는 예약입니다.");
+            throw new ReservationExceptionHandler.NoReservationException("존재하지 않는 시간입니다.");
         }
     }
 }
