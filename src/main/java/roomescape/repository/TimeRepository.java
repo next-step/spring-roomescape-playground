@@ -6,7 +6,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import roomescape.domain.Reservation;
 import roomescape.domain.dto.RequestTime;
 import roomescape.domain.dto.ResponseTime;
 import roomescape.service.ReservationExceptionHandler;
@@ -30,13 +29,12 @@ public class TimeRepository {
                 .usingGeneratedKeyColumns("id");
     }
 
-    private final RowMapper<Reservation> reservationRowMapper = (resultSet, rowNum) -> {
-        Reservation reservation = new Reservation(
-                resultSet.getString("name"),
-                resultSet.getString("date"),
+    private final RowMapper<ResponseTime> TimeRowMapper = (resultSet, rowNum) -> {
+        ResponseTime responseTime = new ResponseTime(
+                resultSet.getLong("id"),
                 resultSet.getString("time")
         );
-        return reservation;
+        return responseTime;
     };
 
     public ResponseTime addTime(RequestTime requestTime) {
@@ -47,10 +45,10 @@ public class TimeRepository {
         return new ResponseTime(id, requestTime.time());
     }
 
-    public List<Reservation> findAll() {
-        String sql = "SELECT * FROM reservation";
+    public List<ResponseTime> findAll() {
+        String sql = "SELECT * FROM settingTime";
         return jdbcTemplate.query(sql,
-                reservationRowMapper
+                TimeRowMapper
         );
     }
 

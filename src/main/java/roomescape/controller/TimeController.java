@@ -3,6 +3,7 @@ package roomescape.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +12,7 @@ import roomescape.domain.dto.ResponseTime;
 import roomescape.repository.TimeRepository;
 
 import java.net.URI;
+import java.util.List;
 
 @RequestMapping("/times")
 @Controller
@@ -22,6 +24,11 @@ public class TimeController {
     @Autowired // 생성자가 하나일 때는 생략 가능
     public TimeController(TimeRepository timeRepository) {
         this.timeRepository = timeRepository;
+    }
+
+    @GetMapping
+    ResponseEntity<List<ResponseTime>> checkTime() {
+        return ResponseEntity.ok().body(timeRepository.findAll());
     }
 
     @PostMapping
