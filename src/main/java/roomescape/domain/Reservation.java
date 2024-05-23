@@ -1,5 +1,6 @@
 package roomescape.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
@@ -9,9 +10,14 @@ public class Reservation {
     private int id;
     private String name;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate date;
     @DateTimeFormat(pattern = "HH:mm")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
     private LocalTime time;
+
+    public Reservation() {
+    }
 
     public Reservation(String name, LocalDate date, LocalTime time) {
         this.name = name;

@@ -7,6 +7,6 @@ CREATE TABLE reservation
     PRIMARY KEY (id)
 );
 
-INSERT INTO reservation VALUES (1, '윤성원', '2024-05-22', '10:14');
-INSERT INTO reservation VALUES (2, '윤성원', '2024-05-23', '10:15');
-INSERT INTO reservation VALUES (3, '윤성원', '2024-05-24', '10:16');
+INSERT INTO reservation (name, date, time) VALUES ('윤성원', '2024-05-22', '10:14');
+INSERT INTO reservation (name, date, time) VALUES ('윤성원', '2024-05-23', '10:15');
+INSERT INTO reservation (name, date, time) VALUES ('윤성원', '2024-05-24', '10:16');

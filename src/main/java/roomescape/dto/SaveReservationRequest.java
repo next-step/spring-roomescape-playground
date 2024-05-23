@@ -13,12 +13,15 @@ public record SaveReservationRequest(
         String name,
         String time
 ) {
+
     public SaveReservationRequest {
         validate(name, date, time);
     }
+
     private void validate(String name, String date, String time) {
         validateBlank(name, date, time);
     }
+
     private void validateBlank(String... fields) {
         boolean isBlankExist = Arrays.stream(fields)
                    .anyMatch(String::isBlank);

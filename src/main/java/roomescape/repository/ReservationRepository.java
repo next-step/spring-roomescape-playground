@@ -4,6 +4,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
+import roomescape.exception.NotFoundReservationException;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -49,9 +50,11 @@ public class ReservationRepository {
     }
 
     public int deleteById(int id){
-        return jdbcTemplate.update(
+        int updatedRowCount = jdbcTemplate.update(
                 "delete from reservation where id = ?",
-                id
-        );
+                id);
+        if(updatedRowCount == 0){
+            throw new NotFoundReservationException("예약이 존재하지 않습니다.");
+        }
     }
 }
