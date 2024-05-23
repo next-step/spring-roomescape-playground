@@ -39,10 +39,7 @@ public class ReservationController {
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<String> deleteReservation(@PathVariable int id) {
-        int affectRow = reservationRepository.deleteById(id);
-        if(affectRow == 0) {
-            return ResponseEntity.badRequest().build();
-        }
+        reservationRepository.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 }

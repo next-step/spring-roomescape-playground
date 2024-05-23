@@ -49,7 +49,7 @@ public class ReservationRepository {
         return new Reservation(generatedKey, reservation.getName(), reservation.getDate(), reservation.getTime());
     }
 
-    public int deleteById(int id){
+    public void deleteById(int id){
         int updatedRowCount = jdbcTemplate.update(
                 "delete from reservation where id = ?",
                 id);
