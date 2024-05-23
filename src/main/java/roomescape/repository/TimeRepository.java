@@ -25,7 +25,7 @@ public class TimeRepository {
     public TimeRepository(DataSource dataSource) {
         jdbcTemplate = new JdbcTemplate(dataSource);
         jdbcInsert = new SimpleJdbcInsert(dataSource)
-                .withTableName("SettingTime")
+                .withTableName("time")
                 .usingGeneratedKeyColumns("id");
     }
 
@@ -46,14 +46,14 @@ public class TimeRepository {
     }
 
     public List<ResponseTime> findAll() {
-        String sql = "SELECT * FROM settingTime";
+        String sql = "SELECT * FROM time";
         return jdbcTemplate.query(sql,
                 TimeRowMapper
         );
     }
 
     public void deleteReservationById(Long id) {
-        String sql = "DELETE FROM settingTime WHERE ID = ?";
+        String sql = "DELETE FROM time WHERE ID = ?";
         try {
             jdbcTemplate.update(sql, id);
         } catch (DataAccessException e) {
