@@ -4,21 +4,30 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
+import roomescape.domain.dto.RequestTime;
+import roomescape.domain.dto.ResponseTime;
 import roomescape.service.ReservationExceptionHandler;
 
 import javax.sql.DataSource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Repository
-public class ReservationRepository {
+public class TimeRepository {
 
     private JdbcTemplate jdbcTemplate;
+    private SimpleJdbcInsert jdbcInsert;
 
     @Autowired
-    public ReservationRepository(DataSource dataSource) {
+    public TimeRepository(DataSource dataSource) {
         jdbcTemplate = new JdbcTemplate(dataSource);
+        jdbcInsert = new SimpleJdbcInsert(dataSource)
+                .withTableName("SettingTime")
+                .usingGeneratedKeyColumns("id");
     }
 
     private final RowMapper<Reservation> reservationRowMapper = (resultSet, rowNum) -> {
@@ -30,9 +39,12 @@ public class ReservationRepository {
         return reservation;
     };
 
-    public void addReservation(Reservation reservation) {
-        String sql = "INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)";
-        jdbcTemplate.update(sql, reservation.getName(), reservation.getDate(), reservation.getTime());
+    public ResponseTime addTime(RequestTime requestTime) {
+        Map<String, String> params = new HashMap<>();
+        params.put("time", requestTime.time());
+
+        long id = jdbcInsert.executeAndReturnKey(params).longValue();
+        return new ResponseTime(id, requestTime.time());
     }
 
     public List<Reservation> findAll() {

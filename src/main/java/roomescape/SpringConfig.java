@@ -1,7 +1,6 @@
 package roomescape;
 
 import org.springframework.context.annotation.Bean;
-import org.springframework.jdbc.core.JdbcTemplate;
 import roomescape.controller.ReservationController;
 import roomescape.repository.ReservationRepository;
 
@@ -16,7 +15,7 @@ public class SpringConfig {
     }
 
     @Bean
-    public ReservationController reservationController(){
+    public ReservationController reservationController() {
         return new ReservationController(reservationRepository());
     }
 
