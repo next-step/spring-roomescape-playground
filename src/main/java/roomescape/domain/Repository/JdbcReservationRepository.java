@@ -21,7 +21,7 @@ public class JdbcReservationRepository implements BasicRepository{
 
     @Override
     public List<Reservation> findAll() {
-        String sql = "select * from reservation";
+        String sql = "SELECT * FROM reservation";
         return jdbcTemplate.query(sql, (rs, rowNum) -> new Reservation(
                 rs.getLong("id"),
                 rs.getString("name"),
