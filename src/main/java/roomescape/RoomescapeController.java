@@ -1,4 +1,4 @@
-package roomescape.controller;
+package roomescape;
 
 
 import org.springframework.stereotype.Controller;

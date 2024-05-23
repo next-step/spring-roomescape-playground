@@ -1,14 +1,13 @@
-package roomescape.repository;
+package roomescape.reservation.repository;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import roomescape.domain.Reservation;
+import roomescape.reservation.domain.Reservation;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository("JdbcReservationRepository")
 public class JdbcReservationRepository implements ReservationRepository {

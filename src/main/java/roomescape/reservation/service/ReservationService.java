@@ -1,16 +1,13 @@
-package roomescape.service;
+package roomescape.reservation.service;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import roomescape.domain.Reservation;
-import roomescape.dto.ReservationRequestDto;
-import roomescape.dto.ReservationResponseDto;
-import roomescape.exception.InvalidReservationFormException;
-import roomescape.exception.NotFoundReservationException;
-import roomescape.repository.InMemoryReservationRepository;
-import roomescape.repository.ReservationRepository;
+import roomescape.reservation.domain.Reservation;
+import roomescape.reservation.dto.ReservationRequestDto;
+import roomescape.reservation.dto.ReservationResponseDto;
+import roomescape.reservation.exception.InvalidReservationFormException;
+import roomescape.reservation.repository.ReservationRepository;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 

@@ -1,10 +1,10 @@
-package roomescape.controller;
+package roomescape.reservation.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import roomescape.exception.InvalidReservationFormException;
-import roomescape.exception.NotFoundReservationException;
+import roomescape.reservation.exception.InvalidReservationFormException;
+import roomescape.reservation.exception.NotFoundReservationException;
 
 @ControllerAdvice
 public class ReservationExceptionHandler {
