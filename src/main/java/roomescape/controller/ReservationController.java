@@ -4,10 +4,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import roomescape.domain.Reservation;
-import roomescape.domain.Times;
 import roomescape.dto.ReservationResponse;
 import roomescape.dto.SaveReservationRequest;
-import roomescape.repository.ReservationRepository;
 import roomescape.service.ReservationService;
 import roomescape.service.TimeService;
 

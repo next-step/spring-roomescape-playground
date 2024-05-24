@@ -6,7 +6,6 @@ import roomescape.domain.Times;
 import roomescape.exception.IllegalSaveReservaionException;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.Arrays;
 
 public record SaveReservationRequest(

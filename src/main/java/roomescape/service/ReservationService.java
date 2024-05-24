@@ -5,7 +5,6 @@ import roomescape.domain.Reservation;
 import roomescape.domain.Times;
 import roomescape.dto.ReservationResponse;
 import roomescape.dto.SaveReservationRequest;
-import roomescape.dto.SaveTimeRequest;
 import roomescape.repository.ReservationRepository;
 
 import java.util.List;

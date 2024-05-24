@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 public class Reservation {
     private Long id;
@@ -48,10 +47,6 @@ public class Reservation {
 
     public LocalDate getDate() {
         return date;
-    }
-
-    public void setDate(LocalDate date) {
-        this.date = date;
     }
 
     public Times getTime() {
