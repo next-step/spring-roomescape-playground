@@ -3,7 +3,7 @@ package roomescape.dto;
 import roomescape.domain.Reservation;
 
 public record ReservationResponse (
-        int id,
+        Long id,
         String name,
         String date,
         String time
@@ -14,7 +14,7 @@ public record ReservationResponse (
                 reservation.getId(),
                 reservation.getName(),
                 reservation.getDate().toString(),
-                reservation.getTime().toString()
+                reservation.getTime().getTime().toString()
         );
     }
 }

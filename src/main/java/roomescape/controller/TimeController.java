@@ -20,6 +20,11 @@ public class TimeController {
         this.timeRepository = timeRepository;
     }
 
+    @GetMapping("/times/home")
+    public String gotoTimePage(){
+        return "time";
+    }
+
     @GetMapping("/times")
     public ResponseEntity<List<Times>> getTimes(){
         final List<Times> times = timeRepository.findAll();

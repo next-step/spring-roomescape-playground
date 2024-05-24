@@ -52,4 +52,17 @@ public class TimeRepository {
             throw new NotFoundReservationException("시간이 존재하지 않습니다.");
         }
     }
+
+    public Times findById(Long timeId) {
+        String sql = "SELECT * FROM time where id = ?;";
+        Times time = jdbcTemplate.queryForObject(sql,
+                (resultSet, rowNum) -> {
+                    Times newTime = new Times(
+                            resultSet.getLong("id"),
+                            LocalTime.parse(resultSet.getString("time"))
+                    );
+                    return newTime;
+                }, timeId);
+        return time;
+    }
 }

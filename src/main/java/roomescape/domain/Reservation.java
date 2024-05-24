@@ -7,36 +7,34 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class Reservation {
-    private int id;
+    private Long id;
     private String name;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate date;
-    @DateTimeFormat(pattern = "HH:mm")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
-    private LocalTime time;
+    private Times time;
 
     public Reservation() {
     }
 
-    public Reservation(String name, LocalDate date, LocalTime time) {
-        this.name = name;
-        this.date = date;
-        this.time = time;
-    }
-
-    public Reservation(int id, String name, LocalDate date, LocalTime time) {
+    public Reservation(Long id, String name, LocalDate date, Times time) {
         this.id = id;
         this.name = name;
         this.date = date;
         this.time = time;
     }
 
-    public int getId() {
+    public Reservation(String name, LocalDate date, Times time) {
+        this.name = name;
+        this.date = date;
+        this.time = time;
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -56,11 +54,11 @@ public class Reservation {
         this.date = date;
     }
 
-    public LocalTime getTime() {
+    public Times getTime() {
         return time;
     }
 
-    public void setTime(LocalTime time) {
+    public void setTime(Times time) {
         this.time = time;
     }
 }
