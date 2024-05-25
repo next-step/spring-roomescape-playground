@@ -48,6 +48,12 @@ public class ReservationQueryingDAO {
         return keyHolder.getKey().longValue();
     }
 
+    /**
+     *
+     * @param id
+     * @return delete된 id값
+     */
+
     public int deleteReservationById(long id) {
         String sql = "DELETE FROM reservation WHERE id = ?";
         return jdbcTemplate.update(sql, id);
