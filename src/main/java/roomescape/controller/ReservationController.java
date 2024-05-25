@@ -33,7 +33,7 @@ public class ReservationController {
 
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> addReservation(@RequestBody Reservation request) {
-        request.validate();
+        request.Validate();
 
         long id = reservationRepository.save(request);
         Reservation reservation = reservationRepository.findById(id);

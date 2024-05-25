@@ -19,23 +19,23 @@ public class ReservationRepository {
     }
 
     public List<Reservation> findAll() {
-        String sql = "SELECT id, name, date, time FROM reservation";
+        String sql = "SELECT r.id, r.name, r.date, t.time FROM reservation r INNER JOIN time t ON r.time_id = t.id";
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
             long id = rs.getLong("id");
             String name = rs.getString("name");
             String date = rs.getString("date");
-            String time = rs.getString("time");
+            Time time = new Time(rs.getLong("time_id"), rs.getString("time"));
             return new Reservation(id, name, date, time);
         });
     }
 
     public Reservation findById(long id) {
-        String sql = "SELECT id, name, date, time FROM reservation WHERE id = ?";
+        String sql = "SELECT r.id, r.name, r.date, t.time, t.id AS time_id FROM reservation r INNER JOIN time t ON r.time_id = t.id WHERE r.id = ?";
         return jdbcTemplate.queryForObject(sql, new Object[]{id}, (rs, rowNum) -> {
             long reservationId = rs.getLong("id");
             String name = rs.getString("name");
             String date = rs.getString("date");
-            String time = rs.getString("time");
+            Time time = new Time(rs.getLong("time_id"), rs.getString("time"));
             return new Reservation(reservationId, name, date, time);
         });
     }
@@ -47,7 +47,7 @@ public class ReservationRepository {
             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, reservation.getName());
             ps.setString(2, reservation.getDate());
-            ps.setString(3, reservation.getTime());
+            ps.setLong(3, reservation.getTime().getId());
             return ps;
         }, keyHolder);
 
