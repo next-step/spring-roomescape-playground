@@ -34,14 +34,14 @@ public class ReservationQueryingDAO {
         return jdbcTemplate.query(sql, actorRowMapper);
     }
 
-    public long createReservation(ReservationRequestDto reservation) {
+    public long createReservation(String name, String date, String time) {
         String sql = "INSERT INTO reservation(name, date, time) VALUES (?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, reservation.getName());
-            ps.setString(2, reservation.getDate());
-            ps.setString(3, reservation.getTime());
+            ps.setString(1, name);
+            ps.setString(2, date);
+            ps.setString(3, time);
             return ps;
         }, keyHolder);
 

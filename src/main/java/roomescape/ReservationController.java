@@ -36,11 +36,11 @@ public class ReservationController {
         String date = request.getDate();
         String time = request.getTime();
 
-        ReservationRequestDto newReservation = new ReservationRequestDto(name, date, time);
 
-        long id = queryingDAO.createReservation(newReservation);
+        long id = queryingDAO.createReservation(name, date, time);
 
         URI location = URI.create("/reservations/" + id);
+        Reservation newReservation = new Reservation(id, name, date, time);
 
         ResponseDto response = new ResponseDto(HttpStatus.CREATED.value(), "예약이 성공적으로 추가되었습니다.", newReservation);
         return ResponseEntity.created(location).body(response);
