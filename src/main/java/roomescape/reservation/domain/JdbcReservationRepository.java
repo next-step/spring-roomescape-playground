@@ -1,12 +1,12 @@
 package roomescape.reservation.domain;
 
 import java.sql.PreparedStatement;
-import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.reservation.domain.exception.NotExistReservationException;
+import roomescape.time.domain.Time;
 
 @Repository
 public class JdbcReservationRepository implements ReservationRepository {
@@ -19,28 +19,37 @@ public class JdbcReservationRepository implements ReservationRepository {
 
     @Override
     public List<Reservation> findAll() {
-        String sql = "SELECT * FROM reservation";
+        String sql = "SELECT \n"
+                + "    r.id as reservation_id, \n"
+                + "    r.name, \n"
+                + "    r.date, \n"
+                + "    t.id as time_id, \n"
+                + "    t.time as time_value \n"
+                + "FROM reservation as r inner join time as t on r.time_id = t.id";
+
         return jdbcTemplate.query(sql, (rs, rowNum) -> new Reservation(
                 rs.getLong("id"),
                 rs.getString("name"),
-                rs.getObject("reservation_date_time", LocalDateTime.class)
+                rs.getString("date"),
+                new Time(rs.getLong("time_id"), rs.getString("time_value"))
         ));
     }
 
     @Override
     public Reservation save(Reservation reservation) {
-        String sql = "INSERT INTO reservation (name, reservation_date_time) VALUES (?, ?)";
+        final String sql = "INSERT INTO reservation (name, date, time_id) VALUES (?, ?, ?)";
 
-        GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
+        final GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
+            final PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
             ps.setString(1, reservation.name());
-            ps.setObject(2, reservation.reservationDateTime());
+            ps.setObject(2, reservation.date());
+            ps.setLong(3, reservation.time().id());
             return ps;
         }, keyHolder);
 
-        long generatedKey = keyHolder.getKey().longValue();
-        return new Reservation(generatedKey, reservation.name(), reservation.reservationDateTime());
+        final long generatedKey = keyHolder.getKey().longValue();
+        return new Reservation(generatedKey, reservation.name(), reservation.date(), reservation.time());
     }
 
     @Override

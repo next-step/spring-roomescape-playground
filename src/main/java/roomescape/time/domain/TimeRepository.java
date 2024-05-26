@@ -6,6 +6,8 @@ public interface TimeRepository {
 
     List<Time> findAll();
 
+    Time findById(Long id);
+
     Time save(Time time);
 
     void deleteById(Long id);

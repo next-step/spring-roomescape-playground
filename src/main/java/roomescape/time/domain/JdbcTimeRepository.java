@@ -25,6 +25,15 @@ public class JdbcTimeRepository implements TimeRepository {
     }
 
     @Override
+    public Time findById(final Long id) {
+        final String sql = "SELECT * FROM time WHERE id = ?";
+        return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> new Time(
+                rs.getLong("id"),
+                rs.getString("time")
+        ), id);
+    }
+
+    @Override
     public Time save(final Time time) {
         final String sql = "INSERT INTO time (time) VALUES (?)";
 
