@@ -9,20 +9,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import roomescape.db.ReservationEntity;
 import roomescape.model.ReservationRequest;
-import roomescape.service.QueryingDAO;
-import roomescape.service.UpdatingDAO;
+import roomescape.service.ReservationService;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Controller
 @RequiredArgsConstructor
 public class ReservationApiController {
 
-    private final QueryingDAO queryingDAO;
-    private final UpdatingDAO updatingDAO;
+   private final ReservationService reservationService;
 
     @GetMapping("/reservation")
     public String reservation() {
@@ -32,7 +28,7 @@ public class ReservationApiController {
     @GetMapping("/reservations")
     public ResponseEntity<List<ReservationEntity>> reservations() {
 
-        List<ReservationEntity> lists = queryingDAO.findAllList();
+        List<ReservationEntity> lists = reservationService.findAllList();
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(lists);
@@ -44,11 +40,11 @@ public class ReservationApiController {
             @RequestBody ReservationRequest reservationRequest
     ) {
 
-        Long nowId = Long.valueOf(queryingDAO.count()) + 1;
+        Long nowId = Long.valueOf(reservationService.countReservation()) + 1;
 
-        updatingDAO.insert(reservationRequest);
+        reservationService.insertReservation(reservationRequest);
 
-        ReservationEntity reservationEntity = queryingDAO.findReservationById(nowId);
+        ReservationEntity reservationEntity = reservationService.findReservationById(nowId);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(URI.create("/reservations/" + Long.toString(nowId)));
@@ -63,7 +59,7 @@ public class ReservationApiController {
             @PathVariable Long id
     ) {
 
-        updatingDAO.delete(id);
+        reservationService.deleteReservation(id);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
