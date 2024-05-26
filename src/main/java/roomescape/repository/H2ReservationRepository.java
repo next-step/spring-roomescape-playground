@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 import roomescape.dto.ReservationRequest;
 import roomescape.exception.ErrorMessage;
 import roomescape.exception.ReservationException;
-import roomescape.model.Reservation;
+import roomescape.domain.Reservation;
 
 @Repository
 public class H2ReservationRepository implements ReservationRepository {

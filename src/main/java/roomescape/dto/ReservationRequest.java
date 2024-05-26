@@ -5,7 +5,6 @@ import java.time.LocalTime;
 import org.springframework.format.annotation.DateTimeFormat;
 import roomescape.exception.ErrorMessage;
 import roomescape.exception.ReservationException;
-import roomescape.model.Reservation;
 
 public record ReservationRequest(
         String name,
