@@ -1,8 +1,9 @@
-package roomescape.exception;
+package roomescape.presentation;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import roomescape.exception.ReservationException;
 
 @ControllerAdvice(basePackages = "roomescape.controller") // 해당 패키지에 있는 컨트롤러에만 적용
 public class ReservationExceptionHandler {

@@ -1,10 +1,10 @@
-package roomescape.repository;
+package roomescape.dao;
 
 import java.util.List;
 import roomescape.domain.ReservationTime;
 import roomescape.dto.ReservationTimeRequest;
 
-public interface ReservationTimeRepository {
+public interface ReservationTimeDao {
 
     ReservationTime save(ReservationTimeRequest request);
 

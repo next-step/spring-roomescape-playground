@@ -1,4 +1,4 @@
-package roomescape.repository;
+package roomescape.dao;
 
 import java.time.LocalTime;
 import java.util.List;
@@ -14,12 +14,12 @@ import roomescape.exception.ErrorMessage;
 import roomescape.exception.ReservationException;
 
 @Repository
-public class H2ReservationTimeRepository implements ReservationTimeRepository {
+public class H2ReservationTimeDao implements ReservationTimeDao {
 
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
 
-    public H2ReservationTimeRepository(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+    public H2ReservationTimeDao(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
         this.jdbcInsert = new SimpleJdbcInsert(namedParameterJdbcTemplate.getJdbcTemplate())
                 .withTableName("times")

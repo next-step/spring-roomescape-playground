@@ -1,11 +1,10 @@
-package roomescape.repository;
+package roomescape.dao;
 
 import java.util.List;
 import roomescape.dto.ReservationRequest;
 import roomescape.domain.Reservation;
-import roomescape.dto.ReservationResponse;
 
-public interface ReservationRepository {
+public interface ReservationDao {
 
     List<Reservation> findAll();
 

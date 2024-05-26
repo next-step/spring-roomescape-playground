@@ -1,4 +1,4 @@
-package roomescape.controller;
+package roomescape.presentation;
 
 import java.net.URI;
 import java.util.List;
@@ -13,14 +13,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import roomescape.domain.ReservationTime;
 import roomescape.dto.ReservationTimeRequest;
 import roomescape.dto.ReservationTimeResponse;
-import roomescape.repository.ReservationTimeRepository;
+import roomescape.dao.ReservationTimeDao;
 
 @Controller
 public class ReservationTimeController {
 
-    private final ReservationTimeRepository repository;
+    private final ReservationTimeDao repository;
 
-    public ReservationTimeController(final ReservationTimeRepository repository) {
+    public ReservationTimeController(final ReservationTimeDao repository) {
         this.repository = repository;
     }
 
