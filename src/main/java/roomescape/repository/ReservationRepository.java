@@ -32,18 +32,15 @@ public class ReservationRepository {
 
         return jdbcTemplate.query(
                 sql,
-                (resultSet, rowNum) -> {
-                    Reservation reservation = new Reservation(
-                            resultSet.getLong("reservation_id"),
-                            resultSet.getString("name"),
-                            LocalDate.parse(resultSet.getString("date")),
-                            new Times(
-                                    resultSet.getLong("time_id"),
-                                    LocalTime.parse(resultSet.getString("time_value"))
-                            )
-                    );
-                    return reservation;
-                });
+                (resultSet, rowNum) -> new Reservation(
+                        resultSet.getLong("reservation_id"),
+                        resultSet.getString("name"),
+                        LocalDate.parse(resultSet.getString("date")),
+                        new Times(
+                                resultSet.getLong("time_id"),
+                                LocalTime.parse(resultSet.getString("time_value"))
+                        )
+                ));
     }
 
     public Reservation save(Reservation reservation) {

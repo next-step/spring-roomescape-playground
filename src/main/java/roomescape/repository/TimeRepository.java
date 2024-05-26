@@ -1,5 +1,6 @@
 package roomescape.repository;
 
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -9,6 +10,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Times;
 import roomescape.exception.NotFoundReservationException;
+import roomescape.exception.NotFoundTimeException;
 
 import java.time.LocalTime;
 import java.util.List;
@@ -35,12 +37,9 @@ public class TimeRepository {
     public List<Times> findAll() {
         String sql = "SELECT * FROM time;";
         return namedParameterJdbcTemplate.query(sql,
-                (resultSet, rowNum) -> {
-                    Times times = new Times(
-                            resultSet.getLong("id"),
-                            LocalTime.parse(resultSet.getString("time")));
-                    return times;
-                });
+                (resultSet, rowNum) -> new Times(
+                        resultSet.getLong("id"),
+                        LocalTime.parse(resultSet.getString("time"))));
     }
 
     public void deleteById(int id) {
@@ -49,19 +48,20 @@ public class TimeRepository {
                 .addValue("id", id);
         int updatedRowCount = namedParameterJdbcTemplate.update(sql, param);
         if (updatedRowCount == 0) {
-            throw new NotFoundReservationException("시간이 존재하지 않습니다.");
+            throw new NotFoundTimeException("시간이 존재하지 않습니다.");
         }
     }
 
     public Times findById(Long timeId) {
         String sql = "SELECT * FROM time where id = ?;";
-        return jdbcTemplate.queryForObject(sql,
-                (resultSet, rowNum) -> {
-                    Times newTime = new Times(
+        try {
+            return jdbcTemplate.queryForObject(sql,
+                    (resultSet, rowNum) -> new Times(
                             resultSet.getLong("id"),
                             LocalTime.parse(resultSet.getString("time"))
-                    );
-                    return newTime;
-                }, timeId);
+                    ), timeId);
+        } catch(IncorrectResultSizeDataAccessException e){
+            return null;
+        }
     }
 }

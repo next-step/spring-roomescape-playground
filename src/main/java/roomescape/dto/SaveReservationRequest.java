@@ -11,11 +11,11 @@ import java.util.Arrays;
 public record SaveReservationRequest(
         String date,
         String name,
-        Long timeId
+        Long time_id
 ) {
 
     public SaveReservationRequest {
-        validate(name, date, timeId);
+        validate(name, date, time_id);
     }
 
     private void validate(String name, String date, Long timeId) {

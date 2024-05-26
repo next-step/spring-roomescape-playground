@@ -26,13 +26,13 @@ public class TimeController {
     }
 
     @GetMapping("/times")
-    public ResponseEntity<List<Times>> getTimes(){
+    public ResponseEntity<List<Times>> getAllTimes(){
         final List<Times> times = timeRepository.findAll();
         return ResponseEntity.ok(times);
     }
 
     @PostMapping("/times")
-    public ResponseEntity<TimeResponse> createTime(@RequestBody SaveTimeRequest request){
+    public ResponseEntity<TimeResponse> createTimes(@RequestBody SaveTimeRequest request){
         // TODO create TimeResponse
         Times times = timeRepository.save(request.toTimes());
         TimeResponse response = TimeResponse.from(times);
@@ -40,7 +40,7 @@ public class TimeController {
     }
 
     @DeleteMapping("/times/{id}")
-    public ResponseEntity<String> deleteTime(@PathVariable int id){
+    public ResponseEntity<String> deleteTimesById(@PathVariable int id){
         timeRepository.deleteById(id);
         return ResponseEntity.noContent().build();
     }

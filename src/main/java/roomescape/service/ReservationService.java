@@ -20,7 +20,7 @@ public class ReservationService {
     }
 
     public ReservationResponse saveReservation(SaveReservationRequest request){
-        Times time = timeService.findById(request.timeId());
+        Times time = timeService.findById(request.time_id());
         Reservation reservation = reservationRepository.save(request.toReservation(time));
         return ReservationResponse.from(reservation);
     }

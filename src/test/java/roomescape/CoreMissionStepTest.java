@@ -78,18 +78,18 @@ public class CoreMissionStepTest {
     }
 
     @Test
-    @DisplayName("예약 생성 시, 존재하지 않는 time id으로 요청이 오면 에러가 발생한다.")
+    @DisplayName("예약 생성 시, 존재하지 않는 time_id로 요청이 오면 에러가 발생한다.")
     void reservationNotFoundTimeId(){
         Map reservation = new HashMap<>();
         reservation.put("name", "브라운");
         reservation.put("date", "2023-08-05");
-        reservation.put("timeId", 1);
+        reservation.put("time_id", 4);
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(reservation)
                 .when().post("/reservations")
                 .then().log().all()
-                .statusCode(201);
+                .statusCode(400);
     }
 }
