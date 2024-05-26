@@ -13,11 +13,16 @@
 
 <h3>9단계 요구사항</h3>
 
-기존 코드 수정
-: 기존에 구현한 예약 기능에서 시간을 시간 테이블에 저장된 값만 선택할 수 있도록 수정
+기존코드 수정 
+기존에 구현한 예약 기능에서 시간을 시간 테이블에 저장된 값만 선택할 수 있도록 수정
 
-- [ ] templates/reservation.html 대신 templates/new-reservation.html 파일 사용
-- [ ] 테이블 스키마 재정의
-- [ ] 시간 타입을 String에서 Time 객체로 수정
-- [ ] 예약 쿼리 수정
-- [ ] 요구사항 test추가
+- [x] templates/reservation.html 대신 templates/new-reservation.html 파일 사용
+- [x] 테이블 스키마 재정의
+- [x] 시간 타입을 String에서 Time 객체로 수정
+- [x] 예약 쿼리 수정
+- [x] 요구사항 test추가
+
+<h3>10단계 요구사항</h3>
+
+기존코드 수정 
+- 레이어드 아키텍처를 적용하여 레이어별 책임과 역할에 따라 클래스 분리
