@@ -12,12 +12,12 @@ import roomescape.dto.ReservationTimeRequest;
 @Repository
 public class H2ReservationTimeRepository implements ReservationTimeRepository {
 
-    private final NamedParameterJdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
 
-    public H2ReservationTimeRepository(DataSource dataSource) {
-        this.jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
-        this.jdbcInsert = new SimpleJdbcInsert(dataSource)
+    public H2ReservationTimeRepository(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
+        this.jdbcInsert = new SimpleJdbcInsert(namedParameterJdbcTemplate.getJdbcTemplate())
                 .withTableName("times")
                 .usingGeneratedKeyColumns("id");
     }

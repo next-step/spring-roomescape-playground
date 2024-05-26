@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
-import javax.sql.DataSource;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -18,12 +17,12 @@ import roomescape.domain.Reservation;
 @Repository
 public class H2ReservationRepository implements ReservationRepository {
 
-    private final NamedParameterJdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
 
-    public H2ReservationRepository(DataSource dataSource) {
-        this.jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
-        this.jdbcInsert = new SimpleJdbcInsert(dataSource)
+    public H2ReservationRepository(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
+        this.jdbcInsert = new SimpleJdbcInsert(namedParameterJdbcTemplate.getJdbcTemplate())
                 .withTableName("reservations")
                 .usingGeneratedKeyColumns("id");
     }
@@ -31,7 +30,7 @@ public class H2ReservationRepository implements ReservationRepository {
     @Override
     public List<Reservation> findAll() {
         String sql = "select * from reservations";
-        return jdbcTemplate.query(
+        return namedParameterJdbcTemplate.query(
                 sql,
                 (rs, rowNum) -> new Reservation(
                         rs.getLong("id"),
@@ -53,7 +52,7 @@ public class H2ReservationRepository implements ReservationRepository {
     public void deleteById(final Long id) {
         String sql = "delete from reservations where id = :id";
         Map<String, Object> param = Map.of("id", id);
-        final int rowNum = jdbcTemplate.update(sql, param);
+        final int rowNum = namedParameterJdbcTemplate.update(sql, param);
         if (rowNum == 0) {
             throw new ReservationException(ErrorMessage.INVALID_ID_REQUEST);
         }
