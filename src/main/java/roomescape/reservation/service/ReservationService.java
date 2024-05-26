@@ -7,6 +7,8 @@ import roomescape.reservation.dto.ReservationRequestDto;
 import roomescape.reservation.dto.ReservationResponseDto;
 import roomescape.reservation.exception.InvalidReservationFormException;
 import roomescape.reservation.repository.ReservationRepository;
+import roomescape.time.domain.Time;
+import roomescape.time.repository.TimeRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,10 +17,11 @@ import java.util.stream.Collectors;
 public class ReservationService {
 
     private final ReservationRepository reservationRepository;
+    private final TimeRepository timeRepository;
 
-    public ReservationService(@Qualifier("JdbcReservationRepository") ReservationRepository reservationRepository) {
+    public ReservationService(@Qualifier("JdbcReservationRepository")ReservationRepository reservationRepository, TimeRepository timeRepository) {
         this.reservationRepository = reservationRepository;
-
+        this.timeRepository = timeRepository;
     }
 
     public List<ReservationResponseDto> getReservations() {
@@ -29,7 +32,8 @@ public class ReservationService {
 
     public ReservationResponseDto createReservation(ReservationRequestDto requestDto) {
         validateReservation(requestDto);
-        Reservation reservation = new Reservation(0, requestDto.name(), requestDto.date(), requestDto.time());
+        Time time = timeRepository.findById(requestDto.time());
+        Reservation reservation = new Reservation(0, requestDto.name(), requestDto.date(), time);
         Reservation savedReservation = reservationRepository.save(reservation);
         return toResponseDto(savedReservation);
     }

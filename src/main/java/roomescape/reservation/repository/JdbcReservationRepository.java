@@ -6,7 +6,9 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.reservation.domain.Reservation;
+import roomescape.time.domain.Time;
 
+import java.time.LocalTime;
 import java.util.List;
 
 @Repository("JdbcReservationRepository")
@@ -20,22 +22,28 @@ public class JdbcReservationRepository implements ReservationRepository {
 
     private static RowMapper<Reservation> getReservationRowMapper() {
         return (rs, rowNum) -> new Reservation(
-                rs.getLong("id"),
+                rs.getLong("reservation_id"),
                 rs.getString("name"),
                 rs.getDate("date").toLocalDate(),
-                rs.getTime("time").toLocalTime()
+                new Time(rs.getLong("time_id"), LocalTime.parse(rs.getString("time_value")))
         );
     }
 
     @Override
     public List<Reservation> findAll() {
-        String sql = "select * from reservation";
+        String sql = "SELECT \n" +
+                "    r.id as reservation_id, \n" +
+                "    r.name, \n" +
+                "    r.date, \n" +
+                "    t.id as time_id, \n" +
+                "    t.time as time_value \n" +
+                "FROM reservation as r inner join time as t on r.time_id = t.id\n";
         return jdbcTemplate.query(sql, getReservationRowMapper());
     }
 
     @Override
     public Reservation save(Reservation reservation) {
-        String sql = "insert into reservation (name, date, time) values (?, ?, ?)";
+        String sql = "insert into reservation (name, date, time_id) values (?, ?, ?)";
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
@@ -43,7 +51,7 @@ public class JdbcReservationRepository implements ReservationRepository {
             var ps = connection.prepareStatement(sql, new String[]{"id"});
             ps.setString(1, reservation.getName());
             ps.setDate(2, java.sql.Date.valueOf(reservation.getDate()));
-            ps.setTime(3, java.sql.Time.valueOf(reservation.getTime()));
+            ps.setLong(3, reservation.getTime().getId());
             return ps;
         }, keyHolder);
 

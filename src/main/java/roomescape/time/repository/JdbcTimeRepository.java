@@ -54,5 +54,11 @@ public class JdbcTimeRepository implements TimeRepository{
         }
     }
 
+    @Override
+    public Time findById(Long id) {
+        String sql = "select * from time where id = ?";
+        return jdbcTemplate.queryForObject(sql, getTimeRowMapper(), id);
+    }
+
 
 }
