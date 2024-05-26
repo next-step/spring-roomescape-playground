@@ -7,7 +7,7 @@ CREATE TABLE reservations
     PRIMARY KEY (id)
 );
 
-CREATE TABLE time
+CREATE TABLE times
 (
     id   BIGINT       NOT NULL AUTO_INCREMENT,
     time TIME NOT NULL,
