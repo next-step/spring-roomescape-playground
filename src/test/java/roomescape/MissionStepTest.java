@@ -17,7 +17,6 @@ public class MissionStepTest {
     private static final int TEST_DATA_COUNT = 3;
     private static final int newId = TEST_DATA_COUNT + 1;
 
-
     @Test
     void 일단계() {
         RestAssured.given().log().all()
@@ -45,7 +44,7 @@ public class MissionStepTest {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
         params.put("date", "2023-08-05");
-        params.put("time", "15:40");
+        params.put("time", "1");
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
