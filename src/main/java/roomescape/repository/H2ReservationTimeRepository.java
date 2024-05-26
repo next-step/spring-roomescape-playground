@@ -34,6 +34,19 @@ public class H2ReservationTimeRepository implements ReservationTimeRepository {
     }
 
     @Override
+    public ReservationTime findById(final Long id) {
+        String sql = "select * from times where id = :id";
+        final Map<String, Long> param = Map.of("id", id);
+        return namedParameterJdbcTemplate.queryForObject(
+                sql, param,
+                (rs, rowNum) -> new ReservationTime(
+                        rs.getLong("id"),
+                        rs.getObject("time", LocalTime.class)
+                )
+        );
+    }
+
+    @Override
     public List<ReservationTime> findAll() {
         String sql = "select * from times";
         return namedParameterJdbcTemplate.query(

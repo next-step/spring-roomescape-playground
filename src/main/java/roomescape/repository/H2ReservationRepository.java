@@ -4,15 +4,16 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import roomescape.domain.Reservation;
+import roomescape.domain.ReservationTime;
 import roomescape.dto.ReservationRequest;
 import roomescape.exception.ErrorMessage;
 import roomescape.exception.ReservationException;
-import roomescape.domain.Reservation;
 
 @Repository
 public class H2ReservationRepository implements ReservationRepository {
@@ -29,23 +30,37 @@ public class H2ReservationRepository implements ReservationRepository {
 
     @Override
     public List<Reservation> findAll() {
-        String sql = "select * from reservations";
+        String sql = "select"
+                + " r.id as reservation_id, r.name, r.date,"
+                + " t.id as time_id, t.time"
+                + " from reservations as r inner join times as t"
+                + " on r.time_id = t.id";
         return namedParameterJdbcTemplate.query(
                 sql,
                 (rs, rowNum) -> new Reservation(
-                        rs.getLong("id"),
+                        rs.getLong("reservation_id"),
                         rs.getString("name"),
                         rs.getObject("date", LocalDate.class),
-                        rs.getObject("time", LocalTime.class)
+                        new ReservationTime(
+                                rs.getLong("time_id"),
+                                rs.getObject("time", LocalTime.class)
+                        )
                 )
         );
     }
 
     @Override
-    public Reservation save(final ReservationRequest request) {
-        SqlParameterSource param = new BeanPropertySqlParameterSource(request);
+    public Reservation save(final ReservationRequest request, Long timeId) {
+        SqlParameterSource param = new MapSqlParameterSource()
+                .addValue("name", request.name())
+                .addValue("date", request.date())
+                .addValue("timeId", timeId);
         final long savedId = jdbcInsert.executeAndReturnKey(param).longValue();
-        return new Reservation(savedId, request.name(), request.date(), request.time());
+        return new Reservation(
+                savedId,
+                request.name(),
+                request.date(),
+                new ReservationTime(timeId));
     }
 
     @Override
