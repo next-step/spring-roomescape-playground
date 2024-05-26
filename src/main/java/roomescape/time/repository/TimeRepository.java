@@ -1,14 +1,12 @@
 package roomescape.time.repository;
 
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Repository;
+import roomescape.time.domain.Time;
 
-@Repository
-public class TimeRepository {
-    private final JdbcTemplate jdbcTemplate;
+import java.util.List;
 
-    public TimeRepository(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
+public interface TimeRepository {
+    List<Time> findAll();
+    Time save(Time time);
+    void deleteById(Long id);
 
 }
