@@ -3,9 +3,11 @@ package roomescape.db;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.model.ReservationRequest;
 
+import java.sql.PreparedStatement;
 import java.util.List;
 
 @Repository
@@ -47,12 +49,24 @@ public class ReservationRepositoryImpl implements ReservationRepository {
     }
 
     @Override
-    public void insertReservation(ReservationRequest reservationRequest) {
+    public ReservationEntity insertReservation(ReservationRequest reservationRequest) {
 
         String sql = "insert into reservation (name, date, time) values (?,?,?)";
-        jdbcTemplate.update(sql, reservationRequest.getName()
-                , reservationRequest.getDate()
-                , reservationRequest.getTime());
+
+        GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
+            ps.setString(1, reservationRequest.getName());
+            ps.setObject(2, reservationRequest.getDate());
+            ps.setObject(3, reservationRequest.getTime());
+            return ps;
+        }, keyHolder);
+
+        long generatedKey = keyHolder.getKey().longValue();
+
+        return findReservationById(generatedKey);
+
+
     }
 
     @Override

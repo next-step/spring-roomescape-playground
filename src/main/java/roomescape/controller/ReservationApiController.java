@@ -18,7 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReservationApiController {
 
-   private final ReservationService reservationService;
+    private final ReservationService reservationService;
 
     @GetMapping("/reservation")
     public String reservation() {
@@ -40,14 +40,11 @@ public class ReservationApiController {
             @RequestBody ReservationRequest reservationRequest
     ) {
 
-        Long nowId = Long.valueOf(reservationService.countReservation()) + 1;
+        ReservationEntity reservationEntity = reservationService.insertReservation(reservationRequest);
 
-        reservationService.insertReservation(reservationRequest);
-
-        ReservationEntity reservationEntity = reservationService.findReservationById(nowId);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(URI.create("/reservations/" + Long.toString(nowId)));
+        headers.setLocation(URI.create("/reservations/" + Long.toString(reservationEntity.getId())));
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .headers(headers)

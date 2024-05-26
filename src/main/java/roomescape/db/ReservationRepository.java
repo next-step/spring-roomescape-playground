@@ -14,7 +14,7 @@ public interface ReservationRepository {
 
     ReservationEntity findReservationById(Long id);
 
-    void insertReservation(ReservationRequest reservationRequest);
+    ReservationEntity insertReservation(ReservationRequest reservationRequest);
 
     void deleteReservation(Long id);
 }

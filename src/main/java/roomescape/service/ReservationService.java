@@ -28,8 +28,8 @@ public class ReservationService {
         return reservationRepository.findReservationById(id);
     }
 
-    public void insertReservation(ReservationRequest reservationRequest){
-        reservationRepository.insertReservation(reservationRequest);
+    public ReservationEntity insertReservation(ReservationRequest reservationRequest){
+       return  reservationRepository.insertReservation(reservationRequest);
     }
 
     public void deleteReservation(Long id){
