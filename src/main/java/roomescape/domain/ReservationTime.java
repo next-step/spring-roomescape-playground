@@ -12,6 +12,10 @@ public class ReservationTime {
         this.time = time;
     }
 
+    public ReservationTime(final Long id) {
+        this.id = id;
+    }
+
     public Long getId() {
         return id;
     }
