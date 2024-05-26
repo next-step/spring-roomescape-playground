@@ -2,18 +2,18 @@ package roomescape;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import roomescape.DAO.TimeRepository;
+import org.springframework.jdbc.core.JdbcTemplate;
+import roomescape.controller.ReservationController;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -25,8 +25,6 @@ public class SpringCoreTest {
     @Autowired
     private TestRestTemplate restTemplate;
 
-    @Autowired
-    private TimeRepository timeRepository;
 
     @Test
     void 팔단계() {
@@ -67,5 +65,8 @@ public class SpringCoreTest {
                 .then().log().all()
                 .statusCode(400);
     }
+
+    @Autowired
+    private ReservationController reservationController;
 
 }
