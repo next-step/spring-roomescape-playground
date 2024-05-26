@@ -1,15 +1,13 @@
-package roomescape.db;
+package roomescape.reservation.db;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.cglib.core.Local;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
-import roomescape.model.ReservationRequest;
+import roomescape.reservation.model.ReservationRequest;
 
 import java.sql.PreparedStatement;
-import java.time.LocalDate;
 import java.util.List;
 
 @Repository
@@ -76,8 +74,6 @@ public class ReservationRepositoryImpl implements ReservationRepository {
 
         String sql = "delete from reservation where id=?";
 
-        int rowAffected = jdbcTemplate.update(sql, id);
-
-        if (rowAffected == 0) throw new RuntimeException("[ERROR] 존재하지 않는 id입니다");
+        jdbcTemplate.update(sql, id);
     }
 }

@@ -1,6 +1,6 @@
-package roomescape.db;
+package roomescape.reservation.db;
 
-import roomescape.model.ReservationRequest;
+import roomescape.reservation.model.ReservationRequest;
 
 import java.util.List;
 

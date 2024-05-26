@@ -1,22 +1,18 @@
-package roomescape.db;
+package roomescape.time.db;
 
-import jakarta.validation.constraints.NotBlank;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
-public class ReservationEntity {
+public class TimeEntity {
 
     private Long id;
-
-    private String name;
-
-    private String date;
 
     private String time;
 }
