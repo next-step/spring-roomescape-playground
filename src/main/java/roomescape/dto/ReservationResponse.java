@@ -21,15 +21,4 @@ public record ReservationResponse(
                 ReservationTimeResponse.from(reservation.getTime())
         );
     }
-
-    public static ReservationResponse of(final Reservation reservation,
-                                         final ReservationTime time) {
-        return new ReservationResponse(
-                reservation.getId(),
-                reservation.getName(),
-                reservation.getDate(),
-                ReservationTimeResponse.from(time)
-        );
-    }
-
 }

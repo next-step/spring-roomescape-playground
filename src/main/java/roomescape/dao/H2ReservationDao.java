@@ -50,17 +50,17 @@ public class H2ReservationDao implements ReservationDao {
     }
 
     @Override
-    public Reservation save(final ReservationRequest request, Long timeId) {
+    public Reservation save(final Reservation reservation) {
         SqlParameterSource param = new MapSqlParameterSource()
-                .addValue("name", request.name())
-                .addValue("date", request.date())
-                .addValue("timeId", timeId);
+                .addValue("name", reservation.getName())
+                .addValue("date", reservation.getDate())
+                .addValue("timeId", reservation.getTime().getId());
         final long savedId = jdbcInsert.executeAndReturnKey(param).longValue();
         return new Reservation(
                 savedId,
-                request.name(),
-                request.date(),
-                new ReservationTime(timeId));
+                reservation.getName(),
+                reservation.getDate(),
+                reservation.getTime());
     }
 
     @Override
