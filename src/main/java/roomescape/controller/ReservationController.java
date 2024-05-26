@@ -4,7 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import roomescape.domain.Reservation;
-import roomescape.domain.ReservationRepository;
+import roomescape.DAO.ReservationDAO;
 import roomescape.exception.NotFoundReservationException;
 
 import javax.sql.DataSource;
@@ -14,10 +14,10 @@ import java.util.List;
 @Controller
 public class ReservationController {
     private final String NOT_FOUND_RESERVATION_MESSAGE = "삭제할 예약을 찾을 수 없습니다.";
-    private final ReservationRepository reservationRepository;
+    private final ReservationDAO reservationRepository;
 
     public ReservationController(DataSource dataSource) {
-        this.reservationRepository = new ReservationRepository(dataSource);
+        this.reservationRepository = new ReservationDAO(dataSource);
     }
 
     @GetMapping("/reservation")

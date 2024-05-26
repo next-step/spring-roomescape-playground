@@ -1,25 +1,31 @@
-package roomescape.domain;
+package roomescape.DAO;
 
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import roomescape.domain.Reservation;
+import roomescape.domain.Time;
 
 import javax.sql.DataSource;
-import java.sql.PreparedStatement;
-import java.sql.Statement;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Repository
-public class ReservationRepository {
-    private final JdbcTemplate jdbcTemplate;
+public class ReservationDAO {
 
-    public ReservationRepository(DataSource dataSource) {
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert simpleJdbcInsert;
+
+    public ReservationDAO(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
+        this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("reservation")
+                .usingGeneratedKeyColumns("id");
     }
 
     public List<Reservation> findAll() {
-        String sql = "SELECT r.id, r.name, r.date, t.time FROM reservation r INNER JOIN time t ON r.time_id = t.id";
+        String sql = "SELECT r.id, r.name, r.date, t.id as time_id, t.time FROM reservation r INNER JOIN time t ON r.time_id = t.id";
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
             long id = rs.getLong("id");
             String name = rs.getString("name");
@@ -30,7 +36,7 @@ public class ReservationRepository {
     }
 
     public Reservation findById(long id) {
-        String sql = "SELECT r.id, r.name, r.date, t.time, t.id AS time_id FROM reservation r INNER JOIN time t ON r.time_id = t.id WHERE r.id = ?";
+        String sql = "SELECT r.id, r.name, r.date, t.id as time_id, t.time FROM reservation r INNER JOIN time t ON r.time_id = t.id WHERE r.id = ?";
         return jdbcTemplate.queryForObject(sql, new Object[]{id}, (rs, rowNum) -> {
             long reservationId = rs.getLong("id");
             String name = rs.getString("name");
@@ -41,26 +47,18 @@ public class ReservationRepository {
     }
 
     public long save(Reservation reservation) {
-        String sql = "INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)";
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, reservation.getName());
-            ps.setString(2, reservation.getDate());
-            ps.setLong(3, reservation.getTime().getId());
-            return ps;
-        }, keyHolder);
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("name", reservation.getName());
+        parameters.put("date", reservation.getDate());
+        parameters.put("time_id", reservation.getTime().getId());
 
-        return keyHolder.getKey().longValue();
+        Number key = simpleJdbcInsert.executeAndReturnKey(parameters);
+        return key.longValue();
     }
 
     public long deleteById(long id) {
         String sql = "DELETE FROM reservation WHERE id = ?";
         int rowsAffected = jdbcTemplate.update(sql, id);
-        if (rowsAffected > 0) {
-            return id;
-        } else {
-            return -1;
-        }
+        return rowsAffected > 0 ? id : -1;
     }
 }
