@@ -39,10 +39,10 @@ public class MissionStepTest {
 
     @Test
     void 삼단계() {
-        Map<String, String> params = new HashMap<>();
+        Map params = new HashMap<>();
         params.put("name", "브라운");
         params.put("date", "2023-08-05");
-        params.put("time", "15:40");
+        params.put("timeId", 1);
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -50,17 +50,17 @@ public class MissionStepTest {
                 .when().post("/reservations")
                 .then().log().all()
                 .statusCode(201)
-                .header("Location", "/reservations/1")
-                .body("id", is(1));
+                .header("Location", "/reservations/4")
+                .body("id", is(4));
 
         RestAssured.given().log().all()
                 .when().get("/reservations")
                 .then().log().all()
                 .statusCode(200)
-                .body("size()", is(1));
+                .body("size()", is(4));
 
         RestAssured.given().log().all()
-                .when().delete("/reservations/1")
+                .when().delete("/reservations/4")
                 .then().log().all()
                 .statusCode(204);
 
@@ -68,7 +68,7 @@ public class MissionStepTest {
                 .when().get("/reservations")
                 .then().log().all()
                 .statusCode(200)
-                .body("size()", is(0));
+                .body("size()", is(3));
     }
 
     @Test
@@ -88,7 +88,7 @@ public class MissionStepTest {
 
         // 삭제할 예약이 없는 경우
         RestAssured.given().log().all()
-                .when().delete("/reservations/1")
+                .when().delete("/reservations/5")
                 .then().log().all()
                 .statusCode(400);
     }

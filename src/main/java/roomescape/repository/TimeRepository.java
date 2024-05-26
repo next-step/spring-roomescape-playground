@@ -55,7 +55,7 @@ public class TimeRepository {
 
     public Times findById(Long timeId) {
         String sql = "SELECT * FROM time where id = ?;";
-        Times time = jdbcTemplate.queryForObject(sql,
+        return jdbcTemplate.queryForObject(sql,
                 (resultSet, rowNum) -> {
                     Times newTime = new Times(
                             resultSet.getLong("id"),
@@ -63,6 +63,5 @@ public class TimeRepository {
                     );
                     return newTime;
                 }, timeId);
-        return time;
     }
 }

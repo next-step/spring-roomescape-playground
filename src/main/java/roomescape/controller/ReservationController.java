@@ -7,7 +7,6 @@ import roomescape.domain.Reservation;
 import roomescape.dto.ReservationResponse;
 import roomescape.dto.SaveReservationRequest;
 import roomescape.service.ReservationService;
-import roomescape.service.TimeService;
 
 import java.net.URI;
 import java.util.List;
@@ -15,11 +14,9 @@ import java.util.List;
 @Controller
 public class ReservationController {
     private ReservationService reservationService;
-    private TimeService timeService;
 
-    public ReservationController(ReservationService reservationService, TimeService timeService) {
+    public ReservationController(ReservationService reservationService) {
         this.reservationService = reservationService;
-        this.timeService = timeService;
     }
 
     @GetMapping("/reservation")
@@ -33,7 +30,6 @@ public class ReservationController {
         return ResponseEntity.ok(reservations);
     }
 
-    // TODO request에 time정보가 들어왔을 때 이를 Time으로 매핑하고, 검증해야 함
     @PostMapping("/reservations")
     public ResponseEntity<ReservationResponse> makeReservation(@RequestBody SaveReservationRequest request) {
         ReservationResponse response = reservationService.saveReservation(request);

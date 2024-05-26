@@ -15,11 +15,9 @@ public class TimeService {
     }
 
     public Times saveTime(SaveTimeRequest request) {
-        Times time = timeRepository.save(request.toTimes());
-        return time;
+        return timeRepository.save(request.toTimes());
     }
 
-    // Time을 변환해야 함.
     public Times findById(Long id) {
         Times time = timeRepository.findById(id);
         if(time == null){

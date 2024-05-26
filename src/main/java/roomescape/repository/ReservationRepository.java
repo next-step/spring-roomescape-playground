@@ -34,10 +34,13 @@ public class ReservationRepository {
                 sql,
                 (resultSet, rowNum) -> {
                     Reservation reservation = new Reservation(
-                            resultSet.getLong("r.id"),
-                            resultSet.getString("r.name"),
-                            LocalDate.parse(resultSet.getString("r.date")),
-                            new Times(LocalTime.parse(resultSet.getString("t.time")))
+                            resultSet.getLong("reservation_id"),
+                            resultSet.getString("name"),
+                            LocalDate.parse(resultSet.getString("date")),
+                            new Times(
+                                    resultSet.getLong("time_id"),
+                                    LocalTime.parse(resultSet.getString("time_value"))
+                            )
                     );
                     return reservation;
                 });
