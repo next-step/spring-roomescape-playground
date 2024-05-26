@@ -24,12 +24,12 @@ public class TimeDAO {
 
     public List<Time> findAll() {
         String sql = "SELECT id, time FROM time";
-        return jdbcTemplate.query(sql, (rs, rowNum) -> new Time(rs.getLong("id"), rs.getString("time")));
+        return jdbcTemplate.query(sql, (rs, rowNum) -> new Time(rs.getLong("id"), rs.getTime("time").toLocalTime()));
     }
 
     public Time findById(long id) {
         String sql = "SELECT id, time FROM time WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, new Object[]{id}, (rs, rowNum) -> new Time(rs.getLong("id"), rs.getString("time")));
+        return jdbcTemplate.queryForObject(sql, new Object[]{id}, (rs, rowNum) -> new Time(rs.getLong("id"), rs.getTime("time").toLocalTime()));
     }
 
     public long save(Time time) {
@@ -43,6 +43,10 @@ public class TimeDAO {
     public long deleteById(long id) {
         String sql = "DELETE FROM time WHERE id = ?";
         int rowsAffected = jdbcTemplate.update(sql, id);
-        return rowsAffected > 0 ? id : -1;
+        if (rowsAffected > 0) {
+            return id;
+        } else {
+            return -1;
+        }
     }
 }

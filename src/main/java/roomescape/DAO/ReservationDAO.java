@@ -7,6 +7,8 @@ import roomescape.domain.Reservation;
 import roomescape.domain.Time;
 
 import javax.sql.DataSource;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,25 +27,13 @@ public class ReservationDAO {
     }
 
     public List<Reservation> findAll() {
-        String sql = "SELECT r.id, r.name, r.date, t.id as time_id, t.time FROM reservation r INNER JOIN time t ON r.time_id = t.id";
-        return jdbcTemplate.query(sql, (rs, rowNum) -> {
-            long id = rs.getLong("id");
-            String name = rs.getString("name");
-            String date = rs.getString("date");
-            Time time = new Time(rs.getLong("time_id"), rs.getString("time"));
-            return new Reservation(id, name, date, time);
-        });
+        String sql = "SELECT r.id, r.name, r.date, t.id AS time_id, t.time FROM reservation r INNER JOIN time t ON r.time_id = t.id";
+        return jdbcTemplate.query(sql, (rs, rowNum) -> mapRowToReservation(rs));
     }
 
     public Reservation findById(long id) {
-        String sql = "SELECT r.id, r.name, r.date, t.id as time_id, t.time FROM reservation r INNER JOIN time t ON r.time_id = t.id WHERE r.id = ?";
-        return jdbcTemplate.queryForObject(sql, new Object[]{id}, (rs, rowNum) -> {
-            long reservationId = rs.getLong("id");
-            String name = rs.getString("name");
-            String date = rs.getString("date");
-            Time time = new Time(rs.getLong("time_id"), rs.getString("time"));
-            return new Reservation(reservationId, name, date, time);
-        });
+        String sql = "SELECT r.id, r.name, r.date, t.id AS time_id, t.time FROM reservation r INNER JOIN time t ON r.time_id = t.id WHERE r.id = ?";
+        return jdbcTemplate.queryForObject(sql, new Object[]{id}, (rs, rowNum) -> mapRowToReservation(rs));
     }
 
     public long save(Reservation reservation) {
@@ -59,6 +49,19 @@ public class ReservationDAO {
     public long deleteById(long id) {
         String sql = "DELETE FROM reservation WHERE id = ?";
         int rowsAffected = jdbcTemplate.update(sql, id);
-        return rowsAffected > 0 ? id : -1;
+        if (rowsAffected > 0) {
+            return id;
+        } else {
+            return -1;
+        }
+    }
+
+    private Reservation mapRowToReservation(ResultSet rs) throws SQLException {
+        long id = rs.getLong("id");
+        String name = rs.getString("name");
+        String date = rs.getString("date");
+        long timeId = rs.getLong("time_id");
+        Time time = new Time(timeId, rs.getTime("time").toLocalTime());
+        return new Reservation(id, name, date, time);
     }
 }

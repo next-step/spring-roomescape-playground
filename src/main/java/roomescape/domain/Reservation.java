@@ -38,7 +38,6 @@ public class Reservation {
     public void Validate(){
         nameValidate();
         dateValidate();
-        timeValidate();
     }
 
     public void nameValidate() {
@@ -50,12 +49,6 @@ public class Reservation {
     public void dateValidate() {
         if (isBlank(date)) {
             throw new InvalidRequestException(INVALID_DATE_REQUEST_MESSAGE);
-        }
-    }
-
-    public void timeValidate() {
-        if (isBlank(time.getTime())) {
-            throw new InvalidRequestException(INVALID_TIME_REQUEST_MESSAGE);
         }
     }
 

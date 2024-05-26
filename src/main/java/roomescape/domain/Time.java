@@ -1,10 +1,15 @@
 package roomescape.domain;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.time.LocalTime;
+
 public class Time {
     private Long id;
-    private String time;
+    @DateTimeFormat(pattern = "HH:mm")
+    private LocalTime time;
 
-    public Time(Long id, String time) {
+    public Time(Long id, LocalTime time) {
         this.id = id;
         this.time = time;
     }
@@ -17,11 +22,11 @@ public class Time {
         this.id = id;
     }
 
-    public String getTime() {
+    public LocalTime getTime() {
         return time;
     }
 
-    public void setTime(String time) {
+    public void setTime(LocalTime time) {
         this.time = time;
     }
 }
