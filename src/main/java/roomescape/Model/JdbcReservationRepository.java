@@ -1,34 +1,24 @@
-package roomescape;
+package roomescape.Model;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Repository;
 
-import java.net.URI;
 import java.sql.PreparedStatement;
 import java.util.List;
 
-@Controller
-public class ReservationController {
-//
-//    private List<Reservation> reservations = new ArrayList<>();
-//    private AtomicLong index = new AtomicLong(1);
+@Repository
+public class JdbcReservationRepository {
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
-    @RequestMapping("/reservation")
-    public String reservation() {
-        return "reservation";
+    public JdbcReservationRepository(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
-    // 예약 목록 조회
-    @GetMapping("/reservations")
-    public ResponseEntity<List<Reservation>> read() {
+    public List<Reservation> findAll() {
         String sql = "SELECT * FROM reservation";
         List<Reservation> reservations = jdbcTemplate.query(sql,
                 (rs, rowNum) -> new Reservation(
@@ -37,12 +27,10 @@ public class ReservationController {
                         rs.getString("date"),
                         rs.getString("time")
                 ));
-        return ResponseEntity.ok().body(reservations);
+        return reservations;
     }
 
-    // id에 따른 예약 조회
-    @GetMapping("/reservations/{id}")
-    public ResponseEntity<Reservation> readEach(@PathVariable Long id) {
+    public Reservation findWithId(final Long id) {
         String sql = "SELECT * FROM reservation WHERE id = ?";
         Reservation reservation = jdbcTemplate.queryForObject(sql,
                 (rs, rowNum) -> new Reservation(
@@ -51,12 +39,10 @@ public class ReservationController {
                         rs.getString("date"),
                         rs.getString("time")),
                 id);
-        return ResponseEntity.ok().body(reservation);
+        return reservation;
     }
 
-    // 예약 생성
-    @PostMapping("/reservations")
-    public ResponseEntity<Reservation> create(@RequestBody Reservation reservation) {
+    public Reservation save(Reservation reservation) {
         String sql = "INSERT INTO reservation (name, date, time) values (?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> {
@@ -69,16 +55,14 @@ public class ReservationController {
 
         Long id = keyHolder.getKey().longValue();
         reservation.setId(id);
-
-        return ResponseEntity.created(URI.create("/reservations/" + id)).body(reservation);
+        return reservation;
     }
 
-    // 예약 삭제
-    @DeleteMapping("reservations/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public void deleteById(final Long id) {
         String sql = "DELETE FROM reservation WHERE id = ?";
-        jdbcTemplate.update(sql, id);
-
-        return ResponseEntity.noContent().build();
+        int updatedRow =  jdbcTemplate.update(sql, id);
+        if(updatedRow == 0) {
+            throw new IllegalArgumentException("삭제할 데이터가 없습니다");
+        }
     }
 }
