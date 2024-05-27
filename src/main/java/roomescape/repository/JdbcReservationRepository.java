@@ -3,6 +3,7 @@ package roomescape.repository;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import roomescape.domain.ReservationEntity;
 import roomescape.dto.ReservationDTO;
 
 import java.sql.ResultSet;
@@ -26,13 +27,13 @@ public class JdbcReservationRepository implements ReservationRepository {
     }
 
     @Override
-    public List<ReservationDTO> findAll() {
+    public List<ReservationEntity> findAll() {
         String sql = "SELECT id, name, date, time FROM reservation";
         return jdbcTemplate.query(sql, this::mapRowToReservation);
     }
 
     @Override
-    public Optional<ReservationDTO> findById(Long id) {
+    public Optional<ReservationEntity> findById(Long id) {
         String sql = "SELECT id, name, date, time FROM reservation WHERE id = ?";
         return jdbcTemplate.query(sql, this::mapRowToReservation, id)
                 .stream()
@@ -40,14 +41,14 @@ public class JdbcReservationRepository implements ReservationRepository {
     }
 
     @Override
-    public ReservationDTO save(ReservationDTO reservation) {
+    public ReservationEntity save(ReservationEntity reservation) {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("name", reservation.name());
         parameters.put("date", reservation.date());
         parameters.put("time", reservation.time());
 
         long id = jdbcInsert.executeAndReturnKey(parameters).longValue();
-        return new ReservationDTO(id, reservation.name(), reservation.date(), reservation.time());
+        return new ReservationEntity(id, reservation.name(), reservation.date(), reservation.time());
     }
 
     @Override
@@ -56,8 +57,8 @@ public class JdbcReservationRepository implements ReservationRepository {
         jdbcTemplate.update(sql, id);
     }
 
-    private ReservationDTO mapRowToReservation(ResultSet rs, int rowNum) throws SQLException {
-        return new ReservationDTO(
+    private ReservationEntity mapRowToReservation(ResultSet rs, int rowNum) throws SQLException {
+        return new ReservationEntity(
                 rs.getLong("id"),
                 rs.getString("name"),
                 rs.getString("date"),
