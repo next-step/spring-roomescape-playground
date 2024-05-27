@@ -3,20 +3,17 @@ package roomescape.model;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
-import java.sql.Time;
-
 @Data
 public class Reservation {
-    int id;
+    private int id;
 
     @NotBlank
-    String name;
+    private String name;
 
     @NotBlank
-    String date;
+    private String date;
 
-    @NotBlank
-    Time time;
+    private Time time;
 
     public Reservation(){
     }

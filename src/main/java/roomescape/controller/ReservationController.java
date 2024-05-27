@@ -8,9 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.NoHandlerFoundException;
-import roomescape.model.Reservation;
-import roomescape.repository.ReservationRepository;
+import roomescape.model.ReservationRequestDTO;
+import roomescape.model.ReservationResponseDTO;
+import roomescape.repository.service.ReservationService;
 
 import java.net.URI;
 import java.util.List;
@@ -21,36 +21,32 @@ import java.util.List;
 @RequestMapping("/reservations")
 public class ReservationController {
 
-    private final ReservationRepository reservationRepository;
+    private final ReservationService reservationService;
 
     @ResponseBody
     @GetMapping
-    public List<Reservation> allReservationsController() {
-        List<Reservation> reservations = reservationRepository.findAll();
+    public List<ReservationResponseDTO> allReservationsController() {
+        List<ReservationResponseDTO> reservations = reservationService.findAll();
         log.info("reservations = {}", reservations);
         return reservations;
     }
 
     @ResponseBody
     @PostMapping
-    public ResponseEntity<Reservation> reservationAddController(@Valid @RequestBody Reservation reservation) {
-        Reservation responseDTO = reservationRepository.reservationAdd(reservation);
+    public ResponseEntity<ReservationResponseDTO> reservationAddController(@Valid @RequestBody ReservationRequestDTO reservation) {
+        ReservationResponseDTO responseDTO = reservationService.reservationAdd(reservation);
+
         HttpHeaders headers = new HttpHeaders();
         String uri = "/reservations/" + responseDTO.getId();
         headers.setLocation(URI.create(uri));
-        ResponseEntity<Reservation> response = new ResponseEntity<>(responseDTO, headers, HttpStatus.CREATED);
-        log.info("memberDTO = {}", reservation);
+        ResponseEntity<ReservationResponseDTO> response = new ResponseEntity<>(responseDTO, headers, HttpStatus.CREATED);
+
         return response;
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteController(@PathVariable int id) {
-        reservationRepository.delete(id);
+        reservationService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-
-    @ExceptionHandler(NoHandlerFoundException.class)
-    public ResponseEntity handleException(NoHandlerFoundException e) {
-        return ResponseEntity.badRequest().build();
     }
 }

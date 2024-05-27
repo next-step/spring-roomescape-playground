@@ -7,8 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import roomescape.model.ReservationTime;
-import roomescape.repository.TimeRepository;
+import roomescape.model.TimeRequestDTO;
+import roomescape.model.TimeResponseDTO;
+import roomescape.repository.service.TimeService;
 
 import java.net.URI;
 import java.util.List;
@@ -19,31 +20,29 @@ import java.util.List;
 @RequestMapping("times")
 public class TimeController {
 
-    private final TimeRepository timeRepository;
+    private final TimeService timeService;
 
     @ResponseBody
     @GetMapping
-    public List<ReservationTime> findTime() {
-        List<ReservationTime> times = timeRepository.findAll();
-        log.info("times = {}", times);
+    public List<TimeResponseDTO> findTime() {
+        List<TimeResponseDTO> times = timeService.findAll();
         return times;
     }
 
     @ResponseBody
     @PostMapping
-    public ResponseEntity<ReservationTime> timeAdd(@RequestBody ReservationTime time) {
-        ReservationTime resultTime = timeRepository.timeAdd(time);
+    public ResponseEntity<TimeResponseDTO> timeAdd(@RequestBody TimeRequestDTO timeRequestDTO) {
+        TimeResponseDTO resultTime = timeService.timeAdd(timeRequestDTO);
         HttpHeaders headers = new HttpHeaders();
         String uri = "/times/" + resultTime.getId();
         headers.setLocation(URI.create(uri));
-        ResponseEntity<ReservationTime> response = new ResponseEntity<>(resultTime, headers, HttpStatus.CREATED);
-        log.info("response = {}", response);
+        ResponseEntity<TimeResponseDTO> response = new ResponseEntity<>(resultTime, headers, HttpStatus.CREATED);
         return response;
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteController(@PathVariable int id) {
-        timeRepository.delete(id);
+        timeService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
