@@ -1,10 +1,9 @@
-package roomescape.domain.Dto;
+package roomescape.domain.Dto.reservationDto;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import roomescape.domain.Model.Reservation;
+import roomescape.domain.Model.Time;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -22,12 +21,11 @@ public class ResponseDto {
     }
 
     public static ResponseDto makeResponse(Reservation reservation) {
-        LocalDateTime reservationDateTime = reservation.getLocalDateTime();
         return new ResponseDto(
                 reservation.getId(),
                 reservation.getName(),
-                reservationDateTime.toLocalDate().toString(),
-                reservationDateTime.toLocalTime().toString()
+                reservation.getDate(),
+                reservation.getTime().toString()
         );
     }
 

@@ -1,16 +1,14 @@
 package roomescape;
 
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import roomescape.domain.Dto.RequestDto;
-import roomescape.domain.Repository.ReservationRepository;
+import roomescape.domain.Repository.reservationRepository.MemoryReservationRepository;
 
 @Component
 @RequiredArgsConstructor
 public class PreInit {
 
-    private final ReservationRepository reservationRepository;
+    private final MemoryReservationRepository reservationRepository;
 //    @PostConstruct
 //    public void init() {
 //        RequestDto requestDto1 = new RequestDto();

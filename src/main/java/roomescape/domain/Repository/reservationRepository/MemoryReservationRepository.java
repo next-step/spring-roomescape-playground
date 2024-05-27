@@ -1,8 +1,7 @@
-package roomescape.domain.Repository;
+package roomescape.domain.Repository.reservationRepository;
 
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Model.Reservation;
-import roomescape.domain.exception.NoDataException;
 import roomescape.domain.exception.NotFoundReservationException;
 
 import java.util.ArrayList;
@@ -10,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 
 @Repository
-public class ReservationRepository {
+public class MemoryReservationRepository {
     private static final HashMap<Long, Reservation> store = new HashMap<Long, Reservation>();
     private static Long sequence = 0L;
 

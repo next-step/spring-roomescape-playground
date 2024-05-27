@@ -9,18 +9,22 @@ import java.time.LocalDateTime;
 public class Reservation {
     private Long id;
     private String name;
-    private LocalDateTime localDateTime;
+    private String date;
+    private Time time;
 
     public Reservation() {
     }
 
-    public Reservation(Long id, String name, LocalDateTime localDateTime) {
+    public Reservation(Long id, String name, String date, Time time) {
         this.id = id;
         this.name = name;
-        this.localDateTime = localDateTime;
+        this.date = date;
+        this.time = time;
     }
-    public Reservation(String name, LocalDateTime localDateTime) {
+
+    public Reservation(String name, String date, Time time) {
         this.name = name;
-        this.localDateTime = localDateTime;
+        this.date = date;
+        this.time = time;
     }
 }
