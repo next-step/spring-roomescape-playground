@@ -4,7 +4,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.ReservationEntity;
-import roomescape.dto.ReservationDTO;
+import roomescape.domain.TimeEntity;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -28,13 +28,15 @@ public class JdbcReservationRepository implements ReservationRepository {
 
     @Override
     public List<ReservationEntity> findAll() {
-        String sql = "SELECT id, name, date, time FROM reservation";
+        String sql = "SELECT r.id as reservation_id, r.name, r.date, t.id as time_id, t.time as time_value " +
+                "FROM reservation as r INNER JOIN time as t ON r.time_id = t.id";
         return jdbcTemplate.query(sql, this::mapRowToReservation);
     }
 
     @Override
     public Optional<ReservationEntity> findById(Long id) {
-        String sql = "SELECT id, name, date, time FROM reservation WHERE id = ?";
+        String sql = "SELECT r.id as reservation_id, r.name, r.date, t.id as time_id, t.time as time_value " +
+                "FROM reservation as r INNER JOIN time as t ON r.time_id = t.id WHERE r.id = ?";
         return jdbcTemplate.query(sql, this::mapRowToReservation, id)
                 .stream()
                 .findFirst();
@@ -45,7 +47,7 @@ public class JdbcReservationRepository implements ReservationRepository {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("name", reservation.name());
         parameters.put("date", reservation.date());
-        parameters.put("time", reservation.time());
+        parameters.put("time_id", reservation.time().id());
 
         long id = jdbcInsert.executeAndReturnKey(parameters).longValue();
         return new ReservationEntity(id, reservation.name(), reservation.date(), reservation.time());
@@ -59,10 +61,10 @@ public class JdbcReservationRepository implements ReservationRepository {
 
     private ReservationEntity mapRowToReservation(ResultSet rs, int rowNum) throws SQLException {
         return new ReservationEntity(
-                rs.getLong("id"),
+                rs.getLong("reservation_id"),
                 rs.getString("name"),
                 rs.getString("date"),
-                rs.getString("time")
+                new TimeEntity(rs.getLong("time_id"), rs.getString("time_value"))
         );
     }
 }

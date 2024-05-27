@@ -14,6 +14,7 @@ import java.util.Optional;
 
 @Repository
 public class JdbcTimeRepository implements TimeRepository {
+
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
 
