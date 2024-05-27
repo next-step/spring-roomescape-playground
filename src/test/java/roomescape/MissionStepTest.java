@@ -7,8 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.jdbc.core.JdbcTemplate;
+import roomescape.reservation.controller.ReservationController;
 import roomescape.reservation.domain.Reservation;
 
+import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -196,4 +198,22 @@ public class MissionStepTest {
                 .then().log().all()
                 .statusCode(400);
     }
+
+    @Autowired
+    private ReservationController reservationController;
+
+    @Test
+    void 십단계() {
+        boolean isJdbcTemplateInjected = false;
+
+        for (Field field : reservationController.getClass().getDeclaredFields()) {
+            if (field.getType().equals(JdbcTemplate.class)) {
+                isJdbcTemplateInjected = true;
+                break;
+            }
+        }
+
+        assertThat(isJdbcTemplateInjected).isFalse();
+    }
+
 }
