@@ -33,8 +33,6 @@ public class TimeRepository {
         );
     }
 
-    // SqlParameterSource의 구현체 변경 (-> BeanPropertySqlParameterSource)
-// 더 간단하고, 정의한 Entity를 기준으로 바인딩
     public Time save(Time time) {
         String sql = "INSERT INTO time (time) VALUES (:time)";
         SqlParameterSource namedParameters = new BeanPropertySqlParameterSource(time);
