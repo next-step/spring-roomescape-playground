@@ -2,6 +2,7 @@ package roomescape.dto;
 
 import java.time.LocalTime;
 import org.springframework.format.annotation.DateTimeFormat;
+import roomescape.domain.ReservationTime;
 import roomescape.exception.ErrorMessage;
 import roomescape.exception.ReservationException;
 
@@ -18,5 +19,9 @@ public record ReservationTimeRequest(
         if (time == null) {
             throw new ReservationException(ErrorMessage.EMPTY_TIME);
         }
+    }
+
+    public ReservationTime toTime() {
+        return new ReservationTime(null, time);
     }
 }

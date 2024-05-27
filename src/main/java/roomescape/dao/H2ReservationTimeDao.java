@@ -27,10 +27,10 @@ public class H2ReservationTimeDao implements ReservationTimeDao {
     }
 
     @Override
-    public ReservationTime save(final ReservationTimeRequest request) {
-        SqlParameterSource param = new BeanPropertySqlParameterSource(request);
+    public ReservationTime save(final ReservationTime time) {
+        SqlParameterSource param = new BeanPropertySqlParameterSource(time);
         final long savedId = jdbcInsert.executeAndReturnKey(param).longValue();
-        return new ReservationTime(savedId, request.time());
+        return new ReservationTime(savedId, time.getTime());
     }
 
     @Override

@@ -32,7 +32,7 @@ public class ReservationTimeController {
     @PostMapping("/times")
     public ResponseEntity<ReservationTimeResponse> saveReservationTime(
             @RequestBody ReservationTimeRequest request) {
-        final ReservationTime savedTime = repository.save(request);
+        final ReservationTime savedTime = repository.save(request.toTime());
         final ReservationTimeResponse response = ReservationTimeResponse.from(savedTime);
         return ResponseEntity
                 .created(URI.create("/times/" + response.id()))
