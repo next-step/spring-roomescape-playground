@@ -3,20 +3,21 @@ package roomescape.domain.reservation;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import roomescape.domain.reservation.dto.ReservationDTO;
+import roomescape.domain.time.Time;
 
 public class Reservation {
     private Long id;
     private final String name;
     private final LocalDate date;
-    private final LocalTime time;
+    private final Time time;
 
     private final String INVALID_NULL_MSG = "입력받은 값이 없습니다..";
     private final String INVALID_NAME_FORMAT_MSG = "이름이 올바르지 않습니다.";
 
-    public Reservation(String name, String date, String time) {
+    public Reservation(String name, String date, Time time) {
         this.name = validateName(name);
         this.date = validateDate(date);
-        this.time = validateTime(time);
+        this.time = time;
     }
 
     public ReservationDTO toReservationDTO() {
@@ -24,7 +25,7 @@ public class Reservation {
                 this.id,
                 this.name,
                 this.date.toString(),
-                this.time.toString()
+                this.time
         );
     }
 
@@ -40,7 +41,7 @@ public class Reservation {
         return date;
     }
 
-    public LocalTime getTime() {
+    public Time getTime() {
         return time;
     }
 
@@ -57,11 +58,6 @@ public class Reservation {
     public LocalDate validateDate(String date) {
         validateIsNotNull(date);
         return LocalDate.parse(date);
-    }
-
-    public LocalTime validateTime(String time) {
-        validateIsNotNull(time);
-        return LocalTime.parse(time);
     }
 
     public void validateIsNotNull(String value) {

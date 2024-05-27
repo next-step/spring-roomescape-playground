@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import roomescape.domain.reservation.ResponseReservation;
 import roomescape.domain.reservation.dto.RequestReservationDTO;
 import roomescape.domain.reservation.dto.ReservationDTO;
 import roomescape.domain.reservation.Reservation;
@@ -29,21 +30,22 @@ public class ReservationController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ReservationDTO>> reservations() {
+    public ResponseEntity<List<ResponseReservation>> reservations() {
         List<ReservationDTO> reservations = reservationDAO.findAll();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        return new ResponseEntity<>(reservations, headers, HttpStatus.OK);
+        List<ResponseReservation> response = reservations.stream()
+                .map(ResponseReservation::toResponseReservation)
+                .toList();
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping
-    public ResponseEntity<Reservation> create(@RequestBody RequestReservationDTO request) {
+    public ResponseEntity<ResponseReservation> create(@RequestBody RequestReservationDTO request) {
         Reservation reservation = request.toReservaiton();
-        Reservation newReservation = reservationDAO.insert(reservation);
+        ResponseReservation response = reservationDAO.insert(reservation);
         HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(URI.create("/reservations/" + Long.toString(newReservation.getId())));
+        headers.setLocation(URI.create("/reservations/" + Long.toString(response.id())));
         headers.setContentType(MediaType.APPLICATION_JSON);
-        return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(newReservation);
+        return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(response);
     }
 
     @DeleteMapping(value = "/{id}")

@@ -31,6 +31,11 @@ public class TimeDAO {
         return jdbcTemplate.query(sql, reservationDtoRowMapper);
     }
 
+    public TimeDTO findById(long id) {
+        String sql = "select id, time from time where id = ?";
+        return jdbcTemplate.queryForObject(sql, reservationDtoRowMapper, id);
+    }
+
     public Time insert(Time time) {
         String sql = "insert into time (time) values (?)";
 
