@@ -6,12 +6,11 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import roomescape.model.ReservationDTO;
-import roomescape.model.Time;
+import roomescape.model.ReservationTime;
+import roomescape.model.ReservationTime;
 
 import javax.sql.DataSource;
 import java.util.List;
-import java.util.Map;
 
 public class JdbcTimeRepository implements TimeRepository {
 
@@ -26,7 +25,7 @@ public class JdbcTimeRepository implements TimeRepository {
     }
 
     @Override
-    public Time timeAdd(Time time) {
+    public ReservationTime timeAdd(ReservationTime time) {
         SqlParameterSource param = new BeanPropertySqlParameterSource(time);
         Number key = jdbcInsert.executeAndReturnKey(param);
         time.setId(key.intValue());
@@ -34,13 +33,13 @@ public class JdbcTimeRepository implements TimeRepository {
     }
 
     @Override
-    public List<Time> findAll() {
+    public List<ReservationTime> findAll() {
         String sql = "select * from time";
         return jdbcTemplate.query(sql, timeRowMapper());
     }
 
-    private RowMapper<Time> timeRowMapper() {
-        return BeanPropertyRowMapper.newInstance(Time.class);
+    private RowMapper<ReservationTime> timeRowMapper() {
+        return BeanPropertyRowMapper.newInstance(ReservationTime.class);
     }
 
     @Override

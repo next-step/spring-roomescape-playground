@@ -3,7 +3,7 @@ package roomescape.model;
 import lombok.Data;
 
 @Data
-public class Time {
+public class ReservationTime {
     int id;
     String time;
 }

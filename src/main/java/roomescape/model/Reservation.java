@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-public class ReservationDTO {
+public class Reservation {
     int id;
 
     @NotBlank
@@ -16,10 +16,10 @@ public class ReservationDTO {
     @NotBlank
     String time;
 
-    public ReservationDTO(){
+    public Reservation(){
     }
 
-    public ReservationDTO(String name, String date, String time) {
+    public Reservation(String name, String date, String time) {
         this.name = name;
         this.date = date;
         this.time = time;

@@ -6,7 +6,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import roomescape.model.ReservationDTO;
+import roomescape.model.Reservation;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -24,21 +24,21 @@ public class JdbcReservationRepository implements ReservationRepository {
     }
 
     @Override
-    public ReservationDTO reservationAdd(ReservationDTO reservationDTO) {
-        SqlParameterSource param = new BeanPropertySqlParameterSource(reservationDTO);
+    public Reservation reservationAdd(Reservation reservation) {
+        SqlParameterSource param = new BeanPropertySqlParameterSource(reservation);
         Number key = jdbcInsert.executeAndReturnKey(param);
-        reservationDTO.setId(key.intValue());
-        return reservationDTO;
+        reservation.setId(key.intValue());
+        return reservation;
     }
 
     @Override
-    public List<ReservationDTO> findAll() {
+    public List<Reservation> findAll() {
         String sql = "select * from reservation";
         return jdbcTemplate.query(sql, reservationRowMapper());
     }
 
-    private RowMapper<ReservationDTO> reservationRowMapper() {
-        return BeanPropertyRowMapper.newInstance(ReservationDTO.class);
+    private RowMapper<Reservation> reservationRowMapper() {
+        return BeanPropertyRowMapper.newInstance(Reservation.class);
     }
 
     @Override

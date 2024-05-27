@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import roomescape.model.Time;
+import roomescape.model.ReservationTime;
 import roomescape.repository.TimeRepository;
 
 import java.net.URI;
@@ -23,20 +23,20 @@ public class TimeController {
 
     @ResponseBody
     @GetMapping
-    public List<Time> findTime() {
-        List<Time> times = timeRepository.findAll();
+    public List<ReservationTime> findTime() {
+        List<ReservationTime> times = timeRepository.findAll();
         log.info("times = {}", times);
         return times;
     }
 
     @ResponseBody
     @PostMapping
-    public ResponseEntity<Time> timeAdd(@RequestBody Time time) {
-        Time resultTime = timeRepository.timeAdd(time);
+    public ResponseEntity<ReservationTime> timeAdd(@RequestBody ReservationTime time) {
+        ReservationTime resultTime = timeRepository.timeAdd(time);
         HttpHeaders headers = new HttpHeaders();
         String uri = "/times/" + resultTime.getId();
         headers.setLocation(URI.create(uri));
-        ResponseEntity<Time> response = new ResponseEntity<>(resultTime, headers, HttpStatus.CREATED);
+        ResponseEntity<ReservationTime> response = new ResponseEntity<>(resultTime, headers, HttpStatus.CREATED);
         log.info("response = {}", response);
         return response;
     }

@@ -1,14 +1,14 @@
 package roomescape.repository;
 
-import roomescape.model.Time;
+import roomescape.model.ReservationTime;
 
 import java.util.List;
 
 public interface TimeRepository {
 
-    Time timeAdd(Time time);
+    ReservationTime timeAdd(ReservationTime time);
 
-    List<Time> findAll();
+    List<ReservationTime> findAll();
 
     void delete(int id);
 }
