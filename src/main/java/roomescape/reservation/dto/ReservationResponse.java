@@ -1,4 +1,4 @@
-package roomescape.dto.reservation;
+package roomescape.reservation.dto;
 
 import lombok.Getter;
 import lombok.Setter;

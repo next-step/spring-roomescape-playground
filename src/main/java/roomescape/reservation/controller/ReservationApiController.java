@@ -1,13 +1,13 @@
-package roomescape.controller.reservation;
+package roomescape.reservation.controller;
 
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import roomescape.dto.reservation.ReservationRequest;
-import roomescape.dto.reservation.ReservationResponse;
-import roomescape.exception.BadRequestException;
-import roomescape.service.reservation.ReservationService;
+import roomescape.reservation.dto.ReservationRequest;
+import roomescape.reservation.dto.ReservationResponse;
+import roomescape.common.exception.BadRequestException;
+import roomescape.reservation.service.ReservationService;
 
 import java.net.URI;
 import java.util.List;

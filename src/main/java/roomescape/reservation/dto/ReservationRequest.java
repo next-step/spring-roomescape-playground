@@ -1,8 +1,8 @@
-package roomescape.dto.reservation;
+package roomescape.reservation.dto;
 
 import lombok.Getter;
 import lombok.Setter;
-import roomescape.exception.BadRequestException;
+import roomescape.common.exception.BadRequestException;
 
 import java.time.LocalDate;
 import java.time.LocalTime;

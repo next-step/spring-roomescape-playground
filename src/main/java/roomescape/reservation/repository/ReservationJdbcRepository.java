@@ -1,4 +1,4 @@
-package roomescape.repository.reservation;
+package roomescape.reservation.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
