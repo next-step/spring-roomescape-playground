@@ -1,47 +1,50 @@
 package roomescape.domain;
 
-import roomescape.exception.InvalidRequestException;
-
-import java.util.Objects;
+import java.time.LocalDate;
 
 public class Reservation {
-    private long id;
+    private Long id;
     private String name;
-    private String date;
-    private String time;
+    private LocalDate date;
+    private Time time;
 
-    private final String INVALID_REQUEST_MESSAGE = "예약 정보에 공백이 입력되었습니다.";
-
-    public Reservation(long id, String name, String date, String time) {
+    public Reservation(Long id, String name, LocalDate date, Time time) {
         this.id = id;
         this.name = name;
         this.date = date;
         this.time = time;
     }
 
-    public long getId() {
+    // Getters and setters
+    public Long getId() {
         return id;
     }
 
-    public String getDate() {
-        return date;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
         return name;
     }
 
-    public String getTime() {
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    public Time getTime() {
         return time;
     }
 
-    public void validate() {
-        if (isBlank(name) || isBlank(date) || isBlank(time)) {
-            throw new InvalidRequestException(INVALID_REQUEST_MESSAGE);
-        }
-    }
-
-    private boolean isBlank(String str) {
-        return str == null || str.trim().isEmpty();
+    public void setTime(Time time) {
+        this.time = time;
     }
 }
