@@ -68,7 +68,7 @@
 - 예약 페이지 파일 수정
   - templates/reservation.html 대신 templates/new-reservation.html 파일을 활용
 - 기존에 구현한 예약 기능에서 시간을 시간 테이블에 저장된 값만 선택할 수 있도록 수정
-- 테이블 스키마 재정의 
+- 테이블 스키마 재정의  팡
   - 외래키 지정을 통해 reservation 테이블과 time 테이블의 관계를 설정
 - 예약 클래스 수정 
   - 시간 타입을 String에서 Time 객체로 수정
