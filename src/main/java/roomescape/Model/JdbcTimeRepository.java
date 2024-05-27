@@ -48,4 +48,14 @@ public class JdbcTimeRepository {
             throw  new IllegalArgumentException("삭제할 데이터가 없습니다");
         }
     }
+
+    public Time findById(Long id) {
+        String sql = "SELECT * FROM time WHERE id = ?";
+        Time time = jdbcTemplate.queryForObject(sql,
+                ((rs, rowNum) -> new Time(
+                        rs.getLong("id"),
+                        rs.getString("time")
+                )), id);
+        return time;
+    }
 }

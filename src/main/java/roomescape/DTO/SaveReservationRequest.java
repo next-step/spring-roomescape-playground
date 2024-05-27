@@ -1,20 +1,26 @@
 package roomescape.DTO;
 
+import org.springframework.jdbc.core.JdbcTemplate;
+import roomescape.Model.JdbcTimeRepository;
 import roomescape.Model.Reservation;
+import roomescape.Model.Time;
 
 import java.util.Arrays;
 
 public record SaveReservationRequest(
         String name,
         String date,
-        String time
+        Long time
 ) {
+
+    private static JdbcTimeRepository jdbcTimeRepository;
+
     public SaveReservationRequest {
         validate(name, date, time);
     }
 
-    private void validate(String name, String date, String time) {
-        validateBlanks(name, date, time);
+    private void validate(String name, String date, Long time) {
+        validateBlanks(name, date);
     }
 
     private void validateBlanks(String... fields) {
@@ -24,7 +30,7 @@ public record SaveReservationRequest(
         }
     }
 
-    public Reservation toReservation() {
-        return new Reservation(name, date, time);
-    }
+//    public Reservation toReservation() {
+//        return new Reservation(name, date, new Time(time));
+//    }
 }

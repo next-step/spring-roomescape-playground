@@ -4,20 +4,20 @@ public class Reservation {
     private Long id;
     private String name;
     private String date;
-    private String time;
+    private Time time;
 
     public Reservation() {
 
     }
 
-    public Reservation(Long id, String name, String date, String time) {
+    public Reservation(Long id, String name, String date, Time time) {
         this.id = id;
         this.name = name;
         this.date = date;
         this.time = time;
     }
 
-    public Reservation(String name, String date, String time) {
+    public Reservation(String name, String date, Time time) {
         this.name = name;
         this.date = date;
         this.time = time;
@@ -39,14 +39,14 @@ public class Reservation {
         return date;
     }
 
-    public String getTime() {
+    public Time getTime() {
         return time;
     }
 
-    public static Reservation toEntity(Reservation reservation, Long id) {
-        if (reservation.getName().isEmpty() || reservation.getTime().isEmpty() || reservation.getDate().equals("")){
-            throw new IllegalArgumentException("필요한 인자가 없습니다");
-        }
-        return new Reservation(id, reservation.name, reservation.date, reservation.time);
-    }
+//    public static Reservation toEntity(Reservation reservation, Long id) {
+//        if (reservation.getName().isEmpty() || reservation.getDate().equals("")){
+//            throw new IllegalArgumentException("필요한 인자가 없습니다");
+//        }
+//        return new Reservation(id, reservation.name, reservation.date, reservation.time);
+//    }
 }

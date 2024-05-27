@@ -19,13 +19,20 @@ public class JdbcReservationRepository {
     }
 
     public List<Reservation> findAll() {
-        String sql = "SELECT * FROM reservation";
+//        String sql = "SELECT * FROM reservation";
+        String sql = "SELECT \n" +
+                "    r.id as reservation_id, \n" +
+                "    r.name, \n" +
+                "    r.date, \n" +
+                "    t.id as time_id, \n" +
+                "    t.time as time_value \n" +
+                "FROM reservation as r inner join time as t on r.time_id = t.id";
         List<Reservation> reservations = jdbcTemplate.query(sql,
                 (rs, rowNum) -> new Reservation(
                         rs.getLong("id"),
                         rs.getString("name"),
                         rs.getString("date"),
-                        rs.getString("time")
+                        new Time(rs.getLong("time_id"), rs.getString("time_Value"))
                 ));
         return reservations;
     }
@@ -37,25 +44,24 @@ public class JdbcReservationRepository {
                         rs.getLong("id"),
                         rs.getString("name"),
                         rs.getString("date"),
-                        rs.getString("time")),
+                        rs.getObject("time", Time.class)),
                 id);
         return reservation;
     }
 
     public Reservation save(Reservation reservation) {
-        String sql = "INSERT INTO reservation (name, date, time) values (?, ?, ?)";
+        String sql = "INSERT INTO reservation (name, date, time_id) values (?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(sql, new String[]{"id"});
             ps.setString(1, reservation.getName());
             ps.setString(2, reservation.getDate());
-            ps.setString(3, reservation.getTime());
+            ps.setLong(3, reservation.getTime().getId());
             return ps;
         }, keyHolder);
 
         Long id = keyHolder.getKey().longValue();
-        reservation.setId(id);
-        return reservation;
+        return new Reservation(id, reservation.getName(), reservation.getDate(), reservation.getTime());
     }
 
     public void deleteById(final Long id) {

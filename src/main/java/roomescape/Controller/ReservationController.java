@@ -7,7 +7,9 @@ import org.springframework.web.bind.annotation.*;
 import roomescape.DTO.ReservationResponse;
 import roomescape.DTO.SaveReservationRequest;
 import roomescape.Model.JdbcReservationRepository;
+import roomescape.Model.JdbcTimeRepository;
 import roomescape.Model.Reservation;
+import roomescape.Model.Time;
 
 import java.net.URI;
 import java.util.List;
@@ -18,8 +20,12 @@ public class ReservationController {
     @Autowired
     private final JdbcReservationRepository jdbcReservationRepository;
 
-    public ReservationController(JdbcReservationRepository jdbcReservationRepository){
+    @Autowired
+    private final JdbcTimeRepository jdbcTimeRepository;
+
+    public ReservationController(JdbcReservationRepository jdbcReservationRepository, JdbcTimeRepository jdbcTimeRepository){
         this.jdbcReservationRepository = jdbcReservationRepository;
+        this.jdbcTimeRepository = jdbcTimeRepository;
     }
 
 
@@ -47,7 +53,9 @@ public class ReservationController {
     // 예약 생성
     @PostMapping("/reservations")
     public ResponseEntity<ReservationResponse> create(@RequestBody SaveReservationRequest request) {
-        Reservation reservation = jdbcReservationRepository.save(request.toReservation());
+        final Time time = jdbcTimeRepository.findById(request.time());
+
+        Reservation reservation = jdbcReservationRepository.save(new Reservation(request.name(), request.date(), time));
         ReservationResponse response = ReservationResponse.from(reservation);
         String uri = "/reservations/" + reservation.getId();
         return ResponseEntity.created(URI.create(uri)).body(response);
