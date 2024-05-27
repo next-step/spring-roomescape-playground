@@ -23,7 +23,7 @@ public class ReservationService {
     public List<ReservationResponseDTO> findAll() {
         List<Reservation> reservations = reservationRepository.findAll();
         List<ReservationResponseDTO> result = reservations.stream()
-                .map(ReservationResponseDTO::ReservationToResponse).toList();
+                .map(ReservationResponseDTO::makingResponse).toList();
         return result;
     }
 

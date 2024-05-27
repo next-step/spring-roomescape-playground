@@ -17,7 +17,7 @@ public class TimeService {
     public List<TimeResponseDTO> findAll() {
         List<Time> times = timeRepository.findAll();
         List<TimeResponseDTO> result = times.stream()
-                .map(TimeResponseDTO::MakingResponse).toList();
+                .map(TimeResponseDTO::makingResponse).toList();
         return result;
     }
 

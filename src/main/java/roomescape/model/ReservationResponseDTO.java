@@ -28,7 +28,7 @@ public class ReservationResponseDTO {
     public ReservationResponseDTO() {
     }
 
-    public static ReservationResponseDTO ReservationToResponse(Reservation reservation) {
+    public static ReservationResponseDTO makingResponse(Reservation reservation) {
         ReservationResponseDTO result = new ReservationResponseDTO();
         result.setId(reservation.getId());
         result.setTime(reservation.getTime());
