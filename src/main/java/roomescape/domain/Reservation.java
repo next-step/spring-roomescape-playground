@@ -12,13 +12,11 @@ public class Reservation {
     private String date;
     private Time time;
 
-    public Reservation() {
-    }
+    public Reservation() { }
 
     public Reservation(String name, String date, Time time) {
         validateEmpty(name);
         validateDate(date);
-//        validateTime(time);
 
         this.name = name;
         this.date = date;
@@ -28,7 +26,6 @@ public class Reservation {
     public Reservation(int id, String name, String date, Time time) {
         validateEmpty(name);
         validateDate(date);
-//        validateTime(time);
 
         this.id = id;
         this.name = name;

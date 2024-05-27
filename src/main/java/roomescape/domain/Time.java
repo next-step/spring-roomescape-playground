@@ -10,9 +10,7 @@ public class Time {
     @DateTimeFormat(pattern = "HH:mm")
     private LocalTime time;
 
-    public Time() {
-
-    }
+    public Time() {}
 
     public Time(int id, LocalTime time) {
         this.id = id;

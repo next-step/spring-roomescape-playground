@@ -38,8 +38,8 @@ public class TimeRepository {
         SqlParameterSource namedParameters = new BeanPropertySqlParameterSource(time);
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         namedParameterJdbcTemplate.update(sql, namedParameters, keyHolder);
-        long generatedKey = keyHolder.getKey().longValue();
-        return new Time((int) generatedKey, time.getTime());
+        int generatedKey = keyHolder.getKey().intValue();
+        return new Time(generatedKey, time.getTime());
     }
 
     public int delete(int id) {

@@ -1,18 +1,23 @@
 package roomescape.dao;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
 import roomescape.domain.Time;
 
-import java.sql.PreparedStatement;
 import java.util.List;
 
 @Repository
 public class ReservationRepository {
     private final JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     public ReservationRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -41,18 +46,13 @@ public class ReservationRepository {
     }
 
     public Reservation save(Reservation reservation) {
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(
-                    "insert into reservation (name, date, time_id) values (?, ?, ?)",
-                    new String[]{"id"});
-            ps.setString(1, reservation.getName());
-            ps.setString(2, reservation.getDate());
-            ps.setInt(3, reservation.getTime().getId());
-            return ps;
-        }, keyHolder);
+        String sql = "INSERT INTO reservation (name, date, time) VALUES (:name, :date, :time)";
 
-        return new Reservation((int) keyHolder.getKey().longValue(), reservation.getName(), reservation.getDate(), reservation.getTime());
+        SqlParameterSource namedParameters = new BeanPropertySqlParameterSource(reservation);
+        GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
+        namedParameterJdbcTemplate.update(sql, namedParameters, keyHolder);
+        int generatedKey = keyHolder.getKey().intValue();
+        return new Reservation(generatedKey, reservation.getName(), reservation.getDate(), reservation.getTime());
     }
 
     public int delete(int id) {
