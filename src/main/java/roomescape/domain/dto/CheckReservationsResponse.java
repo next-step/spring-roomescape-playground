@@ -1,10 +1,12 @@
 package roomescape.domain.dto;
 
+import roomescape.domain.Time;
+
 public record CheckReservationsResponse(
         Long id,
         String name,
         String date,
-        String time
+        Time time
 ) {
 
 }
