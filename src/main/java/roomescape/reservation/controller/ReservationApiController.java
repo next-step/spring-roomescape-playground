@@ -1,63 +1,53 @@
 package roomescape.reservation.controller;
 
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import roomescape.reservation.db.ReservationEntity;
-import roomescape.reservation.model.ReservationRequest;
+import roomescape.reservation.dto.ReservationRequest;
+import roomescape.reservation.dto.ReservationResponse;
 import roomescape.reservation.service.ReservationService;
 
+import javax.net.ssl.SSLEngineResult;
 import java.net.URI;
 import java.util.List;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 public class ReservationApiController {
 
     private final ReservationService reservationService;
 
-    @GetMapping("/reservation")
-    public String reservation() {
-        return "reservation";
-    }
-
     @GetMapping("/reservations")
-    public ResponseEntity<List<ReservationEntity>> reservations() {
+    public ResponseEntity<List<ReservationResponse>> reservations() {
+        List<ReservationResponse> responseList = reservationService.findAllReservations();
 
-        List<ReservationEntity> lists = reservationService.findAllList();
-
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(lists);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(responseList);
     }
 
     @PostMapping("/reservations")
-    public ResponseEntity<ReservationEntity> createReservation(
+    public ResponseEntity<ReservationResponse> addReservation(
             @Valid
             @RequestBody ReservationRequest reservationRequest
-    ) {
+    ){
 
-        ReservationEntity reservationEntity = reservationService.insertReservation(reservationRequest);
+       ReservationResponse response= reservationService.addReservation(reservationRequest);
 
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(URI.create("/reservations/" + Long.toString(reservationEntity.getId())));
-
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .headers(headers)
-                .body(reservationEntity);
+       return ResponseEntity.created(URI.create("/reservations/"+response.getId()))
+               .body(response);
     }
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> deleteReservation(
             @PathVariable Long id
-    ) {
+    ){
+        reservationService.cancelReservation(id);
 
-        reservationService.deleteReservation(id);
-
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        return ResponseEntity.noContent()
+                .build();
     }
 }
