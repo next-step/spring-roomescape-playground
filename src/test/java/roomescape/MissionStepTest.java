@@ -205,10 +205,10 @@ public class MissionStepTest {
                 .then().log().all()
                 .statusCode(200)
                 .body("size()", is(1));
-//
-//        RestAssured.given().log().all()
-//                .when().delete("/times/1")
-//                .then().log().all()
-//                .statusCode(204);
+
+        RestAssured.given().log().all()
+                .when().delete("/times/1")
+                .then().log().all()
+                .statusCode(204);
     }
 }

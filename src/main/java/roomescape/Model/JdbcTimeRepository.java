@@ -40,4 +40,12 @@ public class JdbcTimeRepository {
                 ));
         return times;
     }
+
+    public void deleteById(Long id) {
+        String sql = "DELETE FROM time WHERE id = ?";
+        int updateRow = jdbcTemplate.update(sql, id);
+        if (updateRow == 0) {
+            throw  new IllegalArgumentException("삭제할 데이터가 없습니다");
+        }
+    }
 }

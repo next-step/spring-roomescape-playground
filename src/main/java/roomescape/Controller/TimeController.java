@@ -3,10 +3,7 @@ package roomescape.Controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import roomescape.DTO.SaveTimeRequest;
 import roomescape.DTO.TimeResponse;
 import roomescape.Model.JdbcTimeRepository;
@@ -40,5 +37,12 @@ public class TimeController {
         List<Time> times = jdbcTimeRepository.findAll();
         List<TimeResponse> response = times.stream().map(TimeResponse::from).toList();
         return ResponseEntity.ok(response);
+    }
+
+    //time 삭제 api
+    @DeleteMapping("/times/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        jdbcTimeRepository.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 }
