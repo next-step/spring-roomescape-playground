@@ -13,7 +13,7 @@ public class TimeResponse {
     private Long id;
     private String time;
 
-    public static TimeResponse from(TimeEntity timeEntity){
+    public static TimeResponse from(TimeEntity timeEntity) {
         TimeResponse dto = TimeResponse.builder()
                 .id(timeEntity.getId())
                 .time(timeEntity.getTime().toString())

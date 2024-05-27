@@ -21,8 +21,8 @@ public class ReservationRepository implements ReservationRepositoryImpl {
 
     private final JdbcTemplate jdbcTemplate;
 
-    private final RowMapper<ReservationEntity> rowMapper = (rs, rowNum)->{
-        TimeEntity timeEntity = new TimeEntity(rs.getLong("time_id") , rs.getString("time_value"));
+    private final RowMapper<ReservationEntity> rowMapper = (rs, rowNum) -> {
+        TimeEntity timeEntity = new TimeEntity(rs.getLong("time_id"), rs.getString("time_value"));
         ReservationEntity reservationEntity = ReservationEntity.builder()
                 .id(rs.getLong("id"))
                 .name(rs.getString("name"))
@@ -34,13 +34,12 @@ public class ReservationRepository implements ReservationRepositoryImpl {
     };
 
 
-
     @Override
     public List<ReservationEntity> findAll() {
         String sql = "SELECT r.id as reservation_id, r.name, r.date, t.id as time_id, t.time as time_value " +
                 "FROM reservation as r INNER JOIN time as t ON r.time_id = t.id";
 
-        return jdbcTemplate.query(sql,rowMapper);
+        return jdbcTemplate.query(sql, rowMapper);
     }
 
     @Override
@@ -52,11 +51,11 @@ public class ReservationRepository implements ReservationRepositoryImpl {
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
             ps.setString(1, reservationEntity.getName());
-            ps.setObject(2,reservationEntity.getDate());
+            ps.setObject(2, reservationEntity.getDate());
             ps.setLong(3, reservationEntity.getTimeEntity().getId());
             return ps;
 
-        },keyHolder);
+        }, keyHolder);
 
         Long generatedId = keyHolder.getKey().longValue();
         reservationEntity.setId(generatedId);

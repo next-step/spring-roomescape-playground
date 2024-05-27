@@ -33,18 +33,18 @@ public class ReservationApiController {
     public ResponseEntity<ReservationResponse> addReservation(
             @Valid
             @RequestBody ReservationRequest reservationRequest
-    ){
+    ) {
 
-       ReservationResponse response= reservationService.addReservation(reservationRequest);
+        ReservationResponse response = reservationService.addReservation(reservationRequest);
 
-       return ResponseEntity.created(URI.create("/reservations/"+response.getId()))
-               .body(response);
+        return ResponseEntity.created(URI.create("/reservations/" + response.getId()))
+                .body(response);
     }
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> deleteReservation(
             @PathVariable Long id
-    ){
+    ) {
         reservationService.cancelReservation(id);
 
         return ResponseEntity.noContent()

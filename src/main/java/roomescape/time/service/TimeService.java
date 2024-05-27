@@ -17,7 +17,7 @@ public class TimeService {
 
     private final TimeRepositoryImpl timeRepository;
 
-    public List<TimeResponse> findAlltime(){
+    public List<TimeResponse> findAlltime() {
         List<TimeEntity> times = timeRepository.findAll();
         List<TimeResponse> timeResponses = times.stream()
                 .map(TimeResponse::from)
@@ -25,27 +25,27 @@ public class TimeService {
         return timeResponses;
     }
 
-    public TimeResponse addTime(TimeRequest timeRequest){
+    public TimeResponse addTime(TimeRequest timeRequest) {
 
         TimeEntity timeEntity = TimeEntity.builder()
                 .time(timeRequest.getTime())
                 .build();
 
-        TimeEntity savedTime  = timeRepository.save(timeEntity);
+        TimeEntity savedTime = timeRepository.save(timeEntity);
         return TimeResponse.from(savedTime);
     }
 
-    public void deleteTime(Long id){
+    public void deleteTime(Long id) {
         TimeEntity timeEntity = timeRepository.findById(id);
-        if(timeEntity == null){
+        if (timeEntity == null) {
             throw new RuntimeException("찾을 수 없는 id입니다");
         }
         timeRepository.deleteById(timeEntity.getId());
     }
 
-    public TimeResponse findById(Long id){
+    public TimeResponse findById(Long id) {
         TimeEntity timeEntity = timeRepository.findById(id);
-        if(timeEntity ==null){
+        if (timeEntity == null) {
             throw new RuntimeException("찾을 수 없는 id입니다");
         }
         return TimeResponse.from(timeEntity);

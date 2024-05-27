@@ -17,13 +17,15 @@ import java.util.List;
 public class TimeApiController {
 
     private final TimeService timeService;
+
     @GetMapping("/times")
-    public ResponseEntity<List<TimeResponse>> times(){
+    public ResponseEntity<List<TimeResponse>> times() {
 
         List<TimeResponse> times = timeService.findAlltime();
         return ResponseEntity.status(HttpStatus.OK)
                 .body(times);
     }
+
     @PostMapping("/times")
     public ResponseEntity<TimeResponse> addTimes(
             @Valid

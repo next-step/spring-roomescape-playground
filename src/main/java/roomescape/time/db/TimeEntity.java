@@ -13,6 +13,4 @@ public class TimeEntity {
 
     private Long id;
     private String time;
-
-
 }

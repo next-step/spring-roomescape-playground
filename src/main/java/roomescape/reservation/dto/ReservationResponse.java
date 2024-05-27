@@ -12,7 +12,7 @@ public class ReservationResponse {
     private String date;
     private TimeEntity timeEntity;
 
-    public static ReservationResponse from(ReservationEntity reservationEntity){
+    public static ReservationResponse from(ReservationEntity reservationEntity) {
 
         ReservationResponse dto = new ReservationResponse();
         dto.setId(reservationEntity.getId());

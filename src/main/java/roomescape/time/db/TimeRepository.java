@@ -21,7 +21,7 @@ public class TimeRepository implements TimeRepositoryImpl {
 
     private final JdbcTemplate jdbcTemplate;
 
-    private final RowMapper<TimeEntity> rowMapper = (rs,rowNum)->{
+    private final RowMapper<TimeEntity> rowMapper = (rs, rowNum) -> {
         return TimeEntity.builder()
                 .id(rs.getLong("id"))
                 .time(rs.getString("time"))
@@ -31,8 +31,8 @@ public class TimeRepository implements TimeRepositoryImpl {
 
     @Override
     public List<TimeEntity> findAll() {
-       String sql = "SELECT * FROM time";
-       return jdbcTemplate.query(sql, rowMapper);
+        String sql = "SELECT * FROM time";
+        return jdbcTemplate.query(sql, rowMapper);
 
     }
 

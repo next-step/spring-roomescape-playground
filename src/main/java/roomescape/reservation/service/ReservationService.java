@@ -22,6 +22,7 @@ public class ReservationService {
     private final TimeRepositoryImpl timeRepository;
 
     public List<ReservationResponse> findAllReservations() {
+
         List<ReservationEntity> reservations = reservationRepository.findAll();
 
         List<ReservationResponse> responseList = reservations.stream()
@@ -31,7 +32,8 @@ public class ReservationService {
         return responseList;
     }
 
-    public ReservationResponse addReservation(ReservationRequest reservationRequest){
+    public ReservationResponse addReservation(ReservationRequest reservationRequest) {
+
         TimeEntity timeEntity = timeRepository.findById(reservationRequest.getTimeId());
 
         ReservationEntity reservationEntity = ReservationEntity.builder()
@@ -45,16 +47,18 @@ public class ReservationService {
         return ReservationResponse.from(savedReservation);
     }
 
-    public void cancelReservation(Long id){
+    public void cancelReservation(Long id) {
+
         ReservationResponse reservationResponse = findById(id);
         reservationRepository.deleteById(reservationResponse.getId());
 
     }
 
-    public ReservationResponse findById(Long id){
+    public ReservationResponse findById(Long id) {
+
         ReservationEntity reservationEntity = reservationRepository.findById(id);
 
-        if(reservationEntity == null) {
+        if (reservationEntity == null) {
             throw new RuntimeException("예약을 찾을 수 없습니다. (id=" + id + ")");
         }
         return ReservationResponse.from(reservationEntity);
