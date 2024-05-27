@@ -3,16 +3,15 @@ package roomescape.reservation.dto;
 import lombok.Getter;
 import lombok.Setter;
 import roomescape.reservation.exception.BadRequestReservationException;
+import roomescape.time.domain.Time;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
 
 @Getter
 @Setter
 public class ReservationRequest {
     private String name;
-    private LocalDate date;
-    private LocalTime time;
+    private String date;
+    private Long timeId;
 
     public void validate() {
         if (name == null || name.isEmpty()) {
@@ -23,7 +22,7 @@ public class ReservationRequest {
             throw new BadRequestReservationException("예약 날짜는 필수 입력값입니다.");
         }
 
-        if (time == null) {
+        if (timeId == null) {
             throw new BadRequestReservationException("예약 시간은 필수 입력값입니다.");
         }
     }

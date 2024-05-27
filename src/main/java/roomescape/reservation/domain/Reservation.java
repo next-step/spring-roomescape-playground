@@ -1,16 +1,13 @@
 package roomescape.reservation.domain;
 
 import lombok.Data;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import roomescape.time.domain.Time;
 
 @Data
 public class Reservation {
     private Long id;
     private String name;
-    private LocalDate date;
-    private LocalTime time;
+    private String date;
+    private Time time;
 
 }

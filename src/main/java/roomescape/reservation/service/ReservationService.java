@@ -7,6 +7,8 @@ import roomescape.reservation.dto.ReservationRequest;
 import roomescape.reservation.dto.ReservationResponse;
 import roomescape.reservation.exception.BadRequestReservationException;
 import roomescape.reservation.repository.ReservationRepositoryImpl;
+import roomescape.time.domain.Time;
+import roomescape.time.repository.TimeRepositoryImpl;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -18,6 +20,7 @@ import java.util.stream.Collectors;
 public class ReservationService {
 
     private final ReservationRepositoryImpl reservationRepository;
+    private final TimeRepositoryImpl timeRepository;
     public List<ReservationResponse> findAllReservations() {
         List<Reservation> reservations = reservationRepository.findAll();
         List<ReservationResponse> responseDtoList = reservations.stream()
@@ -28,13 +31,10 @@ public class ReservationService {
     }
 
     public ReservationResponse addReservation(ReservationRequest reservationRequest){
-        String name = reservationRequest.getName();
-        LocalDate date = reservationRequest.getDate();
-        LocalTime time = reservationRequest.getTime();
-
+        Time time = timeRepository.findById(reservationRequest.getTimeId());
         Reservation reservation = new Reservation();
-        reservation.setName(name);
-        reservation.setDate(date);
+        reservation.setName(reservationRequest.getName());
+        reservation.setDate(reservationRequest.getDate());
         reservation.setTime(time);
 
         Reservation savedReservation = reservationRepository.save(reservation);
