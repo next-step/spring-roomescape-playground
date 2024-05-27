@@ -10,7 +10,6 @@ public class ReservationExceptionHandler {
     public ResponseEntity handleInvalidRequestException(InvalidRequestException e) {
         return ResponseEntity.badRequest().build();
     }
-
     @ExceptionHandler(NotFoundReservationException.class)
     public ResponseEntity handleNotFoundReservationException(NotFoundReservationException e) {
         return ResponseEntity.badRequest().build();
