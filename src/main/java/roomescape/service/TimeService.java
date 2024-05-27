@@ -4,9 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import roomescape.DAO.TimeDAO;
 import roomescape.domain.Time;
+import roomescape.dto.TimeRequest;
+import roomescape.dto.TimeResponse;
 
 import javax.sql.DataSource;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TimeService {
@@ -14,18 +17,22 @@ public class TimeService {
 
     @Autowired
     public TimeService(DataSource dataSource) {
-        this.timeDAO = new TimeDAO(dataSource); // 이 부분 수정
+        this.timeDAO = new TimeDAO(dataSource);
     }
 
-    public List<Time> findAll() {
-        return timeDAO.findAll();
+    public List<TimeResponse> findAll() {
+        return timeDAO.findAll().stream()
+                .map(TimeResponse::from)
+                .collect(Collectors.toList());
     }
 
-    public Time findById(long id) {
-        return timeDAO.findById(id);
+    public TimeResponse findById(long id) {
+        Time time = timeDAO.findById(id);
+        return TimeResponse.from(time);
     }
 
-    public long save(Time time) {
+    public long save(TimeRequest request) {
+        Time time = new Time(request.id(), request.time());
         return timeDAO.save(time);
     }
 
