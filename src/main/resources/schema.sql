@@ -1,5 +1,5 @@
 DROP TABLE if EXISTS reservation;
-DROP TABLE if EXISTS settingTime;
+DROP TABLE if EXISTS time;
 
 CREATE TABLE reservation
 (

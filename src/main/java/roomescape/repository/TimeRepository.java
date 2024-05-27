@@ -1,14 +1,12 @@
 package roomescape.repository;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.dto.RequestTime;
 import roomescape.domain.dto.ResponseTime;
-import roomescape.service.ReservationExceptionHandler;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
@@ -54,10 +52,6 @@ public class TimeRepository {
 
     public void deleteReservationById(Long id) {
         String sql = "DELETE FROM time WHERE ID = ?";
-        try {
-            jdbcTemplate.update(sql, id);
-        } catch (DataAccessException e) {
-            throw new ReservationExceptionHandler.NoReservationException("존재하지 않는 시간입니다.");
-        }
+        jdbcTemplate.update(sql, id);
     }
 }
