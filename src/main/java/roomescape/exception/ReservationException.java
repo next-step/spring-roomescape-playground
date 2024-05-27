@@ -11,5 +11,4 @@ public class ReservationException extends RuntimeException {
     public ErrorMessage getErrorMessage() {
         return errorMessage;
     }
-
 }

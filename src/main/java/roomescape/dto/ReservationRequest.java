@@ -31,5 +31,4 @@ public record ReservationRequest(
             throw new ReservationException(ErrorMessage.INVALID_TIME_ID);
         }
     }
-
 }

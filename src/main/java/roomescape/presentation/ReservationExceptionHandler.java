@@ -13,5 +13,4 @@ public class ReservationExceptionHandler {
         return ResponseEntity.status(re.getErrorMessage().getStatus())
                 .body(re.getErrorMessage().getMessage());
     }
-
 }

@@ -67,5 +67,4 @@ public class H2ReservationTimeDao implements ReservationTimeDao {
             throw new ReservationException(ErrorMessage.INVALID_ID_REQUEST);
         }
     }
-
 }

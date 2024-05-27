@@ -39,5 +39,4 @@ public class Reservation {
     public ReservationTime getTime() {
         return time;
     }
-
 }

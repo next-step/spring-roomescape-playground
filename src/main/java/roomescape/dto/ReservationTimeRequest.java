@@ -19,5 +19,4 @@ public record ReservationTimeRequest(
             throw new ReservationException(ErrorMessage.EMPTY_TIME);
         }
     }
-
 }

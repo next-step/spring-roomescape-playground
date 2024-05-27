@@ -23,5 +23,4 @@ public class ReservationTime {
     public LocalTime getTime() {
         return time;
     }
-
 }

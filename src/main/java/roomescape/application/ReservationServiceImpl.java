@@ -21,7 +21,6 @@ public class ReservationServiceImpl implements ReservationService{
         this.timeDao = timeDao;
     }
 
-
     @Override
     public List<Reservation> findAll() {
         return reservationDao.findAll();

@@ -11,7 +11,6 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
 import roomescape.domain.ReservationTime;
-import roomescape.dto.ReservationRequest;
 import roomescape.exception.ErrorMessage;
 import roomescape.exception.ReservationException;
 
@@ -72,5 +71,4 @@ public class H2ReservationDao implements ReservationDao {
             throw new ReservationException(ErrorMessage.INVALID_ID_REQUEST);
         }
     }
-
 }

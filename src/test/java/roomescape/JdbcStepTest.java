@@ -30,7 +30,10 @@ public class JdbcStepTest {
         try (Connection connection = jdbcTemplate.getDataSource().getConnection()) {
             assertThat(connection).isNotNull();
             assertThat(connection.getCatalog()).isEqualTo("DATABASE");
-            assertThat(connection.getMetaData().getTables(null, null, "RESERVATIONS", null).next()).isTrue();
+            assertThat(connection.getMetaData()
+                    .getTables(null, null, "RESERVATIONS", null)
+                    .next())
+                    .isTrue();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -38,7 +41,9 @@ public class JdbcStepTest {
 
     @Test
     void 육단계() {
-        jdbcTemplate.update("INSERT INTO reservations (name, date, time_id) VALUES (?, ?, ?)", "브라운", "2023-08-05", 1);
+        jdbcTemplate.update(
+                "INSERT INTO reservations (name, date, time_id) VALUES (?, ?, ?)",
+                "브라운", "2023-08-05", 1);
 
         List<Reservation> reservations = RestAssured.given().log().all()
                 .when().get("/reservations")
@@ -46,7 +51,9 @@ public class JdbcStepTest {
                 .statusCode(200).extract()
                 .jsonPath().getList(".", Reservation.class);
 
-        Integer count = jdbcTemplate.queryForObject("SELECT count(1) from reservations", Integer.class);
+        Integer count = jdbcTemplate.queryForObject(
+                "SELECT count(1) from reservations",
+                Integer.class);
 
         assertThat(reservations.size()).isEqualTo(count);
     }
@@ -66,9 +73,11 @@ public class JdbcStepTest {
                 .when().post("/reservations")
                 .then().log().all()
                 .statusCode(201)
-                .header("Location", "/reservations/" + newId); // 스프링부트 실행 시, 테스트 데이터 3개가 기본으로 추가됨 (data.sql)
+                .header("Location", "/reservations/" + newId);
 
-        Integer count = jdbcTemplate.queryForObject("SELECT count(1) from reservations", Integer.class);
+        Integer count = jdbcTemplate.queryForObject(
+                "SELECT count(1) from reservations",
+                Integer.class);
         assertThat(count).isEqualTo(newId);
 
         RestAssured.given().log().all()
@@ -76,8 +85,9 @@ public class JdbcStepTest {
                 .then().log().all()
                 .statusCode(204);
 
-        Integer countAfterDelete = jdbcTemplate.queryForObject("SELECT count(1) from reservations", Integer.class);
+        Integer countAfterDelete = jdbcTemplate.queryForObject(
+                "SELECT count(1) from reservations",
+                Integer.class);
         assertThat(countAfterDelete).isEqualTo(TEST_DATA_COUNT);
     }
-
 }
