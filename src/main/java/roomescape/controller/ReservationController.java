@@ -5,8 +5,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import roomescape.domain.Reservation;
-import roomescape.dto.ReservationRequest;
-import roomescape.dto.ReservationResponse;
+import roomescape.dto.reservation.ReservationRequest;
+import roomescape.dto.reservation.ReservationResponse;
 import roomescape.repository.ReservationRepository;
 
 import java.net.URI;
@@ -25,7 +25,6 @@ public class ReservationController {
 
     @GetMapping
     public ResponseEntity<List<ReservationResponse>> reservations() {
-        List<Reservation> reservations = reservationRepository.findAll();
         List<ReservationResponse> response =reservationRepository.findAll().stream()
                 .map(ReservationResponse::from)
                 .collect(Collectors.toList());

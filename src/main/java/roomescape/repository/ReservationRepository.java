@@ -1,6 +1,5 @@
 package roomescape.repository;
 
-import org.springframework.dao.EmptyResultDataAccessException;
 import roomescape.domain.Reservation;
 
 import java.util.List;

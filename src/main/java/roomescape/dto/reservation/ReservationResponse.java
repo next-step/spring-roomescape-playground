@@ -1,4 +1,4 @@
-package roomescape.dto;
+package roomescape.dto.reservation;
 
 import roomescape.domain.Reservation;
 
@@ -6,6 +6,7 @@ public record ReservationResponse(
         Long id,
         String name,
         String date,
+        Long timeId,
         String time
 ) {
 
@@ -14,6 +15,8 @@ public record ReservationResponse(
                 reservation.getId(),
                 reservation.getName(),
                 reservation.getDate(),
-                reservation.getTime());
+                reservation.getTime().getId(),
+                reservation.getTime().getTime()
+        );
     }
 }
