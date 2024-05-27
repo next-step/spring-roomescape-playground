@@ -1,8 +1,8 @@
-package roomescape.dto;
+package roomescape.dto.reservation;
 
 import lombok.Getter;
 import lombok.Setter;
-import roomescape.domain.Reservation;
+import roomescape.domain.reservation.Reservation;
 
 @Setter
 @Getter

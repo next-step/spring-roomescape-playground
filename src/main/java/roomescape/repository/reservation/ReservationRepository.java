@@ -1,7 +1,7 @@
-package roomescape.repository;
+package roomescape.repository.reservation;
 
 import org.springframework.stereotype.Repository;
-import roomescape.domain.Reservation;
+import roomescape.domain.reservation.Reservation;
 
 import java.util.ArrayList;
 import java.util.HashMap;

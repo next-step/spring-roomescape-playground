@@ -1,14 +1,12 @@
-package roomescape.service;
+package roomescape.service.reservation;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import roomescape.domain.Reservation;
-import roomescape.repository.ReservationJdbcRepository;
-import roomescape.repository.ReservationRepository;
-import roomescape.dto.ReservationRequest;
-import roomescape.dto.ReservationResponse;
+import roomescape.domain.reservation.Reservation;
+import roomescape.dto.reservation.ReservationRequest;
+import roomescape.dto.reservation.ReservationResponse;
 import roomescape.exception.BadRequestException;
-import roomescape.repository.ReservationRepositoryImpl;
+import roomescape.repository.reservation.ReservationRepositoryImpl;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
