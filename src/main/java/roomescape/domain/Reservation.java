@@ -1,39 +1,36 @@
 package roomescape.domain;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 public class Reservation {
-    private Long id;
+    private int id;
     private String name;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate date;
-    private Times time;
+    @DateTimeFormat(pattern = "HH:mm")
+    private LocalTime time;
 
-    public Reservation() {
+    public Reservation(String name, LocalDate date, LocalTime time) {
+        this.name = name;
+        this.date = date;
+        this.time = time;
     }
 
-    public Reservation(Long id, String name, LocalDate date, Times time) {
+    public Reservation(int id, String name, LocalDate date, LocalTime time) {
         this.id = id;
         this.name = name;
         this.date = date;
         this.time = time;
     }
 
-    public Reservation(String name, LocalDate date, Times time) {
-        this.name = name;
-        this.date = date;
-        this.time = time;
-    }
-
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -49,11 +46,15 @@ public class Reservation {
         return date;
     }
 
-    public Times getTime() {
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    public LocalTime getTime() {
         return time;
     }
 
-    public void setTime(Times time) {
+    public void setTime(LocalTime time) {
         this.time = time;
     }
 }
