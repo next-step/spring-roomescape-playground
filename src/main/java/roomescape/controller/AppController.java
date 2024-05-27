@@ -15,6 +15,6 @@ public class AppController {
     @GetMapping("/reservation")
     public String viewReservation(){
 
-        return "reservation";
+        return "new-reservation";
     }
 }

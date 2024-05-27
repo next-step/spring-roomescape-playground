@@ -3,7 +3,6 @@ package roomescape.domain;
 import roomescape.exception.NotFoundReservationException;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
@@ -11,25 +10,25 @@ public class Reservation {
     private int id;
     private String name;
     private String date;
-    private String time;
+    private Time time;
 
     public Reservation() {
     }
 
-    public Reservation(String name, String date, String time) {
+    public Reservation(String name, String date, Time time) {
         validateEmpty(name);
         validateDate(date);
-        validateTime(time);
+//        validateTime(time);
 
         this.name = name;
         this.date = date;
         this.time = time;
     }
 
-    public Reservation(int id, String name, String date, String time) {
+    public Reservation(int id, String name, String date, Time time) {
         validateEmpty(name);
         validateDate(date);
-        validateTime(time);
+//        validateTime(time);
 
         this.id = id;
         this.name = name;
@@ -61,11 +60,11 @@ public class Reservation {
         this.date = date;
     }
 
-    public String getTime() {
+    public Time getTime() {
         return time;
     }
 
-    public void setTime(String time) {
+    public void setTime(Time time) {
         this.time = time;
     }
 
@@ -88,15 +87,4 @@ public class Reservation {
             throw new IllegalArgumentException("날짜 형식이 맞지 않습니다.");
         }
     }
-
-    private void validateTime(String timeString) {
-        DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
-
-        try {
-            LocalTime.parse(timeString, TIME_FORMATTER);
-        } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("시간 형식이 맞지 않습니다.");
-        }
-    }
-
 }
