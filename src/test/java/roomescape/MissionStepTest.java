@@ -37,4 +37,4 @@ public class MissionStepTest {
         }
 
         assertThat(isJdbcTemplateInjected).isFalse();
-}
+}}
