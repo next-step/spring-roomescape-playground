@@ -1,13 +1,13 @@
 package roomescape.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import roomescape.domain.Reservation;
+import roomescape.domain.dto.AddReservationResponse;
+import roomescape.domain.dto.CheckReservationsResponse;
 import roomescape.domain.dto.RequestReservation;
-import roomescape.domain.dto.ResponseReservation;
-import roomescape.repository.ReservationRepository;
+import roomescape.repository.JdbcReservationRepository;
 
 import java.net.URI;
 import java.util.List;
@@ -16,35 +16,31 @@ import java.util.List;
 @Controller
 public class ReservationController {
 
-    @Autowired
-    private final ReservationRepository reservationRepository;
+    private final JdbcReservationRepository reservationRepository;
 
-    public ReservationController(ReservationRepository repository) {
+    public ReservationController(JdbcReservationRepository repository) {
         this.reservationRepository = repository;
     }
 
     @GetMapping
-    public ResponseEntity<List<Reservation>> checkReservations() {
-        List<Reservation> reservations = reservationRepository.findAll();
+    public ResponseEntity<List<CheckReservationsResponse>> checkReservations() {
+        List<CheckReservationsResponse> reservations = reservationRepository.findAll();
 
         return ResponseEntity.ok(reservations);
     }
 
     @PostMapping
-    public ResponseEntity<ResponseReservation> addReservation(@RequestBody RequestReservation request) {
+    public ResponseEntity<AddReservationResponse> addReservation(@RequestBody RequestReservation request) {
+        Reservation reservation = reservationRepository.addReservation(request);
 
-        Reservation newReservation = request.toReservation();
-        reservationRepository.addReservation(newReservation);
-
-        URI location = URI.create("/reservations/" + newReservation.getId());
-        ResponseReservation responseReservation = ResponseReservation.from(newReservation);
+        URI location = URI.create("/reservations/" + reservation.getId());
+        AddReservationResponse responseReservation = AddReservationResponse.from(reservation);
 
         return ResponseEntity.created(location).body(responseReservation);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
-
         reservationRepository.deleteReservationById(id);
 
         return ResponseEntity.noContent().build();

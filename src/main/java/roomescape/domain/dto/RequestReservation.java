@@ -1,6 +1,5 @@
 package roomescape.domain.dto;
 
-import roomescape.domain.Reservation;
 import roomescape.domain.exception.BadRequestReservation;
 
 public record RequestReservation(
@@ -8,15 +7,15 @@ public record RequestReservation(
         String date,
         String time
 ) {
-
-    private void validateParams() {
-        if (date.isBlank() || name.isBlank() || time.isBlank()) {
+    public RequestReservation{
+        if (name.isBlank() || date.isBlank() || time.isBlank()) {
             throw new BadRequestReservation("예약에 필요한 인자가 부족합니다.");
         }
     }
 
-    public Reservation toReservation() {
-        validateParams();
-        return new Reservation(name, date, time);
-    }
+//    private void validateParams() {
+//        if (this.name.isBlank() || date.isBlank() || time.isBlank()) {
+//            throw new BadRequestReservation("예약에 필요한 인자가 부족합니다.");
+//        }
+//    }
 }
