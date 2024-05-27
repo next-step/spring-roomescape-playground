@@ -1,11 +1,7 @@
 package roomescape.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import roomescape.DTO.ReservationResponse;
@@ -14,7 +10,6 @@ import roomescape.Model.JdbcReservationRepository;
 import roomescape.Model.Reservation;
 
 import java.net.URI;
-import java.sql.PreparedStatement;
 import java.util.List;
 
 @Controller
@@ -30,7 +25,7 @@ public class ReservationController {
 
     @RequestMapping("/reservation")
     public String reservation() {
-        return "reservation";
+        return "new-reservation";
     }
 
     // 예약 목록 조회
