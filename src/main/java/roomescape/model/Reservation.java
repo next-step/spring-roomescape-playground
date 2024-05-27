@@ -1,26 +1,26 @@
 package roomescape.model;
 
 public class Reservation {
-    private int id;
+    private Long id;
     private String name;
-    private String date; // 날짜를 문자열로 받음 (예: "2023-05-15")
-    private String time; // 시간을 문자열로 받음 (예: "14:30")
+    private String date;
+    private Time time;
 
     public Reservation() {
     }
 
-    public Reservation(int id, String name, String date, String time) {
+    public Reservation(Long id, String name, String date, Time time) {
         this.id = id;
         this.name = name;
         this.date = date;
         this.time = time;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -40,11 +40,11 @@ public class Reservation {
         this.date = date;
     }
 
-    public String getTime() {
+    public Time getTime() {
         return time;
     }
 
-    public void setTime(String time) {
+    public void setTime(Time time) {
         this.time = time;
     }
 }
