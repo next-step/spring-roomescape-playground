@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import roomescape.reservation.domain.Reservation;
 import roomescape.reservation.dto.ReservationRequest;
 import roomescape.reservation.dto.ReservationResponse;
-import roomescape.common.exception.BadRequestException;
+import roomescape.reservation.exception.BadRequestReservationException;
 import roomescape.reservation.repository.ReservationRepositoryImpl;
 
 import java.time.LocalDate;
@@ -50,7 +50,7 @@ public class ReservationService {
     public ReservationResponse findById(Long id) {
         Reservation reservation = reservationRepository.findById(id);
         if(reservation == null) {
-            throw new BadRequestException("예약을 찾을 수 없습니다. (id=" + id + ")");
+            throw new BadRequestReservationException("예약을 찾을 수 없습니다. (id=" + id + ")");
         }
         return ReservationResponse.from(reservation);
     }

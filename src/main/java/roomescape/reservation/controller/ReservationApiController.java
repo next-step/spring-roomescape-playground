@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import roomescape.reservation.dto.ReservationRequest;
 import roomescape.reservation.dto.ReservationResponse;
-import roomescape.common.exception.BadRequestException;
+import roomescape.reservation.exception.BadRequestReservationException;
 import roomescape.reservation.service.ReservationService;
 
 import java.net.URI;
@@ -39,8 +39,8 @@ public class ReservationApiController {
         return ResponseEntity.noContent().build();
     }
 
-    @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<String> handleBadRequestException(BadRequestException ex) {
+    @ExceptionHandler(BadRequestReservationException.class)
+    public ResponseEntity<String> handleBadRequestException(BadRequestReservationException ex) {
         return ResponseEntity.badRequest().body(ex.getMessage());
     }
 }

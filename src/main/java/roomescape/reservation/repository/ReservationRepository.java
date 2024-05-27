@@ -1,5 +1,6 @@
 package roomescape.reservation.repository;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import roomescape.reservation.domain.Reservation;
 
