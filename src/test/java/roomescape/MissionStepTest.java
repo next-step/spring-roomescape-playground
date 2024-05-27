@@ -14,6 +14,10 @@ import org.springframework.test.annotation.DirtiesContext;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class MissionStepTest {
 
+    private static final int TEST_DATA_COUNT = 3;
+    private static final int newId = TEST_DATA_COUNT + 1;
+
+
     @Test
     void 일단계() {
         RestAssured.given().log().all()
@@ -33,7 +37,7 @@ public class MissionStepTest {
                 .when().get("/reservations")
                 .then().log().all()
                 .statusCode(200)
-                .body("size()", is(0));
+                .body("size()", is(TEST_DATA_COUNT));
     }
 
     @Test
@@ -49,17 +53,17 @@ public class MissionStepTest {
                 .when().post("/reservations")
                 .then().log().all()
                 .statusCode(201)
-                .header("Location", "/reservations/1")
-                .body("id", is(1));
+                .header("Location", "/reservations/" + newId)
+                .body("id", is(newId));
 
         RestAssured.given().log().all()
                 .when().get("/reservations")
                 .then().log().all()
                 .statusCode(200)
-                .body("size()", is(1));
+                .body("size()", is(newId));
 
         RestAssured.given().log().all()
-                .when().delete("/reservations/1")
+                .when().delete("/reservations/" + newId)
                 .then().log().all()
                 .statusCode(204);
 
@@ -67,7 +71,7 @@ public class MissionStepTest {
                 .when().get("/reservations")
                 .then().log().all()
                 .statusCode(200)
-                .body("size()", is(0));
+                .body("size()", is(TEST_DATA_COUNT));
     }
 
     @Test
@@ -87,7 +91,7 @@ public class MissionStepTest {
 
         // 삭제할 예약이 없는 경우
         RestAssured.given().log().all()
-                .when().delete("/reservations/1")
+                .when().delete("/reservations/" + newId)
                 .then().log().all()
                 .statusCode(400);
     }

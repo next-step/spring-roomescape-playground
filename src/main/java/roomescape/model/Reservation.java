@@ -6,11 +6,9 @@ import java.time.LocalTime;
 
 public class Reservation {
 
-    private final Long id;
+    private Long id;
     private String name;
-    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
-    @JsonFormat(pattern = "HH:mm")
     private LocalTime time;
 
     public Reservation(final Long id, final String name, final LocalDate date,
@@ -19,6 +17,13 @@ public class Reservation {
         this.name = name;
         this.date = date;
         this.time = time;
+    }
+
+    public Reservation(final String name, final LocalDate date, final LocalTime time) {
+        this(null, name, date, time);
+    }
+
+    public Reservation() {
     }
 
     public Long getId() {
