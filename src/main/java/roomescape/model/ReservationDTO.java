@@ -3,8 +3,6 @@ package roomescape.model;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
-import java.io.Serializable;
-
 @Data
 public class ReservationDTO {
     int id;

@@ -30,11 +30,6 @@ public class ReservationController {
         return reservations;
     }
 
-    @GetMapping("/reservation")
-    public String reservationController() {
-        return "reservation";
-    }
-
     @ResponseBody
     @PostMapping("/reservations")
     public ResponseEntity<ReservationDTO> reservationAddController(@Valid @RequestBody ReservationDTO reservationDTO) {
