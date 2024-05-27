@@ -3,6 +3,7 @@ package roomescape.Controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +13,7 @@ import roomescape.Model.JdbcTimeRepository;
 import roomescape.Model.Time;
 
 import java.net.URI;
+import java.util.List;
 
 @Controller
 public class TimeController {
@@ -23,6 +25,7 @@ public class TimeController {
         this.jdbcTimeRepository = jdbcTimeRepository;
     }
 
+    // time 생성 api
     @PostMapping("/times")
     public ResponseEntity<TimeResponse> save(@RequestBody SaveTimeRequest request) {
         Time time = jdbcTimeRepository.save(request.toTime());
@@ -31,4 +34,11 @@ public class TimeController {
         return ResponseEntity.created(URI.create(uri)).body(response);
     }
 
+    // time 조회 api
+    @GetMapping("/times")
+    public ResponseEntity<List<TimeResponse>> read() {
+        List<Time> times = jdbcTimeRepository.findAll();
+        List<TimeResponse> response = times.stream().map(TimeResponse::from).toList();
+        return ResponseEntity.ok(response);
+    }
 }
