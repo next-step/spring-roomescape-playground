@@ -1,4 +1,4 @@
-package roomescape.domain.dao;
+package roomescape.domain.reservation.dao;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
@@ -8,8 +8,8 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import roomescape.domain.Reservation;
-import roomescape.domain.ReservationDTO;
+import roomescape.domain.reservation.Reservation;
+import roomescape.domain.reservation.dto.ReservationDTO;
 
 @Repository
 public class JdbcReservationDAO implements ReservationDAO {

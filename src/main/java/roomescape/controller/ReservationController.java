@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import roomescape.domain.RequestReservationDTO;
-import roomescape.domain.ReservationDTO;
-import roomescape.domain.Reservation;
-import roomescape.domain.dao.ReservationDAO;
+import roomescape.domain.reservation.dto.RequestReservationDTO;
+import roomescape.domain.reservation.dto.ReservationDTO;
+import roomescape.domain.reservation.Reservation;
+import roomescape.domain.reservation.dao.ReservationDAO;
 
 @Controller
 @RequestMapping(value = "/reservations")

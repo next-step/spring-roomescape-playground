@@ -1,4 +1,4 @@
-package roomescape.domain.dao;
+package roomescape.domain.reservation.dao;
 
 
 import java.util.ArrayList;
@@ -7,8 +7,8 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.stereotype.Repository;
 import roomescape.controller.exception.NotFoundException;
-import roomescape.domain.Reservation;
-import roomescape.domain.ReservationDTO;
+import roomescape.domain.reservation.Reservation;
+import roomescape.domain.reservation.dto.ReservationDTO;
 
 @Repository
 public class InMemoryReservationDAO implements ReservationDAO {

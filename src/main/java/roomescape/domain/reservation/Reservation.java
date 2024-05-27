@@ -1,7 +1,8 @@
-package roomescape.domain;
+package roomescape.domain.reservation;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import roomescape.domain.reservation.dto.ReservationDTO;
 
 public class Reservation {
     private Long id;
@@ -11,13 +12,6 @@ public class Reservation {
 
     private final String INVALID_NULL_MSG = "입력받은 값이 없습니다..";
     private final String INVALID_NAME_FORMAT_MSG = "이름이 올바르지 않습니다.";
-
-    public Reservation(Long id, String name, String date, String time) {
-        this.id = id;
-        this.name = validateName(name);
-        this.date = validateDate(date);
-        this.time = validateTime(time);
-    }
 
     public Reservation(String name, String date, String time) {
         this.name = validateName(name);

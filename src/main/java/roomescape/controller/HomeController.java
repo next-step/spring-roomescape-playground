@@ -16,4 +16,8 @@ public class HomeController {
         return "reservation";
     }
 
+    @GetMapping(value =  "/time")
+    public String time() {
+        return "time";
+    }
 }

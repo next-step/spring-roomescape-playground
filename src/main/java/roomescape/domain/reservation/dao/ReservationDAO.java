@@ -1,9 +1,8 @@
-package roomescape.domain.dao;
+package roomescape.domain.reservation.dao;
 
 import java.util.List;
-import roomescape.domain.RequestReservationDTO;
-import roomescape.domain.Reservation;
-import roomescape.domain.ReservationDTO;
+import roomescape.domain.reservation.Reservation;
+import roomescape.domain.reservation.dto.ReservationDTO;
 
 public interface ReservationDAO {
     List<ReservationDTO> findAll();
