@@ -3,18 +3,14 @@ package roomescape.dto;
 import roomescape.domain.Time;
 import java.time.LocalTime;
 
-public class TimeResponse {
+public class TimeResponseDTO {
 
     private Long id;
     private LocalTime time;
 
-    public TimeResponse(Long id, LocalTime time) {
+    public TimeResponseDTO(Long id, LocalTime time) {
         this.id = id;
         this.time = time;
-    }
-
-    public static TimeResponse from(Time time) {
-        return new TimeResponse(time.getId(), time.getTime());
     }
 
     public Long getId() {

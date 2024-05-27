@@ -1,62 +1,60 @@
 package roomescape.controller;
 
-import io.micrometer.common.util.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import roomescape.domain.Reservation;
-import roomescape.exception.InvalidRequestException;
+import roomescape.DAO.ReservationDAO;
 import roomescape.exception.NotFoundReservationException;
+import roomescape.service.ReservationService;
 
+import javax.sql.DataSource;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Controller
 public class ReservationController {
     private final String NOT_FOUND_RESERVATION_MESSAGE = "삭제할 예약을 찾을 수 없습니다.";
+    private final ReservationService reservationService;
 
-    private List<Reservation> reservations = new ArrayList<>();
-    private final AtomicLong index = new AtomicLong(0);
+    @Autowired
+    public ReservationController(ReservationService reservationService) {
+        this.reservationService = reservationService;
+    }
 
     @GetMapping("/reservation")
-    public String reservation() {
-        return "reservation";
+    public String newReservation() {
+        return "new-reservation";
     }
 
     @GetMapping("/reservations")
     public ResponseEntity<List<Reservation>> getReservations() {
-        List<Reservation> reservationList = new ArrayList<>();
-        return ResponseEntity.ok(reservations);
+        List<Reservation> reservationList = reservationService.findAll();
+        return ResponseEntity.ok(reservationList);
     }
-
 
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> addReservation(@RequestBody Reservation request) {
-        request.validate();
 
-        long id = index.incrementAndGet();
-        Reservation reservation = new Reservation(id, request.getName(), request.getDate(), request.getTime());
-        reservations.add(reservation);
-
+        long id = reservationService.save(request);
+        Reservation reservation = reservationService.findById(id);
         URI location = URI.create("/reservations/" + id);
 
         return ResponseEntity.created(location).body(reservation);
     }
 
-
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> cancelReservation(@PathVariable long id) {
-        Reservation reservation = reservations.stream()
-                .filter(it -> Objects.equals(it.getId(), id))
-                .findFirst()
-                .orElseThrow(() -> new NotFoundReservationException(NOT_FOUND_RESERVATION_MESSAGE));
+        long deletedId = reservationService.deleteById(id);
 
-        reservations.remove(reservation);
+        if (deletedId == -1) {
+            throw new NotFoundReservationException(NOT_FOUND_RESERVATION_MESSAGE);
+        }
+
+        URI location = URI.create("/reservations/" + deletedId);
+        ResponseEntity.noContent().location(location).build();
 
         return ResponseEntity.noContent().build();
     }
-
 }

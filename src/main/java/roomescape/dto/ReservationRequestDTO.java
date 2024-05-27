@@ -5,10 +5,9 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-public record ReservationRequest(
+record ReservationRequestDTO(
         String name,
         @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
-        LocalTime time,
-        Long timeId
+        LocalTime time
 ) {
 }

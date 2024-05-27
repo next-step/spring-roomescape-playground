@@ -4,15 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import roomescape.dto.TimeRequest;
-import roomescape.dto.TimeResponse;
+import roomescape.domain.Time;
 import roomescape.service.TimeService;
 
+import javax.sql.DataSource;
 import java.net.URI;
 import java.util.List;
 
 @Controller
-@RequestMapping("/times")
 public class TimeController {
     private final TimeService timeService;
 
@@ -21,22 +20,27 @@ public class TimeController {
         this.timeService = timeService;
     }
 
-    @PostMapping
-    public ResponseEntity<TimeResponse> addTime(@RequestBody TimeRequest request) {
+    @GetMapping("/time")
+    public String times() {
+        return "time";
+    }
+
+    @PostMapping("/times")
+    public ResponseEntity<Time> addTime(@RequestBody Time request) {
         long id = timeService.save(request);
-        TimeResponse time = timeService.findById(id);
+        Time time = timeService.findById(id);
         URI location = URI.create("/times/" + id);
 
         return ResponseEntity.created(location).body(time);
     }
 
-    @GetMapping
-    public ResponseEntity<List<TimeResponse>> getTimes() {
-        List<TimeResponse> timeList = timeService.findAll();
+    @GetMapping("/times")
+    public ResponseEntity<List<Time>> getTimes() {
+        List<Time> timeList = timeService.findAll();
         return ResponseEntity.ok(timeList);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/times/{id}")
     public ResponseEntity<Void> deleteTime(@PathVariable long id) {
         long deletedId = timeService.deleteById(id);
         if (deletedId == -1) {
