@@ -12,6 +12,8 @@ import roomescape.model.Reservation;
 import roomescape.model.Time;
 
 import javax.sql.DataSource;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 @Slf4j
@@ -20,14 +22,10 @@ public class JdbcReservationRepository implements ReservationRepository {
     private final NamedParameterJdbcTemplate namedTemplate;
 
     private final RowMapper<Reservation> reservationRowMapper = (rs, rowNum) -> {
-        Reservation reservation = new Reservation();
-        reservation.setId(rs.getInt("id"));
-        reservation.setName(rs.getString("name"));
-        reservation.setDate(rs.getString("date"));
-        Time time = new Time(rs.getInt("time_id"), rs.getString("time_value"));
-        reservation.setTime(time);
+        Reservation reservation = getReservation(rs);
         return reservation;
     };
+
 
     public JdbcReservationRepository(DataSource dataSource) {
         this.namedTemplate = new NamedParameterJdbcTemplate(dataSource);
@@ -59,9 +57,18 @@ public class JdbcReservationRepository implements ReservationRepository {
         return jdbcTemplate.query(sql, reservationRowMapper);
     }
 
-
     @Override
     public void delete(int id) {
         jdbcTemplate.update("delete from reservation where id = ?", id);
+    }
+
+    private static Reservation getReservation(ResultSet rs) throws SQLException {
+        Reservation reservation = new Reservation();
+        reservation.setId(rs.getInt("id"));
+        reservation.setName(rs.getString("name"));
+        reservation.setDate(rs.getString("date"));
+        Time time = new Time(rs.getInt("time_id"), rs.getString("time_value"));
+        reservation.setTime(time);
+        return reservation;
     }
 }
