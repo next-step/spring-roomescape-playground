@@ -22,6 +22,11 @@ public class TimeController {
         this.jdbcTimeRepository = jdbcTimeRepository;
     }
 
+    @RequestMapping("/time")
+    public String time() {
+        return "time";
+    }
+
     // time 생성 api
     @PostMapping("/times")
     public ResponseEntity<TimeResponse> save(@RequestBody SaveTimeRequest request) {
