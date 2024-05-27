@@ -2,6 +2,7 @@ package roomescape.controller;
 
 import java.net.URI;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -16,20 +17,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import roomescape.domain.RequestReservationDTO;
 import roomescape.domain.ReservationDTO;
 import roomescape.domain.Reservation;
-import roomescape.domain.dao.JdbcReservationDAO;
+import roomescape.domain.dao.ReservationDAO;
 
 @Controller
 @RequestMapping(value = "/reservations")
 public class ReservationController {
-    private final JdbcReservationDAO jdbcReservationDAO;
+    private final ReservationDAO reservationDAO;
 
-    public ReservationController(JdbcReservationDAO jdbcReservationDAO) {
-        this.jdbcReservationDAO = jdbcReservationDAO;
+    public ReservationController(@Qualifier("jdbcReservationDAO") ReservationDAO reservationDAO) {
+        this.reservationDAO = reservationDAO;
     }
 
     @GetMapping
     public ResponseEntity<List<ReservationDTO>> reservations() {
-        List<ReservationDTO> reservations = jdbcReservationDAO.findAll();
+        List<ReservationDTO> reservations = reservationDAO.findAll();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         return new ResponseEntity<>(reservations, headers, HttpStatus.OK);
@@ -38,7 +39,7 @@ public class ReservationController {
     @PostMapping
     public ResponseEntity<Reservation> create(@RequestBody RequestReservationDTO request) {
         Reservation reservation = request.toReservaiton();
-        Reservation newReservation = jdbcReservationDAO.insert(reservation);
+        Reservation newReservation = reservationDAO.insert(reservation);
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(URI.create("/reservations/" + Long.toString(newReservation.getId())));
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -47,7 +48,7 @@ public class ReservationController {
 
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> delete(@PathVariable long id) {
-        jdbcReservationDAO.deleteById(id);
+        reservationDAO.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 }
