@@ -82,3 +82,14 @@
     t.id as time_id,
     t.time as time_value
     FROM reservation as r inner join time as t on r.time_id = t.id`
+
+10단계 - 계층화 리팩터
+- 레이어드 아키텍처를 적용하여 레이어별 책임과 역할에 따라 클래스 분리
+- 분리한 클래스는 매번 새로 생성하지 않고 스프링 빈으로 등록해서 사용
+- `ReservationController` 에 있던 데이터베이스 관련 로직을 다른 클래스로 분리한 것을 확인하기 위한 테스트 
+- `ReservationController`에 `JdbcTemplate` 필드가 사라진 것을 확인하여 로직 분리를 확인
+- 레이어드 아키텍처 
+  - 컨트롤러는 웹 요청/응답 책임만 가지도록 수정 
+  - 디비 접근 책임은 DAO(Data Access Object)가 가지도록 위임 
+  - 비즈니스 플로우 책임은 서비스가 가지도록 위임
+  - 비즈니스 규칙 책임은 도메인이 가지도록 위임
