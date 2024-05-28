@@ -6,14 +6,14 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
-public class RequestReservation {
+public class RequestReservationDTO {
 
     private String name;
     private String date;
     private String time;
     private LocalDateTime dateTime;
 
-    public RequestReservation(String name,String date,String time){
+    public RequestReservationDTO(String name, String date, String time){
         this.date=date;
         this.time=time;
         this.name=name;
@@ -21,7 +21,6 @@ public class RequestReservation {
     }
 
     public void validateReservation(){
-
         if (name.isEmpty() || date.isEmpty() || time.isEmpty() )
             throw new BadRequestReservationException("이름, 날짜, 시간을 모두 입력하세요.");
         LocalDate parsedDate = LocalDate.parse(date, DateTimeFormatter.ISO_DATE);
@@ -39,9 +38,5 @@ public class RequestReservation {
 
     public String getTime(){
         return  time;
-    }
-
-    public LocalDateTime getDateTime(){
-        return dateTime;
     }
 }

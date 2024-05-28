@@ -1,43 +1,39 @@
 package roomescape.Model;
 
-
 import org.springframework.stereotype.Service;
-import roomescape.Exception.NotFoundReservationException;
+import roomescape.Repository.ReservationRepository;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 public class ReservationService {
-    private AtomicLong atomicLong = new AtomicLong(0);
 
-    public ReservationService(){
+    private ReservationRepository reservationRepository;
 
+    public ReservationService(ReservationRepository reservationRepository){
+        this.reservationRepository = reservationRepository;
     }
 
-    public Reservation saveReservation(RequestReservation reservation, List<Reservation> reservations){
+    public List<Reservation> getReservationsList(){
+        List<Reservation> reservationList=reservationRepository.getAllReservations();
+        return reservationList;
+    }
 
+    public Reservation saveReservation(RequestReservationDTO reservation){
         String name=reservation.getName();
         String date=reservation.getDate();
         String time=reservation.getTime();
 
-        Reservation newReservation=new Reservation(atomicLong.incrementAndGet(), name, date,time);
-        reservations.add(newReservation);
-
-        return newReservation;
+        Reservation newReservation=new Reservation(null, name, date,time);
+        Long id=reservationRepository.createReservation(newReservation);
+        return reservationRepository.getReservationById(id);
     }
 
-    public void deleteReservation(List<Reservation> reservations,Long id){
-
-        boolean res=reservations.removeIf(reservation -> reservation.getId()==id);
-        if(!res)
-            throw new NotFoundReservationException("예약을 찾을 수 없습니다.");
+    public void deleteReservation(Long id){
+        reservationRepository.deleteReservationById(id);
     }
 
-    public Reservation viewReservation(List<Reservation> reservations,Long id){
-        for(Reservation reservation:reservations)
-            if(reservation.getId()==id)
-                return reservation;
-        throw new NotFoundReservationException("예약을 찾을 수 없습니다.");
+    public Reservation viewReservation(Long id){
+        Reservation findReservation=reservationRepository.getReservationById(id);
+        return findReservation;
     }
-
 }
