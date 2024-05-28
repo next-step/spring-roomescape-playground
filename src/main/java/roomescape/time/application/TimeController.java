@@ -1,13 +1,13 @@
-package roomescape.web.Controller;
+package roomescape.time.application;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import roomescape.domain.Dto.timeDto.TimeRequestDto;
-import roomescape.domain.Dto.timeDto.TimeResponseDto;
-import roomescape.domain.Model.Time;
-import roomescape.domain.Repository.timeRepository.TimeRepository;
+import roomescape.time.domain.Time;
+import roomescape.time.domain.TimeRepository;
+import roomescape.time.dto.TimeRequestDto;
+import roomescape.time.dto.TimeResponseDto;
 
 import java.net.URI;
 import java.util.List;

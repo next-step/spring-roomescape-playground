@@ -1,9 +1,7 @@
-package roomescape.domain.Model;
+package roomescape.reservation.domain;
 
 import lombok.Data;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import roomescape.time.domain.Time;
 
 @Data
 public class Reservation {

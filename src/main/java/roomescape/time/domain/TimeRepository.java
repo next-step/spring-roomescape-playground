@@ -1,4 +1,4 @@
-package roomescape.domain.Repository.timeRepository;
+package roomescape.time.domain;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +10,6 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
-import roomescape.domain.Model.Reservation;
-import roomescape.domain.Model.Time;
 
 import javax.sql.DataSource;
 import java.time.LocalDateTime;
@@ -21,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
-@RequiredArgsConstructor
 public class TimeRepository{
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;

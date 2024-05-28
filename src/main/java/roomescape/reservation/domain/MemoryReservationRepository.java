@@ -1,8 +1,7 @@
-package roomescape.domain.Repository.reservationRepository;
+package roomescape.reservation.domain;
 
 import org.springframework.stereotype.Repository;
-import roomescape.domain.Model.Reservation;
-import roomescape.domain.exception.NotFoundReservationException;
+import roomescape.reservation.exception.exception.NotFoundReservationException;
 
 import java.util.ArrayList;
 import java.util.HashMap;

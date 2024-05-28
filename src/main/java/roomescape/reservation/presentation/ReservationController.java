@@ -1,13 +1,13 @@
-package roomescape.web.Controller;
+package roomescape.reservation.presentation;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import roomescape.domain.Dto.reservationDto.RequestDto;
-import roomescape.domain.Dto.reservationDto.ResponseDto;
-import roomescape.domain.Model.Reservation;
-import roomescape.domain.service.ReservationService;
+import roomescape.reservation.application.ReservationService;
+import roomescape.reservation.domain.Reservation;
+import roomescape.reservation.dto.RequestDto;
+import roomescape.reservation.dto.ResponseDto;
 
 
 import java.net.URI;
@@ -24,7 +24,6 @@ public class ReservationController {
     }
 
     @GetMapping ("/reservations")
-    @ResponseBody
     public ResponseEntity<List<ResponseDto>> checkReservation(){
         List<Reservation> reservations = reservationService.findAll();
         List<ResponseDto> responseDtos = reservations.stream()
@@ -33,7 +32,6 @@ public class ReservationController {
         return ResponseEntity.ok(responseDtos);
     }
     @PostMapping("/reservations")
-    @ResponseBody
     public ResponseEntity<ResponseDto> addReservation(@RequestBody RequestDto requestDto){
 
         Reservation reservation = reservationService.save(requestDto);

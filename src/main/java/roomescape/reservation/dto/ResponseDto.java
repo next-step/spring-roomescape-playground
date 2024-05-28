@@ -1,10 +1,7 @@
-package roomescape.domain.Dto.reservationDto;
+package roomescape.reservation.dto;
 
 import lombok.Data;
-import roomescape.domain.Model.Reservation;
-import roomescape.domain.Model.Time;
-
-import java.time.LocalDateTime;
+import roomescape.reservation.domain.Reservation;
 
 @Data
 public class ResponseDto {

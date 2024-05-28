@@ -1,4 +1,4 @@
-package roomescape.domain.Model;
+package roomescape.time.domain;
 
 import lombok.Getter;
 

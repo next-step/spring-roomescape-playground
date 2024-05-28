@@ -1,6 +1,4 @@
-package roomescape.domain.Repository.reservationRepository;
-
-import roomescape.domain.Model.Reservation;
+package roomescape.reservation.domain;
 
 import java.util.List;
 

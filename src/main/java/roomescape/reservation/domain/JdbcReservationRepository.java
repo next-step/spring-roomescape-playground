@@ -1,11 +1,11 @@
-package roomescape.domain.Repository.reservationRepository;
+package roomescape.reservation.domain;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
-import roomescape.domain.Model.Reservation;
-import roomescape.domain.Model.Time;
-import roomescape.domain.exception.NotFoundReservationException;
+import roomescape.reservation.exception.exception.NotFoundReservationException;
+import roomescape.time.domain.Time;
+
 
 import java.sql.PreparedStatement;
 import java.util.List;

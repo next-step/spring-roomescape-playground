@@ -1,10 +1,9 @@
-package roomescape.domain.Dto.timeDto;
+package roomescape.time.dto;
 
 import lombok.Getter;
 import lombok.Data;
-import roomescape.domain.Model.Time;
+import roomescape.time.domain.Time;
 
-import java.time.LocalTime;
 
 @Data
 public class TimeRequestDto {

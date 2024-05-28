@@ -1,10 +1,10 @@
-package roomescape.domain.exceptionHandler;
+package roomescape.reservation.presentation;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import roomescape.domain.exception.NoDataException;
-import roomescape.domain.exception.NotFoundReservationException;
+import roomescape.reservation.exception.exception.NoDataException;
+import roomescape.reservation.exception.exception.NotFoundReservationException;
 
 @ControllerAdvice
 public class ExceptionHandlerData {

@@ -1,13 +1,13 @@
-package roomescape.domain.service;
+package roomescape.reservation.application;
 
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import roomescape.domain.Dto.reservationDto.RequestDto;
-import roomescape.domain.Model.Reservation;
-import roomescape.domain.Model.Time;
-import roomescape.domain.Repository.reservationRepository.ReservationRepository;
-import roomescape.domain.Repository.timeRepository.TimeRepository;
+import roomescape.reservation.domain.Reservation;
+import roomescape.reservation.domain.ReservationRepository;
+import roomescape.reservation.dto.RequestDto;
+import roomescape.time.domain.Time;
+import roomescape.time.domain.TimeRepository;
 
 import java.util.List;
 
