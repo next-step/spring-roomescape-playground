@@ -33,7 +33,7 @@ public class ReservationController {
     }
     @PostMapping("/reservations")
     public ResponseEntity<ResponseDto> addReservation(@RequestBody RequestDto requestDto){
-
+        requestDto.validate();
         Reservation reservation = reservationService.save(requestDto);
         ResponseDto responseDto = ResponseDto.makeResponse(reservation);
         URI location = URI.create("/reservations/"+responseDto.getId());

@@ -2,7 +2,7 @@ package roomescape;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import roomescape.domain.Repository.reservationRepository.MemoryReservationRepository;
+import roomescape.reservation.domain.MemoryReservationRepository;
 
 @Component
 @RequiredArgsConstructor
