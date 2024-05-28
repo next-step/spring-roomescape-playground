@@ -1,14 +1,14 @@
-package roomescape.repository;
+package roomescape.reservation.persistence;
 
 import java.util.List;
 
-import roomescape.domain.Reservation;
+import roomescape.reservation.domain.Reservation;
 
 public interface ReservationRepository {
 
 	List<Reservation> findAll();
 
-	void save(Reservation reservation);
+	Reservation save(Reservation reservation);
 
 	Reservation findById(Long id);
 
