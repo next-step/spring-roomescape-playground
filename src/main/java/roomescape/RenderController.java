@@ -13,6 +13,11 @@ public class RenderController {
 
 	@GetMapping("/reservation")
 	public String renderReservationPage() {
-		return "reservation";
+		return "new-reservation";
+	}
+
+	@GetMapping("/roomescape/time")
+	public String renderTimePage() {
+		return "time";
 	}
 }

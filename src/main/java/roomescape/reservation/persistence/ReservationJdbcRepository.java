@@ -23,7 +23,7 @@ public class ReservationJdbcRepository implements ReservationRepository {
 			resultSet.getLong("id"),
 			resultSet.getString("name"),
 			resultSet.getString("date"),
-			resultSet.getString("time")
+			resultSet.getString("roomescape/time")
 		);
 
 	public ReservationJdbcRepository(JdbcTemplate jdbcTemplate) {
