@@ -1,14 +1,14 @@
-package roomescape.service;
+package roomescape.reservation.application;
 
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import roomescape.domain.Reservation;
-import roomescape.dto.request.ReservationSaveRequest;
-import roomescape.dto.response.ReservationResponse;
-import roomescape.exception.NotFoundReservationException;
-import roomescape.repository.ReservationRepository;
+import roomescape.reservation.domain.Reservation;
+import roomescape.reservation.persistence.ReservationRepository;
+import roomescape.reservation.presentation.dto.request.ReservationSaveRequest;
+import roomescape.reservation.presentation.dto.response.ReservationResponse;
+import roomescape.reservation.presentation.exception.NotFoundReservationException;
 
 @Service
 public class ReservationService {

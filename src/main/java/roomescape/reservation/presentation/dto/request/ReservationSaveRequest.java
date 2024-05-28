@@ -1,9 +1,9 @@
-package roomescape.dto.request;
+package roomescape.reservation.presentation.dto.request;
 
 import java.util.Arrays;
 import java.util.regex.Pattern;
 
-import roomescape.exception.BadReservationSaveRequestException;
+import roomescape.reservation.presentation.exception.BadReservationSaveRequestException;
 
 public record ReservationSaveRequest(
 	String name,
