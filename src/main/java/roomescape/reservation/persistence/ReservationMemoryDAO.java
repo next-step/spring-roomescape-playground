@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import roomescape.reservation.domain.Reservation;
 
 @Repository
-public class ReservationMemoryRepository implements ReservationRepository {
+public class ReservationMemoryDAO implements ReservationDAO {
 
 	private final Map<Long, Reservation> reservations = new ConcurrentHashMap<>();
 	private final AtomicLong index = new AtomicLong(0);

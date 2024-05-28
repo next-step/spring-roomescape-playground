@@ -4,7 +4,7 @@ import java.util.List;
 
 import roomescape.time.domain.Time;
 
-public interface TimeRepository {
+public interface TimeDAO {
 
 	List<Time> findAll();
 

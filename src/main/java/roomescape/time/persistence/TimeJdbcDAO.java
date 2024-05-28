@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 import roomescape.time.domain.Time;
 
 @Repository
-public class TimeJdbcRepository implements TimeRepository {
+public class TimeJdbcDAO implements TimeDAO {
 
 	private final JdbcTemplate jdbcTemplate;
 	private final RowMapper<Time> TimeRowMapper = (resultSet, rowNum) ->
@@ -22,7 +22,7 @@ public class TimeJdbcRepository implements TimeRepository {
 			resultSet.getString("time")
 		);
 
-	public TimeJdbcRepository(JdbcTemplate jdbcTemplate) {
+	public TimeJdbcDAO(JdbcTemplate jdbcTemplate) {
 		this.jdbcTemplate = jdbcTemplate;
 	}
 

@@ -8,19 +8,19 @@ import roomescape.reservation.presentation.exception.BadReservationSaveRequestEx
 public record ReservationSaveRequest(
 	String name,
 	String date,
-	String time
+	Long timeId
 ) {
 
-	private static final String dateRegex = "\\d{4}-\\d{2}-\\d{2}";
-	private static final String timeRegex = "\\d{2}:\\d{2}";
+	private static final String dateRegax = "\\d{4}-\\d{2}-\\d{2}";
 
 	public ReservationSaveRequest {
-		validate(name, date, time);
+		validate(name, date, timeId);
 	}
 
-	private void validate(String name, String date, String time) {
-		validateBlank(name, date, time);
-		validateFormat(date, time);
+	private void validate(String name, String date, Long timeId) {
+		validateBlank(name, date);
+		validateFormat(date);
+		validateType(timeId);
 	}
 
 	private void validateBlank(String... fields) {
@@ -30,12 +30,15 @@ public record ReservationSaveRequest(
 		}
 	}
 
-	private void validateFormat(String date, String time) {
-		if (!Pattern.matches(dateRegex, date)) {
-			throw new BadReservationSaveRequestException("날짜 형식이 올바르지 않습니다. (형식: yyyy-MM-dd)");
+	private void validateFormat(String date) {
+		if (!Pattern.matches(dateRegax, date)) {
+			throw new BadReservationSaveRequestException("날짜 형식이 올바르지 않습니다.");
 		}
-		if (!Pattern.matches(timeRegex, time)) {
-			throw new BadReservationSaveRequestException("시간 형식이 올바르지 않습니다. (형식: HH:mm)");
+	}
+
+	private void validateType(Long timeId) {
+		if (timeId == null) {
+			throw new BadReservationSaveRequestException("시간 정보는 id를 입력해주세요.");
 		}
 	}
 }
