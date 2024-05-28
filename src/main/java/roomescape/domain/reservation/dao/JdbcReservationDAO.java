@@ -61,7 +61,7 @@ public class JdbcReservationDAO implements ReservationDAO {
         }, keyHolder);
 
         reservation.setId(keyHolder.getKey().longValue());
-        TimeDTO timeDTO = timeDAO.findById(reservation.getId());
+        TimeDTO timeDTO = timeDAO.findById(reservation.getTime().getId());
         return new ResponseReservation(
                 reservation.getId(),
                 reservation.getName(),

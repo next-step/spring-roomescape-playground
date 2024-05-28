@@ -2,7 +2,6 @@ package roomescape.controller;
 
 import java.net.URI;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -14,24 +13,23 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import roomescape.domain.reservation.ReservationService;
 import roomescape.domain.reservation.ResponseReservation;
 import roomescape.domain.reservation.dto.RequestReservationDTO;
 import roomescape.domain.reservation.dto.ReservationDTO;
-import roomescape.domain.reservation.Reservation;
-import roomescape.domain.reservation.dao.ReservationDAO;
 
 @Controller
 @RequestMapping(value = "/reservations")
 public class ReservationController {
-    private final ReservationDAO reservationDAO;
+    private final ReservationService reservationService;
 
-    public ReservationController(@Qualifier("jdbcReservationDAO") ReservationDAO reservationDAO) {
-        this.reservationDAO = reservationDAO;
+    public ReservationController(ReservationService reservationService) {
+        this.reservationService = reservationService;
     }
 
     @GetMapping
     public ResponseEntity<List<ResponseReservation>> reservations() {
-        List<ReservationDTO> reservations = reservationDAO.findAll();
+        List<ReservationDTO> reservations = reservationService.findAll();
         List<ResponseReservation> response = reservations.stream()
                 .map(ResponseReservation::toResponseReservation)
                 .toList();
@@ -40,8 +38,7 @@ public class ReservationController {
 
     @PostMapping
     public ResponseEntity<ResponseReservation> create(@RequestBody RequestReservationDTO request) {
-        Reservation reservation = request.toReservaiton();
-        ResponseReservation response = reservationDAO.insert(reservation);
+        ResponseReservation response = reservationService.create(request);
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(URI.create("/reservations/" + Long.toString(response.id())));
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -50,7 +47,7 @@ public class ReservationController {
 
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> delete(@PathVariable long id) {
-        reservationDAO.deleteById(id);
+        reservationService.delete(id);
         return ResponseEntity.noContent().build();
     }
 }
