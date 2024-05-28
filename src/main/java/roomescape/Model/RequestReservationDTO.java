@@ -6,14 +6,14 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
-public class RequestReservation {
+public class RequestReservationDTO {
 
     private String name;
     private String date;
     private String time;
     private LocalDateTime dateTime;
 
-    public RequestReservation(String name,String date,String time){
+    public RequestReservationDTO(String name, String date, String time){
         this.date=date;
         this.time=time;
         this.name=name;

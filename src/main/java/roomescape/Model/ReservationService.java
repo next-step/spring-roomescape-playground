@@ -18,7 +18,7 @@ public class ReservationService {
         return reservationList;
     }
 
-    public Reservation saveReservation(RequestReservation reservation){
+    public Reservation saveReservation(RequestReservationDTO reservation){
         String name=reservation.getName();
         String date=reservation.getDate();
         String time=reservation.getTime();
