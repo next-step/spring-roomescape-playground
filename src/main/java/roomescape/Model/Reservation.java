@@ -22,11 +22,11 @@ public class Reservation {
         return name;
     }
 
-   public String getTime(){
+    public String getTime(){
         return time;
-   }
+    }
 
-   public String getDate(){
+    public String getDate(){
         return date;
-   }
+    }
 }
