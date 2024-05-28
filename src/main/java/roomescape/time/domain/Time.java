@@ -22,9 +22,4 @@ public class Time {
 	public String getTime() {
 		return time;
 	}
-
-	@Override
-	public String toString() {
-		return "Time [id=" + id + ", time=" + time + "]";
-	}
 }

@@ -28,7 +28,7 @@ public class ReservationService {
 	}
 
 	public ReservationResponse saveReservation(ReservationSaveRequest request) {
-		Time time = timeDAO.findById(request.timeId());
+		Time time = timeDAO.findById(request.time());
 		Reservation reservation = reservationDAO.save(new Reservation(request.name(), request.date(), time));
 		return ReservationResponse.from(reservation);
 	}

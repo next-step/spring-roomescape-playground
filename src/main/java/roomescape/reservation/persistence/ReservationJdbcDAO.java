@@ -51,11 +51,9 @@ public class ReservationJdbcDAO implements ReservationDAO {
 			PreparedStatement ps = connection.prepareStatement(sql, new String[] {"id"});
 			ps.setString(1, reservation.getName());
 			ps.setString(2, reservation.getDate());
-			System.out.println(reservation.getTime().toString());
 			ps.setLong(3, reservation.getTime().getId());
 			return ps;
 		}, keyHolder);
-		System.out.println(reservation.getTime().toString());
 		return new Reservation(keyHolder.getKey().longValue(), reservation.getName(), reservation.getDate(),
 			reservation.getTime());
 	}

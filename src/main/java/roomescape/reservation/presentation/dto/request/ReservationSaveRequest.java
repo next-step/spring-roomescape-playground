@@ -8,19 +8,18 @@ import roomescape.reservation.presentation.exception.BadReservationSaveRequestEx
 public record ReservationSaveRequest(
 	String name,
 	String date,
-	Long timeId
+	Long time
 ) {
 
-	private static final String dateRegax = "\\d{4}-\\d{2}-\\d{2}";
+	private static final String dateRegex = "\\d{4}-\\d{2}-\\d{2}";
 
 	public ReservationSaveRequest {
-		validate(name, date, timeId);
+		validate(name, date);
 	}
 
-	private void validate(String name, String date, Long timeId) {
+	private void validate(String name, String date) {
 		validateBlank(name, date);
 		validateFormat(date);
-		validateType(timeId);
 	}
 
 	private void validateBlank(String... fields) {
@@ -31,14 +30,8 @@ public record ReservationSaveRequest(
 	}
 
 	private void validateFormat(String date) {
-		if (!Pattern.matches(dateRegax, date)) {
+		if (!Pattern.matches(dateRegex, date)) {
 			throw new BadReservationSaveRequestException("날짜 형식이 올바르지 않습니다.");
-		}
-	}
-
-	private void validateType(Long timeId) {
-		if (timeId == null) {
-			throw new BadReservationSaveRequestException("시간 정보는 id를 입력해주세요.");
 		}
 	}
 }

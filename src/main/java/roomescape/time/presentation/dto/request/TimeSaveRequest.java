@@ -8,7 +8,7 @@ public record TimeSaveRequest(
 	String time
 ) {
 
-	private static final String timeRegax = "\\d{2}:\\d{2}";
+	private static final String timeRegex = "\\d{2}:\\d{2}";
 
 	public TimeSaveRequest {
 		validate(time);
@@ -26,7 +26,7 @@ public record TimeSaveRequest(
 	}
 
 	private void validateFormat(String time) {
-		if (!Pattern.matches(timeRegax, time)) {
+		if (!Pattern.matches(timeRegex, time)) {
 			throw new BadTimeSaveRequestException("시간 형식이 올바르지 않습니다.");
 		}
 	}
