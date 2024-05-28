@@ -1,4 +1,4 @@
-package roomescape.repository;
+package roomescape.reservation.persistence;
 
 import java.util.List;
 import java.util.Map;
@@ -7,10 +7,10 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.stereotype.Repository;
 
-import roomescape.domain.Reservation;
+import roomescape.reservation.domain.Reservation;
 
 @Repository
-public class ReservationMemoryRespository implements ReservationRepository {
+public class ReservationMemoryDAO implements ReservationDAO {
 
 	private final Map<Long, Reservation> reservations = new ConcurrentHashMap<>();
 	private final AtomicLong index = new AtomicLong(0);
@@ -21,9 +21,10 @@ public class ReservationMemoryRespository implements ReservationRepository {
 	}
 
 	@Override
-	public void save(Reservation reservation) {
-		reservation.setId(index.incrementAndGet());
-		reservations.put(reservation.getId(), reservation);
+	public Reservation save(Reservation reservation) {
+		final Long id = index.incrementAndGet();
+		reservations.put(id, reservation);
+		return new Reservation(id, reservation.getName(), reservation.getDate(), reservation.getTime());
 	}
 
 	@Override

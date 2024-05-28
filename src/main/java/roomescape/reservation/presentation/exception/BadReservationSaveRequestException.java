@@ -1,4 +1,4 @@
-package roomescape.exception;
+package roomescape.reservation.presentation.exception;
 
 public class BadReservationSaveRequestException extends RuntimeException {
 

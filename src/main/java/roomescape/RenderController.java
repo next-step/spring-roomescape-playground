@@ -1,4 +1,4 @@
-package roomescape.controller;
+package roomescape;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +13,11 @@ public class RenderController {
 
 	@GetMapping("/reservation")
 	public String renderReservationPage() {
-		return "reservation";
+		return "new-reservation";
+	}
+
+	@GetMapping("/roomescape/time")
+	public String renderTimePage() {
+		return "time";
 	}
 }
