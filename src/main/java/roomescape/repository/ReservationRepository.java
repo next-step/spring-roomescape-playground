@@ -78,12 +78,9 @@ public class ReservationRepository {
 
     public void deleteReservationById(Long id) {
         String sql = "DELETE FROM reservation WHERE id = ?";
-        try{
-            jdbcTemplate.update(sql, id);
-        } catch (EmptyResultDataAccessException e) {
+        int count = jdbcTemplate.update(sql, id);
+        if (count != 1){
             throw new ReservationNotFoundException("Reservation with id " + id + " not found");
-        } catch (Exception e) {
-            throw new DatabaseOperationException();
         }
     }
 }
