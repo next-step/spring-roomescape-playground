@@ -6,7 +6,4 @@ public class DatabaseOperationException extends RuntimeException {
     public DatabaseOperationException() {
         super(DEFAULT_ERROR_MESSAGE);
     }
-    public DatabaseOperationException(String message) {
-        super(message);
-    }
 }
