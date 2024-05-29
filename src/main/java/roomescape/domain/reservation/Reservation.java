@@ -6,7 +6,7 @@ import roomescape.domain.reservation.dto.ReservationDTO;
 import roomescape.domain.time.Time;
 
 public class Reservation {
-    private Long id;
+    private long id;
     private final String name;
     private final LocalDate date;
     private final Time time;
