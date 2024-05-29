@@ -1,9 +1,17 @@
 package roomescape.domain;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class Reservation {
     private long id;
+
+    @NotBlank(message="Name cannot be empty")
     private String name;
+
+    @NotBlank(message="Date cannot be empty")
     private String date;
+
+    @NotBlank(message="Time cannot be empty")
     private String time;
 
     public Reservation(){}

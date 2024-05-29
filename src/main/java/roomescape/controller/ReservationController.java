@@ -1,24 +1,18 @@
 package roomescape.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
+import java.net.URI;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.stream.Stream;
+import jakarta.validation.Valid;
+import jakarta.servlet.http.HttpServletRequest;
 
 import roomescape.domain.Reservation;
-import roomescape.exception.ReservationNotFoundException;
 import roomescape.repository.ReservationRepository;
-
-import static java.lang.String.valueOf;
-
 
 @Controller
 public class ReservationController {
@@ -48,7 +42,7 @@ public class ReservationController {
 
     @PostMapping("/reservations")
     @ResponseBody
-    public ResponseEntity<Reservation> createReservation(@RequestBody Reservation newReservation, HttpServletRequest request) {
+    public ResponseEntity<Reservation> createReservation(@Valid @RequestBody Reservation newReservation, HttpServletRequest request) {
         long id = reservationRepository.saveReservation(newReservation);
         String uri = "/reservations/" + id;
         return ResponseEntity.created(URI.create(uri)).body(newReservation);

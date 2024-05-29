@@ -1,5 +1,11 @@
 package roomescape.repository;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -7,16 +13,10 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+
 import roomescape.domain.Reservation;
 import roomescape.exception.DatabaseOperationException;
 import roomescape.exception.ReservationNotFoundException;
-
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.List;
-import java.util.stream.Stream;
 
 @Repository
 public class ReservationRepository {
@@ -57,10 +57,6 @@ public class ReservationRepository {
     }
 
     public long saveReservation(Reservation reservation) {
-        if (Stream.of(reservation.getName(), reservation.getDate(), reservation.getTime())
-                .anyMatch(value -> value.isEmpty()))   {
-            throw new IllegalArgumentException("Reservation arguments are either null or empty");
-        }
         String sql = "INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
