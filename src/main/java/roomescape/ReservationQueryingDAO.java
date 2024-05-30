@@ -15,11 +15,16 @@ public class ReservationQueryingDAO {
     private JdbcTemplate jdbcTemplate;
 
     private final RowMapper<Reservation> actorRowMapper = (resultSet, rowNum) -> {
+        Time time = new Time(
+                resultSet.getLong("time_id"),
+                resultSet.getString("time_value")
+        );
+
         Reservation reservation = new Reservation(
-                resultSet.getLong("id"),
+                resultSet.getLong("reservation_id"),
                 resultSet.getString("name"),
                 resultSet.getString("date"),
-                resultSet.getString("time")
+                time
         );
         return reservation;
     };
@@ -30,18 +35,18 @@ public class ReservationQueryingDAO {
 
 
     public List<Reservation> getReservations() {
-        String sql = "SELECT id, name, date, time FROM reservation";
+        String sql = "SELECT r.id as reservation_id, r.name, r.date, t.id as time_id, t.time as time_value FROM reservation as r inner join time as t on r.time_id = t.id";
         return jdbcTemplate.query(sql, actorRowMapper);
     }
 
-    public long createReservation(String name, String date, String time) {
-        String sql = "INSERT INTO reservation(name, date, time) VALUES (?, ?, ?)";
+    public long createReservation(String name, String date, Long time) {
+        String sql = "INSERT INTO reservation(name, date, time_id) VALUES (?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, name);
             ps.setString(2, date);
-            ps.setString(3, time);
+            ps.setObject(3, time);
             return ps;
         }, keyHolder);
 
