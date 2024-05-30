@@ -13,10 +13,14 @@ import java.util.List;
 @Controller
 public class TimeController {
     private TimeQueryingDAO queryingDAO;
+
     public TimeController(TimeQueryingDAO queryingDAO) {
         this.queryingDAO = queryingDAO;
     }
+    @GetMapping("/time")
+    public void time () {
 
+    }
     @GetMapping("/times")
     public ResponseEntity<List<Time>> read() {
         return ResponseEntity.ok(queryingDAO.getTimes());
