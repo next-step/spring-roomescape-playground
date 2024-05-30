@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import roomescape.domain.reservation.dao.ReservationDAO;
 import roomescape.domain.reservation.dto.RequestReservationDTO;
 import roomescape.domain.reservation.dto.ReservationDTO;
+import roomescape.domain.reservation.dto.ResponseReservationDTO;
 
 @Service
 public class ReservationService {
@@ -19,7 +20,7 @@ public class ReservationService {
         return reservationDAO.findAll();
     }
 
-    public ResponseReservation create(RequestReservationDTO request) {
+    public ResponseReservationDTO create(RequestReservationDTO request) {
         Reservation reservation = request.toReservaiton();
         return reservationDAO.insert(reservation);
     }

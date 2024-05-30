@@ -9,7 +9,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.reservation.Reservation;
-import roomescape.domain.reservation.ResponseReservation;
+import roomescape.domain.reservation.dto.ResponseReservationDTO;
 import roomescape.domain.reservation.dto.ReservationDTO;
 import roomescape.domain.time.Time;
 import roomescape.domain.time.dao.TimeDAO;
@@ -47,7 +47,7 @@ public class JdbcReservationDAO implements ReservationDAO {
     }
 
     @Override
-    public ResponseReservation insert(Reservation reservation) {
+    public ResponseReservationDTO insert(Reservation reservation) {
         String sql = "insert into reservation (name, date, time_id) values (?, ?, ?)";
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -62,7 +62,7 @@ public class JdbcReservationDAO implements ReservationDAO {
 
         reservation.setId(keyHolder.getKey().longValue());
         TimeDTO timeDTO = timeDAO.findById(reservation.getTime().getId());
-        return new ResponseReservation(
+        return new ResponseReservationDTO(
                 reservation.getId(),
                 reservation.getName(),
                 reservation.getDate().toString(),

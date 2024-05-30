@@ -8,7 +8,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.stereotype.Repository;
 import roomescape.controller.exception.NotFoundException;
 import roomescape.domain.reservation.Reservation;
-import roomescape.domain.reservation.ResponseReservation;
+import roomescape.domain.reservation.dto.ResponseReservationDTO;
 import roomescape.domain.reservation.dto.ReservationDTO;
 
 @Repository
@@ -23,11 +23,11 @@ public class InMemoryReservationDAO implements ReservationDAO {
     }
 
     @Override
-    public ResponseReservation insert(Reservation reservation) {
+    public ResponseReservationDTO insert(Reservation reservation) {
         reservation.setId(index.getAndIncrement());
         ReservationDTO newReservation = reservation.toReservationDTO();
         reservations.add(newReservation);
-        return ResponseReservation.toResponseReservation(newReservation);
+        return ResponseReservationDTO.toResponseReservation(newReservation);
     }
 
     @Override

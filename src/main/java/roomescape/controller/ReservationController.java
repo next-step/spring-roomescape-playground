@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import roomescape.domain.reservation.ReservationService;
-import roomescape.domain.reservation.ResponseReservation;
+import roomescape.domain.reservation.dto.ResponseReservationDTO;
 import roomescape.domain.reservation.dto.RequestReservationDTO;
 import roomescape.domain.reservation.dto.ReservationDTO;
 
@@ -28,17 +28,17 @@ public class ReservationController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ResponseReservation>> reservations() {
+    public ResponseEntity<List<ResponseReservationDTO>> reservations() {
         List<ReservationDTO> reservations = reservationService.findAll();
-        List<ResponseReservation> response = reservations.stream()
-                .map(ResponseReservation::toResponseReservation)
+        List<ResponseReservationDTO> response = reservations.stream()
+                .map(ResponseReservationDTO::toResponseReservation)
                 .toList();
         return ResponseEntity.ok(response);
     }
 
     @PostMapping
-    public ResponseEntity<ResponseReservation> create(@RequestBody RequestReservationDTO request) {
-        ResponseReservation response = reservationService.create(request);
+    public ResponseEntity<ResponseReservationDTO> create(@RequestBody RequestReservationDTO request) {
+        ResponseReservationDTO response = reservationService.create(request);
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(URI.create("/reservations/" + Long.toString(response.id())));
         headers.setContentType(MediaType.APPLICATION_JSON);
