@@ -1,18 +1,18 @@
 package roomescape.dto.reservation;
 
-import roomescape.domain.Reservation;
+import roomescape.domain.ReservationDomain;
 import roomescape.domain.TimeDomain;
 import roomescape.exception.BadReservationSaveException;
 
 public record ReservationRequest(
         String name,
         String date,
-        Long timeId
+        Long time
 ) {
     private final static String datePattern="\\d{4}-\\d{2}-\\d{2}";
 
     public ReservationRequest {
-        validate(name,date,timeId);
+        validate(name,date,time);
     }
 
 
@@ -34,11 +34,7 @@ public record ReservationRequest(
             throw new BadReservationSaveException("날짜 형식이 올바르지 않습니다. (형식: yyyy-MM-dd)");
         }
         if (!(time_id instanceof Long)) {
-            throw new BadReservationSaveException("시간 형식이 올바르지 않습니다");
+            throw new BadReservationSaveException("시간 아이디 형식이 올바르지 않습니다");
         }
     }
-    public Reservation makeReservation(){
-        return new Reservation(name, date, new TimeDomain(timeId,null));
-    }
-
 }

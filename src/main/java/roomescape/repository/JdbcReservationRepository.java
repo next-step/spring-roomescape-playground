@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import roomescape.domain.Reservation;
+import roomescape.domain.ReservationDomain;
 import roomescape.domain.TimeDomain;
 
 import javax.sql.DataSource;
@@ -29,7 +29,7 @@ public class JdbcReservationRepository implements ReservationRepository {
     }
 
     @Override
-    public List<Reservation> findAll() {
+    public List<ReservationDomain> findAll() {
         String sql = "SELECT \n" +
                 "    r.id as reservation_id, \n" +
                 "    r.name, \n" +
@@ -37,7 +37,7 @@ public class JdbcReservationRepository implements ReservationRepository {
                 "    t.id as time_id, \n" +
                 "    t.time as time_value \n" +
                 "FROM reservation as r inner join time as t on r.time_id = t.id";
-        return jdbcTemplate.query(sql, (rs, rowNum) -> new Reservation(
+        return jdbcTemplate.query(sql, (rs, rowNum) -> new ReservationDomain(
                 rs.getLong("id"),
                 rs.getString("name"),
                 rs.getString("date"),
@@ -46,13 +46,13 @@ public class JdbcReservationRepository implements ReservationRepository {
     }
 
     @Override
-    public Reservation save(Reservation reservation){
+    public ReservationDomain save(ReservationDomain reservation){
         Map<String , Object> parameters = new HashMap<>();
         parameters.put("name", reservation.getName());
         parameters.put("date", reservation.getDate());
         parameters.put("time_id", reservation.getTime().getId());
         long id = jdbcInsert.executeAndReturnKey(parameters).longValue();
-        return new Reservation(id,reservation.getName(),reservation.getDate(), reservation.getTime());
+        return new ReservationDomain(id,reservation.getName(),reservation.getDate(), reservation.getTime());
     }
 
 

@@ -5,20 +5,20 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class Reservation {
+public class ReservationDomain {
     private Long id;
     private String name;
     private String date;
     private TimeDomain time;
-    public Reservation() {
+    public ReservationDomain() {
     }
-    public Reservation(String name, String date, TimeDomain time) {
+    public ReservationDomain(String name, String date, TimeDomain time) {
         this.id= null;
         this.name = name;
         this.date = date;
         this.time = time;
     }
-    public Reservation(Long id,String name, String date, TimeDomain time) {
+    public ReservationDomain(Long id, String name, String date, TimeDomain time) {
         this.id= id;
         this.name = name;
         this.date = date;

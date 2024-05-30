@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
-import roomescape.domain.Reservation;
+import roomescape.domain.ReservationDomain;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -39,11 +39,11 @@ public class JdbcMissionStepTest {
     void 육단계() {
         jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "brown", "2023-08-05", "15:40");
 
-        List<Reservation> reservations = RestAssured.given().log().all()
+        List<ReservationDomain> reservations = RestAssured.given().log().all()
                 .when().get("/reservations")
                 .then().log().all()
                 .statusCode(200).extract()
-                .jsonPath().getList(".", Reservation.class);
+                .jsonPath().getList(".", ReservationDomain.class);
 
         Integer count = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
 

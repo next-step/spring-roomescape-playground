@@ -48,5 +48,14 @@ public class JdbcTimeRepository implements TimeRepository {
         String sql = "delete from time WHERE id = ?";
         jdbcTemplate.update(sql, id);
     }
+
+    @Override
+    public TimeDomain findById(final Long id) {
+        final String sql = "SELECT * FROM time WHERE id = ?";
+        return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> new TimeDomain(
+                rs.getLong("id"),
+                rs.getString("time")
+        ), id);
+    }
 }
 

@@ -2,30 +2,29 @@ package roomescape.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import roomescape.domain.Reservation;
+import roomescape.domain.ReservationDomain;
 import roomescape.dto.reservation.ReservationRequest;
 import roomescape.dto.reservation.ReservationResponse;
-import roomescape.repository.ReservationRepository;
+import roomescape.service.ReservationService;
 
 import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RequestMapping("/reservations")
-@Controller
+@RestController
 public class ReservationController {
-    private final ReservationRepository reservationRepository;
+    private final ReservationService reservationService;
 
     @Autowired
-    public ReservationController(ReservationRepository reservationRepository) {
-        this.reservationRepository = reservationRepository;
+    public ReservationController(ReservationService reservationService) {
+        this.reservationService=reservationService;
     }
 
     @GetMapping
     public ResponseEntity<List<ReservationResponse>> reservations() {
-        List<ReservationResponse> response =reservationRepository.findAll().stream()
+        List<ReservationResponse> response =reservationService.findAll().stream()
                 .map(ReservationResponse::from)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(response);
@@ -33,7 +32,7 @@ public class ReservationController {
 
     @PostMapping
     public ResponseEntity<ReservationResponse> save(@RequestBody ReservationRequest request) {
-        Reservation reservation = reservationRepository.save(request.makeReservation());
+        ReservationDomain reservation = reservationService.save(request);
         ReservationResponse response = ReservationResponse.from(reservation);
         URI location = URI.create("/reservations/" + response.id());
         return ResponseEntity.created(location).body(response);
@@ -41,7 +40,7 @@ public class ReservationController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
-        reservationRepository.deleteById(id);
+        reservationService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 }
