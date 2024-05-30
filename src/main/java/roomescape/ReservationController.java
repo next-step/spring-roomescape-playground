@@ -18,7 +18,7 @@ public class ReservationController {
         this.queryingDAO = queryingDAO;
     }
 
-    @GetMapping("/reservation")
+    @GetMapping("/new-reservation")
     public void reservation () {
     }
 
@@ -34,13 +34,12 @@ public class ReservationController {
     public ResponseEntity<ResponseDto> create (@RequestBody ReservationRequestDto request) {
         String name = request.getName();
         String date = request.getDate();
-        String time = request.getTime();
-
+        Long time = request.getTime();
 
         long id = queryingDAO.createReservation(name, date, time);
 
         URI location = URI.create("/reservations/" + id);
-        Reservation newReservation = new Reservation(id, name, date, time);
+        ReservationRequestDto newReservation = new ReservationRequestDto(id, name, date, time);
 
         ResponseDto response = new ResponseDto(HttpStatus.CREATED.value(), "예약이 성공적으로 추가되었습니다.", newReservation);
         return ResponseEntity.created(location).body(response);

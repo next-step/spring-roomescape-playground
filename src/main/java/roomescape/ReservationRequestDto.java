@@ -3,26 +3,26 @@ package roomescape;
 import org.thymeleaf.util.StringUtils;
 
 public class ReservationRequestDto {
+    private Long id;
     private String name;
     private String date;
-    private String time;
+    private Long time;
 
-    public ReservationRequestDto(String name, String date, String time) {
+    public ReservationRequestDto(Long id, String name, String date, Long time) {
         if (StringUtils.isEmpty(name)) {
             throw new BadRequestCreateReservationException("The 'name' field is missing.");
         }
         if (StringUtils.isEmpty(date)) {
             throw new BadRequestCreateReservationException("The 'date' field is missing.");
         }
-        if (StringUtils.isEmpty(time)) {
-            throw new BadRequestCreateReservationException("The 'time' field is missing.");
-        }
+        this.id = id;
         this.name = name;
         this.date = date;
         this.time = time;
     }
+    public Long getId() {return id;}
 
-    public String getTime() {
+    public Long getTime() {
         return time;
     }
 

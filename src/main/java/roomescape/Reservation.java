@@ -10,9 +10,9 @@ public class Reservation {
     @NotBlank(message = "날짜는 필수 입력 값입니다.")
     private String date;
     @NotBlank(message = "시간은 필수 입력 값입니다.")
-    private String time;
+    private Time time;
 
-    public Reservation(long id, String name, String date, String time) {
+    public Reservation(long id, String name, String date, Time time) {
         this.id = id;
         this.name = name;
         this.date = date;
@@ -31,7 +31,7 @@ public class Reservation {
         return name;
     }
 
-    public String getTime() {
+    public Time getTime() {
         return time;
     }
 }
