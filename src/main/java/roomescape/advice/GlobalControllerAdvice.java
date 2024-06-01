@@ -29,7 +29,6 @@ public class GlobalControllerAdvice {
 
     @ExceptionHandler(TimeNotFoundException.class)
     public ResponseEntity handleTimeNotFoundException(TimeNotFoundException ex) {
-        System.out.println("---------------------HI");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 }
