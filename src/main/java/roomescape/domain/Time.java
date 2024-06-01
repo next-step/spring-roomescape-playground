@@ -17,6 +17,9 @@ public class Time {
 
     public Time(){}
 
+    public Time(String id) {
+        this.id = setId(Long.parseLong(id));
+    }
     public long getId() {return this.id;}
     public String getTime() {return this.time;}
 
