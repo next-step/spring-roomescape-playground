@@ -1,4 +1,4 @@
-package roomescape.Model;
+package roomescape.DTO;
 
 import roomescape.Exception.BadRequestReservationException;
 

@@ -1,6 +1,8 @@
-package roomescape.Model;
+package roomescape.Service;
 
 import org.springframework.stereotype.Service;
+import roomescape.DTO.RequestTimeDTO;
+import roomescape.Entity.ReservationTime;
 import roomescape.Repository.TimeRepository;
 
 import java.util.List;

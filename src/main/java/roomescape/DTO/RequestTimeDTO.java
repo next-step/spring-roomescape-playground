@@ -1,4 +1,4 @@
-package roomescape.Model;
+package roomescape.DTO;
 
 public class RequestTimeDTO {
 

@@ -7,8 +7,8 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.Exception.NotFoundReservationException;
-import roomescape.Model.Reservation;
-import roomescape.Model.ReservationTime;
+import roomescape.Entity.Reservation;
+import roomescape.Entity.ReservationTime;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;

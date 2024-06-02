@@ -1,6 +1,9 @@
-package roomescape.Model;
+package roomescape.Service;
 
 import org.springframework.stereotype.Service;
+import roomescape.DTO.RequestReservationDTO;
+import roomescape.Entity.Reservation;
+import roomescape.Entity.ReservationTime;
 import roomescape.Repository.ReservationRepository;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;

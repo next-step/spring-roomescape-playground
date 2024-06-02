@@ -1,4 +1,4 @@
-package roomescape.Model;
+package roomescape.Entity;
 
 public class ReservationTime {
 

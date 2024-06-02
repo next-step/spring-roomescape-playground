@@ -3,7 +3,9 @@ package roomescape.Controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import roomescape.Model.*;
+import roomescape.DTO.RequestTimeDTO;
+import roomescape.Entity.*;
+import roomescape.Service.TimeService;
 
 import java.net.URI;
 import java.util.List;

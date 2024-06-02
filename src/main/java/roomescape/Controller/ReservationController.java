@@ -3,9 +3,9 @@ package roomescape.Controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import roomescape.Model.RequestReservationDTO;
-import roomescape.Model.Reservation;
-import roomescape.Model.ReservationService;
+import roomescape.DTO.RequestReservationDTO;
+import roomescape.Entity.Reservation;
+import roomescape.Service.ReservationService;
 import java.net.URI;
 import java.util.*;
 

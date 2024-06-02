@@ -1,6 +1,4 @@
-package roomescape.Model;
-
-import java.sql.Time;
+package roomescape.Entity;
 
 public class Reservation {
 
