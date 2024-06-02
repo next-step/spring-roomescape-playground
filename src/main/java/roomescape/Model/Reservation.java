@@ -1,13 +1,15 @@
 package roomescape.Model;
 
+import java.sql.Time;
+
 public class Reservation {
 
     private Long id;
     private String name;
     private String date;
-    private String time;
+    private ReservationTime time;
 
-    public Reservation(Long id,String name,String date,String time){
+    public Reservation(Long id,String name,String date,ReservationTime time){
         this.id=id;
         this.name = name;
         this.time=time;
@@ -22,7 +24,7 @@ public class Reservation {
         return name;
     }
 
-    public String getTime(){
+    public ReservationTime getTime(){
         return time;
     }
 

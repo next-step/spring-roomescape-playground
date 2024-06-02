@@ -5,9 +5,9 @@ public class ReservationTime {
     private Long id;
     private String time;
 
-    public ReservationTime(Long id,String time){
-        this.id=id;
-        this.time=time;
+    public ReservationTime(Long id, String time) {
+        this.id = id;
+        this.time = time;
     }
 
     public String getTime() {
