@@ -7,10 +7,9 @@ import roomescape.reservation.db.ReservationEntity;
 import roomescape.reservation.db.ReservationRepositoryImpl;
 import roomescape.reservation.dto.ReservationRequest;
 import roomescape.reservation.dto.ReservationResponse;
-import roomescape.time.db.TimeEntity;
+import roomescape.time.db.Time;
 import roomescape.time.db.TimeRepositoryImpl;
 
-import java.sql.Time;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,12 +33,12 @@ public class ReservationService {
 
     public ReservationResponse addReservation(ReservationRequest reservationRequest) {
 
-        TimeEntity timeEntity = timeRepository.findById(reservationRequest.getTimeId());
+        Time time = timeRepository.findById(reservationRequest.getTime());
 
         ReservationEntity reservationEntity = ReservationEntity.builder()
                 .name(reservationRequest.getName())
                 .date(reservationRequest.getDate())
-                .timeEntity(timeEntity)
+                .time(time)
                 .build();
 
         ReservationEntity savedReservation = reservationRepository.save(reservationEntity);

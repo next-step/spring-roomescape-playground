@@ -2,7 +2,7 @@ package roomescape.reservation.dto;
 
 import lombok.Data;
 import roomescape.reservation.db.ReservationEntity;
-import roomescape.time.db.TimeEntity;
+import roomescape.time.db.Time;
 
 @Data
 public class ReservationResponse {
@@ -10,7 +10,7 @@ public class ReservationResponse {
     private Long id;
     private String name;
     private String date;
-    private TimeEntity timeEntity;
+    private Time time;
 
     public static ReservationResponse from(ReservationEntity reservationEntity) {
 
@@ -18,7 +18,7 @@ public class ReservationResponse {
         dto.setId(reservationEntity.getId());
         dto.setName(reservationEntity.getName());
         dto.setDate(reservationEntity.getDate());
-        dto.setTimeEntity(reservationEntity.getTimeEntity());
+        dto.setTime(reservationEntity.getTime());
         return dto;
     }
 

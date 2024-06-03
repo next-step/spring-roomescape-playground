@@ -2,13 +2,11 @@ package roomescape.time.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import roomescape.time.db.TimeEntity;
-import roomescape.time.db.TimeRepository;
+import roomescape.time.db.Time;
 import roomescape.time.db.TimeRepositoryImpl;
 import roomescape.time.dto.TimeRequest;
 import roomescape.time.dto.TimeResponse;
 
-import java.sql.Time;
 import java.util.List;
 
 @Service
@@ -18,7 +16,7 @@ public class TimeService {
     private final TimeRepositoryImpl timeRepository;
 
     public List<TimeResponse> findAlltime() {
-        List<TimeEntity> times = timeRepository.findAll();
+        List<Time> times = timeRepository.findAll();
         List<TimeResponse> timeResponses = times.stream()
                 .map(TimeResponse::from)
                 .toList();
@@ -27,28 +25,28 @@ public class TimeService {
 
     public TimeResponse addTime(TimeRequest timeRequest) {
 
-        TimeEntity timeEntity = TimeEntity.builder()
+        Time time = Time.builder()
                 .time(timeRequest.getTime())
                 .build();
 
-        TimeEntity savedTime = timeRepository.save(timeEntity);
+        Time savedTime = timeRepository.save(time);
         return TimeResponse.from(savedTime);
     }
 
     public void deleteTime(Long id) {
-        TimeEntity timeEntity = timeRepository.findById(id);
-        if (timeEntity == null) {
+        Time time = timeRepository.findById(id);
+        if (time == null) {
             throw new RuntimeException("찾을 수 없는 id입니다");
         }
-        timeRepository.deleteById(timeEntity.getId());
+        timeRepository.deleteById(time.getId());
     }
 
     public TimeResponse findById(Long id) {
-        TimeEntity timeEntity = timeRepository.findById(id);
-        if (timeEntity == null) {
+        Time time = timeRepository.findById(id);
+        if (time == null) {
             throw new RuntimeException("찾을 수 없는 id입니다");
         }
-        return TimeResponse.from(timeEntity);
+        return TimeResponse.from(time);
     }
 }
 

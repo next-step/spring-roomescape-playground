@@ -14,11 +14,12 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/times")
 public class TimeApiController {
 
     private final TimeService timeService;
 
-    @GetMapping("/times")
+    @GetMapping("")
     public ResponseEntity<List<TimeResponse>> times() {
 
         List<TimeResponse> times = timeService.findAlltime();
@@ -26,7 +27,7 @@ public class TimeApiController {
                 .body(times);
     }
 
-    @PostMapping("/times")
+    @PostMapping("")
     public ResponseEntity<TimeResponse> addTimes(
             @Valid
             @RequestBody TimeRequest timeRequest
@@ -35,7 +36,7 @@ public class TimeApiController {
         return ResponseEntity.created(URI.create("/times/" + timeResponse.getId())).body(timeResponse);
     }
 
-    @DeleteMapping("/times/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteTime(@PathVariable Long id) {
         timeService.deleteTime(id);
         return ResponseEntity.noContent().build();

@@ -1,16 +1,15 @@
 package roomescape.time.db;
 
 
-import java.sql.Time;
 import java.util.List;
 
 public interface TimeRepositoryImpl {
 
-    List<TimeEntity> findAll();
+    List<Time> findAll();
 
-    TimeEntity findById(Long id);
+    Time findById(Long id);
 
-    TimeEntity save(TimeEntity timeEntity);
+    Time save(Time time);
 
     void deleteById(Long id);
 }

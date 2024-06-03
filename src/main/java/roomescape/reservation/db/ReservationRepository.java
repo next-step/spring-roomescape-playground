@@ -9,7 +9,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import roomescape.time.db.TimeEntity;
+import roomescape.time.db.Time;
 
 import java.sql.PreparedStatement;
 import java.util.List;
@@ -22,12 +22,12 @@ public class ReservationRepository implements ReservationRepositoryImpl {
     private final JdbcTemplate jdbcTemplate;
 
     private final RowMapper<ReservationEntity> rowMapper = (rs, rowNum) -> {
-        TimeEntity timeEntity = new TimeEntity(rs.getLong("time_id"), rs.getString("time_value"));
+        Time time = new Time(rs.getLong("time_id"), rs.getString("time_value"));
         ReservationEntity reservationEntity = ReservationEntity.builder()
                 .id(rs.getLong("id"))
                 .name(rs.getString("name"))
                 .date(rs.getString("date"))
-                .timeEntity(timeEntity)
+                .time(time)
                 .build();
 
         return reservationEntity;
@@ -52,7 +52,7 @@ public class ReservationRepository implements ReservationRepositoryImpl {
             PreparedStatement ps = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
             ps.setString(1, reservationEntity.getName());
             ps.setObject(2, reservationEntity.getDate());
-            ps.setLong(3, reservationEntity.getTimeEntity().getId());
+            ps.setLong(3, reservationEntity.getTime().getId());
             return ps;
 
         }, keyHolder);

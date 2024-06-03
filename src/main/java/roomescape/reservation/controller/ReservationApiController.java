@@ -16,11 +16,12 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/reservations")
 public class ReservationApiController {
 
     private final ReservationService reservationService;
 
-    @GetMapping("/reservations")
+    @GetMapping("")
     public ResponseEntity<List<ReservationResponse>> reservations() {
         List<ReservationResponse> responseList = reservationService.findAllReservations();
 
@@ -29,7 +30,7 @@ public class ReservationApiController {
                 .body(responseList);
     }
 
-    @PostMapping("/reservations")
+    @PostMapping("")
     public ResponseEntity<ReservationResponse> addReservation(
             @Valid
             @RequestBody ReservationRequest reservationRequest
@@ -37,11 +38,11 @@ public class ReservationApiController {
 
         ReservationResponse response = reservationService.addReservation(reservationRequest);
 
-        return ResponseEntity.created(URI.create("/reservations/" + response.getId()))
+        return ResponseEntity.created(URI.create("/reservations/" + response.getId().toString()))
                 .body(response);
     }
 
-    @DeleteMapping("/reservations/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteReservation(
             @PathVariable Long id
     ) {

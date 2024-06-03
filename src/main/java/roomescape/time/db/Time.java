@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class TimeEntity {
+public class Time {
 
     private Long id;
     private String time;
