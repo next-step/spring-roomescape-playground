@@ -11,10 +11,5 @@ public class RenderController {
     }
 
     @GetMapping("/reservation")
-    public String reservation(){return "new-reservation";}
 
-    @GetMapping("/time")
-    public String time(){
-        return "time";
-    }
 }
