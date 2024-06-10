@@ -62,6 +62,7 @@ public class MissionStepTest {
                     .body("size()", is(1));
 
         }
+
         @Test
         void 예약_취소_확인() {
 
@@ -76,7 +77,6 @@ public class MissionStepTest {
                     .statusCode(200)
                     .body("size()", is(0));
         }
-
     }
 
     @Test
