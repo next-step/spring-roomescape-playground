@@ -25,7 +25,7 @@ public class ReservationService {
 
     public List<ReservationDTO> getAllReservations() {
         return reservationRepository.findAll().stream()
-                .map(this::entityToDTO)
+                .map(ReservationEntity::toDTO)
                 .toList();
     }
 
@@ -40,7 +40,7 @@ public class ReservationService {
 
         ReservationEntity entity = new ReservationEntity(null, reservationDTO.name(), reservationDTO.date(), timeEntity);
         ReservationEntity savedEntity = reservationRepository.save(entity);
-        return entityToDTO(savedEntity);
+        return ReservationEntity.toDTO(savedEntity);
     }
 
     public void cancelReservation(Long id) {
@@ -62,9 +62,5 @@ public class ReservationService {
         if (existingReservations.stream().anyMatch(r -> r.date().equals(reservationDateTime.toLocalDate().toString()) && r.time().time().equals(reservationDateTime.toLocalTime().toString()))) {
             throw new InvalidReservationTimeException("이미 예약된 시간입니다.");
         }
-    }
-
-    private ReservationDTO entityToDTO(ReservationEntity entity) {
-        return new ReservationDTO(entity.id(), entity.name(), entity.date(), entity.time().id());
     }
 }

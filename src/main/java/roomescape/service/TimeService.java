@@ -18,25 +18,17 @@ public class TimeService {
 
     public List<TimeDTO> getAllTimes() {
         return timeRepository.findAll().stream()
-                .map(this::entityToDTO)
+                .map(TimeEntity::toDTO)
                 .toList();
     }
 
     public TimeDTO addTime(TimeDTO timeDTO) {
-        TimeEntity entity = dtoToEntity(timeDTO);
+        TimeEntity entity = TimeDTO.toEntity(timeDTO);
         TimeEntity savedEntity = timeRepository.save(entity);
-        return entityToDTO(savedEntity);
+        return TimeEntity.toDTO(savedEntity);
     }
 
     public void deleteTime(Long id) {
         timeRepository.deleteById(id);
-    }
-
-    private TimeDTO entityToDTO(TimeEntity entity) {
-        return new TimeDTO(entity.id(), entity.time());
-    }
-
-    private TimeEntity dtoToEntity(TimeDTO dto) {
-        return new TimeEntity(dto.id(), dto.time());
     }
 }
