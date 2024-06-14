@@ -1,5 +1,8 @@
 package roomescape.Repository;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -8,23 +11,22 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
-
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Time;
-import java.util.List;
+import roomescape.domain.Time;
 
 @Repository
 public class ReservationRepository {
 
-    @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    public ReservationRepository(final JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     private final RowMapper<Reservation> reservationMapper = (ResultSet rs, int rowNum) -> {
         Long id = rs.getLong("reservation_id");
         String name = rs.getString("name");
         String date = rs.getString("date");
-        Time time = rs.getTime("time_value");
+        Time time = new Time(rs.getLong("time_id"), rs.getString("time_value"));
         return new Reservation(id, name, date, time);
     };
 
@@ -35,13 +37,13 @@ public class ReservationRepository {
     }
 
     public Long save(Reservation reservation) {
-        String query = "INSERT INTO reservations (name, date, time_id) VALUES (?, ?, ?)";
+        String query = "INSERT INTO reservation (name, date, time_id) VALUES (?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(query, new String[]{"id"});
             ps.setString(1, reservation.getName());
             ps.setString(2, reservation.getDate());
-            ps.setLong(3, reservation.getTime().getTime());
+            ps.setLong(3, reservation.getTime().getId());
             return ps;
         }, keyHolder);
 
@@ -49,7 +51,7 @@ public class ReservationRepository {
     }
 
     public void delete(Long reservationId) {
-        String query = "DELETE FROM reservations WHERE id = ?";
+        String query = "DELETE FROM reservation WHERE id = ?";
         jdbcTemplate.update(query, reservationId);
     }
 

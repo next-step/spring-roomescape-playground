@@ -11,7 +11,7 @@ public class RoomEscapeController {
         return "new-reservation";
     }
 
-    @GetMapping
+    @GetMapping("/")
     public String index() {
         return "home";
     }

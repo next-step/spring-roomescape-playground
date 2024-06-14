@@ -1,6 +1,5 @@
 package roomescape.domain;
 
-import java.sql.Time;
 
 public class Reservation {
     private Long id;

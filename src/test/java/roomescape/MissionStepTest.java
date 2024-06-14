@@ -65,15 +65,20 @@ public class MissionStepTest {
         params.put("date", "2023-08-05");
         params.put("time", locations[1]);
 
-        RestAssured.given().log().all()
+        Response reservationResponse = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(params)
-                .when().post("/reservations")
+                .when().post("/reservations");
+
+        String reservationURI = reservationResponse.getHeader("Location");
+
+        reservationResponse
                 .then().log().all()
                 .statusCode(201)
                 .header("Location", "/reservations/1")
                 .body("id", is(1));
 
+        ///// 예약 생성 완료 후 조회
         RestAssured.given().log().all()
                 .when().get("/reservations")
                 .then().log().all()

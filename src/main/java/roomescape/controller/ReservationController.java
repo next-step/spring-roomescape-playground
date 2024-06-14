@@ -1,17 +1,21 @@
 package roomescape.controller;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.web.bind.annotation.*;
-import roomescape.Repository.ReservationRepository;
-import roomescape.domain.Reservation;
-import roomescape.service.ReservationService;
-
 import java.net.URI;
 import java.util.List;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+import roomescape.domain.Reservation;
+import roomescape.service.ReservationService;
 
 @RestController
 @RequestMapping("/reservations")
@@ -26,7 +30,7 @@ public class ReservationController {
     // 예약 조회
     @GetMapping
     @ResponseBody
-    public ResponseEntity<List<Reservation>>getReservations() {
+    public ResponseEntity<List<Reservation>> getReservations() {
         List<Reservation> reservations = reservationService.getAllReservation();
         return ResponseEntity.ok(reservations);
     }
@@ -40,12 +44,10 @@ public class ReservationController {
     // 예약 추가
     @PostMapping
     @ResponseBody
-    public ResponseEntity<Reservation> addReservation(@RequestBody Reservation reservation){
-
-        Long generatedID = reservationService.createReservation(reservation);
-        URI uri = URI.create("/reservations/" + generatedID);
-        reservation.setId(generatedID);
-        return ResponseEntity.created(uri).body(reservation);
+    public ResponseEntity<Reservation> addReservation(@RequestBody ReservationDto reservation) {
+        Reservation newReservation = reservationService.createReservation(reservation);
+        URI uri = URI.create("/reservations/" + newReservation.getId());
+        return ResponseEntity.created(uri).body(newReservation);
     }
 
 
@@ -55,9 +57,9 @@ public class ReservationController {
         boolean isDeleted = reservationService.deleteReservation(id);
 
         if (isDeleted) {
-            return ResponseEntity.status(HttpStatus.OK).body("Reservation deleted successfully.");
+            return ResponseEntity.noContent().build();
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Reservation not found.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Reservation not found.");
         }
     }
 }

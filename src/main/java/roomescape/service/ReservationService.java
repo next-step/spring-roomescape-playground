@@ -1,18 +1,25 @@
 package roomescape.service;
 
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import roomescape.Repository.ReservationRepository;
+import roomescape.Repository.TimeRepository;
+import roomescape.controller.ReservationDto;
 import roomescape.domain.Reservation;
-
-import java.sql.Time;
-import java.util.List;
+import roomescape.domain.Time;
 
 @Service
 public class ReservationService {
 
-    @Autowired
-    private ReservationRepository reservationRepository;
+    private final ReservationRepository reservationRepository;
+
+    private final TimeRepository timeRepository;
+
+    public ReservationService(final ReservationRepository reservationRepository, final TimeRepository timeRepository) {
+        this.reservationRepository = reservationRepository;
+        this.timeRepository = timeRepository;
+    }
 
     public Reservation getReservation(Long id) {
         return reservationRepository.findById(id);
@@ -22,18 +29,20 @@ public class ReservationService {
         return reservationRepository.findAll();
     }
 
-    public Long createReservation(Reservation reservation) {
-        Time time = reservation.getTime();
-        reservation.setTime(time);
-        return reservationRepository.save(reservation);
+    public Reservation createReservation(ReservationDto reservation) {
+        Time time = timeRepository.findById(reservation.time())
+                .orElseThrow(IllegalArgumentException::new);
+        Reservation newReservation = new Reservation(null, reservation.name(), reservation.date(), time);
+        newReservation.setId(reservationRepository.save(newReservation));
+        return newReservation;
     }
 
     public boolean deleteReservation(long id) {
-        // id 존재하면 삭제.
         Reservation reservation = reservationRepository.findById(id);
+
         if (reservation != null) {
             reservationRepository.delete(id);
-
+            return true;
         }
 
         return false;
