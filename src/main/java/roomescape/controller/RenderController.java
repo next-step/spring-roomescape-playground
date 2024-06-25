@@ -11,6 +11,5 @@ public class RenderController {
     }
 
     @GetMapping("/reservation")
-    public String reservation(){return "reservation";}
 
 }

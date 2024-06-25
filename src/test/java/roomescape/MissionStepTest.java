@@ -1,11 +1,14 @@
 package roomescape;
 
+
 import static org.hamcrest.Matchers.is;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.HashMap;
@@ -121,5 +124,4 @@ public class MissionStepTest {
                 .then().log().all()
                 .statusCode(400);
     }
-
 }
