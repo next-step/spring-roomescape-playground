@@ -1,17 +1,27 @@
 package roomescape.controller;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
+import roomescape.dto.RequestReservation;
 import roomescape.model.Reservation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
+
+import static org.springframework.http.HttpStatus.CREATED;
 
 @Controller
 public class ReservationController {
     private List<Reservation> reservations = new ArrayList<>();
+    private AtomicLong index = new AtomicLong(1);
 
     @GetMapping("/reservation")
     public String reservation() {
@@ -20,10 +30,33 @@ public class ReservationController {
 
     @GetMapping("/reservations")
     @ResponseBody
-    public List<Reservation> reservations() {
-        reservations.add(new Reservation(1L, "홍길동", "2024-07-01", "12:00"));
-        reservations.add(new Reservation(2L, "신짱구", "2024-07-03", "14:00"));
-        reservations.add(new Reservation(3L, "신짱아", "2024-07-04", "17:00"));
-        return reservations;
+    public ResponseEntity<List<Reservation>> reservations() {
+        return ResponseEntity.ok(reservations);
+    }
+
+    @PostMapping("/reservations")
+    @ResponseBody
+    public ResponseEntity<Reservation> createReservation(@RequestBody RequestReservation requestReservation) {
+        Long id = index.getAndIncrement();
+        String name = requestReservation.name();
+        String date = requestReservation.date();
+        String time = requestReservation.time();
+
+        Reservation newReservation = new Reservation(id, name, date, time);
+        reservations.add(newReservation);
+        return ResponseEntity.status(CREATED)
+                .header(HttpHeaders.LOCATION, "/reservations/" + id)
+                .header(HttpHeaders.CONTENT_TYPE, "application/json")
+                .body(newReservation);
+    }
+
+    @DeleteMapping("/reservations/{reservationId}")
+    @ResponseBody
+    public ResponseEntity<Void> deleteReservations(@PathVariable Long reservationId) {
+        boolean removed = reservations.removeIf(reservation -> reservation.getId().equals(reservationId));
+        if (!removed) {
+            throw new IllegalArgumentException("Reservation not found");
+        }
+        return ResponseEntity.noContent().build();
     }
 }
