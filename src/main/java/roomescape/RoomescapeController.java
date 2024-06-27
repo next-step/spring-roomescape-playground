@@ -31,6 +31,11 @@ public class RoomescapeController {
     @ResponseBody
     public ResponseEntity<Reservation> createReservation( @RequestBody Reservation reservation) {
         Reservation newReservation = new Reservation(reservations.size() + 1, reservation.getName(), reservation.getDate(), reservation.getTime());
+        if (reservation.getName() == null || reservation.getName().trim().isEmpty() ||
+                reservation.getDate() == null || reservation.getDate().trim().isEmpty() ||
+                reservation.getTime() == null || reservation.getTime().trim().isEmpty()) {
+            throw new IllegalArgumentException("예약 정보가 부족합니다.");
+        }
         reservations.add(newReservation);
 
         HttpHeaders headers = new HttpHeaders();
@@ -47,7 +52,14 @@ public class RoomescapeController {
                 return new ResponseEntity<>(reservation, HttpStatus.NO_CONTENT);
             }
         }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        // 예약이 없는 경우 Exception 발생
+         throw new IllegalArgumentException("삭제할 예약이 없습니다.");
+
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
 }
