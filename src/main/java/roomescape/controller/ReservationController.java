@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import roomescape.dto.RequestReservation;
+import roomescape.exception.BadRequestException;
 import roomescape.model.Reservation;
 
 @Controller
@@ -31,8 +32,22 @@ public class ReservationController {
         return ResponseEntity.ok().body(reservations);
     }
 
+    private void validateRequestReservation(RequestReservation requestReservation) {
+        if (requestReservation.name() == null || requestReservation.name().isEmpty()) {
+            throw new BadRequestException("이름을 작성해주세요");
+        }
+        if (requestReservation.date() == null || requestReservation.date().isEmpty()) {
+            throw new BadRequestException("날짜를 선택해주세요");
+        }
+        if (requestReservation.time() == null || requestReservation.time().isEmpty()) {
+            throw new BadRequestException("시간을 선택해주세요");
+        }
+    }
+
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> reservation(@RequestBody RequestReservation requestReservation) {
+        validateRequestReservation(requestReservation);
+
         Reservation newReservation = Reservation.toEntity(requestReservation, index.getAndIncrement());
 
         reservations.add(newReservation);
@@ -45,7 +60,7 @@ public class ReservationController {
         Reservation reservation = reservations.stream()
                 .filter(r -> Objects.equals(r.getId(), id))
                 .findFirst()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new BadRequestException("해당하는 예약을 찾을 수 없습니다"));
 
         reservations.remove(reservation);
 
