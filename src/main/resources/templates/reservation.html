@@ -56,6 +56,15 @@
         </tr>
         </thead>
         <tbody id="reservation-table-body">
+        <tr th:each="reservation, stat : ${reservations}">
+          <td th:text="${stat.count + 1}"></td>
+          <td th:text="${reservation.name}"></td>
+          <td th:text="${reservation.date}"></td>
+          <td th:text="${reservation.time}"></td>
+          <td>
+            <button class="btn btn-danger">삭제</button>
+          </td>
+        </tr>
         </tbody>
       </table>
     </div>
