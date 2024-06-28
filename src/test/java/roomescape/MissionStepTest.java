@@ -2,6 +2,7 @@ package roomescape;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
@@ -16,7 +17,8 @@ import static org.hamcrest.CoreMatchers.is;
 public class MissionStepTest {
 
     @Test
-    void 일단계() {
+    @DisplayName("1단계-홈 화면 출력 테스트")
+    void step_1_welcomePage() {
         RestAssured.given().log().all()
                 .when().get("/")
                 .then().log().all()
@@ -24,7 +26,8 @@ public class MissionStepTest {
     }
 
     @Test
-    void 이단계() {
+    @DisplayName("2단계-예약 목록 조회 테스트")
+    void step_2_reservationList() {
         RestAssured.given().log().all()
                 .when().get("/reservation")
                 .then().log().all()
@@ -34,11 +37,12 @@ public class MissionStepTest {
                 .when().get("/reservations")
                 .then().log().all()
                 .statusCode(200)
-                .body("size()", is(0)); // 아직 생성 요청이 없으니 Controller에서 임의로 넣어준 Reservation 갯수 만큼 검증하거나 0개임을 확인하세요.
+                .body("size()", is(0));
     }
 
     @Test
-    void 삼단계() {
+    @DisplayName("3단계-예약 추가 및 취소 테스트")
+    void step_3_createReservation() {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
         params.put("date", "2023-08-05");
@@ -72,7 +76,8 @@ public class MissionStepTest {
     }
 
     @Test
-    void 사단계() {
+    @DisplayName("4단계-예외 처리 테스트")
+    void step_4_exception() {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
         params.put("date", "");
