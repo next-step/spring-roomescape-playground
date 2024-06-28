@@ -7,7 +7,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class ReservationControllerAdvice {
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<String> IllegalArgumentException() {
-        return ResponseEntity.badRequest().build();
+    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException e) {
+        return ResponseEntity.badRequest()
+                .body(e.getMessage());
     }
 }
