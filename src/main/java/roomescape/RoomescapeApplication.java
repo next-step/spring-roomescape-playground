@@ -19,8 +19,8 @@ public class RoomescapeApplication implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) {
+    public void run(String... args) throws Exception {
         jdbcTemplate.execute("DROP TABLE IF EXISTS reservation");
-        jdbcTemplate.execute("CREATE TABLE reservation (id BIGINT PRIMARY KEY, name VARCHAR(255) NOT NULL, date VARCHAR(255) NOT NULL, time VARCHAR(255) NOT NULL)");
+        jdbcTemplate.execute("CREATE TABLE reservation (id BIGINT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255), date VARCHAR(255), time VARCHAR(255))");
     }
 }
