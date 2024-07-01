@@ -14,22 +14,6 @@ public class Reservation {
         this.time = time;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public String getTime() {
-        return time;
-    }
-
     private void checkAllFields(Long id, String name, String date, String time) {
         checkId(id);
         checkName(name);
@@ -59,5 +43,21 @@ public class Reservation {
         if (time == null || time.isBlank()) {
             throw new IllegalArgumentException("Time is required");
         }
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public String getTime() {
+        return time;
     }
 }
