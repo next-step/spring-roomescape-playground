@@ -1,7 +1,6 @@
 package roomescape;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -19,12 +18,8 @@ public class ReservationController {
     private final AtomicLong index = new AtomicLong(1);
 
     public ReservationController() {
-//        reservations.add(new Reservation(index.getAndIncrement(), "김혜준", "2023-01-01", "10:00"));
-//        reservations.add(new Reservation(index.getAndIncrement(), "김혜준", "2023-01-02", "11:00"));
-//        reservations.add(new Reservation(index.getAndIncrement(), "김혜준", "2023-01-03", "12:00"));
     }
 
-    // reservation HTML 연결
     @GetMapping("/reservation")
     public String reservation(){
         return "reservation";
@@ -36,31 +31,37 @@ public class ReservationController {
         return new ResponseEntity<>(reservations, HttpStatus.OK);
     }
 
-
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> create(@RequestBody Reservation reservation){
-        Reservation newReservation = new Reservation(index.getAndIncrement(), reservation.getName(), reservation.getDate(), reservation.getTime());
-        reservations.add(newReservation);
-        return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId()))
-                .body(newReservation);
+        if (reservation.getName() == null
+                || reservation.getName().isEmpty()
+                || reservation.getDate() == null
+                || reservation.getDate().isEmpty()
+                || reservation.getTime() == null
+                || reservation.getTime().isEmpty()
+        ) {
+            throw new NotFoundReservationException("입력 형식이 올바르지 않습니다");
+        } else {
+            Reservation newReservation = new Reservation(index.getAndIncrement(), reservation.getName(), reservation.getDate(), reservation.getTime());
+            reservations.add(newReservation);
+            return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId()))
+                    .body(newReservation);
+        }
     }
-
-
     @DeleteMapping("/reservations/{id}")
-    @ResponseBody
     public ResponseEntity<Void> delete(@PathVariable Long id){
         Reservation reservation = reservations.stream()
                 .filter(it -> Objects.equals(it.getId(), id))
                 .findFirst()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new NotFoundReservationException("해당 예약을 찾을 수 없습니다"));
         reservations.remove(reservation);
 
         return ResponseEntity.noContent().build();
     }
 
-//    @ExceptionHandler(NotFoundReservationException.class)
-//    public ResponseEntity<String> handleException(NotFoundReservationException e) {
-//        return ResponseEntity.badRequest().build();
-//    }
+    @ExceptionHandler(NotFoundReservationException.class)
+    public ResponseEntity<String> handleInvalidReservationException(NotFoundReservationException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
 }
 

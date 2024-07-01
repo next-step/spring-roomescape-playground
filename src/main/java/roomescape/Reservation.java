@@ -15,7 +15,7 @@ public class Reservation {
         this.time = time;
     }
 
-    public Reservation(String name, String data, String time) {
+    public Reservation(String name, String date, String time) {
         this.name = name;
         this.date = date;
         this.time = time;
@@ -28,12 +28,6 @@ public class Reservation {
     public String getName() { return name; }
 
     public String getTime() { return time; }
-
-//    public void update(Reservation newReservation){
-//        this.name = newReservation.name;
-//        this.date = newReservation.date;
-//        this.time = newReservation.time;
-//    }
 
     public static Reservation toEntity(Reservation reservation, Long id) {
         return new Reservation(id, reservation.name, reservation.date, reservation.time);
