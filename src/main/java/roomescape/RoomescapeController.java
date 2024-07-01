@@ -23,7 +23,6 @@ public class RoomescapeController {
     @GetMapping("/reservations")
     @ResponseBody
     public ResponseEntity<List<Reservation>> reservations() {
-
         return new ResponseEntity<>(reservations, HttpStatus.OK);
     }
 
@@ -53,8 +52,7 @@ public class RoomescapeController {
             }
         }
         // 예약이 없는 경우 Exception 발생
-         throw new IllegalArgumentException("삭제할 예약이 없습니다.");
-
+        throw new IllegalArgumentException("삭제할 예약이 없습니다.");
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
