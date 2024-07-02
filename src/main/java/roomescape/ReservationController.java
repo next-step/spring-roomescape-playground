@@ -50,9 +50,12 @@ public class ReservationController {
     }
 
     private void validateReservation(Reservation reservation) {
-        if (Stream.of(reservation.getName(), reservation.getDate(), reservation.getTime())
-                .anyMatch(field -> field == null || field.isEmpty())) {
-            throw new NotFoundReservationException(NOT_INPUT_FORMAT.message);
+        if(reservation.getName() == null || reservation.getName().isEmpty()) {
+            throw new NotFoundReservationException(NOT_INPUT_NAME.message);
+        }else if(reservation.getDate() == null || reservation.getDate().isEmpty()) {
+            throw new NotFoundReservationException(NOT_INPUT_DATE.message);
+        }else if(reservation.getTime() == null || reservation.getTime().isEmpty()) {
+            throw new NotFoundReservationException(NOT_INPUT_TIME.message);
         }
     }
 
