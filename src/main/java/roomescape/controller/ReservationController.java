@@ -48,7 +48,7 @@ public class ReservationController {
     public ResponseEntity<Reservation> reservation(@RequestBody RequestReservation requestReservation) {
         validateRequestReservation(requestReservation);
 
-        Reservation newReservation = Reservation.toEntity(requestReservation, index.getAndIncrement());
+        Reservation newReservation = Reservation.of(requestReservation, index.getAndIncrement());
 
         reservations.add(newReservation);
 
