@@ -21,6 +21,10 @@ public class ReservationController {
 
     @PostMapping("/reservations")
     public ResponseEntity<ReservationResponse> addReservation(@RequestBody ReservationRequest request) {
+        if (request.getName() == null || request.getDate() == null || request.getTime() == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
         Long newId = index.getAndIncrement();
         ReservationResponse newReservation = ReservationResponse.toEntity(newId, request);
         reservations.add(newReservation);
@@ -31,8 +35,13 @@ public class ReservationController {
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<List<ReservationResponse>> deleteReservation(@PathVariable Long id) {
+        boolean exists = reservations.stream().anyMatch(reservation -> reservation.getId().equals(id));
+        if (!exists) {
+            return ResponseEntity.badRequest().build();
+        }
+
         reservations = reservations.stream()
-                .filter(it -> !it.getId().equals(id))
+                .filter(reservation -> !reservation.getId().equals(id))
                 .collect(Collectors.toList());
 
         return ResponseEntity.noContent().build();
