@@ -10,6 +10,10 @@ public class ReservationResponse extends Reservation {
         super();
     }
 
+    public ReservationResponse(Reservation reservation) {
+        super(reservation.getId(), reservation.getName(), reservation.getDate(), reservation.getTime());
+    }
+
     public ReservationResponse(Long id, String name, LocalDate date, LocalTime time) {
         super(id, name, date, time);
     }

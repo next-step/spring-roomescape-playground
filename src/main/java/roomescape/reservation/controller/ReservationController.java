@@ -3,6 +3,7 @@ package roomescape.reservation.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import roomescape.reservation.domain.Reservation;
 import roomescape.reservation.dto.ReservationRequest;
 import roomescape.reservation.dto.ReservationResponse;
 
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
 public class ReservationController {
 
     private AtomicLong index = new AtomicLong(1);
-    private List<ReservationResponse> reservations = new ArrayList<>(List.of());
+    private List<Reservation> reservations = new ArrayList<>();
 
     @GetMapping("/reservation")
     public String reservation() { return "reservation"; }
@@ -28,11 +29,12 @@ public class ReservationController {
         }
 
         Long newId = index.getAndIncrement();
-        ReservationResponse newReservation = ReservationResponse.toEntity(newId, request);
+        Reservation newReservation = new Reservation(newId, request.getName(), request.getDate(), request.getTime());
         reservations.add(newReservation);
+        ReservationResponse response = new ReservationResponse(newReservation);
 
         URI location = URI.create(String.format("/reservations/%d", newId));
-        return ResponseEntity.created(location).body(newReservation);
+        return ResponseEntity.created(location).body(response);
     }
 
     @DeleteMapping("/reservations/{id}")
@@ -50,7 +52,7 @@ public class ReservationController {
     }
 
     @GetMapping("/reservations")
-    public ResponseEntity<List<ReservationResponse>> reservations() {
+    public ResponseEntity<List<Reservation>> reservations() {
         return ResponseEntity.ok().body(reservations);
     }
 }
