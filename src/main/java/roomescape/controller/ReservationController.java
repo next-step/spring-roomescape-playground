@@ -38,13 +38,14 @@ public class ReservationController {
     @GetMapping("/reservations")
     @ResponseBody
     public ResponseEntity<List<Reservation>> reservations() {
-        List<Reservation> reservations = simpleJdbcInsert.getJdbcTemplate().query("SELECT * FROM reservation",
-                (rs, rowNum) -> new Reservation(
-                        rs.getLong("id"),
-                        rs.getString("name"),
-                        rs.getString("date"),
-                        rs.getString("time")
-                ));
+        List<Reservation> reservations = simpleJdbcInsert.getJdbcTemplate()
+                .query("SELECT * FROM reservation",
+                        (rs, rowNum) -> new Reservation(
+                                rs.getLong("id"),
+                                rs.getString("name"),
+                                rs.getString("date"),
+                                rs.getString("time")
+                        ));
         return ResponseEntity.ok(reservations);
     }
 
@@ -57,7 +58,16 @@ public class ReservationController {
         parameters.put("time", requestReservation.time());
 
         Number newId = simpleJdbcInsert.executeAndReturnKey(parameters);
-        Reservation newReservation = new Reservation(newId.longValue(), requestReservation.name(), requestReservation.date(), requestReservation.time());
+        Reservation newReservation = simpleJdbcInsert.getJdbcTemplate()
+                .queryForObject("SELECT * FROM reservation WHERE id = ?",
+                        (rs, rowNum) -> new Reservation(
+                                rs.getLong("id"),
+                                rs.getString("name"),
+                                rs.getString("date"),
+                                rs.getString("time")
+                        ),
+                        newId.longValue()
+                );
 
         return ResponseEntity.status(CREATED)
                 .header(HttpHeaders.LOCATION, "/reservations/" + newId)
@@ -68,7 +78,8 @@ public class ReservationController {
     @DeleteMapping("/reservations/{reservationId}")
     @ResponseBody
     public ResponseEntity<Void> deleteReservations(@PathVariable Long reservationId) {
-        simpleJdbcInsert.getJdbcTemplate().update("DELETE FROM reservation WHERE id = ?", reservationId);
+        simpleJdbcInsert.getJdbcTemplate()
+                .update("DELETE FROM reservation WHERE id = ?", reservationId);
         return ResponseEntity.noContent().build();
     }
 }
