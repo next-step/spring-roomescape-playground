@@ -2,42 +2,44 @@ package roomescape.reservation;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.net.URI;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 
 @Controller
 public class ReservationController {
-    private final List<Reservation> reservations = new ArrayList<>(Arrays.asList(
-        new Reservation(
-            1L,
-            "정해성",
-            LocalDate.of(2024, 6, 28),
-            LocalTime.of(11, 0)
-        ),
-        new Reservation(
-            2L,
-            "김민재",
-            LocalDate.of(2024, 6, 29),
-            LocalTime.of(12, 0)
-        ),
-        new Reservation(
-            3L,
-            "김혜준",
-            LocalDate.of(2024, 6, 30),
-            LocalTime.of(12, 30)
-        )
-    ));
+
+    private AtomicLong index = new AtomicLong(1);
+    private List<ReservationResponse> reservations = new ArrayList<>(List.of());
 
     @GetMapping("/reservation")
     public String reservation() { return "reservation"; }
 
+    @PostMapping("/reservations")
+    public ResponseEntity<ReservationResponse> addReservation(@RequestBody ReservationRequest request) {
+        Long newId = index.getAndIncrement();
+        ReservationResponse newReservation = ReservationResponse.toEntity(newId, request);
+        reservations.add(newReservation);
+
+        URI location = URI.create(String.format("/reservations/%d", newId));
+        return ResponseEntity.created(location).body(newReservation);
+    }
+
+    @DeleteMapping("/reservations/{id}")
+    public ResponseEntity<List<ReservationResponse>> deleteReservation(@PathVariable Long id) {
+        reservations = reservations.stream()
+                .filter(it -> !it.getId().equals(id))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping("/reservations")
-    public ResponseEntity<List<Reservation>> reservations() {
+    public ResponseEntity<List<ReservationResponse>> reservations() {
         return ResponseEntity.ok().body(reservations);
     }
 }
