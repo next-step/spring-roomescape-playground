@@ -78,8 +78,10 @@ public class ReservationController {
     @DeleteMapping("/reservations/{reservationId}")
     @ResponseBody
     public ResponseEntity<Void> deleteReservations(@PathVariable Long reservationId) {
-        simpleJdbcInsert.getJdbcTemplate()
-                .update("DELETE FROM reservation WHERE id = ?", reservationId);
+        int rowsAffected = simpleJdbcInsert.getJdbcTemplate().update("DELETE FROM reservation WHERE id = ?", reservationId);
+        if (rowsAffected == 0) {
+            throw new IllegalArgumentException("Reservation not found");
+        }
         return ResponseEntity.noContent().build();
     }
 }

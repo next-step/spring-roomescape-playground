@@ -106,7 +106,7 @@ public class MissionStepTest {
         RestAssured.given().log().all()
                 .when().delete("/reservations/1")
                 .then().log().all()
-                .statusCode(204);
+                .statusCode(400);
     }
 
     @Test
