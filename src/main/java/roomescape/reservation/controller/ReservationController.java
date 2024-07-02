@@ -10,8 +10,10 @@ import roomescape.reservation.dto.ReservationResponse;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Controller
 public class ReservationController {
@@ -24,9 +26,8 @@ public class ReservationController {
 
     @PostMapping("/reservations")
     public ResponseEntity<ReservationResponse> addReservation(@RequestBody ReservationRequest request) {
-        if (request.getName() == null || request.getDate() == null || request.getTime() == null) {
+        if (Stream.of(request.getName(), request.getDate(), request.getTime()).anyMatch(Objects::isNull))
             return ResponseEntity.badRequest().build();
-        }
 
         Long newId = index.getAndIncrement();
         Reservation newReservation = new Reservation(newId, request.getName(), request.getDate(), request.getTime());
