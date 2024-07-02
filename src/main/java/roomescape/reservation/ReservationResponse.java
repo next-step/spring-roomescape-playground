@@ -10,11 +10,6 @@ public class ReservationResponse {
     private LocalDate date;
     private LocalTime time;
 
-    public Long getId() { return id; }
-    public String getName() { return name; }
-    public LocalDate getDate() { return date; }
-    public LocalTime getTime() { return time; }
-
     public ReservationResponse() {};
 
     public ReservationResponse(Long id, String name, LocalDate date, LocalTime time) {
@@ -23,6 +18,11 @@ public class ReservationResponse {
         this.date = date;
         this.time = time;
     }
+
+    public Long getId() { return id; }
+    public String getName() { return name; }
+    public LocalDate getDate() { return date; }
+    public LocalTime getTime() { return time; }
 
     public static ReservationResponse toEntity(Long id, ReservationRequest request) {
         return new ReservationResponse(id, request.getName(), request.getDate(), request.getTime());

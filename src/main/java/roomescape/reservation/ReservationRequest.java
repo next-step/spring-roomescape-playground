@@ -9,10 +9,6 @@ public class ReservationRequest {
     private LocalDate date;
     private LocalTime time;
 
-    public String getName() { return name; }
-    public LocalDate getDate() { return date; }
-    public LocalTime getTime() { return time; }
-
     public ReservationRequest () {};
 
     public ReservationRequest(String name, LocalDate date, LocalTime time) {
@@ -20,4 +16,8 @@ public class ReservationRequest {
         this.date = date;
         this.time = time;
     }
+
+    public String getName() { return name; }
+    public LocalDate getDate() { return date; }
+    public LocalTime getTime() { return time; }
 }
