@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.is;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -16,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
+import roomescape.controller.ReservationController;
+import roomescape.domain.Reservation;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -23,6 +26,8 @@ public class MissionStepTest {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+    @Autowired
+    private ReservationController reservationController;
 
     @Test
     @DisplayName("홈 화면 구현 테스트")
@@ -55,10 +60,12 @@ public class MissionStepTest {
     @Test
     @DisplayName("예약 추가 API 테스트")
     void should_createReservation_when_postMethodReservationsURI() {
-        Map<String, String> params = new HashMap<>();
+        jdbcTemplate.update("INSERT INTO time (time) VALUES (?)","10:00");
+
+        Map<String, Object> params = new HashMap<>();
         params.put("name", "브라운");
         params.put("date", "2023-08-05");
-        params.put("time", "15:40");
+        params.put("time", 1);
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -83,15 +90,10 @@ public class MissionStepTest {
     @Test
     @DisplayName("예약 취소 API 테스트")
     void should_deleteReservation_when_getMethodReservationsIdURI() {
-        Map<String, String> params = new HashMap<>();
-        params.put("name", "브라운");
-        params.put("date", "2023-08-05");
-        params.put("time", "15:40");
+        jdbcTemplate.update("INSERT INTO time (time) VALUES (?)","10:00");
 
-        RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
-                .body(params)
-                .when().post("/reservations");
+        jdbcTemplate.update("INSERT INTO reservation (name, date, time_id) VALUES (?, ?, ?)",
+                "브라운", "2023-08-05", 1);
 
         RestAssured.given().log().all()
                 .when().delete("/reservations/1")
@@ -108,10 +110,10 @@ public class MissionStepTest {
     @Test
     @DisplayName("예약 추가 시 필요한 인자값이 비어있는 경우 예외 처리 테스트")
     void should_occurIllegalArgumentException_when_createReservationArgumentIsNull() {
-        Map<String, String> params = new HashMap<>();
+        Map<String, Object> params = new HashMap<>();
         params.put("name", "브라운");
         params.put("date", "");
-        params.put("time", "");
+        params.put("time", 1);
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -154,8 +156,10 @@ public class MissionStepTest {
     @Test
     @DisplayName("전체 예약 데이터 조회 테스트")
     void should_readAllReservationsAtDB_when_getMethodReservationsURI() {
-        jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)",
-                "브라운", "2023-08-05", "15:40");
+        jdbcTemplate.update("INSERT INTO time (time) VALUES (?)","10:00");
+
+        jdbcTemplate.update("INSERT INTO reservation (name, date, time_id) VALUES (?, ?, ?)",
+                "브라운", "2023-08-05", 1);
 
         List<Reservation> reservations = RestAssured.given().log().all()
                 .when().get("/reservations")
@@ -171,10 +175,13 @@ public class MissionStepTest {
     @Test
     @DisplayName("데이터 추가 테스트")
     void should_createReservationAtDB_when_postMethodReservationsURI() {
-        Map<String, String> params = new HashMap<>();
+        jdbcTemplate.update("INSERT INTO time (time) VALUES (?)","10:00");
+
+        Map<String, Object> params = new HashMap<>();
         params.put("name", "브라운");
         params.put("date", "2023-08-05");
-        params.put("time", "10:00");
+        params.put("time", 1);
+
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -191,18 +198,10 @@ public class MissionStepTest {
     @Test
     @DisplayName("데이터 삭제 테스트")
     void should_deleteReservationAtDB_when_getMethodReservationsIdURI() {
-        Map<String, String> params = new HashMap<>();
-        params.put("name", "브라운");
-        params.put("date", "2023-08-05");
-        params.put("time", "10:00");
+        jdbcTemplate.update("INSERT INTO time (time) VALUES (?)","10:00");
 
-        RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
-                .body(params)
-                .when().post("/reservations")
-                .then().log().all()
-                .statusCode(201)
-                .header("Location", "/reservations/1");
+        jdbcTemplate.update("INSERT INTO reservation (name, date, time_id) VALUES (?, ?, ?)",
+                "브라운", "2023-08-05", 1);
 
         RestAssured.given().log().all()
                 .when().delete("/reservations/1")
@@ -211,5 +210,86 @@ public class MissionStepTest {
 
         Integer countAfterDelete = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
         assertThat(countAfterDelete).isEqualTo(0);
+    }
+
+    @Test
+    @DisplayName("시간 추가 API 테스트")
+    void should_createTime_when_postMethodTimesURI() {
+        Map<String, String> params = new HashMap<>();
+        params.put("time", "10:00");
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/times")
+                .then().log().all()
+                .statusCode(201)
+                .header("Location", "/times/1");
+    }
+
+    @Test
+    @DisplayName("모든 시간 조회 API 테스트")
+    void should_readAllTimes_when_getMethodTimesURI() {
+        Map<String, String> params = new HashMap<>();
+        params.put("time", "10:00");
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/times");
+
+        RestAssured.given().log().all()
+                .when().get("/times")
+                .then().log().all()
+                .statusCode(200)
+                .body("size()", is(1));
+    }
+
+    @Test
+    @DisplayName("시간 삭제 API 테스트")
+    void should_deleteTime_when_getMethodTimesIdURI() {
+        Map<String, String> params = new HashMap<>();
+        params.put("time", "10:00");
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/times");
+
+        RestAssured.given().log().all()
+                .when().delete("/times/1")
+                .then().log().all()
+                .statusCode(204);
+    }
+
+    @Test
+    @DisplayName("기존 예약 추가 API 스펙에 맞춰서 예약 추가 요청 시 에러 발생 테스트")
+    void should_occurIllegalArgumentException_when_createReservationWithTimeArgumentOfStringType() {
+        Map<String, String> reservation = new HashMap<>();
+        reservation.put("name", "브라운");
+        reservation.put("date", "2023-08-05");
+        reservation.put("time", "10:00");
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(reservation)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(400);
+    }
+
+    @Test
+    @DisplayName("컨트롤러에서 데이터베이스 관련 로직 분리 확인")
+    void should_success_when_hasNotJdbcTemplateInController() {
+        boolean isJdbcTemplateInjected = false;
+
+        for (Field field : reservationController.getClass().getDeclaredFields()) {
+            if (field.getType().equals(JdbcTemplate.class)) {
+                isJdbcTemplateInjected = true;
+                break;
+            }
+        }
+
+        assertThat(isJdbcTemplateInjected).isFalse();
     }
 }

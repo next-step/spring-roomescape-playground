@@ -1,4 +1,4 @@
-package roomescape;
+package roomescape.repository;
 
 import java.sql.PreparedStatement;
 import java.util.List;
@@ -7,6 +7,8 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import roomescape.domain.Reservation;
+import roomescape.domain.Time;
 
 @Repository
 public class ReservationDAO {
@@ -17,8 +19,22 @@ public class ReservationDAO {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public Long insert(Reservation reservation) {
-        String sql = "INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)";
+    private final RowMapper<Reservation> reservationRowMapper = (resultSet, rowNum) -> {
+        Time time = new Time(
+                resultSet.getLong("time_id"),
+                resultSet.getString("time_value")
+        );
+
+        return new Reservation(
+                resultSet.getLong("reservation_id"),
+                resultSet.getString("name"),
+                resultSet.getString("date"),
+                time
+        );
+    };
+
+    public Long insert(Reservation reservation, Long timeId) {
+        String sql = "INSERT INTO reservation (name, date, time_id) VALUES (?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connect -> {
@@ -27,17 +43,11 @@ public class ReservationDAO {
                     new String[]{"id"});
             ps.setString(1, reservation.getName());
             ps.setString(2, reservation.getDate());
-            ps.setString(3, reservation.getTime());
+            ps.setLong(3, timeId);
             return ps;
         }, keyHolder);
 
         return keyHolder.getKey().longValue();
-    }
-
-    public List<Reservation> findAllReservations() {
-        String sql = "SELECT id, name, date, time FROM reservation";
-
-        return jdbcTemplate.query(sql, actorRowMapper);
     }
 
     public void delete(Long id) {
@@ -54,13 +64,11 @@ public class ReservationDAO {
         return rowCount;
     }
 
-    private final RowMapper<Reservation> actorRowMapper = (resultSet, rowNum) -> {
-        Reservation reservation = new Reservation(
-                resultSet.getLong("id"),
-                resultSet.getString("name"),
-                resultSet.getString("date"),
-                resultSet.getString("time")
-        );
-        return reservation;
-    };
+    public List<Reservation> findAllReservations() {
+        String sql = "SELECT r.id as reservation_id, r.name, r.date, t.id as time_id, t.time as time_value "
+                + "FROM reservation as r "
+                + "inner join time as t on r.time_id = t.id";
+
+        return jdbcTemplate.query(sql, reservationRowMapper);
+    }
 }

@@ -1,4 +1,4 @@
-package roomescape;
+package roomescape.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,9 +12,9 @@ public class Reservation {
     private Long id;
     private String name;
     private String date;
-    private String time;
+    private Time time;
 
-    public Reservation(String name, String date, String time) {
+    public Reservation(String name, String date, Time time) {
         this.name = name;
         this.date = date;
         this.time = time;

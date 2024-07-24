@@ -1,39 +1,41 @@
-package roomescape;
+package roomescape.dto;
+
+import roomescape.domain.Reservation;
 
 public class ReservationResponseDto {
 
-    private final Long id;
-    private final String name;
-    private final String date;
-    private final String time;
+    private Long id;
+    private String name;
+    private String date;
+    private TimeResponseDto time;
 
     public ReservationResponseDto(Reservation reservation) {
         this.id = reservation.getId();
         this.name = reservation.getName();
         this.date = reservation.getDate();
-        this.time = reservation.getTime();
+        this.time = new TimeResponseDto(reservation.getTime());
     }
 
     public ReservationResponseDto(Long id, Reservation reservation) {
         this.id = id;
         this.name = reservation.getName();
         this.date = reservation.getDate();
-        this.time = reservation.getTime();
+        this.time = new TimeResponseDto(reservation.getTime());
     }
 
     public Long getId() {
-        return this.id;
+        return id;
     }
 
     public String getName() {
-        return this.name;
+        return name;
     }
 
     public String getDate() {
-        return this.date;
+        return date;
     }
 
-    public String getTime() {
-        return this.time;
+    public TimeResponseDto getTime() {
+        return time;
     }
 }
