@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import roomescape.domain.Reservation;
+import roomescape.domain.repository.ReservationRepository;
 import roomescape.exception.ErrorMessage;
 import roomescape.exception.ReservationNotFoundException;
 
@@ -23,10 +24,15 @@ public class ReservationApiController {
 
   private List<Reservation> reservations = new ArrayList<>();
   private AtomicLong index = new AtomicLong(1);
+  private final ReservationRepository reservationRepository;
+
+  public ReservationApiController(ReservationRepository reservationRepository) {
+    this.reservationRepository = reservationRepository;
+  }
 
   @GetMapping("/reservations")
   public ResponseEntity<List<Reservation>> readReservation() {
-    return ResponseEntity.ok(reservations);
+    return ResponseEntity.ok(reservationRepository.findAll());
     // GET /reservations 요청이 들어왔을 때 저장된 모든 예약 정보를 반환한다
     // ResponseEntity 는 HTTP 응답을 위한 클래스이다. ok() 메소드는 200 OK 상태 코드를 반환한다
     // body() 메서드는 응답 본문에 들어갈 데이터를 설정한다. 반환할 데이터는 reservations 필드에 저장된 예약 정보이다
