@@ -31,7 +31,7 @@ public class ReservationRepository { // reservation 테이블에 대한 CRUD를 
     return jdbcTemplate.query(sql, reservationRowMapper);
   }
 
-  public Reservation save(Reservation reservation) {
+  public Reservation save(final Reservation reservation) {
     final String sql = "insert into reservation (name, date, time) values (?, ?, ?)";
     KeyHolder keyHolder = new GeneratedKeyHolder();
     jdbcTemplate.update(connection -> {
