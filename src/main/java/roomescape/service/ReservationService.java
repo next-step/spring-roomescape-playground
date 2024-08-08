@@ -1,6 +1,7 @@
 package roomescape.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import roomescape.domain.Reservation;
@@ -18,17 +19,19 @@ public class ReservationService {
   }
 
   @Transactional(readOnly = true)
-  public List<Reservation> findAll() {
-    return reservationRepository.findAll();
+  public List<ReservationDto> findAll() {
+    return reservationRepository.findAll().stream()
+                                .map(ReservationDto::from)
+                                .collect(Collectors.toList());
   }
 
-  public Reservation save(Reservation reservation) {
-    return reservationRepository.save(reservation);
+  public ReservationDto save(Reservation reservation) {
+    Reservation savedReservation = reservationRepository.save(reservation);
+    return ReservationDto.from(savedReservation);
   }
 
   public void deleteById(Long id) {
-    boolean isDeleted = reservationRepository.deleteById(id);
-    if (!isDeleted) {
+    if (!reservationRepository.deleteById(id)) {
       throw new ReservationNotFoundException();
     }
   }

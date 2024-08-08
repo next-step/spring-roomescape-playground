@@ -4,12 +4,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import roomescape.exception.ReservationNotFoundException;
 import roomescape.exception.dto.ErrorResponseDto;
 
-@ControllerAdvice // 전역 예외 처리
+@RestControllerAdvice // 전역 예외 처리
 public class GlobalExceptionHandler {
 
   @ExceptionHandler(ReservationNotFoundException.class)
