@@ -9,10 +9,6 @@ public class HomeController {
 
     @RequestMapping("/")
     public String home(Model model) {
-        // 모델에 필요한 속성 추가
-        model.addAttribute("message", "Welcome to Admin Main Page");
-
-        // 뷰 이름을 반환
         return "home";
     }
 }
