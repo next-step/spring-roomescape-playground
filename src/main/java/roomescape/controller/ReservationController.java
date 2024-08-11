@@ -1,12 +1,13 @@
 package roomescape.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import roomescape.domain.Reservation;
 import roomescape.exception.NotFoundReservationException;
+import roomescape.service.ReservationService;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -19,10 +20,15 @@ public class ReservationController {
 
     private List<Reservation> reservations = new ArrayList<>();
     private final AtomicLong index = new AtomicLong(1);
+    private final ReservationService reservationService;
+
+    @Autowired
+    public ReservationController(ReservationService reservationService) {
+        this.reservationService = reservationService;
+    }
 
     @GetMapping("/reservation")
     public String showReservationPage() {
-        // template/reservation.html을 반환
         return "reservation";
     }
 
@@ -61,6 +67,7 @@ public class ReservationController {
     @GetMapping("/reservations")
     @ResponseBody
     public ResponseEntity<List<Reservation>> getReservations() {
+        List<Reservation> reservations = reservationService.getReservations();
         return ResponseEntity.ok().body(reservations);
     }
 }
