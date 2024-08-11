@@ -1,4 +1,6 @@
-package roomescape.dto;
+package roomescape.domain;
+
+import java.util.Objects;
 
 public class Reservation {
     private Long id;
@@ -7,21 +9,25 @@ public class Reservation {
 
     private String time;
 
-    // 생성자, getter, setter
     public Reservation(Long id, String name, String date, String time) {
         this.id = id;
         this.name = name;
         this.date = date;
         this.time = time;
     }
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Reservation that = (Reservation) obj;
+        return Objects.equals(id, that.id);
+    }
 
-    // Id
     public Long getId() {
         return id;
     }
     public void setId(Long id) { this.id = id; }
 
-    // Name
     public String getName() {
         return name;
     }
@@ -30,7 +36,6 @@ public class Reservation {
         this.name = name;
     }
 
-    // Date
     public String getDate() {
         return date;
     }
@@ -39,14 +44,12 @@ public class Reservation {
         this.date = date;
     }
 
-    // Time
     public String getTime() { return time; }
 
     public void setTime() {
         this.time = time;
     }
 
-    // 유효성 검사 추가
     public static Reservation toEntity(Reservation reservation, Long id) {
         return new Reservation(id, reservation.name, reservation.date, reservation.time);
     }
