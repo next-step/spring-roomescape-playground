@@ -34,19 +34,19 @@ public class ReservationController {
         return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
     }
 
-    private static void checkMissingParameter(ReservationCreateRequest request) {
-        if (request.name() == null || request.date() == null || request.time() == null) {
+    private void checkMissingParameter(ReservationCreateRequest request) {
+        if (request.name().isBlank() || request.date() == null || request.time() == null) {
             throw new MissingParameterException();
         }
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Reservation> deleteReservation(@PathVariable Long id) {
-        checkNotFoundReservation(id);
+        removeReservationOrException(id);
         return ResponseEntity.noContent().build();
     }
 
-    private void checkNotFoundReservation(Long id) {
+    private void removeReservationOrException(Long id) {
         if (!reservations.removeIf(reservation -> reservation.getId().equals(id))) {
             throw new NotFoundReservationException();
         }
