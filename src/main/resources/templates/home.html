@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,17 +7,15 @@
   <title>방탈출 어드민 페이지</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 
 <body>
-
 <div class="container-fluid page">
   <div class="row">
     <!-- Sidebar -->
     <div id="sidebar-container" class="col-md-3">
       <nav id="sidebar" class="text-white">
-        <!-- 로고 영역 -->
         <div class="sidebar-logo p-4">
           <a href="/">
             <img src="https://avatars.githubusercontent.com/u/141792611?s=96&v=4" alt="logo" class="img-fluid rounded-circle">
@@ -27,11 +24,11 @@
         <ul class="list-unstyled mt-4">
           <li class="p-3">
             <i class="fas fa-calendar-check menu-icon mr-2"></i>
-            <a href="/reservation" class="text-white">예약관리</a>
+            <a th:href="@{/reservation}" class="text-white">예약관리</a>
           </li>
           <li class="p-3">
             <i class="fas fa-clock menu-icon mr-2"></i>
-            <a href="/time" class="text-white">시간관리</a>
+            <a th:href="@{/time}" class="text-white">시간관리</a>
           </li>
         </ul>
       </nav>
@@ -43,6 +40,6 @@
   </div>
 </div>
 
-<script src="/js/scripts.js"></script>
+<script th:src="@{/js/scripts.js}"></script>
 </body>
 </html>
