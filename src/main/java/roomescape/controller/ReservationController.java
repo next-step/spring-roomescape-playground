@@ -1,5 +1,6 @@
 package roomescape.controller;
 
+import exception.NotFoundReservationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -15,46 +16,46 @@ import java.util.concurrent.atomic.AtomicLong;
 public class ReservationController {
 
     private List<Reservation> reservations = new ArrayList<>();
-    private AtomicLong index = new AtomicLong(0);
+    private AtomicLong index = new AtomicLong(1);
 
-    // 예약 화면 보여주rl
     @GetMapping("/reservation")
     public String reservationPage() {
         return "reservation";
     }
 
-    // 예약 조회
     @GetMapping("/reservations")
     @ResponseBody
     public List<Reservation> getReservations() {
         return reservations;
     }
 
-    // 에약 추가
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> addReservation(@RequestBody Map<String, String> params) {
 
         Reservation reservation = new Reservation(params.get("name"), params.get("date"), params.get("time"));
+
+        if (reservation.getName() == null || reservation.getName().isEmpty() ||
+                reservation.getDate() == null || reservation.getDate().isEmpty() ||
+                reservation.getTime() == null || reservation.getTime().isEmpty()) {
+            throw new IllegalArgumentException("예약 내용에 누락된 부분이 있습니다.");
+        }
 
         long id = index.getAndIncrement();
         reservation.setId(id);
         reservations.add(reservation);
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .header("Location" + "/reservations/" + reservation.getId())
+                .header("Location", "/reservations/" + reservation.getId())
                 .body(reservation);
     }
 
-    // 예약 삭제
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
-
         boolean isRemoved = reservations.removeIf(reservation -> reservation.getId().equals(id));
 
-        if(!isRemoved) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        if (!isRemoved) {
+            throw new NotFoundReservationException("삭제하려는 예약이 없습니다.");
         }
         return ResponseEntity.noContent().build();
     }
-
 }
