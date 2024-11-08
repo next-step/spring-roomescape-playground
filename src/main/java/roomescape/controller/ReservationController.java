@@ -1,6 +1,7 @@
 package roomescape.controller;
 
-import exception.NotFoundReservationException;
+import roomescape.exception.InvalidReservationParameterException;
+import roomescape.exception.NotFoundReservationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -37,7 +38,7 @@ public class ReservationController {
         if (reservation.getName() == null || reservation.getName().isEmpty() ||
                 reservation.getDate() == null || reservation.getDate().isEmpty() ||
                 reservation.getTime() == null || reservation.getTime().isEmpty()) {
-            throw new IllegalArgumentException("예약 내용에 누락된 부분이 있습니다.");
+            throw new InvalidReservationParameterException("예약 내용에 누락된 부분이 있습니다.");
         }
 
         long id = index.getAndIncrement();
