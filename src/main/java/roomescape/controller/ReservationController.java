@@ -9,6 +9,7 @@ import roomescape.exception.InvalidReservationException;
 import roomescape.exception.NotFoundReservationException;
 import roomescape.model.Reservation;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -46,10 +47,7 @@ public class ReservationController {
         newReservation.setId(id);
         reservations.add(newReservation);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Location", "/reservations/" + id);
-
-        return new ResponseEntity<>(newReservation, headers, HttpStatus.CREATED);
+        return ResponseEntity.created(URI.create("/reservations/" + id)).body(newReservation);
     }
 
     // 예약 삭제
