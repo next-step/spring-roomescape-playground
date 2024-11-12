@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import roomescape.exception.InvalidReservationException;
 import roomescape.exception.NotFoundReservationException;
 import roomescape.model.Reservation;
+import roomescape.model.ReservationRequest;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -36,12 +37,9 @@ public class ReservationController {
 
     // 예약 추가
     @PostMapping("/reservations")
-    public ResponseEntity<Reservation> addReservation(@RequestBody Reservation newReservation) {
-        if (newReservation.getName() == null || newReservation.getName().isEmpty() ||
-                newReservation.getDate() == null || newReservation.getDate().isEmpty() ||
-                newReservation.getTime() == null || newReservation.getTime().isEmpty()) {
-            throw new InvalidReservationException("필요한 인자가 없습니다.");
-        }
+    public ResponseEntity<Reservation> addReservation(@RequestBody ReservationRequest request) {
+        request.validate();
+        Reservation newReservation = new Reservation(null, request.getName(), request.getDate(), request.getTime());
 
         long id = index.getAndIncrement();
         newReservation.setId(id);
