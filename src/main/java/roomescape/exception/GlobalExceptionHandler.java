@@ -20,4 +20,3 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().build();
     }
 }
-
