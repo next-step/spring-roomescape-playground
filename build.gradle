@@ -18,6 +18,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'io.rest-assured:rest-assured:5.3.1'
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc' // Jdbc 의존성
+    runtimeOnly 'com.h2database:h2' // 메모리 기반의 H2 데이터베이스
 }
 
 test {
