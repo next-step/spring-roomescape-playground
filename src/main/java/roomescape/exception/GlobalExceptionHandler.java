@@ -1,5 +1,6 @@
 package roomescape.exception;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -11,12 +12,12 @@ public class GlobalExceptionHandler {
 
     // 특정 예외를 처리하는 메서드를 정의
     @ExceptionHandler(NotFoundReservationException.class)
-    public ResponseEntity<Void> handleNotFoundReservationException(NotFoundReservationException e) {
-        return ResponseEntity.badRequest().build();
+    public ResponseEntity<String> handleNotFoundReservationException(NotFoundReservationException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 
     @ExceptionHandler(InvalidReservationException.class)
-    public ResponseEntity<Void> handleInvalidReservationException(InvalidReservationException e) {
-        return ResponseEntity.badRequest().build();
+    public ResponseEntity<String> handleInvalidReservationException(InvalidReservationException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 }
