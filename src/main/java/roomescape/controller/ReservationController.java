@@ -51,7 +51,6 @@ public class ReservationController {
         Reservation reservation = new Reservation(params.get("name"), params.get("date"), params.get("time"));
 
         String sql = "INSERT INTO reservation (name,date,time) VALUES (?,?,?)";
-//        jdbcTemplate.update(sql, reservation.getName(), reservation.getDate(), reservation.getTime());
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
