@@ -3,6 +3,8 @@ package roomescape.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import roomescape.exception.InvalidReservationParameterException;
 import roomescape.exception.NotFoundReservationException;
 import org.springframework.http.HttpStatus;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import roomescape.model.Reservation;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -36,6 +39,7 @@ public class ReservationController {
         return jdbcTemplate.query(sql, new ReservationRowMapper());
     }
 
+    // 추가
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> addReservation(@RequestBody Map<String, String> params) {
         if (params.get("name") == null || params.get("name").isEmpty() ||
@@ -47,13 +51,28 @@ public class ReservationController {
         Reservation reservation = new Reservation(params.get("name"), params.get("date"), params.get("time"));
 
         String sql = "INSERT INTO reservation (name,date,time) VALUES (?,?,?)";
-        jdbcTemplate.update(sql, reservation.getName(), reservation.getDate(), reservation.getTime());
+//        jdbcTemplate.update(sql, reservation.getName(), reservation.getDate(), reservation.getTime());
+        KeyHolder keyHolder = new GeneratedKeyHolder();
 
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .header("Location", "/reservations/")
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
+            ps.setString(1, reservation.getName());
+            ps.setString(2, reservation.getDate());
+            ps.setString(3, reservation.getTime());
+            return ps;
+        }, keyHolder);
+
+        Number generatedId = keyHolder.getKey();
+        if (generatedId != null) {
+            reservation.setId(generatedId.longValue());
+        }
+
+        return ResponseEntity.status(HttpStatus.CREATED) // status: 201
+                .header("Location", "/reservations/" + reservation.getId())
                 .body(reservation);
     }
 
+    // 삭제
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
         String sql = "DELETE FROM reservation WHERE id = ?";
