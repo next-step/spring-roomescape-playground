@@ -51,15 +51,12 @@ public class ReservationController {
     // 예약 삭제
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
-        Optional<Reservation> reservationToDelete = reservations.stream()
+        Reservation reservationToDelete = reservations.stream()
                 .filter(reservation -> reservation.getId().equals(id))
-                .findFirst();
+                .findFirst()
+                .orElseThrow(() -> new NotFoundReservationException("삭제할 예약이 없습니다."));
 
-        if (reservationToDelete.isPresent()) {
-            reservations.remove(reservationToDelete.get());
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-
-        throw new NotFoundReservationException("삭제할 예약이 없습니다.");
+        reservations.remove(reservationToDelete);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
