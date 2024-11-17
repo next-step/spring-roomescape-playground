@@ -4,23 +4,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import roomescape.exception.InvalidReservationParameterException;
-import roomescape.exception.NotFoundReservationException;
 import roomescape.model.Reservation;
+import roomescape.model.ReservationService;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
 @Controller
 public class ReservationController {
+
+    private ReservationService reservationService;
+
+    public ReservationController(ReservationService reservationService) {
+        this.reservationService = reservationService;
+    }
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -33,60 +32,20 @@ public class ReservationController {
     @GetMapping("/reservations")
     @ResponseBody
     public List<Reservation> getReservations() {
-        String sql = "SELECT * FROM reservation";
-        return jdbcTemplate.query(sql, new ReservationRowMapper());
+        return reservationService.getAllReservations();
     }
 
-    // 추가
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> addReservation(@RequestBody Map<String, String> params) {
-        if (params.get("name") == null || params.get("name").isEmpty() ||
-                params.get("date") == null || params.get("date").isEmpty() ||
-                params.get("time") == null || params.get("time").isEmpty()) {
-            throw new InvalidReservationParameterException("예약 내용에 누락된 부분이 있습니다.");
-        }
-
-        Reservation reservation = new Reservation(params.get("name"), params.get("date"), params.get("time"));
-
-        String sql = "INSERT INTO reservation (name,date,time) VALUES (?,?,?)";
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-
-        jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
-            ps.setString(1, reservation.getName());
-            ps.setString(2, reservation.getDate());
-            ps.setString(3, reservation.getTime());
-            return ps;
-        }, keyHolder);
-
-        Number generatedId = keyHolder.getKey();
-        if (generatedId != null) {
-            reservation.setId(generatedId.longValue());
-        }
-
+        Reservation reservation = reservationService.addReservation(params);
         return ResponseEntity.status(HttpStatus.CREATED) // status: 201
                 .header("Location", "/reservations/" + reservation.getId())
                 .body(reservation);
     }
 
-    // 삭제
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
-        String sql = "DELETE FROM reservation WHERE id = ?";
-        int rowAffected = jdbcTemplate.update(sql, id);
-
-        if (rowAffected == 0) {
-            throw new NotFoundReservationException("삭제하려는 예약이 없습니다.");
-        }
+        reservationService.deleteReservation(id);
         return ResponseEntity.noContent().build();
-    }
-
-    private static class ReservationRowMapper implements RowMapper<Reservation> {
-        @Override
-        public Reservation mapRow(ResultSet rs, int rowNum) throws SQLException {
-            Reservation reservation = new Reservation(rs.getString("name"), rs.getString("date"), rs.getString("time"));
-            reservation.setId(rs.getLong("id"));
-            return reservation;
-        }
     }
 }
