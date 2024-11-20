@@ -10,7 +10,6 @@ import roomescape.exception.NotFoundReservationException;
 
 import java.sql.PreparedStatement;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class ReservationService {
@@ -27,14 +26,14 @@ public class ReservationService {
         return reservationRepository.findAll();
     }
 
-    public Reservation addReservation(Map<String, String> params) {
-        if (params.get("name") == null || params.get("name").isEmpty() ||
-                params.get("date") == null || params.get("date").isEmpty() ||
-                params.get("time") == null || params.get("time").isEmpty()) {
+    public Reservation addReservation(ReservationRequest reservationRequest) {
+        if (reservationRequest.getName() == null || reservationRequest.getName().isEmpty() ||
+                reservationRequest.getDate() == null || reservationRequest.getDate().isEmpty() ||
+                reservationRequest.getTime() == null || reservationRequest.getTime().isEmpty()) {
             throw new InvalidReservationParameterException("예약 내용에 누락된 부분이 있습니다.");
         }
 
-        Reservation reservation = new Reservation(params.get("name"), params.get("date"), params.get("time"));
+        Reservation reservation = new Reservation(reservationRequest.getName(), reservationRequest.getDate(),reservationRequest.getTime());
 
         String sql = "INSERT INTO reservation (name,date,time) VALUES (?,?,?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
