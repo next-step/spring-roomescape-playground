@@ -7,10 +7,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import roomescape.model.Reservation;
+import roomescape.model.ReservationRequest;
 import roomescape.model.ReservationService;
 
 import java.util.List;
-import java.util.Map;
 
 @Controller
 public class ReservationController {
@@ -36,8 +36,8 @@ public class ReservationController {
     }
 
     @PostMapping("/reservations")
-    public ResponseEntity<Reservation> addReservation(@RequestBody Map<String, String> params) {
-        Reservation reservation = reservationService.addReservation(params);
+    public ResponseEntity<Reservation> addReservation(@RequestBody ReservationRequest reservationRequest) {
+        Reservation reservation = reservationService.addReservation(reservationRequest);
         return ResponseEntity.status(HttpStatus.CREATED) // status: 201
                 .header("Location", "/reservations/" + reservation.getId())
                 .body(reservation);
