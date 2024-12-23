@@ -43,7 +43,7 @@ public class ReservationDao {
         String query = "SELECT id FROM reservation ORDER BY id DESC LIMIT 1";
         Long id = jdbcTemplate.queryForObject(query, Long.class);
 
-        return new Reservation(id, reservation.getName(), reservation.getDate(), reservation.getTime().getTime());
+        return new Reservation(id, reservation.getName(), reservation.getDate(), reservation.getTime());
     }
 
     public void delete(Long id) {
