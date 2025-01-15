@@ -3,9 +3,12 @@ package roomescape.reservation;
 import jakarta.annotation.PostConstruct;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+import roomescape.reservation.dto.ReservationCreateRequest;
+import roomescape.reservation.dto.ReservationCreateResponse;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -34,5 +37,28 @@ public class ReservationController {
     @GetMapping("/reservations")
     public ResponseEntity<List<Reservation>> getReservationList() {
         return ResponseEntity.ok(reservations);
+    }
+    
+    @PostMapping("/reservations")
+    public ResponseEntity<ReservationCreateResponse> createReservation(@RequestBody ReservationCreateRequest request) throws URISyntaxException {
+        Reservation reservation = request.toEntity(index.incrementAndGet());
+        reservations.add(reservation);
+        Long id = reservation.getId();
+        URI uri = new URI("/reservations/" + id.toString());
+        return ResponseEntity
+                .created(uri)
+                .body(new ReservationCreateResponse(id));
+    }
+    
+    @DeleteMapping("/reservations/{id}")
+    public ResponseEntity<Void> deleteReservation(@PathVariable(name = "id") Long id) {
+        Reservation reservation = reservations.stream()
+                .filter(r -> r.isEqualId(id))
+                .findFirst()
+                .orElseThrow();
+
+        reservations.remove(reservation);
+        
+        return ResponseEntity.noContent().build();
     }
 }
