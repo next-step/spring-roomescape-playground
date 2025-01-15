@@ -4,6 +4,7 @@ import jakarta.annotation.PostConstruct;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import roomescape.exception.NotFoundReservationException;
 import roomescape.reservation.dto.ReservationCreateRequest;
 import roomescape.reservation.dto.ReservationCreateResponse;
 
@@ -55,7 +56,7 @@ public class ReservationController {
         Reservation reservation = reservations.stream()
                 .filter(r -> r.isEqualId(id))
                 .findFirst()
-                .orElseThrow();
+                .orElseThrow(NotFoundReservationException::new);
 
         reservations.remove(reservation);
         
