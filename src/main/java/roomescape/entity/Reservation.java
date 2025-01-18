@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import roomescape.exception.InvalidInputException;
 
 public class Reservation {
 
@@ -23,15 +24,15 @@ public class Reservation {
 
     private void validateInput(String name, String date, String time) {
         if (name == null || name.trim().isEmpty()) {
-            throw new IllegalArgumentException("[Error] name는 null이거나 공백이 들어갈 수 없습니다.");
+            throw new InvalidInputException("name는 null이거나 공백이 들어갈 수 없습니다.");
         }
 
         if (date == null || date.trim().isEmpty()) {
-            throw new IllegalArgumentException("[Error] date는 null이거나 공백이 들어갈 수 없습니다.");
+            throw new InvalidInputException("date는 null이거나 공백이 들어갈 수 없습니다.");
         }
 
         if (time == null || time.trim().isEmpty()) {
-            throw new IllegalArgumentException("[Error] time는 null이거나 공백이 들어갈 수 없습니다.");
+            throw new InvalidInputException("time는 null이거나 공백이 들어갈 수 없습니다.");
         }
     }
 
@@ -40,7 +41,7 @@ public class Reservation {
         try {
             return LocalDate.parse(date, formatter);
         } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("[Error] date는 yyyy-MM-dd 형식이 아닙니다.");
+            throw new InvalidInputException("date는 yyyy-MM-dd 형식이 아닙니다.");
         }
     }
 
@@ -49,7 +50,7 @@ public class Reservation {
         try {
             return LocalTime.parse(time, formatter);
         } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("[Error] time는 HH:mm 형식이 아닙니다.");
+            throw new InvalidInputException("time는 HH:mm 형식이 아닙니다.");
         }
     }
 
@@ -76,7 +77,7 @@ public class Reservation {
 
     private void validateId(Long id) {
         if (id == null || id < 0) {
-            throw new IllegalArgumentException("[Error] id는 null이거나 음수일 수 없습니다.");
+            throw new InvalidInputException("id는 null이거나 음수일 수 없습니다.");
         }
     }
 
