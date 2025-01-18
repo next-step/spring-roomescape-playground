@@ -8,25 +8,20 @@ import java.time.format.DateTimeParseException;
 
 public class Reservation {
 
-    private final Long id;
+    private Long id;
     private final String name;
     private final LocalDate date;
     @JsonFormat(pattern = "HH:mm")
     private final LocalTime time;
 
-    public Reservation(Long id, String name, String date, String time) {
-        validateInput(id, name, date, time);
-        this.id = id;
+    public Reservation(String name, String date, String time) {
+        validateInput(name, date, time);
         this.name = name;
         this.date = parseDate(date);
         this.time = parseTime(time);
     }
 
-    private void validateInput(Long id, String name, String date, String time) {
-        if (id == null || id < 0) {
-            throw new IllegalArgumentException("[Error] id는 null이거나 음수일 수 없습니다.");
-        }
-
+    private void validateInput(String name, String date, String time) {
         if (name == null || name.trim().isEmpty()) {
             throw new IllegalArgumentException("[Error] name는 null이거나 공백이 들어갈 수 없습니다.");
         }
@@ -72,6 +67,17 @@ public class Reservation {
 
     public LocalTime getTime() {
         return time;
+    }
+
+    public void setId(Long id) {
+        validateId(id);
+        this.id = id;
+    }
+
+    private void validateId(Long id) {
+        if (id == null || id < 0) {
+            throw new IllegalArgumentException("[Error] id는 null이거나 음수일 수 없습니다.");
+        }
     }
 
 }
