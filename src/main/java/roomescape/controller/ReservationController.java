@@ -22,7 +22,7 @@ public class ReservationController {
 
     private final AtomicLong idGenerator = new AtomicLong(0);
 
-    private List<Reservation> reservations = new ArrayList<>();
+    private final List<Reservation> reservations = new ArrayList<>();
 
     @GetMapping("/reservations")
     public List<Reservation> getReservations() {
