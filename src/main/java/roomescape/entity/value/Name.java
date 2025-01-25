@@ -16,7 +16,7 @@ public class Name {
     }
 
     private static void validateInput(String name) {
-        if (name == null || name.trim().isEmpty()) {
+        if (name == null || name.isBlank()) {
             throw new InvalidInputException("name는 null이거나 공백이 들어갈 수 없습니다.");
         }
     }

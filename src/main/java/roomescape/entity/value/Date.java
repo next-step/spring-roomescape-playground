@@ -21,7 +21,7 @@ public class Date {
     }
 
     private static void validateInput(String date) {
-        if (date == null || date.trim().isEmpty()) {
+        if (date == null || date.isBlank()) {
             throw new InvalidInputException("date는 null이거나 공백이 들어갈 수 없습니다.");
         }
     }

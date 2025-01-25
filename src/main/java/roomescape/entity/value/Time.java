@@ -20,7 +20,7 @@ public class Time {
     }
 
     private static void validateInput(String time) {
-        if (time == null || time.trim().isEmpty()) {
+        if (time == null || time.isBlank()) {
             throw new InvalidInputException("time는 null이거나 공백이 들어갈 수 없습니다.");
         }
     }
