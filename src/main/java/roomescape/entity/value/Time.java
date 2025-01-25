@@ -11,11 +11,11 @@ public class Time {
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
 
     private Time(String value) {
+        validateInput(value);
         this.value = parseTime(value);
     }
 
     public static Time of(String value) {
-        validateInput(value);
         return new Time(value);
     }
 

@@ -12,11 +12,11 @@ public class Date {
     private final static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     private Date(String value) {
+        validateInput(value);
         this.value = parseDate(value);
     }
 
     public static Date of(String value) {
-        validateInput(value);
         return new Date(value);
     }
 

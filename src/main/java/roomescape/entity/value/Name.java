@@ -7,11 +7,11 @@ public class Name {
     private final String value;
 
     private Name(String value) {
+        validateInput(value);
         this.value = value;
     }
 
     public static Name of(String value) {
-        validateInput(value);
         return new Name(value);
     }
 
