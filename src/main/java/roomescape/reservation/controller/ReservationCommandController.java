@@ -1,10 +1,10 @@
-package roomescape.reservation;
+package roomescape.reservation.controller;
 
 import jakarta.annotation.PostConstruct;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import roomescape.exception.NotFoundReservationException;
+import roomescape.reservation.Reservation;
 import roomescape.reservation.dto.ReservationCreateRequest;
 import roomescape.reservation.dto.ReservationCreateResponse;
 
@@ -16,12 +16,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
-@Controller
-public class ReservationController {
+@RestController
+public class ReservationCommandController {
 
     private final AtomicLong index = new AtomicLong();
-    private List<Reservation> reservations = new ArrayList<>();
-    
+    private final List<Reservation> reservations = new ArrayList<>();
+
     @PostConstruct
     void init() {
         reservations.add(new Reservation(index.incrementAndGet(), "브라운", LocalDate.now(), LocalTime.now()));
@@ -29,17 +29,11 @@ public class ReservationController {
         reservations.add(new Reservation(index.incrementAndGet(), "HONG", LocalDate.now(), LocalTime.now()));
     }
 
-    @GetMapping("/reservation")
-    public String getReservationPage() {
-        return "reservation";
-    }
-    
-    @ResponseBody
     @GetMapping("/reservations")
     public ResponseEntity<List<Reservation>> getReservationList() {
         return ResponseEntity.ok(reservations);
     }
-    
+
     @PostMapping("/reservations")
     public ResponseEntity<ReservationCreateResponse> createReservation(@RequestBody ReservationCreateRequest request) throws URISyntaxException {
         Reservation reservation = request.toEntity(index.incrementAndGet());
@@ -50,7 +44,7 @@ public class ReservationController {
                 .created(uri)
                 .body(new ReservationCreateResponse(id));
     }
-    
+
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable(name = "id") Long id) {
         Reservation reservation = reservations.stream()
@@ -59,7 +53,7 @@ public class ReservationController {
                 .orElseThrow(NotFoundReservationException::new);
 
         reservations.remove(reservation);
-        
+
         return ResponseEntity.noContent().build();
     }
 }
