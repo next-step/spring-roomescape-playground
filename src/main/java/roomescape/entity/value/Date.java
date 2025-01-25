@@ -7,9 +7,10 @@ import roomescape.exception.InvalidInputException;
 
 public class Date {
 
+    private final static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
     private final LocalDate value;
 
-    private final static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     private Date(String value) {
         validateInput(value);
@@ -28,7 +29,6 @@ public class Date {
 
 
     private LocalDate parseDate(String date) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         try {
             return LocalDate.parse(date, formatter);
         } catch (DateTimeParseException e) {

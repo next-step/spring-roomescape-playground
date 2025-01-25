@@ -6,9 +6,11 @@ import java.time.format.DateTimeParseException;
 import roomescape.exception.InvalidInputException;
 
 public class Time {
-    private final LocalTime value;
 
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+
+    private final LocalTime value;
+
 
     private Time(String value) {
         validateInput(value);
