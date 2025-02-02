@@ -6,10 +6,11 @@ import roomescape.reservation.domain.Reservation;
 
 public record ReservationResponse(Long id, String name, LocalDate date, String time) {
 
+    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
+
     public static ReservationResponse fromReservation(final Reservation reservation) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
 
         return new ReservationResponse(reservation.getId(), reservation.getName(), reservation.getDate(),
-                formatter.format(reservation.getTime()));
+                TIME_FORMATTER.format(reservation.getTime()));
     }
 }
