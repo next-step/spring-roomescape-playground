@@ -2,16 +2,14 @@ package roomescape.controller;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import roomescape.domain.Reservation;
 
 @Controller
-public class RoomEscapeController {
+public class ReservationController {
     private final List<Reservation> reservations = createReservations();
 
     @GetMapping("/")
