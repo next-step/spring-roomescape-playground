@@ -11,6 +11,20 @@ public class Reservation {
     private final Date date;
     private final Time time;
 
+    public Reservation() {
+        this.id = null;
+        this.name = null;
+        this.date = null;
+        this.time = null;
+    }
+
+    public Reservation(Long id, String name, String date, String time) {
+        this.id = id;
+        this.name = Name.of(name);
+        this.date = Date.of(date);
+        this.time = Time.of(time);
+    }
+
     public Reservation(String name, String date, String time) {
         this.name = Name.of(name);
         this.date = Date.of(date);
