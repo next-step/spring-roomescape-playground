@@ -2,6 +2,8 @@ package roomescape.reservation.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.web.bind.annotation.*;
 import roomescape.exception.NotFoundReservationException;
 import roomescape.reservation.Reservation;
@@ -10,6 +12,7 @@ import roomescape.reservation.dto.ReservationCreateResponse;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
@@ -40,10 +43,20 @@ public class ReservationCommandController {
 
     @PostMapping("/reservations")
     public ResponseEntity<ReservationCreateResponse> createReservation(@RequestBody ReservationCreateRequest request) throws URISyntaxException {
-        Reservation reservation = request.toEntity(index.incrementAndGet());
-        reservations.add(reservation);
-        Long id = reservation.getId();
-        URI uri = new URI("/reservations/" + id.toString());
+        String sql = "INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
+            ps.setString(1, request.getName());
+            ps.setString(2, request.getDate());
+            ps.setString(3, request.getTime());
+            return ps;
+        }, keyHolder);
+
+        Long id = keyHolder.getKey().longValue();
+
+        URI uri = new URI("/reservations/" + id);
         return ResponseEntity
                 .created(uri)
                 .body(new ReservationCreateResponse(id));
@@ -51,12 +64,9 @@ public class ReservationCommandController {
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable(name = "id") Long id) {
-        Reservation reservation = reservations.stream()
-                .filter(r -> r.isEqualId(id))
-                .findFirst()
-                .orElseThrow(NotFoundReservationException::new);
+        String sql = "DELETE FROM reservation WHERE id = ?";
 
-        reservations.remove(reservation);
+        jdbcTemplate.update(sql, id);
 
         return ResponseEntity.noContent().build();
     }
