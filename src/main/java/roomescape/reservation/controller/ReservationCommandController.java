@@ -1,7 +1,7 @@
 package roomescape.reservation.controller;
 
-import jakarta.annotation.PostConstruct;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
 import roomescape.exception.NotFoundReservationException;
 import roomescape.reservation.Reservation;
@@ -10,8 +10,6 @@ import roomescape.reservation.dto.ReservationCreateResponse;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
@@ -19,18 +17,24 @@ import java.util.concurrent.atomic.AtomicLong;
 @RestController
 public class ReservationCommandController {
 
+    private final JdbcTemplate jdbcTemplate;
+
     private final AtomicLong index = new AtomicLong();
     private final List<Reservation> reservations = new ArrayList<>();
 
-    @PostConstruct
-    void init() {
-        reservations.add(new Reservation(index.incrementAndGet(), "브라운", LocalDate.now(), LocalTime.now()));
-        reservations.add(new Reservation(index.incrementAndGet(), "SEOKJU", LocalDate.now(), LocalTime.now()));
-        reservations.add(new Reservation(index.incrementAndGet(), "HONG", LocalDate.now(), LocalTime.now()));
+    public ReservationCommandController(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     @GetMapping("/reservations")
     public ResponseEntity<List<Reservation>> getReservationList() {
+        String sql = "SELECT * FROM reservation";
+        List<Reservation> reservations = jdbcTemplate.query(sql, (rs, rowNum) -> new Reservation(
+                rs.getLong("id"),
+                rs.getString("name"),
+                rs.getString("date"),
+                rs.getString("time")
+        ));
         return ResponseEntity.ok(reservations);
     }
 

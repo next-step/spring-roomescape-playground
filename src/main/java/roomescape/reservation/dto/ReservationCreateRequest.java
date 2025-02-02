@@ -10,19 +10,19 @@ public class ReservationCreateRequest {
     
     private String name;
     
-    private LocalDate date;
+    private String date;
     
-    private LocalTime time;
+    private String time;
 
     public String getName() {
         return name;
     }
 
-    public LocalDate getDate() {
+    public String getDate() {
         return date;
     }
 
-    public LocalTime getTime() {
+    public String getTime() {
         return time;
     }
     
