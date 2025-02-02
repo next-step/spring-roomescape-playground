@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import roomescape.entity.Reservation;
+import roomescape.entity.repository.ReservationRepository;
 import roomescape.exception.NotFoundException;
 import roomescape.exception.ReservationException;
 
@@ -22,13 +23,18 @@ public class ReservationController {
 
     private final AtomicLong idGenerator = new AtomicLong(0);
 
-    private final List<Reservation> reservations = new ArrayList<>();
+    private final ReservationRepository reservationRepository;
+
+    public ReservationController(ReservationRepository reservationRepository) {
+        this.reservationRepository = reservationRepository;
+    }
 
     @GetMapping("/reservations")
     public List<Reservation> getReservations() {
-        return reservations;
+        return reservationRepository.findAll();
     }
 
+    /*
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservation) {
         reservation.setId(idGenerator.incrementAndGet());
@@ -48,6 +54,7 @@ public class ReservationController {
 
         return ResponseEntity.noContent().build();
     }
+    */
 
     @ExceptionHandler(ReservationException.class)
     public ResponseEntity<String> handleException(ReservationException e) {
