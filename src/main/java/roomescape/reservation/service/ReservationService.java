@@ -14,6 +14,7 @@ public class ReservationService {
         List<ReservationResponse> reservationResponses = reservations.stream()
                 .map(ReservationResponse::fromReservation)
                 .collect(Collectors.toList());
+
         return reservationResponses;
     }
 }

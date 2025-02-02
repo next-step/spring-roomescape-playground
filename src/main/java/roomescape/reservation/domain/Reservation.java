@@ -31,7 +31,7 @@ public class Reservation {
         return time;
     }
 
-    public Reservation(Long id, String name, LocalDate date, LocalTime time) {
+    public Reservation(final Long id, final String name, final LocalDate date, final LocalTime time) {
         this.id = id;
         this.name = name;
         this.date = date;
