@@ -1,20 +1,16 @@
 package roomescape.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class Reservation {
 
-    @JsonProperty
     private final Long id;
 
-    @JsonProperty
     private final String name;
 
-    @JsonProperty
     private final LocalDate date;
 
     @JsonFormat(pattern = "HH:mm")
@@ -25,5 +21,21 @@ public class Reservation {
         this.name = name;
         this.date = date;
         this.time = time;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public LocalTime getTime() {
+        return time;
     }
 }
