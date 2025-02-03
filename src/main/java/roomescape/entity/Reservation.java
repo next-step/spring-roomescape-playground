@@ -6,17 +6,10 @@ import roomescape.entity.value.Time;
 
 public class Reservation {
 
-    private Long id;
+    private final Long id;
     private final Name name;
     private final Date date;
     private final Time time;
-
-    public Reservation() {
-        this.id = null;
-        this.name = null;
-        this.date = null;
-        this.time = null;
-    }
 
     public Reservation(Long id, String name, String date, String time) {
         this.id = id;
@@ -26,17 +19,21 @@ public class Reservation {
     }
 
     public Reservation(String name, String date, String time) {
+        this.id = null;
         this.name = Name.of(name);
         this.date = Date.of(date);
         this.time = Time.of(time);
     }
 
-    public Long getId() {
-        return id;
+    private Reservation() {
+        this.id = null;
+        this.name = null;
+        this.date = null;
+        this.time = null;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public Long getId() {
+        return id;
     }
 
     public String getName() {
