@@ -1,15 +1,36 @@
-package roomescape.dto;
+package roomescape.reservation;
 
-import java.security.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Date;
 
 public class Reservation {
 
     private int id;
-    private int user_name;
-    private Date date;
-    private LocalTime time;
-    private Timestamp created_at;
+    private String name;
+    private LocalDate date;  // 날짜만 저장
+    private LocalTime time;  // 시간만 저장
+
+    public Reservation(int id, String name, LocalDate date, LocalTime time) {
+        this.id = id;
+        this.name = name;
+        this.date = date;
+        this.time = time;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public LocalTime getTime() {
+        return time;
+    }
 
 }
