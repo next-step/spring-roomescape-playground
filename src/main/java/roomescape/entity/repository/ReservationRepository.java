@@ -1,7 +1,11 @@
 package roomescape.entity.repository;
 
 import java.util.List;
+import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import roomescape.entity.Reservation;
 
@@ -9,9 +13,13 @@ import roomescape.entity.Reservation;
 public class ReservationRepository {
 
     private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert simpleJdbcInsert;
 
-    public ReservationRepository(JdbcTemplate jdbcTemplate) {
+    public ReservationRepository(JdbcTemplate jdbcTemplate, DataSource source) {
         this.jdbcTemplate = jdbcTemplate;
+        this.simpleJdbcInsert = new SimpleJdbcInsert(source);
+        this.simpleJdbcInsert.setTableName("reservation");
+        this.simpleJdbcInsert.usingGeneratedKeyColumns("id");
     }
 
     public List<Reservation> findAll() {
@@ -24,17 +32,12 @@ public class ReservationRepository {
     }
 
     public Reservation save(Reservation reservation) {
-        String insertQuery = "INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)";
-        jdbcTemplate.update(insertQuery, reservation.getName(), reservation.getDate(), reservation.getTime());
-
-        String selectSql = "SELECT id, name, date, time FROM reservation WHERE name = ? AND date = ? AND time = ? ORDER BY id DESC LIMIT 1";
-        return jdbcTemplate.queryForObject(selectSql, (rs, rowNum) ->
-            new Reservation(
-                rs.getLong("id"),
-                rs.getString("name"),
-                rs.getString("date"),
-                rs.getString("time")
-            ), reservation.getName(), reservation.getDate(), reservation.getTime());
+        SqlParameterSource params = new MapSqlParameterSource()
+            .addValue("name", reservation.getName())
+            .addValue("date", reservation.getDate())
+            .addValue("time", reservation.getTime());
+        long id = simpleJdbcInsert.executeAndReturnKey(params).longValue();
+        return new Reservation(id, reservation.getName(), reservation.getDate(), reservation.getTime());
     }
 
     public int deleteById(Long id) {
