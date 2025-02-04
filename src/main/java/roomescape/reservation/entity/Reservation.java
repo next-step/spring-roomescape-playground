@@ -20,10 +20,6 @@ public class Reservation {
         this.time = time;
     }
 
-    public static Reservation of(int id, String name) {
-        return new Reservation(id, name, LocalDate.now(), LocalTime.now());
-    }
-
     public static Reservation ofTime(int id, String name, LocalDate date, LocalTime time) {
         return new Reservation(id, name, date, time);
     }
@@ -44,13 +40,4 @@ public class Reservation {
         return time;
     }
 
-    @Override
-    public String toString() {
-        return "Reservation{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", date=" + date +
-                ", time=" + time +
-                '}';
-    }
 }

@@ -9,25 +9,18 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import roomescape.reservation.entity.Reservation;
 
-@Controller
+@RestController
 public class ReservationController {
 
     private final List<Reservation> reservations = createReservations();
 
-    @GetMapping("/reservation")
-    public String reservations(Model model) {
-        model.addAttribute("reservations", reservations);
-        return "reservation";
-    }
-
     @GetMapping("/reservations")
-    @ResponseBody
     public ResponseEntity<List<Reservation>> getReservations() {
         return ResponseEntity.ok(reservations);
     }
-
 
     private List<Reservation> createReservations() {
         List<Reservation> createReservation = List.of(
