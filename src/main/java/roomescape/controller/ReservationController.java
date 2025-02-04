@@ -1,13 +1,16 @@
 package roomescape.controller;
 
-import org.springframework.ui.Model;
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.net.URI;
+import java.util.concurrent.atomic.AtomicLong;
+import org.springframework.http.ResponseEntity;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import roomescape.reservation.Reservation;
 
@@ -16,19 +19,40 @@ import roomescape.reservation.Reservation;
 public class ReservationController {
 
     private List<Reservation> reservations = new ArrayList<>();
+    private AtomicLong index = new AtomicLong(1);
 
-    public ReservationController() {
-        reservations.add(new Reservation(1, "브라운", LocalDate.of(2023, 1, 1), LocalTime.of(10, 0)));
-        reservations.add(new Reservation(2, "브라운", LocalDate.of(2023, 1, 2), LocalTime.of(11, 0)));
-        reservations.add(new Reservation(3, "샐리", LocalDate.of(2023, 1, 3), LocalTime.of(12, 0)));
+
+    @GetMapping
+    public ResponseEntity<List<Reservation>> getReservations() {
+        return ResponseEntity.ok(reservations);
     }
 
 
-    // `@ResponseBody`를 사용하여 예약 목록 JSON 형태로 반환
-    @GetMapping
-    @ResponseBody
-    public List<Reservation> getReservations() {
-        return reservations;
+    @PostMapping
+    public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservation) {
+        Reservation newReservation = new Reservation(index.getAndIncrement(), reservation.getName(),
+                reservation.getDate(), reservation.getTime());
+        reservations.add(newReservation);
+        return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId()))
+                .body(newReservation);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Reservation> getReservationDetail(@PathVariable int id) {
+        return reservations.stream()
+                .filter(reservation -> reservation.getId() == id)
+                .findFirst()
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteReservation(@PathVariable int id) {
+        boolean removed = reservations.removeIf(reservation -> reservation.getId() == id);
+        if (removed) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.notFound().build();
     }
 
 
