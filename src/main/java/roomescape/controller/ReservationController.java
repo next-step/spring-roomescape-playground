@@ -18,13 +18,13 @@ public class ReservationController {
     }
 
     @GetMapping(value = "/reservation")
-    public String reservation() {
+    public String getReservationPage() {
         return "reservation";
     }
 
     @ResponseBody
     @GetMapping(value = "/reservations")
-    public List<Reservation> reservations() {
+    public List<Reservation> getReservations() {
         return reservationService.getReservations();
     }
 }
