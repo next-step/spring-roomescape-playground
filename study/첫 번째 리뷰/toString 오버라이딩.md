@@ -83,7 +83,34 @@
 
 로깅을 하는 경우에도 디버그 모드와 동일하게 객체의 정보를 직관적으로 알 수 있습니다. 
 
+## 생각해볼점
+- toString 은 뷰 로직을 위한 것인가?
+- 객체간의 참조가 양방향일 경우 순환 참조의 문제는 어떻게 해결할것인가?
 
+toString 메소드는 뷰 로직 또는 책임인가에 대해서는 잘 모르겠지만, 스스로 생각하기에는 toString 을 통해서 객체의 정보를 표현하는 것은 적절한 책임이고 다른 곳에 전가하면 안된다고 생각을 하고 있습니다.
+
+그리고 순환참조의 문제로 문제가 발생할 수 있습니다. 이를 해결하는 방법으로는 순환참조 필드를 toString 메서드에서 제외하는 것입니다. 
+제외하는 방법으로는 정보를 반환하고 싶은 필드만 of 속성으로 제공하는 것입니다. 코드를 통해서 살펴보겠습니다.
+```java
+@ToString(of = {"name"})
+class Foo {
+    String name;
+    int age;
+
+    public Foo(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+}
+public static void main(String[] args) {
+    Foo foo = new Foo("foo", 30);
+    log.info("{}", foo);
+}
+```
+출력의 결과는 다음과 같습니다.   
+`14:12:05.208 [main] INFO roomescape.reservation.Main -- Main.Foo(name=foo)`
+
+이를 통해 toString 재정의로 인해 순환참조의 문제를 해결할 수 있습니다. 
 
 ### 출처
 - [Oracle-docs](https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html#toString--) - toString
