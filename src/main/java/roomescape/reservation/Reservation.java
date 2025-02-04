@@ -5,19 +5,19 @@ import java.time.LocalTime;
 
 public class Reservation {
 
-    private int id;
+    private long id;
     private String name;
-    private LocalDate date;  // 날짜만 저장
-    private LocalTime time;  // 시간만 저장
+    private LocalDate date;
+    private LocalTime time;
 
-    public Reservation(int id, String name, LocalDate date, LocalTime time) {
+    public Reservation(long id, String name, LocalDate date, LocalTime time) {
         this.id = id;
         this.name = name;
         this.date = date;
         this.time = time;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
@@ -32,5 +32,6 @@ public class Reservation {
     public LocalTime getTime() {
         return time;
     }
+
 
 }
