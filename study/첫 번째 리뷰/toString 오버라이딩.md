@@ -28,7 +28,7 @@ toString을 오버라이딩 할 경우와 안한 경우의 차이점을 보겠�
 
 **Not override `toString`**   
 <p text-align="center">
-    <img src="/temp/images/debug.png" alt="debug-toString-no-override">
+    <img src="/temp/images/debug.png" alt="debug-toString-no-override" style="width:500px; height:auto; object-fit:cover;">
 </p>
 `toString`을 오버라이딩하지 않았을 경우, 디버그 모드에서 실행되는 클래스의 이름과 인스턴스
 이름과 해쉬값을 통해서 값을 표현하고 있습니다.
@@ -46,13 +46,13 @@ toString을 오버라이딩 할 경우와 안한 경우의 차이점을 보겠�
 
 **Not override toString**
 <p text-align="center">
-    <img src="/temp/images/log.png" alt="log-toString-no-override">
+    <img src="/temp/images/log.png" alt="log-toString-no-override" style="width:500px; height:auto; object-fit:cover;">
 </p>
 디버그 모드에서 살펴본것과 동일하게 객체의 정보를 식별할 수 없습니다. 다음으로 오버라이딩한 후 로깅의 결과를 살펴보겠습니다.
 
 **Override toString**
 <p text-align="center">
-    <img src="/temp/images/log-toString.png" alt="log-toString-override">
+    <img src="/temp/images/log-toString.png" alt="log-toString-override" style="width:500px; height:auto; object-fit:cover;">
 </p>
 로깅을 하는 경우에도 디버그 모드와 동일하게 객체의 정보를 직관적으로 알 수 있습니다. 
 
