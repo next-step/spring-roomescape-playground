@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import roomescape.dto.request.CreateReservationRequest;
 import roomescape.dto.response.ReservationResponse;
 import roomescape.entity.Reservation;
+import roomescape.global.exception.BadRequestException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,18 +38,18 @@ public class ReservationService {
 //    }
 
     public void deleteReservation(final Long reservationId) {
-        int index = getIndex(reservationId);
+        int index = getIndexOrThrow(reservationId);
         reservations.remove(index);
     }
 
-    private int getIndex(final Long reservationId) {
+    private int getIndexOrThrow(final Long reservationId) {
         int index = 0;
         for (Reservation reservation : reservations) {
             if (reservation.getId().equals(reservationId)) {
-                break;
+                return index;
             }
             index++;
         }
-        return index;
+        throw new BadRequestException("존재하지 않는 예약 내역입니다.");
     }
 }
