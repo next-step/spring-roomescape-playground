@@ -2,7 +2,7 @@ package roomescape.domain.reservation.validator;
 
 import java.time.LocalDate;
 import java.util.Objects;
-import roomescape.domain.reservation.error.ReservationException;
+import roomescape.domain.reservation.exception.ReservationException;
 
 public class ReserveDateValidator {
 
