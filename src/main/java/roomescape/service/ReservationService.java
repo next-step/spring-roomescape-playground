@@ -16,6 +16,11 @@ public class ReservationService {
     private List<Reservation> reservations = createReservations();
     private AtomicLong index = new AtomicLong(0);
 
+    public ReservationResponse createReservation(final CreateReservationRequest request) {
+        Reservation reservation = new Reservation(index.incrementAndGet(), request.name(), request.date(), request.time());
+        return ReservationResponse.create(
+                reservation);
+    }
 
     public List<ReservationResponse> getReservations() {
         return reservations.stream()
@@ -25,17 +30,9 @@ public class ReservationService {
 
     private List<Reservation> createReservations() {
         return List.of(
-                createReservation(1L, "브라운", LocalDate.of(2024, 2, 1), LocalTime.of(10, 0, 0)),
-                createReservation(2L, "브라운", LocalDate.of(2024, 2, 2), LocalTime.of(11, 0, 0)),
-                createReservation(3L, "브라운", LocalDate.of(2024, 2, 3), LocalTime.of(12, 0, 0))
+                new Reservation(1L, "브라운", LocalDate.of(2024, 2, 1), LocalTime.of(10, 0, 0)),
+                new Reservation(2L, "브라운", LocalDate.of(2024, 2, 2), LocalTime.of(11, 0, 0)),
+                new Reservation(3L, "브라운", LocalDate.of(2024, 2, 3), LocalTime.of(12, 0, 0))
         );
-    }
-
-    private Reservation createReservation(Long id, String name, LocalDate date, LocalTime time) {
-        return new Reservation(id, name, date, time);
-    }
-
-    public ReservationResponse createReservation(final CreateReservationRequest request) {
-        return ReservationResponse.create(createReservation(index.incrementAndGet(), request.name(), request.date(), request.time()));
     }
 }
