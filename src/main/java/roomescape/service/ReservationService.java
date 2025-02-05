@@ -37,6 +37,11 @@ public class ReservationService {
 //    }
 
     public void deleteReservation(final Long reservationId) {
+        int index = getIndex(reservationId);
+        reservations.remove(index);
+    }
+
+    private int getIndex(final Long reservationId) {
         int index = 0;
         for (Reservation reservation : reservations) {
             if (reservation.getId().equals(reservationId)) {
@@ -44,6 +49,6 @@ public class ReservationService {
             }
             index++;
         }
-        reservations.remove(index);
+        return index;
     }
 }
