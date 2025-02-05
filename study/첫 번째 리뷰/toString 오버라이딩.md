@@ -7,7 +7,7 @@
 
 ## toString
 <div align="center">
-    <img src="/temp/images/toString.png" alt="toString" style="width:800px; height:auto; object-fit:cover;">
+    <img src="/temp/images/toString/toString.png" alt="toString" style="width:800px; height:auto; object-fit:cover;">
 </div>
 
 <br/>
@@ -39,7 +39,7 @@
 
 **Not override `toString`**   
 <div align="left">
-    <img src="/temp/images/debug.png" alt="debug-toString-no-override" style="width:500px; height:auto; object-fit:cover;">
+    <img src="/temp/images/toString/debug.png" alt="debug-toString-no-override" style="width:500px; height:auto; object-fit:cover;">
 </div>
 
 <br/>
@@ -50,7 +50,7 @@
 
 **Override `toString`**   
 <div align="left">
-    <img src="/temp/images/debug-toString.png" alt="debug-toString-override" style="width:500px; height:auto; object-fit:cover;">
+    <img src="/temp/images/toString/debug-toString.png" alt="debug-toString-override" style="width:500px; height:auto; object-fit:cover;">
 </div>
 
 `toString`을 오버라이딩했을 경우, 디버그 모드에서 객체의 값을 직관적으로 볼 수 있습니다.
@@ -65,7 +65,7 @@
 
 **Not override toString**
 <div align="left">
-    <img src="/temp/images/log.png" alt="log-toString-no-override" style="width:500px; height:auto; object-fit:cover;">
+    <img src="/temp/images/toString/log.png" alt="log-toString-no-override" style="width:500px; height:auto; object-fit:cover;">
 </div>
 
 <br/>
@@ -76,7 +76,7 @@
 
 **Override toString**
 <div align="left">
-    <img src="/temp/images/log-toString.png" alt="log-toString-override" style="width:500px; height:auto; object-fit:cover;">
+    <img src="/temp/images/toString/log-toString.png" alt="log-toString-override" style="width:500px; height:auto; object-fit:cover;">
 </div>
 
 <br/>
@@ -87,7 +87,8 @@
 - toString 은 뷰 로직을 위한 것인가?
 - 객체간의 참조가 양방향일 경우 순환 참조의 문제는 어떻게 해결할것인가?
 
-toString 메소드는 뷰 로직 또는 책임인가에 대해서는 잘 모르겠지만, 스스로 생각하기에는 toString 을 통해서 객체의 정보를 표현하는 것은 적절한 책임이고 다른 곳에 전가하면 안된다고 생각을 하고 있습니다.
+toString 메소드는 뷰 로직 또는 책임인가에 대해서는 잘 모르겠지만, 스스로 생각하기에는 toString 을 통해서 객체의 정보를 표현하는 것은 적절한 책임이고 다른 곳에 전가하면 안된다고 생각을 하고 있습니다. 또한
+디버깅의 목적에 맞도록 효과적으로 정보를 반환하도록 재정의할 때 고려해야합니다.
 
 그리고 순환참조의 문제로 문제가 발생할 수 있습니다. 이를 해결하는 방법으로는 순환참조 필드를 toString 메서드에서 제외하는 것입니다. 
 제외하는 방법으로는 정보를 반환하고 싶은 필드만 of 속성으로 제공하는 것입니다. 코드를 통해서 살펴보겠습니다.
