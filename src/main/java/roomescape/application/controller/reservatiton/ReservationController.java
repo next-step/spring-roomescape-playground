@@ -1,9 +1,6 @@
-package roomescape.reservation.controller;
+package roomescape.application.controller.reservatiton;
 
 import java.net.URI;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,8 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 import roomescape.domain.reservation.Reservation;
 import roomescape.domain.reservation.ReserveDate;
 import roomescape.domain.reservation.ReserveTime;
-import roomescape.reservation.dto.CreateReservationRequestDto;
-import roomescape.reservation.dto.ReservationResponseDto;
+import roomescape.application.dto.CreateReservationRequestDto;
+import roomescape.application.dto.ReservationResponseDto;
 
 @RestController
 public class ReservationController {
@@ -38,8 +35,9 @@ public class ReservationController {
     ) {
         Reservation createReserve = toEntity(requestDto);
         reservations.put(createReserve.getId(), createReserve);
-        ReservationResponseDto response = toDto(createReserve);
-        return ResponseEntity.created(URI.create("/reservations/"+createReserve.getId())).body(response);
+        return ResponseEntity
+                .created(URI.create("/reservations/"+createReserve.getId()))
+                .body(toDto(createReserve));
     }
 
     @DeleteMapping("/reservations/{reservationId}")

@@ -109,7 +109,7 @@ public static void main(String[] args) {
 }
 ```
 출력의 결과는 다음과 같습니다.   
-`14:12:05.208 [main] INFO roomescape.reservation.Main -- Main.Foo(name=foo)`
+`14:12:05.208 [main] INFO roomescape.application.Main -- Main.Foo(name=foo)`
 
 이를 통해 toString 재정의로 인해 순환참조의 문제를 해결할 수 있습니다. 
 

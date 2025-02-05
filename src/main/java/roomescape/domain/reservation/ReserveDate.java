@@ -1,8 +1,8 @@
 package roomescape.domain.reservation;
 
 import java.time.LocalDate;
-import java.util.Objects;
 import lombok.Getter;
+import roomescape.domain.reservation.validator.ReserveDateValidator;
 
 @Getter
 public class ReserveDate {
@@ -10,16 +10,8 @@ public class ReserveDate {
     private final LocalDate value;
 
     public ReserveDate(LocalDate reserveDate) {
-        valid(reserveDate);
+        ReserveDateValidator.validate(reserveDate);
         value = reserveDate;
     }
 
-    private void valid(LocalDate reserveDate) {
-        if (Objects.isNull(reserveDate)) {
-            throw new IllegalArgumentException();
-        }
-        if (reserveDate.isBefore(LocalDate.now())) {
-            throw new IllegalArgumentException();
-        }
-    }
 }
