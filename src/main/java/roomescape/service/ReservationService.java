@@ -1,6 +1,7 @@
 package roomescape.service;
 
 import org.springframework.stereotype.Service;
+import roomescape.dto.response.ReservationResponse;
 import roomescape.entity.Reservation;
 
 import java.time.LocalDate;
@@ -12,8 +13,10 @@ public class ReservationService {
 
     private List<Reservation> reservations = createReservations();
 
-    public List<Reservation> getReservations() {
-        return reservations;
+    public List<ReservationResponse> getReservations() {
+        return reservations.stream()
+                .map(ReservationResponse::create)
+                .toList();
     }
 
     private List<Reservation> createReservations() {
