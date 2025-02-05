@@ -1,15 +1,20 @@
 package roomescape.controller;
 
-import org.springframework.stereotype.Controller;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+import roomescape.dto.request.CreateReservationRequest;
 import roomescape.dto.response.ReservationResponse;
 import roomescape.service.ReservationService;
 
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/reservations")
 public class ReservationController {
 
@@ -19,7 +24,16 @@ public class ReservationController {
         this.reservationService = reservationService;
     }
 
-    @ResponseBody
+    @PostMapping()
+    public ResponseEntity<ReservationResponse> createReservation(@RequestBody CreateReservationRequest request) {
+        ReservationResponse response = reservationService.createReservation(request);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Location", "/reservations/" + response.id());
+
+        return new ResponseEntity<>(response, headers, HttpStatus.CREATED);
+    }
+
     @GetMapping()
     public List<ReservationResponse> getReservations() {
         return reservationService.getReservations();

@@ -1,17 +1,21 @@
 package roomescape.service;
 
 import org.springframework.stereotype.Service;
+import roomescape.dto.request.CreateReservationRequest;
 import roomescape.dto.response.ReservationResponse;
 import roomescape.entity.Reservation;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 public class ReservationService {
 
     private List<Reservation> reservations = createReservations();
+    private AtomicLong index = new AtomicLong(0);
+
 
     public List<ReservationResponse> getReservations() {
         return reservations.stream()
@@ -29,5 +33,9 @@ public class ReservationService {
 
     private Reservation createReservation(Long id, String name, LocalDate date, LocalTime time) {
         return new Reservation(id, name, date, time);
+    }
+
+    public ReservationResponse createReservation(final CreateReservationRequest request) {
+        return ReservationResponse.create(createReservation(index.incrementAndGet(), request.name(), request.date(), request.time()));
     }
 }
