@@ -18,6 +18,9 @@ import java.util.List;
 @RequestMapping("/reservations")
 public class ReservationController {
 
+    public static final String HEADER_LOCATION = "Location";
+    public static final String LOCATION_DEFAULT_VALUE = "/reservations/";
+
     private final ReservationService reservationService;
 
     public ReservationController(final ReservationService reservationService) {
@@ -29,7 +32,7 @@ public class ReservationController {
         ReservationResponse response = reservationService.createReservation(request);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Location", "/reservations/" + response.id());
+        headers.add(HEADER_LOCATION, LOCATION_DEFAULT_VALUE + response.id());
 
         return new ResponseEntity<>(response, headers, HttpStatus.CREATED);
     }
