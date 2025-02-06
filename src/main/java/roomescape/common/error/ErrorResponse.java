@@ -16,7 +16,6 @@ public class ErrorResponse {
     private String code;
     private List<FieldError> errors;
 
-
     private ErrorResponse(ErrorCode errorCode, List<FieldError> errors) {
         this.description = errorCode.getDescription();
         this.status = errorCode.getStatus();
@@ -50,12 +49,6 @@ public class ErrorResponse {
             this.field = field;
             this.value = value;
             this.reason = reason;
-        }
-
-        public static List<FieldError> of(final String field, final String value, final String reason) {
-            List<FieldError> fieldErrors = new ArrayList<>();
-            fieldErrors.add(new FieldError(field, value, reason));
-            return fieldErrors;
         }
 
         public static List<FieldError> of(final BindingResult bindingResult) {
