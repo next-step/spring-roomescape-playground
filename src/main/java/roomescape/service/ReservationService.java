@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
+import static roomescape.global.exception.ExceptionMessage.RESERVATION_NOT_EXISTS;
+
 @Service
 public class ReservationService {
 
@@ -42,6 +44,6 @@ public class ReservationService {
             }
             index++;
         }
-        throw new BadRequestException("존재하지 않는 예약 내역입니다.");
+        throw new BadRequestException(RESERVATION_NOT_EXISTS.getMessage());
     }
 }
