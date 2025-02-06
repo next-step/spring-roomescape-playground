@@ -1,5 +1,6 @@
 package roomescape.application.controller.reservatiton;
 
+import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import roomescape.common.error.exception.EntityNotFoundException;
 import roomescape.domain.reservation.Reservation;
 import roomescape.domain.reservation.ReserveDate;
 import roomescape.domain.reservation.ReserveTime;
@@ -31,7 +33,7 @@ public class ReservationController {
 
     @PostMapping("/reservations")
     public ResponseEntity<ReservationResponseDto> createReservation(
-            @RequestBody CreateReservationRequestDto requestDto
+            @RequestBody @Valid CreateReservationRequestDto requestDto
     ) {
         Reservation createReserve = toEntity(requestDto);
         reservations.put(createReserve.getId(), createReserve);
@@ -43,7 +45,10 @@ public class ReservationController {
     @DeleteMapping("/reservations/{reservationId}")
     public ResponseEntity<Void> deleteReservation(
             @PathVariable Long reservationId
-    ) {
+    ) { // TODO 찾는 객체가 없을 경우 에러
+        if (!reservations.containsKey(reservationId)) {
+            throw new EntityNotFoundException("");
+        }
         reservations.remove(reservationId);
         return ResponseEntity.noContent().build();
     }

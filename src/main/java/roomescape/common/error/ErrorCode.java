@@ -1,14 +1,16 @@
 package roomescape.common.error;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-@JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ErrorCode {
+    // Common
     INVALID_INPUT_VALUE(400, "C001", "Invalid input value"),
+    ENTITY_NOT_FOUND(404, "C002", "Entity not found"),
+    // Reservation
+    INVALID_RESERVE_VALUE(400, "R001", "Invalid reserve value"),
     ;
 
     private final int status;

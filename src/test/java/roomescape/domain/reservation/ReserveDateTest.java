@@ -1,11 +1,11 @@
 package roomescape.domain.reservation;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 
 import java.time.LocalDate;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import roomescape.common.error.exception.BusinessException;
 
 class ReserveDateTest {
 
@@ -16,6 +16,7 @@ class ReserveDateTest {
         // when
         Throwable catchThrow = catchThrowable(() -> new ReserveDate(yesterday));
         // then
-        assertThat(catchThrow).isInstanceOf(IllegalArgumentException.class);
+        System.out.println(catchThrow);
+        assertThat(catchThrow).isInstanceOf(BusinessException.class);
     }
 }

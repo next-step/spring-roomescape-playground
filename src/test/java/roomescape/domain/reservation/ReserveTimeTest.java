@@ -5,15 +5,16 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 
 import java.time.LocalTime;
 import org.junit.jupiter.api.Test;
+import roomescape.common.error.exception.BusinessException;
 
 class ReserveTimeTest {
     @Test
-    void 예약이_지금시간보다_전이라면_에러throrw() {
+    void 예약이_null_이라면_에러throrw() {
         //given
-        LocalTime beforeOneSecond = LocalTime.now().minusSeconds(1);
+        LocalTime beforeOneSecond = null;
         // when
         Throwable catchThrow = catchThrowable(() -> new ReserveTime(beforeOneSecond));
         // then
-        assertThat(catchThrow).isInstanceOf(IllegalArgumentException.class);
+        assertThat(catchThrow).isInstanceOf(BusinessException.class);
     }
 }

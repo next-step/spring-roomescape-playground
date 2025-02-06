@@ -2,7 +2,7 @@ package roomescape.domain.reservation;
 
 import java.time.LocalDate;
 import lombok.Getter;
-import roomescape.domain.reservation.validator.ReserveDateValidator;
+import roomescape.domain.reservation.validator.ReserveDateAndTimeValidator;
 
 @Getter
 public class ReserveDate {
@@ -10,7 +10,7 @@ public class ReserveDate {
     private final LocalDate value;
 
     public ReserveDate(LocalDate reserveDate) {
-        ReserveDateValidator.validate(reserveDate);
+        ReserveDateAndTimeValidator.validateReserveDate(reserveDate);
         value = reserveDate;
     }
 
