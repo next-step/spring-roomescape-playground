@@ -7,10 +7,9 @@ import lombok.NoArgsConstructor;
 import roomescape.domain.reservation.validator.ReserveDateAndTimeValidator;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ReserveTime {
 
-    private LocalTime value;
+    private final LocalTime value;
 
     public ReserveTime(LocalTime reserveTime) {
         ReserveDateAndTimeValidator.validate(reserveTime);
