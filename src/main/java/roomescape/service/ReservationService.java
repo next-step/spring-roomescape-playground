@@ -8,7 +8,6 @@ import roomescape.global.exception.BadRequestException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 import static roomescape.global.exception.ExceptionMessage.RESERVATION_NOT_EXISTS;
 
