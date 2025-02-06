@@ -1,11 +1,17 @@
 package roomescape.reservation.service;
 
+import static roomescape.global.exception.code.ErrorStatus.INVALID_REQUEST_RESERVATION_ID;
+import static roomescape.global.exception.code.ErrorStatus.INVALID_REQUEST_RESERVATION_INFO;
+import static roomescape.global.exception.code.ErrorStatus.RESERVATION_NOT_FOUND;
+
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import roomescape.reservation.domain.Reservation;
 import roomescape.reservation.dto.ReservationRequest;
 import roomescape.reservation.dto.ReservationResponse;
+import roomescape.reservation.exception.InvalidParameterException;
+import roomescape.reservation.exception.ReservationNotFoundException;
 
 @Service
 public class ReservationService {
@@ -20,14 +26,25 @@ public class ReservationService {
 
     public ReservationResponse createReservation(ReservationRequest reservationRequest,
                                                  List<Reservation> reservations, Long id) {
-        Reservation newReservation = ReservationRequest
-                .toReservation(reservationRequest, id);
+        if (!reservationRequest.isValid()) {
+            throw new InvalidParameterException(INVALID_REQUEST_RESERVATION_INFO);
+        }
+
+        Reservation newReservation = ReservationRequest.toReservation(reservationRequest, id);
         reservations.add(newReservation);
 
         return ReservationResponse.fromReservation(newReservation);
     }
 
     public void deleteReservation(List<Reservation> reservations, Long id) {
-        reservations.removeIf(reservation -> reservation.getId().equals(id));
+        if (id < 0) {
+            throw new InvalidParameterException(INVALID_REQUEST_RESERVATION_ID);
+        }
+
+        boolean removed = reservations.removeIf(reservation -> reservation.getId().equals(id));
+
+        if (!removed) {
+            throw new ReservationNotFoundException(RESERVATION_NOT_FOUND);
+        }
     }
 }

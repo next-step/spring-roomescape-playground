@@ -1,8 +1,6 @@
 package roomescape.reservation.controller;
 
 import java.net.URI;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
@@ -54,7 +52,7 @@ public class ReservationController {
         return ResponseEntity.created(Location).body(result);
     }
 
-    @DeleteMapping("/reservations/{reservationId}") // 경로 변수 올바르게 수정
+    @DeleteMapping("/reservations/{reservationId}")
     public ResponseEntity deleteReservation(@PathVariable Long reservationId) {
         reservationService.deleteReservation(reservations, reservationId);
 
