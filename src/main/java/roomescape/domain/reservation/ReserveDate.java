@@ -13,5 +13,4 @@ public class ReserveDate {
         ReserveDateAndTimeValidator.validateReserveDate(reserveDate);
         value = reserveDate;
     }
-
 }

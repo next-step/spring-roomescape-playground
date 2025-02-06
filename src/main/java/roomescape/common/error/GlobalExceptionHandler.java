@@ -15,8 +15,7 @@ public class GlobalExceptionHandler {
     // valid exception handler
     @ExceptionHandler(MethodArgumentNotValidException.class)
     protected ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
-        log.info(ex.getFieldErrors().toString());
-        ErrorResponse errorResponse = new ErrorResponse();
+        ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.INVALID_INPUT_VALUE, ex.getBindingResult());
         return ResponseEntity.badRequest().body(errorResponse);
     }
 

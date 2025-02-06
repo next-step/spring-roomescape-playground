@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import roomescape.application.controller.reservatiton.service.ReservationConverter;
 import roomescape.common.error.exception.EntityNotFoundException;
 import roomescape.domain.reservation.Reservation;
 import roomescape.domain.reservation.ReserveDate;
@@ -23,48 +24,41 @@ import roomescape.application.dto.ReservationResponseDto;
 @RestController
 public class ReservationController {
 
-    private final Map<Long, Reservation> reservations = new HashMap<>();
-    private AtomicLong index = new AtomicLong(1);
+    private final Map<Long, Reservation> reservations;
+    private final AtomicLong index;
+    private final ReservationConverter reservationConverter;
+
+    public ReservationController(ReservationConverter reservationConverter) {
+        this.reservationConverter = reservationConverter;
+        this.index = new AtomicLong(1);
+        reservations = new HashMap<>();
+    }
 
     @GetMapping("/reservations")
     public ResponseEntity<List<ReservationResponseDto>> getReservations() {
-        return ResponseEntity.ok(reservations.values().stream().map(this::toDto).toList());
+        return ResponseEntity.ok(reservations.values().stream().map(reservationConverter::toDto).toList());
     }
 
     @PostMapping("/reservations")
     public ResponseEntity<ReservationResponseDto> createReservation(
             @RequestBody @Valid CreateReservationRequestDto requestDto
     ) {
-        Reservation createReserve = toEntity(requestDto);
+        Reservation createReserve = reservationConverter.toEntity(index.getAndIncrement(), requestDto);
         reservations.put(createReserve.getId(), createReserve);
         return ResponseEntity
                 .created(URI.create("/reservations/"+createReserve.getId()))
-                .body(toDto(createReserve));
+                .body(reservationConverter.toDto(createReserve));
     }
 
     @DeleteMapping("/reservations/{reservationId}")
     public ResponseEntity<Void> deleteReservation(
             @PathVariable Long reservationId
-    ) { // TODO 찾는 객체가 없을 경우 에러
+    ) {
         if (!reservations.containsKey(reservationId)) {
-            throw new EntityNotFoundException("");
+            throw new EntityNotFoundException();
         }
         reservations.remove(reservationId);
         return ResponseEntity.noContent().build();
     }
 
-    private ReservationResponseDto toDto(Reservation reservation) {
-        return  ReservationResponseDto.builder()
-                .id(reservation.getId())
-                .name(reservation.getName())
-                .date(reservation.reserveDateValue())
-                .time(reservation.reserveTimeValue())
-                .build();
-    }
-
-    private Reservation toEntity(CreateReservationRequestDto requestDto) {
-        ReserveDate reserveDate = new ReserveDate(requestDto.date());
-        ReserveTime reserveTime = new ReserveTime(requestDto.time());
-        return new Reservation(index.getAndIncrement(), requestDto.name(), reserveDate, reserveTime);
-    }
 }
