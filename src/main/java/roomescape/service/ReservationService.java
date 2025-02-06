@@ -16,10 +16,9 @@ import static roomescape.global.exception.ExceptionMessage.RESERVATION_NOT_EXIST
 public class ReservationService {
 
     private List<Reservation> reservations = new ArrayList<>();
-    private AtomicLong index = new AtomicLong(0);
 
     public ReservationResponse createReservation(final CreateReservationRequest request) {
-        Reservation reservation = new Reservation(index.incrementAndGet(), request.name(), request.date(), request.time());
+        Reservation reservation = new Reservation(request.name(), request.date(), request.time());
         reservations.add(reservation);
         return ReservationResponse.create(
                 reservation);
