@@ -1,5 +1,6 @@
 package roomescape.reservation.controller;
 
+import ch.qos.logback.core.model.Model;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +28,11 @@ public class ReservationController {
 
     public ReservationController(ReservationService reservationService) {
         this.reservationService = reservationService;
+    }
+
+    @GetMapping("/")
+    public String home() {
+        return "home";
     }
 
     @GetMapping("/reservation")
