@@ -19,11 +19,11 @@ public class Reservation {
         this.reserveTime = reserveTime;
     }
 
-    public LocalDate getReserveDateValue() {
+    public LocalDate reserveDateValue() {
         return reserveDate.getValue();
     }
 
-    public LocalTime getReserveTimeValue() {
+    public LocalTime reserveTimeValue() {
         return reserveTime.getValue();
     }
 

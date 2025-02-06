@@ -52,8 +52,8 @@ public class ReservationController {
         return  ReservationResponseDto.builder()
                 .id(reservation.getId())
                 .name(reservation.getName())
-                .date(reservation.getReserveDateValue())
-                .time(reservation.getReserveTimeValue())
+                .date(reservation.reserveDateValue())
+                .time(reservation.reserveTimeValue())
                 .build();
     }
 

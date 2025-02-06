@@ -1,10 +1,16 @@
 package roomescape.domain.reservation.exception;
 
-public class ReservationException extends RuntimeException {
-  public ReservationException(String message) {
-    super(message);
-  }
+import roomescape.common.error.ErrorCode;
+import roomescape.common.error.exception.InvalidValueException;
 
-  public ReservationException() {
-  }
+public class ReservationException extends InvalidValueException {
+
+    public ReservationException(String message, ErrorCode errorCode) {
+        super(message, errorCode);
+    }
+
+    public ReservationException(ErrorCode errorCode) {
+        super(errorCode);
+    }
+
 }
