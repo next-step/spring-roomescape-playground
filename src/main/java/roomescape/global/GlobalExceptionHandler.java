@@ -14,7 +14,7 @@ import static roomescape.global.exception.ExceptionMessage.INVALID_INPUT_FORMAT;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(RoomScapeException.class)
-    public ResponseEntity<CustomErrorResponse> handleBaseException(RoomScapeException e) {
+    public ResponseEntity<CustomErrorResponse> handleRoomScapeException(RoomScapeException e) {
         CustomErrorResponse errorResponse = new CustomErrorResponse(
                 e.getStatusCode(), e.getMessage()
         );
