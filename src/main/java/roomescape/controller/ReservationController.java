@@ -12,7 +12,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import roomescape.reservation.Reservation;
+import roomescape.entity.Reservation;
+import roomescape.exception.InvalidReservationException;
+import roomescape.exception.NotFoundReservationException;
+import roomescape.validator.ReservationValidator;
 
 @RestController
 @RequestMapping("/reservations")
@@ -24,12 +27,16 @@ public class ReservationController {
 
     @GetMapping
     public ResponseEntity<List<Reservation>> getReservations() {
+        if (reservations.isEmpty()) {
+            throw new NotFoundReservationException("Reservations aren't here");
+        }
         return ResponseEntity.ok(reservations);
     }
 
 
     @PostMapping
     public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservation) {
+        ReservationValidator.validate(reservation);
         Reservation newReservation = new Reservation(index.getAndIncrement(), reservation.getName(),
                 reservation.getDate(), reservation.getTime());
         reservations.add(newReservation);
@@ -49,11 +56,8 @@ public class ReservationController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable int id) {
         boolean removed = reservations.removeIf(reservation -> reservation.getId() == id);
-        if (removed) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.notFound().build();
+        ReservationValidator.deleteValidate(removed, id);
+        return ResponseEntity.noContent().build();
     }
-
 
 }
