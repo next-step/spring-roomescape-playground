@@ -29,9 +29,6 @@ public class ReservationController {
 
     public ReservationController(ReservationService reservationService) {
         this.reservationService = reservationService;
-        reservations.add(new Reservation(index.incrementAndGet(), "비토", LocalDate.of(2023, 1, 1), LocalTime.of(10, 1)));
-        reservations.add(new Reservation(index.incrementAndGet(), "곰곰", LocalDate.of(2023, 1, 2), LocalTime.of(10, 2)));
-        reservations.add(new Reservation(index.incrementAndGet(), "망고", LocalDate.of(2023, 1, 3), LocalTime.of(10, 3)));
     }
 
     @GetMapping("/reservation")
