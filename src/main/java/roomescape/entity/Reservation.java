@@ -83,13 +83,13 @@ public class Reservation {
 
     private void validateTime(final LocalTime time) {
         if (time == null) {
-            throw new BadRequestException(INVALID_DATE.getMessage());
+            throw new BadRequestException(INVALID_TIME.getMessage());
         }
     }
 
     private void validateDate(final LocalDate date) {
         if (date == null) {
-            throw new BadRequestException(INVALID_TIME.getMessage());
+            throw new BadRequestException(INVALID_DATE.getMessage());
         }
     }
 }
