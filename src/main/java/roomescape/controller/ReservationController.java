@@ -16,6 +16,16 @@ import roomescape.entity.Reservation;
 import roomescape.exception.InvalidReservationException;
 import roomescape.exception.NotFoundReservationException;
 import roomescape.validator.ReservationValidator;
+import org.springframework.ui.Model;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+import roomescape.reservation.Reservation;
 
 @RestController
 @RequestMapping("/reservations")
@@ -59,5 +69,6 @@ public class ReservationController {
         ReservationValidator.deleteValidate(removed, id);
         return ResponseEntity.noContent().build();
     }
+
 
 }
