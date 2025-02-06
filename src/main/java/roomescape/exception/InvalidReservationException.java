@@ -1,7 +1,7 @@
 package roomescape.exception;
 
-public class InvalidReservationException extends RuntimeException {
-  public InvalidReservationException(String message) {
-    super(message);
-  }
+public class InvalidReservationException extends IllegalArgumentException {
+    public InvalidReservationException(String message) {
+        super(message);
+    }
 }
