@@ -38,13 +38,4 @@ public class Reservation {
         this.time = time;
     }
 
-
-    public static List<Reservation> makeDummyData() {
-        List<Reservation> reservations = new ArrayList<>();
-        reservations.add(new Reservation(1L, "비토", LocalDate.of(2023, 1, 1), LocalTime.of(10, 1)));
-        reservations.add(new Reservation(2L, "곰곰", LocalDate.of(2023, 1, 2), LocalTime.of(10, 2)));
-        reservations.add(new Reservation(3L, "망고", LocalDate.of(2023, 1, 3), LocalTime.of(10, 3)));
-
-        return reservations;
-    }
 }
