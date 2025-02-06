@@ -15,8 +15,6 @@ public class ReservationController {
 
     private final ReservationService reservationService;
 
-    private List<Reservation> reservations = new ArrayList<>();
-
     public ReservationController(ReservationService reservationService) {
         this.reservationService = reservationService;
     }
