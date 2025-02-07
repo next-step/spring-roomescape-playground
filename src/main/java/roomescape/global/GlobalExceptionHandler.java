@@ -14,11 +14,11 @@ import static roomescape.global.exception.ExceptionMessage.INVALID_INPUT_FORMAT;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(RoomScapeException.class)
-    public ResponseEntity<CustomErrorResponse> handleRoomScapeException(RoomScapeException e) {
+    public ResponseEntity<CustomErrorResponse> handleRoomScapeException(RoomScapeException roomScapeException) {
         CustomErrorResponse errorResponse = new CustomErrorResponse(
-                e.getStatusCode(), e.getMessage()
+                roomScapeException.getStatusCode(), roomScapeException.getMessage()
         );
-        HttpStatus status = HttpStatus.valueOf(e.getStatusCode());
+        HttpStatus status = HttpStatus.valueOf(roomScapeException.getStatusCode());
         return new ResponseEntity<>(errorResponse, status);
     }
 
