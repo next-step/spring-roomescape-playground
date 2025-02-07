@@ -10,7 +10,7 @@ import roomescape.reservation.domain.Reservation;
 public class ReservationRepository {
 
     private List<Reservation> reservations = new ArrayList<>();
-    private AtomicLong index = new AtomicLong(0);
+    private AtomicLong index = new AtomicLong(1);
 
     public Reservation addReservation(final Reservation reservation) {
         long id = index.getAndIncrement();
