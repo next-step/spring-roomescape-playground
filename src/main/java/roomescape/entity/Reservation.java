@@ -16,8 +16,7 @@ public class Reservation {
     private static final int MIN_NAME_LENGTH = 2;
     private static final int MAX_NAME_LENGTH = 10;
     private static final Pattern NAME_FORMAT = Pattern.compile("^[가-힣]+$");
-
-    private AtomicLong index = new AtomicLong(0);
+    private static final AtomicLong index = new AtomicLong(0);
 
     private final Long id;
 
