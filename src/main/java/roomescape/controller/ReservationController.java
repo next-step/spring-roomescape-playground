@@ -10,12 +10,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 import roomescape.domain.Reservation;
 import roomescape.dto.request.ReservationCreateRequest;
 import roomescape.dto.response.ReservationResponse;
 import roomescape.service.ReservationService;
 
-@Controller
+@RestController
 public class ReservationController {
     private final ReservationService reservationService;
 
@@ -23,25 +24,13 @@ public class ReservationController {
         this.reservationService = reservationService;
     }
 
-    @GetMapping("/")
-    public String home() {
-        return "home";
-    }
-
-    @GetMapping("/reservation")
-    public String reservations() {
-        return "reservation";
-    }
-
     @GetMapping("/reservations")
-    @ResponseBody
     public List<Reservation> getReservations() {
         return reservationService.showReservations();
     }
 
     @PostMapping("/reservations")
     @ResponseStatus(HttpStatus.CREATED)
-    @ResponseBody
     public ReservationResponse createReservation(@RequestBody ReservationCreateRequest request) {
         return reservationService.reserve(request);
     }
