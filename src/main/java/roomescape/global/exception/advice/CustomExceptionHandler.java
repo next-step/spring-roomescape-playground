@@ -9,7 +9,7 @@ import roomescape.global.exception.RoomescapeException;
 public class CustomExceptionHandler {
 
     @ExceptionHandler(RoomescapeException.class)
-    public ResponseEntity handleInvalidParameterException(RoomescapeException e) {
-        return ResponseEntity.status(e.getHttpStatus()).body(e.getMessage());
+    public ResponseEntity handleInvalidParameterException(RoomescapeException exception) {
+        return ResponseEntity.status(exception.getHttpStatus()).body(exception.getMessage());
     }
 }
