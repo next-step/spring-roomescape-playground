@@ -29,18 +29,14 @@ public class ReservationService {
     }
 
     public void deleteReservation(final long reservationId) {
-        int index = getIndexOrThrow(reservationId);
-        reservations.remove(index);
+        Reservation reservation = findReservation(reservationId);
+        reservations.remove(reservation);
     }
 
-    private int getIndexOrThrow(final long reservationId) {
-        int index = 0;
-        for (Reservation reservation : reservations) {
-            if (reservation.getId().equals(reservationId)) {
-                return index;
-            }
-            index++;
-        }
-        throw new BadRequestException(RESERVATION_NOT_EXISTS.getMessage());
+    private Reservation findReservation(final long reservationId) {
+        return reservations.stream()
+                .filter(reservation -> reservation.getId().equals(reservationId))
+                .findFirst()
+                .orElseThrow(() -> new BadRequestException(RESERVATION_NOT_EXISTS.getMessage()));
     }
 }
