@@ -12,19 +12,18 @@ import roomescape.common.error.exception.BusinessException;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // valid exception handler
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    protected ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
-        ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.INVALID_INPUT_VALUE, ex.getBindingResult());
+    protected ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
+        ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.INVALID_INPUT_VALUE, exception.getBindingResult());
         return ResponseEntity.badRequest().body(errorResponse);
     }
 
     @ExceptionHandler(BusinessException.class)
-    protected ResponseEntity<ErrorResponse> handleBusinessException(final BusinessException ex) {
-        ErrorCode errorCode = ex.getErrorCode();
+    protected ResponseEntity<ErrorResponse> handleBusinessException(final BusinessException exception) {
+        ErrorCode errorCode = exception.getErrorCode();
         ErrorResponse errorResponse = ErrorResponse.of(errorCode);
         return new ResponseEntity<>(errorResponse, HttpStatus.valueOf(errorCode.getStatus()));
     }
 
-    // exception handler
+    // TODO exception handler
 }
