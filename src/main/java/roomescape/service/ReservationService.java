@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import roomescape.domain.Reservation;
 import roomescape.dto.request.ReservationCreateRequest;
 import roomescape.dto.response.ReservationResponse;
+import roomescape.error.ErrorMessage;
+import roomescape.error.exception.InvalidValueException;
 
 @Service
 public class ReservationService {
@@ -33,7 +35,9 @@ public class ReservationService {
         for (Reservation reservation : reservations) {
             if (reservation.getId().equals(userId)) {
                 reservations.remove(reservation);
+                return;
             }
         }
+        throw new InvalidValueException(ErrorMessage.NO_RESERVATION.getMessage());
     }
 }
