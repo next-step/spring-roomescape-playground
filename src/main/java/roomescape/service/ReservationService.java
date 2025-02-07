@@ -16,7 +16,7 @@ public class ReservationService {
     private List<Reservation> reservations = new ArrayList<>();
 
     public ReservationResponse reserve(ReservationCreateRequest request) {
-        Long id = request.getId();
+        Long id = index.incrementAndGet();
         String name = request.getName();
         LocalDate reservationDate = request.getDate();
         LocalTime reservationTime = request.getTime();
@@ -27,5 +27,13 @@ public class ReservationService {
 
     public List<Reservation> showReservations() {
         return reservations;
+    }
+
+    public void cancelReservation(Long userId) {
+        for (Reservation reservation : reservations) {
+            if (reservation.getId().equals(userId)) {
+                reservations.remove(reservation);
+            }
+        }
     }
 }
