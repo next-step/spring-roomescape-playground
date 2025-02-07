@@ -27,6 +27,7 @@ public class MissionStepTest {
     @Test
     @DisplayName("이단계")
     void 이단계() {
+
         RestAssured.given().log().all()
                 .when().get("/reservation")
                 .then().log().all()
