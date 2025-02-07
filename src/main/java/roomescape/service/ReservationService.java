@@ -19,8 +19,7 @@ public class ReservationService {
     public ReservationResponse createReservation(final CreateReservationRequest request) {
         Reservation reservation = new Reservation(request.name(), request.date(), request.time());
         reservations.add(reservation);
-        return ReservationResponse.create(
-                reservation);
+        return ReservationResponse.create(reservation);
     }
 
     public List<ReservationResponse> getReservations() {
