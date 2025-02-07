@@ -2,9 +2,6 @@ package roomescape.reservation.domain;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
-import org.springframework.web.servlet.tags.EditorAwareTag;
 
 public class Reservation {
 
@@ -34,6 +31,12 @@ public class Reservation {
 
     public Reservation(final Long id, final String name, final LocalDate date, final LocalTime time) {
         this.id = id;
+        this.name = name;
+        this.date = date;
+        this.time = time;
+    }
+
+    public Reservation(final String name, final LocalDate date, final LocalTime time) {
         this.name = name;
         this.date = date;
         this.time = time;

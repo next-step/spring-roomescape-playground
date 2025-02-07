@@ -12,36 +12,43 @@ import roomescape.reservation.dto.ReservationRequest;
 import roomescape.reservation.dto.ReservationResponse;
 import roomescape.reservation.exception.InvalidParameterException;
 import roomescape.reservation.exception.ReservationNotFoundException;
+import roomescape.reservation.repository.ReservationRepository;
 
 @Service
 public class ReservationService {
 
-    public List<ReservationResponse> getReservationResponses(List<Reservation> reservations) {
-        List<ReservationResponse> reservationResponses = reservations.stream()
+    private final ReservationRepository reservationRepository;
+
+    public ReservationService(ReservationRepository reservationRepository) {
+        this.reservationRepository = reservationRepository;
+    }
+
+    public List<ReservationResponse> getReservationResponses() {
+        List<ReservationResponse> reservationResponses = reservationRepository.getReservations()
+                .stream()
                 .map(ReservationResponse::fromReservation)
                 .collect(Collectors.toList());
 
         return reservationResponses;
     }
 
-    public ReservationResponse createReservation(ReservationRequest reservationRequest,
-                                                 List<Reservation> reservations, Long id) {
+    public ReservationResponse createReservation(final ReservationRequest reservationRequest) {
         if (!reservationRequest.isValid()) {
             throw new InvalidParameterException(INVALID_REQUEST_RESERVATION_INFO);
         }
 
-        Reservation newReservation = ReservationRequest.toReservation(reservationRequest, id);
-        reservations.add(newReservation);
+        Reservation savedReservation = reservationRepository.addReservation(
+                ReservationRequest.toReservation(reservationRequest));
 
-        return ReservationResponse.fromReservation(newReservation);
+        return ReservationResponse.fromReservation(savedReservation);
     }
 
-    public void deleteReservation(List<Reservation> reservations, Long id) {
+    public void deleteReservation(final Long id) {
         if (id < 0) {
             throw new InvalidParameterException(INVALID_REQUEST_RESERVATION_ID);
         }
 
-        boolean removed = reservations.removeIf(reservation -> reservation.getId().equals(id));
+        boolean removed = reservationRepository.removeReservation(id);
 
         if (!removed) {
             throw new ReservationNotFoundException(RESERVATION_NOT_FOUND);

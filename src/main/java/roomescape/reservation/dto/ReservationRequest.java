@@ -10,7 +10,7 @@ public record ReservationRequest(String name, LocalDate date, LocalTime time) {
         return name != null && date != null && time != null;
     }
 
-    public static Reservation toReservation(final ReservationRequest reservationRequest, Long id) {
-        return new Reservation(id, reservationRequest.name(), reservationRequest.date(), reservationRequest.time());
+    public static Reservation toReservation(final ReservationRequest reservationRequest) {
+        return new Reservation(reservationRequest.name(), reservationRequest.date(), reservationRequest.time());
     }
 }
