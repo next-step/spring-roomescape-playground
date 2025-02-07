@@ -2,6 +2,7 @@ package roomescape.controller;
 
 import java.net.URI;
 import java.util.concurrent.atomic.AtomicLong;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,9 +12,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import roomescape.entity.Reservation;
-import roomescape.exception.InvalidReservationException;
+import roomescape.dto.Reservation;
 import roomescape.exception.NotFoundReservationException;
 import roomescape.validator.ReservationValidator;
 
@@ -21,23 +22,20 @@ import roomescape.validator.ReservationValidator;
 @RequestMapping("/reservations")
 public class ReservationController {
 
-    private List<Reservation> reservations = new ArrayList<>();
-    private AtomicLong index = new AtomicLong(1);
+    private final List<Reservation> reservations = new ArrayList<>();
+    private final AtomicLong reservationId = new AtomicLong(1);
 
 
     @GetMapping
-    public ResponseEntity<List<Reservation>> getReservations() {
-        if (reservations.isEmpty()) {
-            throw new NotFoundReservationException("Reservations aren't here");
-        }
-        return ResponseEntity.ok(reservations);
+    public List<Reservation> getReservations() {
+        return reservations;
     }
 
 
     @PostMapping
     public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservation) {
         ReservationValidator.validate(reservation);
-        Reservation newReservation = new Reservation(index.getAndIncrement(), reservation.getName(),
+        Reservation newReservation = new Reservation(reservationId.getAndIncrement(), reservation.getName(),
                 reservation.getDate(), reservation.getTime());
         reservations.add(newReservation);
         return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId()))
@@ -45,19 +43,24 @@ public class ReservationController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Reservation> getReservationDetail(@PathVariable int id) {
+    public Reservation getReservationDetail(@PathVariable int id) {
         return reservations.stream()
                 .filter(reservation -> reservation.getId() == id)
                 .findFirst()
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+                .orElseThrow(() -> new NotFoundReservationException("Reservation not found with id: " + id));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteReservation(@PathVariable int id) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteReservation(@PathVariable int id) {
         boolean removed = reservations.removeIf(reservation -> reservation.getId() == id);
-        ReservationValidator.deleteValidate(removed, id);
-        return ResponseEntity.noContent().build();
+        deleteValidate(removed, id);
+    }
+
+    private void deleteValidate(boolean removed, int id) {
+        if (!removed) {
+            throw new NotFoundReservationException("Reservation with ID " + id + " Not Found");
+        }
     }
 
 }
