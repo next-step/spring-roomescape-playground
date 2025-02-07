@@ -13,8 +13,8 @@ import static roomescape.global.exception.ExceptionMessage.INVALID_TIME;
 
 public class Reservation {
 
-    public static final int MIN_NAME_LENGTH = 2;
-    public static final int MAX_NAME_LENGTH = 10;
+    private static final int MIN_NAME_LENGTH = 2;
+    private static final int MAX_NAME_LENGTH = 10;
     private static final Pattern NAME_FORMAT = Pattern.compile("^[가-힣]+$");
 
     private AtomicLong index = new AtomicLong(0);
