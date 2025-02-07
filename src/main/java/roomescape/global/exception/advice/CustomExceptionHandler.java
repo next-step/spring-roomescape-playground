@@ -20,6 +20,6 @@ public class CustomExceptionHandler {
     @ExceptionHandler(ReservationNotFoundException.class)
     public ResponseEntity handleReservationNotFoundException(ReservationNotFoundException e) {
         ErrorDto errorDto = e.getErrorCode().getErrorReason();
-        return ResponseEntity.status(errorDto.status()).body(errorDto.message());
+        return ResponseEntity.status(errorDto.status()).body(errorDto.message() + e.getReservationId());
     }
 }
