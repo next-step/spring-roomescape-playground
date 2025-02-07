@@ -1,15 +1,15 @@
 package roomescape.reservation.exception;
 
-import roomescape.global.exception.code.ErrorCode;
+import roomescape.global.exception.code.ErrorStatus;
 
 public class ReservationNotFoundException extends RuntimeException {
-    ErrorCode errorCode;
+    ErrorStatus errorStatus;
 
-    public ReservationNotFoundException(ErrorCode code) {
-        this.errorCode = code;
+    public ReservationNotFoundException(ErrorStatus errorStatus) {
+        this.errorStatus = errorStatus;
     }
 
-    public ErrorCode getErrorCode() {
-        return errorCode;
+    public ErrorStatus getErrorCode() {
+        return errorStatus;
     }
 }

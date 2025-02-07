@@ -2,7 +2,7 @@ package roomescape.global.exception.code;
 
 import org.springframework.http.HttpStatus;
 
-public enum ErrorStatus implements ErrorCode {
+public enum ErrorStatus {
 
     INVALID_REQUEST_RESERVATION_INFO(HttpStatus.BAD_REQUEST, "잘못된 예약 정보입니다"),
     INVALID_REQUEST_RESERVATION_ID(HttpStatus.BAD_REQUEST, "예약 아이디를 잘못 입력하였습니다. (0보다 큰 양수)"),
@@ -16,7 +16,6 @@ public enum ErrorStatus implements ErrorCode {
         this.message = message;
     }
 
-    @Override
     public ErrorDto getErrorReason() {
         return new ErrorDto(httpStatus, message);
     }
