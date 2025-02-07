@@ -1,28 +1,22 @@
 package roomescape.validator;
 
-import roomescape.entity.Reservation;
-import roomescape.exception.InvalidReservationException;
-import roomescape.exception.NotFoundReservationException;
+import roomescape.dto.Reservation;
+import roomescape.exception.InvalidException;
 
 public class ReservationValidator {
 
     public static void validate(Reservation reservation) {
         if (reservation.getName() == null || reservation.getName().trim().isEmpty()) {
-            throw new InvalidReservationException("Name is required");
+            throw new InvalidException("Name is required");
         }
 
         if (reservation.getDate() == null) {
-            throw new NotFoundReservationException("Date is required");
+            throw new InvalidException("Date is required");
         }
 
         if (reservation.getTime() == null) {
-            throw new NotFoundReservationException("Time is required");
+            throw new InvalidException("Time is required");
         }
     }
 
-    public static void deleteValidate(boolean removed, int id){
-        if (!removed) {
-            throw new NotFoundReservationException("Reservation with ID" + id + "Not Found");
-        }
-    }
 }
