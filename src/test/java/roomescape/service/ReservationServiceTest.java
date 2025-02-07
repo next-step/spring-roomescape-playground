@@ -30,13 +30,13 @@ class ReservationServiceTest {
                 LocalTime.of(12, 30));
         reservationService.createReservation(request);
         // when & then
-        assertThatCode(() -> reservationService.deleteReservation(1L))
+        assertThatCode(() -> reservationService.deleteReservation(1))
                 .doesNotThrowAnyException();
     }
 
     @Test
     void 존재하지_않는_예약을_삭제하는_경우_오류_발생() {
-        assertThatThrownBy(() -> reservationService.deleteReservation(1L))
+        assertThatThrownBy(() -> reservationService.deleteReservation(1))
                 .isInstanceOf(BadRequestException.class)
                 .hasMessageContaining(
                         ExceptionMessage.RESERVATION_NOT_EXISTS.getMessage());

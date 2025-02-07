@@ -28,12 +28,12 @@ public class ReservationService {
                 .toList();
     }
 
-    public void deleteReservation(final Long reservationId) {
+    public void deleteReservation(final long reservationId) {
         int index = getIndexOrThrow(reservationId);
         reservations.remove(index);
     }
 
-    private int getIndexOrThrow(final Long reservationId) {
+    private int getIndexOrThrow(final long reservationId) {
         int index = 0;
         for (Reservation reservation : reservations) {
             if (reservation.getId().equals(reservationId)) {
