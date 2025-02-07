@@ -11,7 +11,7 @@ public class PageController {
         return "home";
     }
 
-    @GetMapping(value = "/reservation")
+    @GetMapping("/reservation")
     public String readReservationPage() {
         return "reservation";
     }
