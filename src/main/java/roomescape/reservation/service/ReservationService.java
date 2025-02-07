@@ -30,10 +30,6 @@ public class ReservationService {
     }
 
     public ReservationResponse createReservation(final ReservationRequest reservationRequest) {
-        if (!reservationRequest.isValid()) {
-            throw new InvalidParameterException(ErrorStatus.INVALID_REQUEST_RESERVATION_INFO);
-        }
-
         Reservation savedReservation = reservationRepository.addReservation(
                 ReservationRequest.toReservation(reservationRequest));
 
