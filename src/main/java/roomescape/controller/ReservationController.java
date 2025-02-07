@@ -29,8 +29,8 @@ public class ReservationController {
     }
 
     private List<Reservation> createReservations() {
-        return List.of(new Reservation(1, "파도", LocalDate.of(2025, 2, 2), LocalTime.of(9, 10)),
-                new Reservation(2, "달", LocalDate.of(2025, 1, 14), LocalTime.of(10, 10)),
-                new Reservation(3, "별", LocalDate.of(2025, 2, 1), LocalTime.of(10, 10)));
+        return List.of(new Reservation(1L, "파도", LocalDate.of(2025, 2, 2), LocalTime.of(9, 10)),
+                new Reservation(2L, "달", LocalDate.of(2025, 1, 14), LocalTime.of(10, 10)),
+                new Reservation(3L, "별", LocalDate.of(2025, 2, 1), LocalTime.of(10, 10)));
     }
 }
