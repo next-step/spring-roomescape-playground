@@ -1,16 +1,11 @@
 package roomescape.reservation.exception;
 
+import roomescape.global.exception.RoomescapeBadRequestException;
 import roomescape.global.exception.code.ErrorStatus;
 
-public class InvalidParameterException extends RuntimeException {
-
-    ErrorStatus errorStatus;
+public class InvalidParameterException extends RoomescapeBadRequestException {
 
     public InvalidParameterException(ErrorStatus errorStatus) {
-        this.errorStatus = errorStatus;
-    }
-
-    public ErrorStatus getErrorCode() {
-        return errorStatus;
+        super(errorStatus.getHttpStatus(), errorStatus.getMessage());
     }
 }
