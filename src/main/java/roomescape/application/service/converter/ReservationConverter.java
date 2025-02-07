@@ -1,4 +1,4 @@
-package roomescape.application.controller.reservatiton.service;
+package roomescape.application.service.converter;
 
 import org.springframework.stereotype.Component;
 import roomescape.application.dto.CreateReservationRequestDto;
@@ -10,10 +10,13 @@ import roomescape.domain.reservation.ReserveTime;
 @Component
 public class ReservationConverter {
 
-    public Reservation toEntity(Long id, CreateReservationRequestDto requestDto) {
-        ReserveDate reserveDate = new ReserveDate(requestDto.date());
-        ReserveTime reserveTime = new ReserveTime(requestDto.time());
-        return new Reservation(id, requestDto.name(), reserveDate, reserveTime);
+    public Reservation toReservation(CreateReservationRequestDto requestDto) {
+        return Reservation.builder()
+                .id(null)
+                .name(requestDto.name())
+                .reserveDate(new ReserveDate(requestDto.date()))
+                .reserveTime(new ReserveTime(requestDto.time()))
+                .build();
     }
 
     public ReservationResponseDto toDto(Reservation reservation) {

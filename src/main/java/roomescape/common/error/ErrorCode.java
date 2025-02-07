@@ -6,9 +6,11 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum ErrorCode {
+
     // Common
     INVALID_INPUT_VALUE(400, "C001", "Invalid input value"),
     ENTITY_NOT_FOUND(404, "C002", "Entity not found"),
+
     // Reservation
     INVALID_RESERVE_VALUE(400, "R001", "Invalid reserve value"),
     ;
@@ -16,6 +18,5 @@ public enum ErrorCode {
     private final int status;
     private final String code;
     private final String description;
-
 
 }

@@ -2,6 +2,7 @@ package roomescape.domain.reservation;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -16,6 +17,7 @@ public class Reservation {
     private final ReserveDate reserveDate;
     private final ReserveTime reserveTime;
 
+    @Builder
     public Reservation(Long id, String name, ReserveDate reserveDate, ReserveTime reserveTime) {
         this.id = id;
         this.name = name;
@@ -31,9 +33,4 @@ public class Reservation {
         return reserveTime.getValue();
     }
 
-    public static void main(String[] args) {
-        System.out.println(new Reservation(1L, "test", new ReserveDate(LocalDate.of(2026, 1, 1)),
-                new ReserveTime(LocalTime.now())));
-
-    }
 }
