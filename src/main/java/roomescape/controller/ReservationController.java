@@ -36,18 +36,22 @@ public class ReservationController {
         HttpHeaders headers = new HttpHeaders();
         headers.add(HEADER_LOCATION, LOCATION_DEFAULT_VALUE + response.id());
 
-        return new ResponseEntity<>(response, headers, HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .headers(headers)
+                .body(response);
     }
 
     @GetMapping()
     public ResponseEntity<List<ReservationResponse>> getReservations() {
-        List<ReservationResponse> reservations = reservationService.getReservations();
-        return new ResponseEntity<>(reservations, HttpStatus.OK);
+        List<ReservationResponse> reservationResponses = reservationService.getReservations();
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(reservationResponses);
     }
 
     @DeleteMapping("/{reservationId}")
     public ResponseEntity<Void> deleteReservation(@PathVariable long reservationId) {
         reservationService.deleteReservation(reservationId);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT)
+                .build();
     }
 }
