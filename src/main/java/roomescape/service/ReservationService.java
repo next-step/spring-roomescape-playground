@@ -3,6 +3,7 @@ package roomescape.service;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.stereotype.Service;
@@ -28,7 +29,7 @@ public class ReservationService {
     }
 
     public List<Reservation> showReservations() {
-        return reservations;
+        return Collections.unmodifiableList(reservations);
     }
 
     public void cancelReservation(Long userId) {
