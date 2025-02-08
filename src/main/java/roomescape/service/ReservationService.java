@@ -33,12 +33,11 @@ public class ReservationService {
     }
 
     public void cancelReservation(Long reservationId) {
-        for (Reservation reservation : reservations) {
-            if (reservation.getId().equals(reservationId)) {
-                reservations.remove(reservation);
-                return;
-            }
-        }
-        throw new InvalidValueException(ErrorMessage.NO_RESERVATION.getMessage());
+        Reservation reservation = reservations.stream()
+                .filter(r -> r.getId().equals(reservationId))
+                .findFirst()
+                .orElseThrow(() -> new InvalidValueException(ErrorMessage.NO_RESERVATION.getMessage()));
+
+        reservations.remove(reservation);
     }
 }
