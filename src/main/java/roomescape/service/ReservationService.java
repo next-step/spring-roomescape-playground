@@ -35,7 +35,7 @@ public class ReservationService {
 
     private Reservation findReservation(final long reservationId) {
         return reservations.stream()
-                .filter(reservation -> reservation.getId().equals(reservationId))
+                .filter(reservation -> reservation.isSameId(reservationId))
                 .findFirst()
                 .orElseThrow(() -> new BadRequestException(RESERVATION_NOT_EXISTS.getMessage()));
     }
