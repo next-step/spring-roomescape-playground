@@ -14,9 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import roomescape.dto.Reservation;
+import roomescape.entity.Reservation;
 import roomescape.exception.NotFoundReservationException;
-import roomescape.validator.ReservationValidator;
 
 @RestController
 @RequestMapping("/reservations")
@@ -34,7 +33,6 @@ public class ReservationController {
 
     @PostMapping
     public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservation) {
-        ReservationValidator.validate(reservation);
         Reservation newReservation = new Reservation(reservationId.getAndIncrement(), reservation.getName(),
                 reservation.getDate(), reservation.getTime());
         reservations.add(newReservation);
@@ -62,6 +60,5 @@ public class ReservationController {
             throw new NotFoundReservationException("Reservation with ID " + id + " Not Found");
         }
     }
-
 
 }
