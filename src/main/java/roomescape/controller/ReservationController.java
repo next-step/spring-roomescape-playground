@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import roomescape.domain.Reservation;
@@ -34,9 +33,9 @@ public class ReservationController {
         return reservationService.reserve(request);
     }
 
-    @DeleteMapping("/reservations/{userId}")
+    @DeleteMapping("/reservations/{reservationId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void cancelReservation(@PathVariable Long userId) {
-        reservationService.cancelReservation(userId);
+    public void cancelReservation(@PathVariable Long reservationId) {
+        reservationService.cancelReservation(reservationId);
     }
 }

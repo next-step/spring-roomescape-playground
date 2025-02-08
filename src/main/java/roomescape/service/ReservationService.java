@@ -32,9 +32,9 @@ public class ReservationService {
         return Collections.unmodifiableList(reservations);
     }
 
-    public void cancelReservation(Long userId) {
+    public void cancelReservation(Long reservationId) {
         for (Reservation reservation : reservations) {
-            if (reservation.getId().equals(userId)) {
+            if (reservation.getId().equals(reservationId)) {
                 reservations.remove(reservation);
                 return;
             }
