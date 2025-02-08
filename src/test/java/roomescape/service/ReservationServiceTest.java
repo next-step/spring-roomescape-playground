@@ -1,16 +1,20 @@
 package roomescape.service;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import roomescape.dto.request.CreateReservationRequest;
+import roomescape.dto.response.ReservationResponse;
 import roomescape.global.exception.BadRequestException;
 import roomescape.global.exception.ExceptionMessage;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static roomescape.entity.Reservation.RESERVATION_ID;
 
 class ReservationServiceTest {
 
@@ -19,6 +23,14 @@ class ReservationServiceTest {
     @BeforeEach
     void setUp() {
         reservationService = new ReservationService();
+    }
+
+    @AfterEach
+    void tearDown() {
+        List<ReservationResponse> reservations = reservationService.getReservations();
+        reservations.forEach(
+                reservationResponse -> reservationService.deleteReservation(reservationResponse.id()));
+        RESERVATION_ID.set(0);
     }
 
     @Test
