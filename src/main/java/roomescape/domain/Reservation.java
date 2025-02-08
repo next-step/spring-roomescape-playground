@@ -11,15 +11,15 @@ public class Reservation {
 
     private Long id;
     private String name;
-    private LocalDate reservationDate;
-    private LocalTime reservationTime;
+    private LocalDate date;
+    private LocalTime time;
 
-    public Reservation(Long id, String name, LocalDate reservationDate, LocalTime reservationTime) {
+    public Reservation(Long id, String name, LocalDate date, LocalTime time) {
         this.id = id;
-        validate(name, reservationDate, reservationTime);
+        validate(name, date, time);
         this.name = name;
-        this.reservationDate = reservationDate;
-        this.reservationTime = reservationTime;
+        this.date = date;
+        this.time = time;
     }
 
     private void validate(String name, LocalDate reservationDate, LocalTime reservationTime) {
@@ -36,12 +36,12 @@ public class Reservation {
         return name;
     }
 
-    public LocalDate getReservationDate() {
-        return reservationDate;
+    public LocalDate getDate() {
+        return date;
     }
 
-    public LocalTime getReservationTime() {
-        return reservationTime;
+    public LocalTime getTime() {
+        return time;
     }
 
     private void validateName(String name) {
