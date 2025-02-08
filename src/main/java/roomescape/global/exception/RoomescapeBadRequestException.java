@@ -4,7 +4,8 @@ import org.springframework.http.HttpStatus;
 
 public class RoomescapeBadRequestException extends RoomescapeException {
 
-    public RoomescapeBadRequestException(HttpStatus httpStatus, String message) {
+    public RoomescapeBadRequestException(final HttpStatus httpStatus, final String message) {
         super(httpStatus, message);
     }
 }
+

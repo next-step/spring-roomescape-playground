@@ -6,7 +6,7 @@ public class RoomescapeException extends RuntimeException {
 
     private final HttpStatus status;
 
-    public RoomescapeException(HttpStatus httpStatus, String message) {
+    public RoomescapeException(final HttpStatus httpStatus, final String message) {
         super(message);
         this.status = httpStatus;
     }
@@ -15,3 +15,4 @@ public class RoomescapeException extends RuntimeException {
         return this.status;
     }
 }
+

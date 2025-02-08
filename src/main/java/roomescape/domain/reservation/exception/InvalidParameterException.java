@@ -5,7 +5,7 @@ import roomescape.global.exception.code.ErrorStatus;
 
 public class InvalidParameterException extends RoomescapeBadRequestException {
 
-    public InvalidParameterException(ErrorStatus errorStatus) {
+    public InvalidParameterException(final ErrorStatus errorStatus) {
         super(errorStatus.getHttpStatus(), errorStatus.getMessage());
     }
 }
