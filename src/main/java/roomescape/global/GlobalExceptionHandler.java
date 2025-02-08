@@ -15,11 +15,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(RoomScapeException.class)
     public ResponseEntity<CustomErrorResponse> handleRoomScapeException(RoomScapeException roomScapeException) {
+        HttpStatus status = HttpStatus.valueOf(roomScapeException.getStatusCode());
         CustomErrorResponse errorResponse = new CustomErrorResponse(
                 roomScapeException.getStatusCode(), roomScapeException.getMessage()
         );
-        HttpStatus status = HttpStatus.valueOf(roomScapeException.getStatusCode());
-        return new ResponseEntity<>(errorResponse, status);
+        return ResponseEntity.status(status)
+                .body(errorResponse);
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
@@ -27,6 +28,7 @@ public class GlobalExceptionHandler {
         CustomErrorResponse errorResponse = new CustomErrorResponse(
                 HttpStatus.BAD_REQUEST.value(),
                 INVALID_INPUT_FORMAT.getMessage());
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(errorResponse);
     }
 }
