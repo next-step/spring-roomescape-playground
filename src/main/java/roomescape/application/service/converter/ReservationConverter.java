@@ -11,20 +11,19 @@ import roomescape.domain.reservation.ReserveTime;
 public class ReservationConverter {
 
     public Reservation toReservation(CreateReservationRequestDto requestDto) {
-        return Reservation.builder()
-                .id(null)
-                .name(requestDto.name())
-                .reserveDate(new ReserveDate(requestDto.date()))
-                .reserveTime(new ReserveTime(requestDto.time()))
-                .build();
+        return new Reservation(
+                null,
+                requestDto.name(),
+                new ReserveDate(requestDto.date()),
+                new ReserveTime(requestDto.time()));
     }
 
     public ReservationResponseDto toDto(Reservation reservation) {
-        return  ReservationResponseDto.builder()
-                .id(reservation.getId())
-                .name(reservation.getName())
-                .date(reservation.reserveDateValue())
-                .time(reservation.reserveTimeValue())
-                .build();
+        return new ReservationResponseDto(
+                reservation.getId(),
+                reservation.getName(),
+                reservation.getReserveDate().getValue(),
+                reservation.getReserveTime().getValue()
+        );
     }
 }

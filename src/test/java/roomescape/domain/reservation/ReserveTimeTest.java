@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import roomescape.common.error.exception.BusinessException;
 
 class ReserveTimeTest {
+
     @Test
     void 예약이_null_이라면_에러throrw() {
         //given

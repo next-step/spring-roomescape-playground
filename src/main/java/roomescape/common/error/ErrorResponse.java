@@ -2,19 +2,17 @@ package roomescape.common.error;
 
 import java.util.ArrayList;
 import java.util.List;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.springframework.validation.BindingResult;
 
-@Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ErrorResponse {
 
     private String description;
     private int status;
     private String code;
     private List<FieldError> errors;
+
+    protected ErrorResponse() {
+    }
 
     private ErrorResponse(ErrorCode errorCode, List<FieldError> errors) {
         this.description = errorCode.getDescription();
@@ -38,12 +36,29 @@ public class ErrorResponse {
         return new ErrorResponse(errorCode, FieldError.of(bindingResult));
     }
 
-    @Getter
-    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public String getDescription() {
+        return description;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public List<FieldError> getErrors() {
+        return errors;
+    }
+
     public static class FieldError {
         private String field;
         private String value;
         private String reason;
+
+        protected FieldError() {
+        }
 
         private FieldError(String field, String value, String reason) {
             this.field = field;
@@ -59,6 +74,18 @@ public class ErrorResponse {
                             error.getRejectedValue() == null ? "" : error.getRejectedValue().toString(),
                             error.getDefaultMessage()))
                     .toList();
+        }
+
+        public String getField() {
+            return field;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public String getReason() {
+            return reason;
         }
     }
 }

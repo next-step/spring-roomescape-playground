@@ -1,12 +1,8 @@
 package roomescape.domain.reservation;
 
 import java.time.LocalDate;
-import lombok.Getter;
-import lombok.ToString;
 import roomescape.domain.reservation.validator.ReserveDateAndTimeValidator;
 
-@Getter
-@ToString(of = "value")
 public class ReserveDate {
 
     private final LocalDate value;
@@ -14,5 +10,16 @@ public class ReserveDate {
     public ReserveDate(LocalDate reserveDate) {
         ReserveDateAndTimeValidator.validateReserveDate(reserveDate);
         value = reserveDate;
+    }
+
+    public LocalDate getValue() {
+        return value;
+    }
+
+    @Override
+    public String toString() {
+        return "ReserveDate{" +
+                "value=" + value +
+                '}';
     }
 }
