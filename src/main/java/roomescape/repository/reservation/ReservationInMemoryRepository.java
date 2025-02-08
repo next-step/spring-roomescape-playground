@@ -25,7 +25,11 @@ public class ReservationInMemoryRepository implements ReservationRepository {
     public Reservation save(Reservation reservation) {
         if (Objects.isNull(reservation.getId())) {
             reservation =
-                    new Reservation(index.getAndIncrement(), reservation.getName(), reservation.getReserveDate(), reservation.getReserveTime());
+                    new Reservation(
+                            index.getAndIncrement(),
+                            reservation.getName(),
+                            reservation.getReserveDate(),
+                            reservation.getReserveTime());
         }
         reservations.put(reservation.getId(), reservation);
         return reservation;
