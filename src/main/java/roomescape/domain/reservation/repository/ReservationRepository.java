@@ -1,10 +1,10 @@
-package roomescape.reservation.repository;
+package roomescape.domain.reservation.repository;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.stereotype.Repository;
-import roomescape.reservation.domain.Reservation;
+import roomescape.domain.reservation.domain.Reservation;
 
 @Repository
 public class ReservationRepository {

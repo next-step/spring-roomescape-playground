@@ -1,10 +1,10 @@
-package roomescape.reservation.dto;
+package roomescape.domain.reservation.dto;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import roomescape.domain.reservation.domain.Reservation;
+import roomescape.domain.reservation.exception.InvalidParameterException;
 import roomescape.global.exception.code.ErrorStatus;
-import roomescape.reservation.domain.Reservation;
-import roomescape.reservation.exception.InvalidParameterException;
 
 public record ReservationRequest(String name, LocalDate date, LocalTime time) {
 

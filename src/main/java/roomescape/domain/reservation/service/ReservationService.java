@@ -1,15 +1,15 @@
-package roomescape.reservation.service;
+package roomescape.domain.reservation.service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import roomescape.global.exception.code.ErrorStatus;
-import roomescape.reservation.domain.Reservation;
-import roomescape.reservation.dto.ReservationRequest;
-import roomescape.reservation.dto.ReservationResponse;
-import roomescape.reservation.exception.InvalidParameterException;
-import roomescape.reservation.exception.ReservationNotFoundException;
-import roomescape.reservation.repository.ReservationRepository;
+import roomescape.domain.reservation.domain.Reservation;
+import roomescape.domain.reservation.dto.ReservationRequest;
+import roomescape.domain.reservation.dto.ReservationResponse;
+import roomescape.domain.reservation.exception.InvalidParameterException;
+import roomescape.domain.reservation.exception.ReservationNotFoundException;
+import roomescape.domain.reservation.repository.ReservationRepository;
 
 @Service
 public class ReservationService {

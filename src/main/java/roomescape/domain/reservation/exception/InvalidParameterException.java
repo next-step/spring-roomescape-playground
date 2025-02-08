@@ -1,4 +1,4 @@
-package roomescape.reservation.exception;
+package roomescape.domain.reservation.exception;
 
 import roomescape.global.exception.RoomescapeBadRequestException;
 import roomescape.global.exception.code.ErrorStatus;
