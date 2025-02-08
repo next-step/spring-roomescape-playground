@@ -12,6 +12,7 @@ import java.time.LocalTime;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 class ReservationTest {
 
@@ -42,15 +43,13 @@ class ReservationTest {
 
     @Test
     void 필수_인자_입력하지_않을시_오류_발생() {
-        assertThatThrownBy(() -> new Reservation("김철수", null, LocalTime.MIN))
-                .isInstanceOf(BadRequestException.class)
-                .hasMessageContaining(
-                        ExceptionMessage.INVALID_DATE.getMessage());
+        assertAll(
+                () -> assertThatThrownBy(() -> new Reservation("김철수", null, LocalTime.MIN))
+                        .isInstanceOf(BadRequestException.class)
+                        .hasMessageContaining(ExceptionMessage.INVALID_DATE.getMessage()),
 
-        assertThatThrownBy(() -> new Reservation("김철수", LocalDate.now(), null))
-                .isInstanceOf(BadRequestException.class)
-                .hasMessageContaining(
-                        ExceptionMessage.INVALID_TIME.getMessage());
+                () -> assertThatThrownBy(() -> new Reservation("김철수", LocalDate.now(), null))
+                        .isInstanceOf(BadRequestException.class)
+                        .hasMessageContaining(ExceptionMessage.INVALID_TIME.getMessage()));
     }
-
 }
