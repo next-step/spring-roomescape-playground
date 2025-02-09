@@ -12,11 +12,21 @@ import roomescape.dto.request.ReservationCreateRequest;
 import roomescape.dto.response.ReservationResponse;
 import roomescape.error.ErrorMessage;
 import roomescape.error.exception.InvalidValueException;
+import roomescape.repository.ReservationDAO;
 
 @Service
 public class ReservationService {
     private AtomicLong index = new AtomicLong(0);
     private List<Reservation> reservations = new ArrayList<>();
+    private ReservationDAO reservationDAO;
+
+    public ReservationService(ReservationDAO reservationDAO) {
+        this.reservationDAO = reservationDAO;
+    }
+
+    public List<Reservation> showReservations() {
+        return reservationDAO.findReservations();
+    }
 
     public ReservationResponse reserve(ReservationCreateRequest request) {
         Long id = index.incrementAndGet();
@@ -26,10 +36,6 @@ public class ReservationService {
 
         reservations.add(new Reservation(id, name, reservationDate, reservationTime));
         return new ReservationResponse(id, name, reservationDate, reservationTime);
-    }
-
-    public List<Reservation> showReservations() {
-        return Collections.unmodifiableList(reservations);
     }
 
     public void cancelReservation(Long reservationId) {
