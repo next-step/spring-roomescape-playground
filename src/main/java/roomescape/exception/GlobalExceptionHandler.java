@@ -1,5 +1,7 @@
 package roomescape.exception;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -8,16 +10,21 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    //404 Not Found 처리
+    
     @ExceptionHandler(InvalidException.class)
-    public ResponseEntity<String> invalidException(InvalidException ex) {
-        return new ResponseEntity<>("Invalid value entered", HttpStatus.BAD_REQUEST);
+    public ResponseEntity<Map<String, String>> invalidException(InvalidException ex) {
+        Map<String, String> response = new HashMap<>();
+        response.put("error", "Bad Request");
+        response.put("message", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
-    //
     @ExceptionHandler(NotFoundReservationException.class)
-    public ResponseEntity<String> notFoundReservation(NotFoundReservationException ex){
-        return new ResponseEntity<>("The reservation isn't exist", HttpStatus.NOT_FOUND);
+    public ResponseEntity<Map<String, String>> notFoundReservation(NotFoundReservationException ex) {
+        Map<String, String> response = new HashMap<>();
+        response.put("error","Not Found");
+        response.put("message", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 
 
