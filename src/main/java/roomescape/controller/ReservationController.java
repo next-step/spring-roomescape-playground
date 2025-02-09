@@ -45,7 +45,7 @@ public class ReservationController {
         return reservations.stream()
                 .filter(reservation -> reservation.getId() == id)
                 .findFirst()
-                .orElseThrow(() -> new NotFoundReservationException("Reservation not found with id: " + id));
+                .orElseThrow(() -> new NotFoundReservationException("Reservation with ID(" + id + ") wasn't found"));
     }
 
     @DeleteMapping("/{id}")
@@ -57,7 +57,7 @@ public class ReservationController {
 
     private void deleteValidate(boolean removed, int id) {
         if (!removed) {
-            throw new NotFoundReservationException("Reservation with ID " + id + " Not Found");
+            throw new NotFoundReservationException("Reservation with ID(" + id + ") wasn't found");
         }
     }
 
