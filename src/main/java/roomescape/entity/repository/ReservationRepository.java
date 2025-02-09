@@ -26,6 +26,7 @@ public class ReservationRepository {
         String sql = "SELECT * FROM reservation";
         return jdbcTemplate.query(sql, (rs, rowNum) ->
             new Reservation(
+                rs.getLong("id"),
                 rs.getString("name"),
                 rs.getString("date"),
                 rs.getString("time")));
