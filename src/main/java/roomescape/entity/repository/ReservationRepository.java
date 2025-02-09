@@ -17,9 +17,9 @@ public class ReservationRepository {
 
     public ReservationRepository(JdbcTemplate jdbcTemplate, DataSource source) {
         this.jdbcTemplate = jdbcTemplate;
-        this.simpleJdbcInsert = new SimpleJdbcInsert(source);
-        this.simpleJdbcInsert.setTableName("reservation");
-        this.simpleJdbcInsert.usingGeneratedKeyColumns("id");
+        this.simpleJdbcInsert = new SimpleJdbcInsert(source)
+            .withTableName("reservation")
+            .usingGeneratedKeyColumns("id");
     }
 
     public List<Reservation> findAll() {
