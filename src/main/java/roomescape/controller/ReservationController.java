@@ -1,5 +1,6 @@
 package roomescape.controller;
 
+import jakarta.transaction.Transactional;
 import java.net.URI;
 import java.util.List;
 import org.springframework.http.HttpStatus;
@@ -30,6 +31,7 @@ public class ReservationController {
         return reservationRepository.findAll();
     }
 
+    @Transactional
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservation) {
         final Reservation save = reservationRepository.save(reservation);
@@ -37,6 +39,7 @@ public class ReservationController {
         return ResponseEntity.created(location).body(save);
     }
 
+    @Transactional
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
         final int countOfDeleted = reservationRepository.deleteById(id);
