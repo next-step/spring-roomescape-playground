@@ -4,8 +4,7 @@ import org.springframework.stereotype.Component;
 import roomescape.application.dto.CreateReservationRequestDto;
 import roomescape.application.dto.ReservationResponseDto;
 import roomescape.domain.reservation.Reservation;
-import roomescape.domain.reservation.ReserveDate;
-import roomescape.domain.reservation.ReserveTime;
+import roomescape.domain.reservation.ReserveDateTime;
 
 @Component
 public class ReservationConverter {
@@ -14,16 +13,16 @@ public class ReservationConverter {
         return new Reservation(
                 null,
                 requestDto.name(),
-                new ReserveDate(requestDto.date()),
-                new ReserveTime(requestDto.time()));
+                new ReserveDateTime(requestDto.date(), requestDto.time())
+        );
     }
 
     public ReservationResponseDto toDto(Reservation reservation) {
         return new ReservationResponseDto(
                 reservation.getId(),
                 reservation.getName(),
-                reservation.getReserveDate().getValue(),
-                reservation.getReserveTime().getValue()
+                reservation.reserveDateValue(),
+                reservation.reserveTimeValue()
         );
     }
 }
