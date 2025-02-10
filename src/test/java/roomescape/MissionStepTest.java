@@ -19,6 +19,9 @@ import static org.hamcrest.CoreMatchers.*;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class MissionStepTest {
 
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
     @Test
     void 삼단계() {
         Map<String, String> params = new HashMap<>();
@@ -72,11 +75,8 @@ public class MissionStepTest {
         RestAssured.given().log().all()
                 .when().delete("/reservations/1")
                 .then().log().all()
-                .statusCode(400);
+                .statusCode(404);
     }
-
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
 
     @Test
     void 오단계() {
