@@ -1,7 +1,7 @@
 package roomescape.dto;
 
 public class ErrorResponse {
-
+    
     private final String exceptionType;
     private final String message;
 
@@ -12,7 +12,6 @@ public class ErrorResponse {
 
     public String getException() {
         return exceptionType;
-    }
 
     public String getMessage() {
         return message;
