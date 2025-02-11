@@ -7,13 +7,9 @@ public interface ReservationDAO {
 
     void save(Reservation reservation);
 
-    List<Reservation> getAll();
-
-    void update(Reservation reservation);
+    List<Reservation> findAll();
 
     void delete(long id);
-
-    int count();
 
     Reservation getById(int id);
 
