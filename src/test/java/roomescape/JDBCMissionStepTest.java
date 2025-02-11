@@ -19,7 +19,6 @@ import roomescape.entity.Reservation;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class JDBCMissionStepTest {
 
-
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
