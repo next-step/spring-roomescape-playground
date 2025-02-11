@@ -49,4 +49,5 @@ public class JDBCMissionStepTest {
 
         assertThat(reservations.size()).isEqualTo(count);
     }
+
 }
