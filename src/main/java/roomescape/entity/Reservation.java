@@ -14,12 +14,13 @@ public class Reservation {
     private final LocalTime time;
 
     public Reservation(long id, String name, LocalDate date, LocalTime time) {
-        this.id = id;
         validateName(name);
-        this.name = name;
         validateDate(date);
-        this.date = date;
         validateTime(time);
+
+        this.id = id;
+        this.name = name;
+        this.date = date;
         this.time = time;
     }
 
