@@ -19,10 +19,6 @@ public class ReservationController {
 
     private final ReservationService reservationService;
 
-    public ReservationController(ReservationService reservationService) {
-        this.reservationService = reservationService;
-    }
-
     @GetMapping("/")
     public String home() {
         return "home";
@@ -49,10 +45,14 @@ public class ReservationController {
     }
 
     @DeleteMapping("/reservations/{reservationId}")
-    public ResponseEntity deleteReservation(@Validated  @PathVariable Long reservationId) {
+    public ResponseEntity deleteReservation(@Validated @PathVariable Long reservationId) {
         reservationService.deleteReservation(reservationId);
 
         return ResponseEntity.noContent().build();
+    }
+
+    public ReservationController(ReservationService reservationService) {
+        this.reservationService = reservationService;
     }
 
 }

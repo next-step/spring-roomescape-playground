@@ -14,7 +14,6 @@ import roomescape.domain.reservation.domain.Reservation;
 public class ReservationRepository {
 
     private final JdbcTemplate jdbcTemplate;
-
     private List<Reservation> reservations = new ArrayList<>();
     private AtomicLong index = new AtomicLong(1);
 
