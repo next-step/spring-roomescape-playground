@@ -8,7 +8,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import roomescape.entity.Dto.TimeInDto;
-import roomescape.entity.Dto.TimeOutDto;
+import roomescape.entity.value.Time;
 
 @Repository
 public class TimeRepository {
@@ -23,19 +23,19 @@ public class TimeRepository {
             .usingGeneratedKeyColumns("id");
     }
 
-    public List<TimeOutDto> findAll() {
+    public List<Time> findAll() {
         String sql = "SELECT * FROM time";
         return jdbcTemplate.query(sql, (rs, rowNum) ->
-            new TimeOutDto(
+            new Time(
                 rs.getLong("id"),
                 rs.getString("time")));
     }
 
-    public TimeOutDto save(TimeInDto timeInDto) {
+    public Time save(TimeInDto timeInDto) {
         SqlParameterSource params = new MapSqlParameterSource()
             .addValue("time", timeInDto.getTime());
         long id = simpleJdbcInsert.executeAndReturnKey(params).longValue();
-        return new TimeOutDto(id, timeInDto.getTime());
+        return new Time(id, timeInDto.getTime());
     }
 
     public int deleteById(Long id) {

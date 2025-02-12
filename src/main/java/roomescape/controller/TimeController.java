@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import roomescape.entity.Dto.TimeInDto;
-import roomescape.entity.Dto.TimeOutDto;
 import roomescape.entity.repository.TimeRepository;
+import roomescape.entity.value.Time;
 import roomescape.exception.NotFoundException;
 
 @RestController
@@ -27,14 +27,14 @@ public class TimeController {
     }
 
     @GetMapping
-    public List<TimeOutDto> getTimes() {
+    public List<Time> getTimes() {
         return timeRepository.findAll();
     }
 
     @Transactional
     @PostMapping
-    public ResponseEntity<TimeOutDto> createTime(@RequestBody TimeInDto timeInDto) {
-        final TimeOutDto save = timeRepository.save(timeInDto);
+    public ResponseEntity<Time> createTime(@RequestBody TimeInDto timeInDto) {
+        final Time save = timeRepository.save(timeInDto);
         URI location = URI.create("/times/" + save.getId());
         return ResponseEntity.created(location).body(save);
     }
