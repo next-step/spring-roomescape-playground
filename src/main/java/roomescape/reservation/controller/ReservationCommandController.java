@@ -1,61 +1,38 @@
 package roomescape.reservation.controller;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.web.bind.annotation.*;
 import roomescape.reservation.Reservation;
+import roomescape.reservation.ReservationDao;
 import roomescape.reservation.dto.ReservationCreateRequest;
 import roomescape.reservation.dto.ReservationCreateResponse;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.Time;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 @RestController
 public class ReservationCommandController {
 
-    private final JdbcTemplate jdbcTemplate;
+    private final ReservationDao reservationDao;
 
-    private final AtomicLong index = new AtomicLong();
-    private final List<Reservation> reservations = new ArrayList<>();
-
-    public ReservationCommandController(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    public ReservationCommandController(ReservationDao reservationDao) {
+        this.reservationDao = reservationDao;
     }
 
     @GetMapping("/reservations")
     public ResponseEntity<List<Reservation>> getReservationList() {
-        String sql = "SELECT * FROM reservation";
-        List<Reservation> reservations = jdbcTemplate.query(sql, (rs, rowNum) -> new Reservation(
-                rs.getLong("id"),
-                rs.getString("name"),
-                rs.getDate("date").toLocalDate(),
-                rs.getTime("time").toLocalTime()
-        ));
+        List<Reservation> reservations = reservationDao.findAll();
         return ResponseEntity.ok(reservations);
     }
 
     @PostMapping("/reservations")
     public ResponseEntity<ReservationCreateResponse> createReservation(@RequestBody ReservationCreateRequest request) throws URISyntaxException {
-        String sql = "INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)";
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-
-        jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
-            ps.setString(1, request.getName());
-            ps.setDate(2, Date.valueOf(request.getDate()));
-            ps.setTime(3, Time.valueOf(request.getTime()));
-            return ps;
-        }, keyHolder);
-
-        Long id = keyHolder.getKey().longValue();
+        Long id = reservationDao.save(Reservation.ofNew(
+                request.getName(),
+                request.getDate(),
+                request.getTime()
+        ));
 
         URI uri = new URI("/reservations/" + id);
         return ResponseEntity
@@ -65,9 +42,7 @@ public class ReservationCommandController {
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable(name = "id") Long id) {
-        String sql = "DELETE FROM reservation WHERE id = ?";
-
-        jdbcTemplate.update(sql, id);
+        reservationDao.delete(id);
 
         return ResponseEntity.noContent().build();
     }
