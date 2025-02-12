@@ -43,7 +43,7 @@ public class ReservationRepository {
     }
 
     public List<Reservation> getReservations() {
-        String sql = "SELECT * FROM reservation";
+        final String sql = "SELECT * FROM reservation";
 
         return jdbcTemplate.query(sql, reservationRowMapper);
     }
