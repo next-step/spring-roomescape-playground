@@ -16,7 +16,7 @@ import roomescape.repository.reservation.interfaces.ReservationRepository;
 public class ReservationDatabaseRepository implements ReservationRepository {
 
     private static final RowMapper<Reservation> RESERVATION_ROW_MAPPER = (resultSet, rowNum) -> {
-        Long reservationId = resultSet.getLong("id");
+        Long reservationId = resultSet.getLong("reservation_id");
         String name = resultSet.getString("name");
         LocalDate reserveDate = resultSet.getDate("reserve_date").toLocalDate();
         LocalTime reserveTime = resultSet.getTime("reserve_time").toLocalTime();
@@ -37,13 +37,13 @@ public class ReservationDatabaseRepository implements ReservationRepository {
 
     @Override
     public Optional<Reservation> findById(Long id) {
-        String sql = " SELECT id, name, reserve_date, reserve_time FROM reservations WHERE id = ? ";
+        String sql = " SELECT reservation_id, name, reserve_date, reserve_time FROM reservations WHERE reservation_id = ? ";
         return jdbcTemplate.query(sql, RESERVATION_ROW_MAPPER, id).stream().findFirst();
     }
 
     @Override
     public List<Reservation> findAll() {
-        String sql = "SELECT id, name, reserve_date, reserve_time FROM reservations";
+        String sql = "SELECT reservation_id, name, reserve_date, reserve_time FROM reservations";
         return Collections.unmodifiableList(jdbcTemplate.query(sql, RESERVATION_ROW_MAPPER));
     }
 
