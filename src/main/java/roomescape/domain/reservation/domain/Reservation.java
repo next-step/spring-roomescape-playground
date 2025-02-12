@@ -29,9 +29,6 @@ public class Reservation {
         return time;
     }
 
-    private Reservation() {
-    }
-
     public Reservation(final Long id, final String name, final LocalDate date, final LocalTime time) {
         this.id = id;
         this.name = name;
