@@ -15,9 +15,10 @@ import org.springframework.test.annotation.DirtiesContext;
 import roomescape.entity.Reservation;
 
 
-@SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class JDBCMissionStepTest {
+
 
     @Autowired
     private JdbcTemplate jdbcTemplate;

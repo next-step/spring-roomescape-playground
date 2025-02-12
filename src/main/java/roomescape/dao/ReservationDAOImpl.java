@@ -29,21 +29,16 @@ public class ReservationDAOImpl implements ReservationDAO {
 
     @Override
     public void update(Reservation reservation) {
-        String sql = "UPDATE reservation SET name = ?, date = ?, time = ? WHERE id = ?";
-        jdbcTemplate.update(sql, reservation.getName(), reservation.getDate(), reservation.getTime(),
-                reservation.getId());
     }
 
     @Override
     public void delete(long id) {
-        String sql = "DELETE FROM reservation WHERE id = ?";
-        jdbcTemplate.update(sql, id);
     }
 
     @Override
     public int count() {
-        String sql = "SELECT count(*) FROM reservation";
-        return jdbcTemplate.queryForObject(sql, Integer.class);
+        return 0;
     }
+
 
 }
