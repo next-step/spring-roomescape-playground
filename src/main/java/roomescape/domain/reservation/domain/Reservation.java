@@ -29,7 +29,6 @@ public class Reservation {
         return time;
     }
 
-
     private Reservation() {
     }
 

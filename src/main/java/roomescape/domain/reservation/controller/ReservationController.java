@@ -19,6 +19,10 @@ public class ReservationController {
 
     private final ReservationService reservationService;
 
+    public ReservationController(final ReservationService reservationService) {
+        this.reservationService = reservationService;
+    }
+
     @GetMapping("/")
     public String home() {
         return "home";
@@ -37,7 +41,8 @@ public class ReservationController {
     }
 
     @PostMapping("/reservations")
-    public ResponseEntity<ReservationResponse> createReservation(@RequestBody ReservationRequest reservationRequest) {
+    public ResponseEntity<ReservationResponse> createReservation(
+            @RequestBody final ReservationRequest reservationRequest) {
         ReservationResponse result = reservationService.createReservation(reservationRequest);
         URI Location = URI.create("/reservations/" + result.id());
 
@@ -45,14 +50,10 @@ public class ReservationController {
     }
 
     @DeleteMapping("/reservations/{reservationId}")
-    public ResponseEntity deleteReservation(@Validated @PathVariable Long reservationId) {
+    public ResponseEntity deleteReservation(@Validated @PathVariable final Long reservationId) {
         reservationService.deleteReservation(reservationId);
 
         return ResponseEntity.noContent().build();
-    }
-
-    public ReservationController(ReservationService reservationService) {
-        this.reservationService = reservationService;
     }
 
 }
