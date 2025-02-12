@@ -40,7 +40,7 @@ public class ReservationService {
 
     public void cancelReservation(Long reservationId) {
         Reservation reservation = reservations.stream()
-                .filter(r -> r.getId().equals(reservationId))
+                .filter(r -> r.isSameReservation(reservationId))
                 .findFirst()
                 .orElseThrow(() -> new InvalidValueException(ErrorMessage.NO_RESERVATION.getMessage()));
 

@@ -28,6 +28,13 @@ public class Reservation {
         validateTime(reservationTime);
     }
 
+    public boolean isSameReservation(Long reservationId) {
+        if (this.id.equals(reservationId)) {
+            return true;
+        }
+        return false;
+    }
+
     public Long getId() {
         return id;
     }
