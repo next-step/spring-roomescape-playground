@@ -8,22 +8,20 @@ public class Reservation {
 
     private final Long id;
     private final String name;
-    private final ReserveDate reserveDate;
-    private final ReserveTime reserveTime;
+    private final ReserveDateTime reserveDateTime;
 
-    public Reservation(Long id, String name, ReserveDate reserveDate, ReserveTime reserveTime) {
+    public Reservation(Long id, String name, ReserveDateTime reserveDateTime) {
         this.id = id;
         this.name = name;
-        this.reserveDate = reserveDate;
-        this.reserveTime = reserveTime;
+        this.reserveDateTime = reserveDateTime;
     }
 
     public LocalDate reserveDateValue() {
-        return reserveDate.getValue();
+        return reserveDateTime.getReserveDate();
     }
 
     public LocalTime reserveTimeValue() {
-        return reserveTime.getValue();
+        return reserveDateTime.getReserveTime();
     }
 
     public Long getId() {
@@ -34,12 +32,8 @@ public class Reservation {
         return name;
     }
 
-    public ReserveDate getReserveDate() {
-        return reserveDate;
-    }
-
-    public ReserveTime getReserveTime() {
-        return reserveTime;
+    public ReserveDateTime getReserveDateTime() {
+        return reserveDateTime;
     }
 
     @Override
@@ -57,16 +51,6 @@ public class Reservation {
     @Override
     public int hashCode() {
         return Objects.hashCode(id);
-    }
-
-    @Override
-    public String toString() {
-        return "Reservation{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", reserveDate=" + reserveDate +
-                ", reserveTime=" + reserveTime +
-                '}';
     }
 
 }
