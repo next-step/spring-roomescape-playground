@@ -32,12 +32,13 @@ public class ReservationDatabaseRepository implements ReservationRepository {
     @Override
     public Reservation save(Reservation reservation) {
         String sql = "INSERT INTO reservations (name, reserved_date, reserved_time) VALUES (?, ?, ?)";
+        // TODO 미션 7단계 진행하며 구현 예정
         return null;
     }
 
     @Override
     public Optional<Reservation> findById(Long id) {
-        String sql = " SELECT reservation_id, name, reserved_date, reserved_time FROM reservations WHERE reservation_id = ? ";
+        String sql = "SELECT reservation_id, name, reserved_date, reserved_time FROM reservations WHERE reservation_id = ?";
         return jdbcTemplate.query(sql, RESERVATION_ROW_MAPPER, id).stream().findFirst();
     }
 
@@ -49,6 +50,6 @@ public class ReservationDatabaseRepository implements ReservationRepository {
 
     @Override
     public void delete(Reservation reservation) {
-
+        // TODO 미션 7단계 진행하며 구현 예정
     }
 }

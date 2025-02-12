@@ -2,7 +2,6 @@ package roomescape.application.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import roomescape.application.dto.CreateReservationRequestDto;
 import roomescape.common.error.ErrorCode;
@@ -17,7 +16,7 @@ public class ReservationService {
     private final ReservationRepository reservationRepository;
 
     public ReservationService(
-            @Qualifier(value = "reservationDatabaseRepository") ReservationRepository reservationRepository
+            ReservationRepository reservationRepository
     ) {
         this.reservationRepository = reservationRepository;
     }
@@ -31,7 +30,7 @@ public class ReservationService {
     }
 
     public Reservation createReservation(CreateReservationRequestDto createReservationRequestDto) {
-        throwInvalidReserveDateTime(createReservationRequestDto);
+        throwInvalidReservedDateTime(createReservationRequestDto);
         Reservation reservationIdNull = createReservationRequestDto.toReservation();
         return reservationRepository.save(reservationIdNull);
     }
@@ -41,10 +40,11 @@ public class ReservationService {
         reservationRepository.delete(foundReservation);
     }
 
-    private void throwInvalidReserveDateTime(CreateReservationRequestDto createReservationRequestDto) {
+    private void throwInvalidReservedDateTime(CreateReservationRequestDto createReservationRequestDto) {
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime reserveDateTime = LocalDateTime.of(createReservationRequestDto.date(), createReservationRequestDto.time());
-        if (reserveDateTime.isBefore(now)) {
+        LocalDateTime reservedDateTime = LocalDateTime.of(createReservationRequestDto.date(),
+                createReservationRequestDto.time());
+        if (reservedDateTime.isBefore(now)) {
             throw new ReservationException(ErrorCode.INVALID_RESERVE_VALUE);
         }
     }
