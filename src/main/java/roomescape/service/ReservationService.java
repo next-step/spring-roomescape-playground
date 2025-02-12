@@ -39,11 +39,11 @@ public class ReservationService {
     }
 
     public void cancelReservation(Long reservationId) {
-        Reservation reservation = reservations.stream()
-                .filter(r -> r.isSameReservation(reservationId))
+        Reservation targetReservation = reservations.stream()
+                .filter(reservation -> reservation.isSameReservation(reservationId))
                 .findFirst()
                 .orElseThrow(() -> new InvalidValueException(ErrorMessage.NO_RESERVATION.getMessage()));
 
-        reservations.remove(reservation);
+        reservations.remove(targetReservation);
     }
 }
