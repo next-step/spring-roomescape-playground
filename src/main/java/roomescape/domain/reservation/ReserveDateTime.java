@@ -1,7 +1,6 @@
 package roomescape.domain.reservation;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Objects;
 import roomescape.common.error.ErrorCode;
@@ -9,21 +8,21 @@ import roomescape.domain.reservation.exception.ReservationException;
 
 public class ReserveDateTime {
 
-    private final LocalDate reserveDate;
-    private final LocalTime reserveTime;
+    private final LocalDate reservedDate;
+    private final LocalTime reservedTime;
 
     public ReserveDateTime(LocalDate reserveDate, LocalTime reserveTime) {
         validate(reserveDate, reserveTime);
-        this.reserveDate = reserveDate;
-        this.reserveTime = reserveTime;
+        this.reservedDate = reserveDate;
+        this.reservedTime = reserveTime;
     }
 
-    public LocalDate getReserveDate() {
-        return reserveDate;
+    public LocalDate getReservedDate() {
+        return reservedDate;
     }
 
-    public LocalTime getReserveTime() {
-        return reserveTime;
+    public LocalTime getReservedTime() {
+        return reservedTime;
     }
 
     private void validate(LocalDate reserveDate, LocalTime reserveTime) {
@@ -32,4 +31,3 @@ public class ReserveDateTime {
         }
     }
 }
-

@@ -17,11 +17,11 @@ public class Reservation {
     }
 
     public LocalDate reserveDateValue() {
-        return reserveDateTime.getReserveDate();
+        return reserveDateTime.getReservedDate();
     }
 
     public LocalTime reserveTimeValue() {
-        return reserveDateTime.getReserveTime();
+        return reserveDateTime.getReservedTime();
     }
 
     public Long getId() {

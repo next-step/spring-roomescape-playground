@@ -18,9 +18,9 @@ public class ReservationDatabaseRepository implements ReservationRepository {
     private static final RowMapper<Reservation> RESERVATION_ROW_MAPPER = (resultSet, rowNum) -> {
         Long reservationId = resultSet.getLong("reservation_id");
         String name = resultSet.getString("name");
-        LocalDate reserveDate = resultSet.getDate("reserve_date").toLocalDate();
-        LocalTime reserveTime = resultSet.getTime("reserve_time").toLocalTime();
-        return new Reservation(reservationId, name, new ReserveDateTime(reserveDate, reserveTime));
+        LocalDate reservedDate = resultSet.getDate("reserved_date").toLocalDate();
+        LocalTime reservedTime = resultSet.getTime("reserved_time").toLocalTime();
+        return new Reservation(reservationId, name, new ReserveDateTime(reservedDate, reservedTime));
     };
 
     private final JdbcTemplate jdbcTemplate;
@@ -31,19 +31,19 @@ public class ReservationDatabaseRepository implements ReservationRepository {
 
     @Override
     public Reservation save(Reservation reservation) {
-        String sql = "INSERT INTO reservations (name, reserve_date, reserve_time) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO reservations (name, reserved_date, reserved_time) VALUES (?, ?, ?)";
         return null;
     }
 
     @Override
     public Optional<Reservation> findById(Long id) {
-        String sql = " SELECT reservation_id, name, reserve_date, reserve_time FROM reservations WHERE reservation_id = ? ";
+        String sql = " SELECT reservation_id, name, reserved_date, reserved_time FROM reservations WHERE reservation_id = ? ";
         return jdbcTemplate.query(sql, RESERVATION_ROW_MAPPER, id).stream().findFirst();
     }
 
     @Override
     public List<Reservation> findAll() {
-        String sql = "SELECT reservation_id, name, reserve_date, reserve_time FROM reservations";
+        String sql = "SELECT reservation_id, name, reserved_date, reserved_time FROM reservations";
         return Collections.unmodifiableList(jdbcTemplate.query(sql, RESERVATION_ROW_MAPPER));
     }
 

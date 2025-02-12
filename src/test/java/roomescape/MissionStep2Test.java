@@ -36,7 +36,7 @@ public class MissionStep2Test {
 
     @Test
     void 육단계() {
-        jdbcTemplate.update("INSERT INTO reservations (name, reserve_date, reserve_time) VALUES (?, ?, ?)", "브라운", "2023-08-05", "15:40");
+        jdbcTemplate.update("INSERT INTO reservations (name, reserved_date, reserved_time) VALUES (?, ?, ?)", "브라운", "2023-08-05", "15:40");
 
         List<ReservationResponseDto> reservations = RestAssured.given().log().all()
                 .when().get("/reservations")
