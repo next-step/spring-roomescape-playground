@@ -1,16 +1,18 @@
 package roomescape.dao;
 
 import java.util.List;
-import javax.sql.DataSource;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
 import roomescape.entity.Reservation;
 
+
+@Repository
 public class ReservationImplDAO implements ReservationDAO {
     private final JdbcTemplate jdbcTemplate;
 
-    public ReservationImplDAO(DataSource dataSource) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
+    public ReservationImplDAO(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
@@ -34,18 +36,14 @@ public class ReservationImplDAO implements ReservationDAO {
 
     @Override
     public void delete(long id) {
-
+        String sql = "DELETE FROM reservation WHERE id = ?";
+        jdbcTemplate.update(sql, id);
     }
 
     @Override
     public int count() {
         String sql = "SELECT count(*) FROM reservation";
-        Integer count = jdbcTemplate.queryForObject(sql, Integer.class);
-
-        if (count == null) {
-            return 0;
-        }
-
-        return count;
+        return jdbcTemplate.queryForObject(sql, Integer.class);
     }
+
 }

@@ -7,11 +7,11 @@ import roomescape.exception.InvalidException;
 
 public class Reservation {
 
-    private final long id;
-    private final String name;
-    private final LocalDate date;
+    private long id;
+    private String name;
+    private LocalDate date;
     @JsonFormat(pattern = "HH:mm")
-    private final LocalTime time;
+    private LocalTime time;
 
     public Reservation(long id, String name, LocalDate date, LocalTime time) {
         validateName(name);
@@ -23,6 +23,8 @@ public class Reservation {
         this.date = date;
         this.time = time;
     }
+
+    public Reservation(){}
 
     public long getId() {
         return id;
@@ -58,4 +60,6 @@ public class Reservation {
         }
     }
 }
+
+
 
