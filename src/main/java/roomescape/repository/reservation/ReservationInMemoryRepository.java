@@ -24,7 +24,8 @@ public class ReservationInMemoryRepository implements ReservationRepository {
     @Override
     public Reservation save(Reservation reservation) {
         if (Objects.isNull(reservation.getId())) {
-            reservation = new Reservation(index.getAndIncrement(), reservation.getName(), reservation.getReserveDateTime());
+            reservation = new Reservation(index.getAndIncrement(), reservation.getName(),
+                    reservation.getReserveDateTime());
         }
         reservations.put(reservation.getId(), reservation);
         return reservation;
