@@ -8,4 +8,3 @@ public class RoomescapeBadRequestException extends RoomescapeException {
         super(httpStatus, message);
     }
 }
-

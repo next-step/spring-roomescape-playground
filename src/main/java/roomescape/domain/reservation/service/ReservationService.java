@@ -30,8 +30,7 @@ public class ReservationService {
     }
 
     public ReservationResponse createReservation(final ReservationRequest reservationRequest) {
-        Reservation savedReservation = reservationRepository.addReservation(
-                ReservationRequest.toReservation(reservationRequest));
+        Reservation savedReservation = reservationRepository.addReservation(reservationRequest);
 
         return ReservationResponse.fromReservation(savedReservation);
     }

@@ -11,7 +11,7 @@ public enum ErrorStatus {
     private final HttpStatus httpStatus;
     private final String message;
 
-    ErrorStatus(HttpStatus httpStatus, String message) {
+    ErrorStatus(final HttpStatus httpStatus, final String message) {
         this.httpStatus = httpStatus;
         this.message = message;
     }

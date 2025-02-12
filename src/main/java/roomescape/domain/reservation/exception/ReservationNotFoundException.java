@@ -5,7 +5,7 @@ import roomescape.global.exception.code.ErrorStatus;
 
 public class ReservationNotFoundException extends RoomescapeNotFoundException {
 
-    public ReservationNotFoundException(final ErrorStatus errorStatus,final Long data) {
+    public ReservationNotFoundException(final ErrorStatus errorStatus, final Long data) {
         super(errorStatus, data);
     }
 }

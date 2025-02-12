@@ -9,22 +9,30 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.reservation.domain.Reservation;
+import roomescape.domain.reservation.dto.ReservationRequest;
 
 @Repository
 public class ReservationRepository {
 
     private final JdbcTemplate jdbcTemplate;
-    private List<Reservation> reservations = new ArrayList<>();
-    private AtomicLong index = new AtomicLong(1);
+    private final List<Reservation> reservations = new ArrayList<>();
+    private final AtomicLong index = new AtomicLong(1);
+    private final RowMapper<Reservation> reservationRowMapper = (resultSet, rowNum) ->
+            new Reservation(
+                    resultSet.getLong("id"),
+                    resultSet.getString("name"),
+                    resultSet.getObject("date", LocalDate.class),
+                    resultSet.getObject("time", LocalTime.class)
+            );
 
-    public ReservationRepository(JdbcTemplate jdbcTemplate) {
+    public ReservationRepository(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public Reservation addReservation(final Reservation reservation) {
+    public Reservation addReservation(final ReservationRequest ReservationRequest) {
         long id = index.getAndIncrement();
-        Reservation newReservation = new Reservation(id, reservation.getName(), reservation.getDate(),
-                reservation.getTime());
+        Reservation newReservation = new Reservation(id, ReservationRequest.name(), ReservationRequest.date(),
+                ReservationRequest.time());
         reservations.add(newReservation);
 
         return newReservation;
@@ -35,16 +43,8 @@ public class ReservationRepository {
     }
 
     public List<Reservation> getReservations() {
-        final String sql = "SELECT * FROM reservation";
+        String sql = "SELECT * FROM reservation";
 
         return jdbcTemplate.query(sql, reservationRowMapper);
     }
-
-    private final RowMapper<Reservation> reservationRowMapper = (resultSet, rowNum) ->
-            new Reservation(
-                    resultSet.getLong("id"),
-                    resultSet.getString("name"),
-                    resultSet.getObject("date", LocalDate.class),
-                    resultSet.getObject("time", LocalTime.class)
-            );
 }
