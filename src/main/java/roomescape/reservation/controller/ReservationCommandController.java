@@ -5,14 +5,15 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.web.bind.annotation.*;
-import roomescape.exception.NotFoundReservationException;
 import roomescape.reservation.Reservation;
 import roomescape.reservation.dto.ReservationCreateRequest;
 import roomescape.reservation.dto.ReservationCreateResponse;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
@@ -35,8 +36,8 @@ public class ReservationCommandController {
         List<Reservation> reservations = jdbcTemplate.query(sql, (rs, rowNum) -> new Reservation(
                 rs.getLong("id"),
                 rs.getString("name"),
-                rs.getString("date"),
-                rs.getString("time")
+                rs.getDate("date").toLocalDate(),
+                rs.getTime("time").toLocalTime()
         ));
         return ResponseEntity.ok(reservations);
     }
@@ -49,8 +50,8 @@ public class ReservationCommandController {
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
             ps.setString(1, request.getName());
-            ps.setString(2, request.getDate());
-            ps.setString(3, request.getTime());
+            ps.setDate(2, Date.valueOf(request.getDate()));
+            ps.setTime(3, Time.valueOf(request.getTime()));
             return ps;
         }, keyHolder);
 
