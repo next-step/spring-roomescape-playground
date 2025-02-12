@@ -8,10 +8,10 @@ import roomescape.entity.Reservation;
 
 
 @Repository
-public class ReservationImplDAO implements ReservationDAO {
+public class ReservationDAOImpl implements ReservationDAO {
     private final JdbcTemplate jdbcTemplate;
 
-    public ReservationImplDAO(JdbcTemplate jdbcTemplate) {
+    public ReservationDAOImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
