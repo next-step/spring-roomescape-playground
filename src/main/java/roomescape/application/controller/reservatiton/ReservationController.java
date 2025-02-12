@@ -34,7 +34,7 @@ public class ReservationController {
     public ResponseEntity<ReservationResponseDto> createReservation(
             @RequestBody @Valid CreateReservationRequestDto requestDto
     ) {
-        Reservation reservation = reservationService.reserve(requestDto);
+        Reservation reservation = reservationService.createReservation(requestDto);
         return ResponseEntity
                 .created(URI.create("/reservations/" + reservation.getId()))
                 .body(ReservationResponseDto.toDto(reservation));
@@ -44,7 +44,7 @@ public class ReservationController {
     public ResponseEntity<Void> deleteReservation(
             @PathVariable Long reservationId
     ) {
-        reservationService.cancelReservation(reservationId);
+        reservationService.deleteReservation(reservationId);
         return ResponseEntity.noContent().build();
     }
 

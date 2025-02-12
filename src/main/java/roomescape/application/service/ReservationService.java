@@ -2,6 +2,7 @@ package roomescape.application.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import roomescape.application.dto.CreateReservationRequestDto;
 import roomescape.common.error.ErrorCode;
@@ -16,7 +17,7 @@ public class ReservationService {
     private final ReservationRepository reservationRepository;
 
     public ReservationService(
-            ReservationRepository reservationRepository
+            @Qualifier(value = "reservationDatabaseRepository") ReservationRepository reservationRepository
     ) {
         this.reservationRepository = reservationRepository;
     }
@@ -29,13 +30,13 @@ public class ReservationService {
         return reservationRepository.findAll();
     }
 
-    public Reservation reserve(CreateReservationRequestDto createReservationRequestDto) {
+    public Reservation createReservation(CreateReservationRequestDto createReservationRequestDto) {
         throwInvalidReserveDateTime(createReservationRequestDto);
         Reservation reservationIdNull = createReservationRequestDto.toReservation();
         return reservationRepository.save(reservationIdNull);
     }
 
-    public void cancelReservation(Long reservationId) {
+    public void deleteReservation(Long reservationId) {
         Reservation foundReservation = findByIdOrThrow(reservationId);
         reservationRepository.delete(foundReservation);
     }
