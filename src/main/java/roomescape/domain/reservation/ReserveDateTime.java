@@ -32,8 +32,4 @@ public class ReserveDateTime {
         }
     }
 }
-/** 예약을 생성하는 비즈니스 로직으로 서비스 레이어에서 처리하는게 바람직하겠다.
- *         if (LocalDateTime.of(reserveDate, reserveTime).isBefore(LocalDateTime.now())) {
- *             throw new ReservationException(ErrorCode.INVALID_RESERVE_VALUE);
- *         }
- */
+

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import roomescape.domain.reservation.Reservation;
 import roomescape.repository.reservation.interfaces.ReservationRepository;
 
-@Repository
+//@Repository
 public class ReservationInMemoryRepository implements ReservationRepository {
 
     private final Map<Long, Reservation> reservations;

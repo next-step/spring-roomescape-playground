@@ -4,6 +4,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import roomescape.domain.reservation.Reservation;
+import roomescape.domain.reservation.ReserveDateTime;
 
 public record CreateReservationRequestDto(
         @NotBlank(message = "이름은 필수 입력값 입니다.") String name,
@@ -11,4 +13,7 @@ public record CreateReservationRequestDto(
         @NotNull(message = "예약시간은 필수 입력값 입니다.") LocalTime time
 ) {
 
+    public Reservation toReservation() {
+        return new Reservation(null, name, new ReserveDateTime(date, time));
+    }
 }

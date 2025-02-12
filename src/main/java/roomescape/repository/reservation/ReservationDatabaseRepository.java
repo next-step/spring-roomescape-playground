@@ -1,11 +1,20 @@
-package roomescape.repository.reservation.interfaces;
+package roomescape.repository.reservation;
 
 import java.util.List;
 import java.util.Optional;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
 import roomescape.domain.reservation.Reservation;
+import roomescape.repository.reservation.interfaces.ReservationRepository;
 
+@Repository
 public class ReservationDatabaseRepository implements ReservationRepository {
 
+    private final JdbcTemplate jdbcTemplate;
+
+    public ReservationDatabaseRepository(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     @Override
     public Reservation save(Reservation reservation) {
