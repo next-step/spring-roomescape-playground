@@ -18,13 +18,24 @@ public class Reservation {
     private static final int MAX_NAME_LENGTH = 10;
     private static final Pattern NAME_FORMAT = Pattern.compile("^[가-힣]+$");
 
-    private final Long id;
+    private Long id;
 
-    private final String name;
+    private String name;
 
-    private final LocalDate date;
+    private LocalDate date;
 
-    private final LocalTime time;
+    private LocalTime time;
+
+    public Reservation() {
+    }
+
+    public Reservation(final Long id, final String name, final LocalDate date, final LocalTime time) {
+        validate(name, date, time);
+        this.id = id;
+        this.name = name;
+        this.date = date;
+        this.time = time;
+    }
 
     public Reservation(String name, LocalDate date, LocalTime time) {
         validate(name, date, time);
