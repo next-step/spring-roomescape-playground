@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import roomescape.entity.Reservation;
 import roomescape.entity.repository.ReservationRepository;
@@ -18,6 +19,7 @@ import roomescape.exception.NotFoundException;
 import roomescape.exception.ReservationException;
 
 @RestController
+@RequestMapping("/reservations")
 public class ReservationController {
 
     private final ReservationRepository reservationRepository;
@@ -26,13 +28,13 @@ public class ReservationController {
         this.reservationRepository = reservationRepository;
     }
 
-    @GetMapping("/reservations")
+    @GetMapping
     public List<Reservation> getReservations() {
         return reservationRepository.findAll();
     }
 
     @Transactional
-    @PostMapping("/reservations")
+    @PostMapping
     public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservation) {
         final Reservation save = reservationRepository.save(reservation);
         URI location = URI.create("/reservations/" + save.getId());
@@ -40,7 +42,7 @@ public class ReservationController {
     }
 
     @Transactional
-    @DeleteMapping("/reservations/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
         final int countOfDeleted = reservationRepository.deleteById(id);
 
