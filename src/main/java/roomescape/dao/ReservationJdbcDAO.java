@@ -37,15 +37,6 @@ public class ReservationJdbcDAO implements ReservationDAO {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    @Override
-    public void update(Reservation reservation) {
-        String sql = "UPDATE reservation SET name = ? , date = ?, time = ? WHERE id = ? ";
-        int rowAffected = jdbcTemplate.update(sql, reservation.getName(), reservation.getDate(), reservation.getTime(),
-                reservation.getId());
-        if (rowAffected == 0) {
-            throw new InvalidException("예약을 찾을 수 없습니다.");
-        }
-    }
 
     @Override
     public void delete(long id) {
@@ -54,20 +45,6 @@ public class ReservationJdbcDAO implements ReservationDAO {
         int rowsAffected = jdbcTemplate.update(sql, id);
         if (rowsAffected == 0) {
             throw new InvalidException("예약을 찾을 수 없습니다. ID: " + id);
-        }
-    }
-
-    @Override
-    public int count() {
-        String sql = "SELECT COUNT(*) FROM reservation";
-        try {
-            Integer count = jdbcTemplate.queryForObject(sql, Integer.class);
-            if (count == null) {
-                return 0;
-            }
-            return count;
-        } catch (Exception e) {
-            throw new InvalidException("ID를 조회하는 동안 오류 발생 : " + e.getMessage());
         }
     }
 
