@@ -2,6 +2,7 @@ package roomescape.repository.reservation;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -43,7 +44,7 @@ public class ReservationDatabaseRepository implements ReservationRepository {
     @Override
     public List<Reservation> findAll() {
         String sql = "SELECT id, name, reserve_date, reserve_time FROM reservations";
-        return List.copyOf(jdbcTemplate.query(sql, RESERVATION_ROW_MAPPER));
+        return Collections.unmodifiableList(jdbcTemplate.query(sql, RESERVATION_ROW_MAPPER));
     }
 
     @Override

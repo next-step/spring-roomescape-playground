@@ -43,7 +43,8 @@ public class ReservationService {
 
     private void throwInvalidReserveDateTime(CreateReservationRequestDto createReservationRequestDto) {
         LocalDateTime now = LocalDateTime.now();
-        if (LocalDateTime.of(createReservationRequestDto.date(), createReservationRequestDto.time()).isBefore(now)) {
+        LocalDateTime reserveDateTime = LocalDateTime.of(createReservationRequestDto.date(), createReservationRequestDto.time());
+        if (reserveDateTime.isBefore(now)) {
             throw new ReservationException(ErrorCode.INVALID_RESERVE_VALUE);
         }
     }
