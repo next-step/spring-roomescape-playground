@@ -5,6 +5,7 @@ import roomescape.dto.request.CreateReservationRequest;
 import roomescape.dto.response.ReservationResponse;
 import roomescape.entity.Reservation;
 import roomescape.global.exception.BadRequestException;
+import roomescape.repository.ReservationRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +15,13 @@ import static roomescape.global.exception.ExceptionMessage.RESERVATION_NOT_EXIST
 @Service
 public class ReservationService {
 
+    private final ReservationRepository reservationRepository;
+
     private List<Reservation> reservations = new ArrayList<>();
+
+    public ReservationService(final ReservationRepository reservationRepository) {
+        this.reservationRepository = reservationRepository;
+    }
 
     public ReservationResponse createReservation(final CreateReservationRequest request) {
         Reservation reservation = new Reservation(request.name(), request.date(), request.time());
@@ -23,7 +30,8 @@ public class ReservationService {
     }
 
     public List<ReservationResponse> getReservations() {
-        return reservations.stream()
+        return reservationRepository.findAll()
+                .stream()
                 .map(ReservationResponse::new)
                 .toList();
     }
