@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import roomescape.dao.ReservationDAOImpl;
 import roomescape.entity.Reservation;
 import roomescape.exception.NotFoundReservationException;
 
@@ -23,11 +24,15 @@ public class ReservationController {
 
     private final List<Reservation> reservations = new ArrayList<>();
     private final AtomicLong reservationId = new AtomicLong(1);
+    private final ReservationDAOImpl reservationDAOImpl;
 
+    public ReservationController(ReservationDAOImpl reservationDAOImpl) {
+        this.reservationDAOImpl = reservationDAOImpl;
+    }
 
     @GetMapping
     public List<Reservation> getReservations() {
-        return reservations;
+        return reservationDAOImpl.findAll();
     }
 
 
