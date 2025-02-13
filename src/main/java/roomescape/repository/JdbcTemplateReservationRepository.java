@@ -5,7 +5,6 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import roomescape.entity.Reservation;
 
-import javax.sql.DataSource;
 import java.util.List;
 
 @Repository
@@ -13,8 +12,8 @@ public class JdbcTemplateReservationRepository implements ReservationRepository 
 
     private final JdbcTemplate jdbcTemplate;
 
-    public JdbcTemplateReservationRepository(DataSource dataSource) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
+    public JdbcTemplateReservationRepository(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
