@@ -14,16 +14,18 @@ import roomescape.domain.reservation.dto.ReservationRequest;
 @Repository
 public class ReservationRepository {
 
-    private final JdbcTemplate jdbcTemplate;
-    private final List<Reservation> reservations = new ArrayList<>();
-    private final AtomicLong index = new AtomicLong(1);
-    private final RowMapper<Reservation> reservationRowMapper = (resultSet, rowNum) ->
+    private static final RowMapper<Reservation> reservationRowMapper = (resultSet, rowNum) ->
             new Reservation(
                     resultSet.getLong("id"),
                     resultSet.getString("name"),
                     resultSet.getObject("date", LocalDate.class),
                     resultSet.getObject("time", LocalTime.class)
             );
+
+    private final JdbcTemplate jdbcTemplate;
+    private final List<Reservation> reservations = new ArrayList<>();
+    private final AtomicLong index = new AtomicLong(1);
+
 
     public ReservationRepository(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
