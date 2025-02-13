@@ -60,7 +60,7 @@ public class ReservationController {
     public void deleteReservation(@PathVariable int id) {
 
         reservationJdbcDAO.delete(id);
-        
+
     }
 
 
