@@ -2,6 +2,7 @@ package roomescape.reservation.infra;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
@@ -18,6 +19,13 @@ import java.util.Optional;
 
 @Repository
 public class ReservationDaoImpl implements ReservationDao {
+
+    private static final RowMapper<Reservation> ALL_RESERVATION_ROW_MAPPER = (rs, rowNum) -> Reservation.ofExist(
+            rs.getLong("id"),
+            rs.getString("name"),
+            rs.getDate("date").toLocalDate(),
+            rs.getTime("time").toLocalTime()
+    );
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -45,12 +53,7 @@ public class ReservationDaoImpl implements ReservationDao {
     @Override
     public List<Reservation> findAll() {
         String sql = "SELECT * FROM reservation";
-        return jdbcTemplate.query(sql, (rs, rowNum) -> Reservation.ofExist(
-                rs.getLong("id"),
-                rs.getString("name"),
-                rs.getDate("date").toLocalDate(),
-                rs.getTime("time").toLocalTime()
-        ));
+        return jdbcTemplate.query(sql, ALL_RESERVATION_ROW_MAPPER);
     }
 
     @Override
