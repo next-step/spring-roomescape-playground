@@ -5,6 +5,8 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import roomescape.entity.Reservation;
+import roomescape.exception.InvalidException;
+import roomescape.exception.NotFoundReservationException;
 
 
 @Repository
@@ -18,12 +20,17 @@ public class ReservationDAOImpl implements ReservationDAO {
     @Override
     public void save(Reservation reservation) {
         String sql = "INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)";
-        jdbcTemplate.update(sql, reservation.getName(), reservation.getDate(), reservation.getTime());
+        try {
+            jdbcTemplate.update(sql, reservation.getName(), reservation.getDate(), reservation.getTime());
+        } catch (InvalidException e) {
+            throw new InvalidException(e.getMessage());
+        }
+
     }
 
     @Override
-    public List<Reservation> findAll() {
-        String sql = "SELECT id, name, date, time FROM reservation";
+    public List<Reservation> getAll() {
+        String sql = "SELECT * FROM reservation";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Reservation.class));
     }
 
@@ -33,12 +40,24 @@ public class ReservationDAOImpl implements ReservationDAO {
 
     @Override
     public void delete(long id) {
+        String sql = "DELETE FROM reservation WHERE id = ?";
+        int rowsAffected = jdbcTemplate.update(sql, id);
+
+        if (rowsAffected == 0) {
+            throw new InvalidException("예약을 찾을 수 없습니다. ID: " + id);
+        }
     }
 
     @Override
     public int count() {
-        return 0;
+        String sql = "SELECT COUNT(*) FROM reservation";
+        return jdbcTemplate.queryForObject(sql, Integer.class);
     }
 
+    @Override
+    public Reservation getById(int id) {
+        String sql = "SELECT * FROM reservation WHERE id = ?";
+        return jdbcTemplate.queryForObject(sql, new Object[]{id}, new BeanPropertyRowMapper<>(Reservation.class));
+    }
 
 }
