@@ -2,3 +2,6 @@
 
 **첫 코드 리뷰**
 - [GitHub url](https://github.com/next-step/spring-roomescape-playground/pull/395)
+
+**두 번째 코드 리뷰**
+- [GitHub url](https://github.com/next-step/spring-roomescape-playground/pull/413)
