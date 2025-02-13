@@ -1,9 +1,8 @@
 package roomescape.reservation;
 
-import roomescape.exception.ReservationValidationException;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Objects;
 
 public class Reservation {
     
@@ -17,24 +16,9 @@ public class Reservation {
 
     private Reservation(Long id, String name, LocalDate date, LocalTime time) {
         this.id = id;
-        validate(name, date, time);
-        this.name = name;
-        this.date = date;
-        this.time = time;
-    }
-
-    private void validate(String name, LocalDate date, LocalTime time) {
-        if (name == null || name.isEmpty()) {
-            throw new ReservationValidationException();
-        }
-
-        if (date == null) {
-            throw new ReservationValidationException();
-        }
-
-        if (time == null) {
-            throw new ReservationValidationException();
-        }
+        this.name = Objects.requireNonNull(name, "이름은 필수입니다.");
+        this.date = Objects.requireNonNull(date, "예약 날짜는 필수 입니다.");
+        this.time = Objects.requireNonNull(time, "예약 시간은 필수입니다.");
     }
 
     public static Reservation ofNew(String name, LocalDate date, LocalTime time) {

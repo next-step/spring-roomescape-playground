@@ -16,4 +16,9 @@ public class ReservationExceptionHandler {
     public ResponseEntity<Void> handleException(ReservationValidationException e) {
         return ResponseEntity.badRequest().build();
     }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Void> handleException(Exception e) {
+        return ResponseEntity.badRequest().build();
+    }
 }
