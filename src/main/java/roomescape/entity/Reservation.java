@@ -26,7 +26,7 @@ public class Reservation {
 
     private LocalTime time;
 
-    public Reservation() {
+    private Reservation() {
     }
 
     public Reservation(final Long id, final String name, final LocalDate date, final LocalTime time) {
