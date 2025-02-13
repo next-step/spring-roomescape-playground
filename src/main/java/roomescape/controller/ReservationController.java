@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import roomescape.dao.ReservationDAOImpl;
 import roomescape.entity.Reservation;
+import roomescape.exception.InvalidException;
 import roomescape.exception.NotFoundReservationException;
 
 @RestController
@@ -32,38 +33,34 @@ public class ReservationController {
 
     @GetMapping
     public List<Reservation> getReservations() {
-        return reservationDAOImpl.findAll();
+        return reservationDAOImpl.getAll();
     }
 
 
     @PostMapping
     public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservation) {
-        Reservation newReservation = new Reservation(reservationId.getAndIncrement(), reservation.getName(),
-                reservation.getDate(), reservation.getTime());
-        reservations.add(newReservation);
+        Reservation newReservation = new Reservation(
+                reservationId.getAndIncrement(),
+                reservation.getName(),
+                reservation.getDate(),
+                reservation.getTime()
+        );
+
+        reservationDAOImpl.save(newReservation);
         return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId()))
                 .body(newReservation);
     }
 
     @GetMapping("/{id}")
     public Reservation getReservationDetail(@PathVariable int id) {
-        return reservations.stream()
-                .filter(reservation -> reservation.getId() == id)
-                .findFirst()
-                .orElseThrow(() -> new NotFoundReservationException("Reservation with ID(" + id + ") wasn't found"));
+        return reservationDAOImpl.getById(id);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteReservation(@PathVariable int id) {
-        boolean removed = reservations.removeIf(reservation -> reservation.getId() == id);
-        deleteValidate(removed, id);
+        reservationDAOImpl.delete(id);
     }
 
-    private void deleteValidate(boolean removed, int id) {
-        if (!removed) {
-            throw new NotFoundReservationException("Reservation with ID(" + id + ") wasn't found");
-        }
-    }
 
 }
