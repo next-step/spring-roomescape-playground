@@ -16,9 +16,9 @@ import roomescape.repository.ReservationDAO;
 
 @Service
 public class ReservationService {
-    private AtomicLong index = new AtomicLong(0);
-    private List<Reservation> reservations = new ArrayList<>();
-    private ReservationDAO reservationDAO;
+    private final AtomicLong index = new AtomicLong(0);
+    private final List<Reservation> reservations = new ArrayList<>();
+    private final ReservationDAO reservationDAO;
 
     public ReservationService(ReservationDAO reservationDAO) {
         this.reservationDAO = reservationDAO;
