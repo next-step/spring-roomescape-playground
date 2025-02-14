@@ -17,7 +17,7 @@ public class ReservationService {
 
     private final ReservationRepository reservationRepository;
 
-    private List<Reservation> reservations = new ArrayList<>();
+    private final List<Reservation> reservations = new ArrayList<>();
 
     public ReservationService(final ReservationRepository reservationRepository) {
         this.reservationRepository = reservationRepository;
