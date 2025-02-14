@@ -25,9 +25,9 @@ public class JdbcTemplateReservationRepository implements ReservationRepository 
         return ((rs, rowNum) ->
                 new Reservation(
                         rs.getLong("id"),
-                        rs.getString("name"),
-                        rs.getDate("date").toLocalDate(),
-                        rs.getTime("time").toLocalTime()
+                        rs.getString("customer_name"),
+                        rs.getDate("reservation_date").toLocalDate(),
+                        rs.getTime("reservation_time").toLocalTime()
                 ));
     }
 }

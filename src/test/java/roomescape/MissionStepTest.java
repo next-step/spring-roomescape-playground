@@ -91,9 +91,9 @@ public class MissionStepTest {
     @Test
     void 사단계() {
         Map<String, String> params = new HashMap<>();
-        params.put("name", "브라운");
-        params.put("date", "");
-        params.put("time", "");
+        params.put("customer_name", "브라운");
+        params.put("reservation_date", "");
+        params.put("reservation_time", "");
 
         // 필요한 인자가 없는 경우
         RestAssured.given().log().all()
@@ -123,7 +123,7 @@ public class MissionStepTest {
 
     @Test
     void 육단계() {
-        jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "브라운", "2023-08-05", "15:40");
+        jdbcTemplate.update("INSERT INTO reservation (customer_name, reservation_date, reservation_time) VALUES (?, ?, ?)", "브라운", "2023-08-05", "15:40");
 
         List<Reservation> reservations = RestAssured.given().log().all()
                 .when().get("/reservations")
