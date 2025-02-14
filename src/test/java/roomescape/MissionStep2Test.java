@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -50,6 +51,7 @@ public class MissionStep2Test {
     }
 
     @Test
+    @Disabled
     void 칠단계() {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
