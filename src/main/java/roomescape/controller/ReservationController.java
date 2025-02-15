@@ -14,10 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import roomescape.dao.ReservationDAOImpl;
+import roomescape.dao.ReservationRepository;
 import roomescape.entity.Reservation;
-import roomescape.exception.InvalidException;
-import roomescape.exception.NotFoundReservationException;
 
 @RestController
 @RequestMapping("/reservations")
@@ -25,15 +23,15 @@ public class ReservationController {
 
     private final List<Reservation> reservations = new ArrayList<>();
     private final AtomicLong reservationId = new AtomicLong(1);
-    private final ReservationDAOImpl reservationDAOImpl;
+    private final ReservationRepository reservationRepository;
 
-    public ReservationController(ReservationDAOImpl reservationDAOImpl) {
-        this.reservationDAOImpl = reservationDAOImpl;
+    public ReservationController(ReservationRepository reservationRepository) {
+        this.reservationRepository = reservationRepository;
     }
 
     @GetMapping
     public List<Reservation> getReservations() {
-        return reservationDAOImpl.getAll();
+        return reservationRepository.getAll();
     }
 
 
@@ -46,20 +44,20 @@ public class ReservationController {
                 reservation.getTime()
         );
 
-        reservationDAOImpl.save(newReservation);
+        reservationRepository.save(newReservation);
         return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId()))
                 .body(newReservation);
     }
 
     @GetMapping("/{id}")
     public Reservation getReservationDetail(@PathVariable int id) {
-        return reservationDAOImpl.getById(id);
+        return reservationRepository.getById(id);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteReservation(@PathVariable int id) {
-        reservationDAOImpl.delete(id);
+        reservationRepository.delete(id);
     }
 
 
