@@ -2,16 +2,16 @@ package roomescape.dto;
 
 public class ErrorResponse {
 
-    private final String error;
+    private final String exception;
     private final String message;
 
-    public ErrorResponse(String error, String message) {
-        this.error = error;
+    public ErrorResponse(String exception, String message) {
+        this.exception = exception;
         this.message = message;
     }
 
-    public String getError() {
-        return error;
+    public String getException() {
+        return exception;
     }
 
     public String getMessage() {
