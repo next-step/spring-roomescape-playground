@@ -33,7 +33,7 @@ public class ReservationDatabaseRepository implements ReservationRepository {
     public Reservation save(Reservation reservation) {
         String sql = "INSERT INTO reservations (name, reserved_date, reserved_time) VALUES (?, ?, ?)";
         // TODO 미션 7단계 진행하며 구현 예정
-        return null;
+        return new Reservation(1L, reservation.getName(), reservation.getReserveDateTime());
     }
 
     @Override
