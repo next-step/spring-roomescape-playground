@@ -9,7 +9,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.reservation.Reservation;
-import roomescape.domain.reservation.ReserveDateTime;
+import roomescape.domain.reservation.ReservedDateTime;
 import roomescape.repository.reservation.interfaces.ReservationRepository;
 
 @Repository
@@ -20,7 +20,7 @@ public class ReservationDatabaseRepository implements ReservationRepository {
         String name = resultSet.getString("name");
         LocalDate reservedDate = resultSet.getDate("reserved_date").toLocalDate();
         LocalTime reservedTime = resultSet.getTime("reserved_time").toLocalTime();
-        return new Reservation(reservationId, name, new ReserveDateTime(reservedDate, reservedTime));
+        return new Reservation(reservationId, name, new ReservedDateTime(reservedDate, reservedTime));
     };
 
     private final JdbcTemplate jdbcTemplate;
@@ -33,7 +33,7 @@ public class ReservationDatabaseRepository implements ReservationRepository {
     public Reservation save(Reservation reservation) {
         String sql = "INSERT INTO reservations (name, reserved_date, reserved_time) VALUES (?, ?, ?)";
         // TODO 미션 7단계 진행하며 구현 예정
-        return new Reservation(1L, reservation.getName(), reservation.getReserveDateTime());
+        return new Reservation(1L, reservation.getName(), reservation.getReservedDateTime());
     }
 
     @Override

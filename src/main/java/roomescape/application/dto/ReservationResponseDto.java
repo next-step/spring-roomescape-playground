@@ -16,6 +16,6 @@ public record ReservationResponseDto(
 
         public static ReservationResponseDto toDto(Reservation reservation) {
                 return new ReservationResponseDto(reservation.getId(), reservation.getName(),
-                        reservation.reserveDateValue(), reservation.reserveTimeValue());
+                        reservation.reservedDateValue(), reservation.reservedTimeValue());
         }
 }
