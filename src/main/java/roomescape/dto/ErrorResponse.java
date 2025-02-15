@@ -3,7 +3,7 @@ package roomescape.dto;
 public class ErrorResponse {
 
     private final String exceptionType;
-    
+
     private final String message;
 
     public ErrorResponse(String exceptionType, String message) {

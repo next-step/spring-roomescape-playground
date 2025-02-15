@@ -7,18 +7,14 @@ import roomescape.exception.InvalidException;
 
 public class Reservation {
 
-<<<<<<< HEAD
+
     private final long id;
 
     private final String name;
 
     private final LocalDate date;
 
-=======
-    private long id;
-    private String name;
-    private LocalDate date;
->>>>>>> ddf6238 (refactor : 기본 생성자 추가 및 final 삭제)
+
     @JsonFormat(pattern = "HH:mm")
     private LocalTime time;
 
@@ -33,7 +29,6 @@ public class Reservation {
         this.time = time;
     }
 
-<<<<<<< HEAD
 
     private void validateName(String name) {
         if (name == null || name.isBlank()) {
@@ -52,9 +47,6 @@ public class Reservation {
             throw new InvalidException("Time is required");
         }
     }
-=======
-    public Reservation(){}
->>>>>>> ddf6238 (refactor : 기본 생성자 추가 및 final 삭제)
 
     public long getId() {
         return id;
@@ -71,8 +63,7 @@ public class Reservation {
     public LocalTime getTime() {
         return time;
     }
-
-
+    
 }
 
 
