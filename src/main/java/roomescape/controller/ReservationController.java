@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import roomescape.dao.ReservationJdbcDAO;
 import roomescape.entity.Reservation;
 
-
 @RestController
 @RequestMapping("/reservations")
 public class ReservationController {
@@ -58,9 +57,7 @@ public class ReservationController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteReservation(@PathVariable int id) {
-
         reservationJdbcDAO.delete(id);
-
     }
 
 
