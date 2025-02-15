@@ -1,6 +1,7 @@
 package roomescape.dao;
 
 import java.util.List;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -10,10 +11,10 @@ import roomescape.exception.NotFoundReservationException;
 
 
 @Repository
-public class ReservationDAOImpl implements ReservationDAO {
+public class ReservationRepository implements ReservationDAO {
     private final JdbcTemplate jdbcTemplate;
 
-    public ReservationDAOImpl(JdbcTemplate jdbcTemplate) {
+    public ReservationRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
@@ -36,13 +37,19 @@ public class ReservationDAOImpl implements ReservationDAO {
 
     @Override
     public void update(Reservation reservation) {
+        String sql = "UPDATE reservation SET name = ? , date = ?, time = ? WHERE id = ? ";
+        int rowAffected = jdbcTemplate.update(sql, reservation.getName(), reservation.getDate(), reservation.getTime(),
+                reservation.getId());
+        if (rowAffected == 0) {
+            throw new InvalidException("예약을 찾을 수 없습니다.");
+        }
     }
 
     @Override
     public void delete(long id) {
         String sql = "DELETE FROM reservation WHERE id = ?";
-        int rowsAffected = jdbcTemplate.update(sql, id);
 
+        int rowsAffected = jdbcTemplate.update(sql, id);
         if (rowsAffected == 0) {
             throw new InvalidException("예약을 찾을 수 없습니다. ID: " + id);
         }
@@ -51,13 +58,27 @@ public class ReservationDAOImpl implements ReservationDAO {
     @Override
     public int count() {
         String sql = "SELECT COUNT(*) FROM reservation";
-        return jdbcTemplate.queryForObject(sql, Integer.class);
+        try {
+            Integer count = jdbcTemplate.queryForObject(sql, Integer.class);
+            if (count == null) {
+                return 0;
+            }
+            return count;
+        } catch (Exception e) {
+            throw new InvalidException("ID를 조회하는 동안 오류 발생 : " + e.getMessage());
+        }
     }
 
     @Override
     public Reservation getById(int id) {
         String sql = "SELECT * FROM reservation WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, new Object[]{id}, new BeanPropertyRowMapper<>(Reservation.class));
+
+        try {
+            return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Reservation.class), id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new NotFoundReservationException("해당 ID의 예약을 찾을 수 없습니다 : " + e.getMessage());
+        }
+
     }
 
 }
