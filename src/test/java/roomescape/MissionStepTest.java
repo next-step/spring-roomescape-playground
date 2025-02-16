@@ -9,10 +9,13 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import roomescape.reservation.Reservation;
 import roomescape.reservation.controller.ReservationController;
+import roomescape.time.Time;
+import roomescape.time.TimeDao;
 
 import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +29,9 @@ public class MissionStepTest {
 
     @Autowired
     private ReservationController reservationController;
+
+    @Autowired
+    private TimeDao timeDao;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -54,10 +60,12 @@ public class MissionStepTest {
     
     @Test
     void 삼단계() {
+        timeDao.save(Time.ofNew(LocalTime.of(12, 0)));
+
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
         params.put("date", "2023-08-05");
-        params.put("time", "15:40");
+        params.put("time", "1");
         
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -121,7 +129,8 @@ public class MissionStepTest {
 
     @Test
     void 육단계() {
-        jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "브라운", "2023-08-05", "15:40");
+        timeDao.save(Time.ofNew(LocalTime.of(12, 0)));
+        jdbcTemplate.update("INSERT INTO reservation (name, date, time_id) VALUES (?, ?, ?)", "브라운", "2023-08-05", 1L);
 
         List<Reservation> reservations = RestAssured.given().log().all()
                 .when().get("/reservations")
@@ -136,10 +145,11 @@ public class MissionStepTest {
 
     @Test
     void 칠단계() {
+        timeDao.save(Time.ofNew(LocalTime.of(12, 0)));
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
         params.put("date", "2025-02-02");
-        params.put("time", "10:00");
+        params.put("time", "1");
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
