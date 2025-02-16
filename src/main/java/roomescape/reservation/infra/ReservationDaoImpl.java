@@ -9,10 +9,10 @@ import org.springframework.stereotype.Repository;
 import roomescape.exception.NotFoundReservationException;
 import roomescape.reservation.Reservation;
 import roomescape.reservation.ReservationDao;
+import roomescape.time.Time;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
-import java.sql.Time;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -24,7 +24,10 @@ public class ReservationDaoImpl implements ReservationDao {
             rs.getLong("id"),
             rs.getString("name"),
             rs.getDate("date").toLocalDate(),
-            rs.getTime("time").toLocalTime()
+            Time.ofExist(
+                    rs.getLong("time_id"),
+                    rs.getTime("time_value").toLocalTime()
+            )
     );
 
     private final JdbcTemplate jdbcTemplate;
@@ -35,13 +38,24 @@ public class ReservationDaoImpl implements ReservationDao {
 
     @Override
     public Optional<Reservation> findById(Long id) {
-        String sql = "SELECT * FROM reservation WHERE id = ?";
+        String sql = "SELECT " +
+                "r.id as reservation_id," +
+                "r.name," +
+                "r.date," +
+                "t.id as time_id," +
+                "t.time as time_value " +
+                "FROM reservation r " +
+                "INNER JOIN reservation_time t ON r.time_id = t.id " +
+                "WHERE r.id = ?";
         try {
             Reservation reservation = jdbcTemplate.queryForObject(sql, (rs, rowNum) -> Reservation.ofExist(
                     rs.getLong("id"),
                     rs.getString("name"),
                     rs.getDate("date").toLocalDate(),
-                    rs.getTime("time").toLocalTime()
+                    Time.ofExist(
+                            rs.getLong("time_id"),
+                            rs.getTime("time_value").toLocalTime()
+                    )
             ), id);
             return Optional.ofNullable(reservation);
         } catch (EmptyResultDataAccessException e) {
@@ -52,20 +66,27 @@ public class ReservationDaoImpl implements ReservationDao {
 
     @Override
     public List<Reservation> findAll() {
-        String sql = "SELECT * FROM reservation";
+        String sql = "SELECT " +
+                "r.id AS reservation_id," +
+                "r.name," +
+                "r.date," +
+                "t.id AS time_id," +
+                "t.time AS time_value " +
+                "FROM reservation r " +
+                "INNER JOIN reservation_time t ON r.time_id = r.id";
         return jdbcTemplate.query(sql, ALL_RESERVATION_ROW_MAPPER);
     }
 
     @Override
     public Long save(Reservation reservation) {
-        String sql = "INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO reservation (name, date, time_id) VALUES (?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
             ps.setString(1, reservation.getName());
             ps.setDate(2, Date.valueOf(reservation.getDate()));
-            ps.setTime(3, Time.valueOf(reservation.getTime()));
+            ps.setLong(3, reservation.getTime().getId());
             return ps;
         }, keyHolder);
 

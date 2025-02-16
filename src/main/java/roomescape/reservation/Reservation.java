@@ -1,7 +1,8 @@
 package roomescape.reservation;
 
+import roomescape.time.Time;
+
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.Objects;
 
 public class Reservation {
@@ -12,20 +13,20 @@ public class Reservation {
     
     private final LocalDate date;
     
-    private final LocalTime time;
+    private final Time time;
 
-    private Reservation(Long id, String name, LocalDate date, LocalTime time) {
+    private Reservation(Long id, String name, LocalDate date, Time time) {
         this.id = id;
         this.name = Objects.requireNonNull(name, "이름은 필수입니다.");
         this.date = Objects.requireNonNull(date, "예약 날짜는 필수 입니다.");
         this.time = Objects.requireNonNull(time, "예약 시간은 필수입니다.");
     }
 
-    public static Reservation ofNew(String name, LocalDate date, LocalTime time) {
+    public static Reservation ofNew(String name, LocalDate date, Time time) {
         return new Reservation(null, name, date, time);
     }
     
-    public static Reservation ofExist(Long id, String name, LocalDate date, LocalTime time) {
+    public static Reservation ofExist(Long id, String name, LocalDate date, Time time) {
         return new Reservation(id, name, date, time);
     }
 
@@ -41,7 +42,7 @@ public class Reservation {
         return date;
     }
 
-    public LocalTime getTime() {
+    public Time getTime() {
         return time;
     }
 }

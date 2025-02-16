@@ -1,7 +1,6 @@
 package roomescape.reservation.dto;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 public class ReservationCreateRequest {
     
@@ -9,7 +8,7 @@ public class ReservationCreateRequest {
     
     private LocalDate date;
     
-    private LocalTime time;
+    private Long time;
 
     public String getName() {
         return name;
@@ -19,8 +18,7 @@ public class ReservationCreateRequest {
         return date;
     }
 
-    public LocalTime getTime() {
+    public Long getTime() {
         return time;
     }
-
 }
