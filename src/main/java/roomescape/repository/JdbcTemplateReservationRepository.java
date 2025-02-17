@@ -10,14 +10,15 @@ import java.util.List;
 @Repository
 public class JdbcTemplateReservationRepository implements ReservationRepository {
 
-    private final JdbcTemplate jdbcTemplate;
-    private final RowMapper<Reservation> reservationRowMapper = (rs, rowNum) ->
+    private static final RowMapper<Reservation> RESERVATION_ROW_MAPPER = (rs, rowNum) ->
             new Reservation(
                     rs.getLong("id"),
-                    rs.getString("name"),
-                    rs.getDate("date").toLocalDate(),
-                    rs.getTime("time").toLocalTime()
+                    rs.getString("customer_name"),
+                    rs.getDate("reservation_date").toLocalDate(),
+                    rs.getTime("reservation_time").toLocalTime()
             );
+
+    private final JdbcTemplate jdbcTemplate;
 
     public JdbcTemplateReservationRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -25,6 +26,6 @@ public class JdbcTemplateReservationRepository implements ReservationRepository 
 
     @Override
     public List<Reservation> findAll() {
-        return jdbcTemplate.query("SELECT * FROM RESERVATION", reservationRowMapper);
+        return jdbcTemplate.query("SELECT * FROM RESERVATION", RESERVATION_ROW_MAPPER);
     }
 }
