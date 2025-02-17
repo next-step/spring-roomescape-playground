@@ -3,7 +3,7 @@ package roomescape.repository;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-import roomescape.entity.Reservation;
+import roomescape.domain.Reservation;
 
 import java.util.List;
 
