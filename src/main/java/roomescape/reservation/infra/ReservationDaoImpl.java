@@ -20,7 +20,7 @@ import java.util.Optional;
 @Repository
 public class ReservationDaoImpl implements ReservationDao {
 
-    private static final RowMapper<Reservation> ALL_RESERVATION_ROW_MAPPER = (rs, rowNum) -> Reservation.ofExist(
+    private static final RowMapper<Reservation> RESERVATION_ROW_MAPPER = (rs, rowNum) -> Reservation.ofExist(
             rs.getLong("id"),
             rs.getString("name"),
             rs.getDate("date").toLocalDate(),
@@ -48,15 +48,7 @@ public class ReservationDaoImpl implements ReservationDao {
                 "INNER JOIN reservation_time t ON r.time_id = t.id " +
                 "WHERE r.id = ?";
         try {
-            Reservation reservation = jdbcTemplate.queryForObject(sql, (rs, rowNum) -> Reservation.ofExist(
-                    rs.getLong("id"),
-                    rs.getString("name"),
-                    rs.getDate("date").toLocalDate(),
-                    Time.ofExist(
-                            rs.getLong("time_id"),
-                            rs.getTime("time_value").toLocalTime()
-                    )
-            ), id);
+            Reservation reservation = jdbcTemplate.queryForObject(sql, RESERVATION_ROW_MAPPER, id);
             return Optional.ofNullable(reservation);
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
@@ -74,7 +66,7 @@ public class ReservationDaoImpl implements ReservationDao {
                 "t.time AS time_value " +
                 "FROM reservation r " +
                 "INNER JOIN reservation_time t ON r.time_id = r.id";
-        return jdbcTemplate.query(sql, ALL_RESERVATION_ROW_MAPPER);
+        return jdbcTemplate.query(sql, RESERVATION_ROW_MAPPER);
     }
 
     @Override
