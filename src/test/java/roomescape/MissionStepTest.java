@@ -2,7 +2,6 @@ package roomescape;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,7 +17,6 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;
-import static roomescape.domain.Reservation.RESERVATION_ID;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -26,11 +24,6 @@ public class MissionStepTest {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
-
-    @AfterEach
-    void tearDown() {
-        RESERVATION_ID.set(0);
-    }
 
     @Test
     void 일단계() {
@@ -134,6 +127,33 @@ public class MissionStepTest {
         Integer count = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
 
         assertThat(reservations.size()).isEqualTo(count);
+    }
+
+    @Test
+    void 칠단계() {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", "브라운");
+        params.put("date", "2023-08-05");
+        params.put("time", "10:00");
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(201)
+                .header("Location", "/reservations/1");
+
+        Integer count = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
+        assertThat(count).isEqualTo(1);
+
+        RestAssured.given().log().all()
+                .when().delete("/reservations/1")
+                .then().log().all()
+                .statusCode(204);
+
+        Integer countAfterDelete = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
+        assertThat(countAfterDelete).isEqualTo(0);
     }
 
 }
