@@ -13,6 +13,12 @@ public class Time {
 
     private final LocalTime time;
 
+    private Time() {
+        this.id = null;
+        this.time = null;
+    }
+
+
     public Time(Long id, String value) {
         this.id = id;
         this.time = parseTime(value);

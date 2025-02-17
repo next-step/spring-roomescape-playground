@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,6 +24,12 @@ public class JdbcStepTest {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+
+    @BeforeEach
+    void setUp() {
+        jdbcTemplate.update("INSERT INTO time (time) VALUES (?)",  "15:40");
+    }
+
     @Test
     void 오단계() {
         try (Connection connection = jdbcTemplate.getDataSource().getConnection()) {
@@ -36,8 +43,8 @@ public class JdbcStepTest {
 
     @Test
     void 육단계() {
-        jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "브라운", "2023-08-05",
-                            "15:40");
+        jdbcTemplate.update("INSERT INTO reservation (name, date, time_id) VALUES (?, ?, ?)", "브라운", "2023-08-05",
+                            "1");
 
         List<Reservation> reservations = RestAssured.given().log().all()
             .when().get("/reservations")
@@ -55,7 +62,7 @@ public class JdbcStepTest {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
         params.put("date", "2023-08-05");
-        params.put("time", "10:00");
+        params.put("time", "1");
 
         RestAssured.given().log().all()
             .contentType(ContentType.JSON)
