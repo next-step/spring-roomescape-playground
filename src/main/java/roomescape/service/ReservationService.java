@@ -24,7 +24,7 @@ public class ReservationService {
     }
 
     public ReservationResponse createReservation(final CreateReservationRequest request) {
-        Reservation reservation = new Reservation(request.name(), request.date(), request.time());
+        Reservation reservation = request.toReservation();
         reservations.add(reservation);
         return new ReservationResponse(reservation);
     }
