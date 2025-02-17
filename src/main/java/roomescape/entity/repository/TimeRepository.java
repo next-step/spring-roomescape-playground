@@ -1,6 +1,7 @@
 package roomescape.entity.repository;
 
 import java.util.List;
+import java.util.Optional;
 import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -36,6 +37,15 @@ public class TimeRepository {
             .addValue("time", timeInDto.getTime());
         long id = simpleJdbcInsert.executeAndReturnKey(params).longValue();
         return new Time(id, timeInDto.getTime());
+    }
+
+    public Optional<Time> findById(Long id) {
+        String sql = "SELECT * FROM time WHERE id = ?";
+        final List<Time> times = jdbcTemplate.query(sql, new Object[]{id}, (rs, rowNum) ->
+            new Time(
+                rs.getLong("id"),
+                rs.getString("time")));
+        return times.stream().findFirst();
     }
 
     public int deleteById(Long id) {

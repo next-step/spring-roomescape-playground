@@ -13,43 +13,38 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import roomescape.entity.Dto.ReservationInDto;
 import roomescape.entity.Reservation;
-import roomescape.entity.repository.ReservationRepository;
-import roomescape.exception.NotFoundException;
 import roomescape.exception.ReservationException;
+import roomescape.service.ReservationService;
 
 @RestController
 @RequestMapping("/reservations")
 public class ReservationController {
 
-    private final ReservationRepository reservationRepository;
+    private final ReservationService reservationService;
 
-    public ReservationController(ReservationRepository reservationRepository) {
-        this.reservationRepository = reservationRepository;
+    public ReservationController(ReservationService reservationService) {
+        this.reservationService = reservationService;
     }
 
     @GetMapping
     public List<Reservation> getReservations() {
-        return reservationRepository.findAll();
+        return reservationService.findAllReservations();
     }
 
     @Transactional
     @PostMapping
-    public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservation) {
-        final Reservation save = reservationRepository.save(reservation);
-        URI location = URI.create("/reservations/" + save.getId());
-        return ResponseEntity.created(location).body(save);
+    public ResponseEntity<Reservation> createReservation(@RequestBody ReservationInDto reservationInDto) {
+        final Reservation reservation = reservationService.saveReservation(reservationInDto);
+        URI location = URI.create("/reservations/" + reservation.getId());
+        return ResponseEntity.created(location).body(reservation);
     }
 
     @Transactional
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
-        final int countOfDeleted = reservationRepository.deleteById(id);
-
-        if (countOfDeleted <= 0) {
-            throw new NotFoundException("해당 id를 가진 예약을 찾을 수 없습니다.");
-        }
-
+        reservationService.deleteReservationById(id);
         return ResponseEntity.noContent().build();
     }
 

@@ -18,14 +18,9 @@ public class Time {
         this.time = parseTime(value);
     }
 
-
     private Time(String value) {
         validateInput(value);
         this.time = parseTime(value);
-    }
-
-    public static Time of(String value) {
-        return new Time(value);
     }
 
     private static void validateInput(String time) {
@@ -46,7 +41,7 @@ public class Time {
         return id;
     }
 
-    public String getValue() {
+    public String getTime() {
         return time.format(formatter);
     }
 

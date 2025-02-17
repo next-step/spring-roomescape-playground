@@ -12,43 +12,36 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import roomescape.entity.Dto.TimeInDto;
-import roomescape.entity.repository.TimeRepository;
 import roomescape.entity.value.Time;
-import roomescape.exception.NotFoundException;
+import roomescape.service.ReservationService;
 
 @RestController
 @RequestMapping("/times")
 public class TimeController {
 
-    private final TimeRepository timeRepository;
+    private final ReservationService reservationService;
 
-    public TimeController(TimeRepository timeRepository) {
-        this.timeRepository = timeRepository;
+    public TimeController(ReservationService reservationService) {
+        this.reservationService = reservationService;
     }
 
     @GetMapping
     public List<Time> getTimes() {
-        return timeRepository.findAll();
+        return reservationService.findAllTimes();
     }
 
     @Transactional
     @PostMapping
     public ResponseEntity<Time> createTime(@RequestBody TimeInDto timeInDto) {
-        final Time save = timeRepository.save(timeInDto);
-        URI location = URI.create("/times/" + save.getId());
-        return ResponseEntity.created(location).body(save);
+        final Time time = reservationService.saveTime(timeInDto);
+        URI location = URI.create("/times/" + time.getId());
+        return ResponseEntity.created(location).body(time);
     }
-
 
     @Transactional
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTime(@PathVariable Long id) {
-        final int countOfDeleted = timeRepository.deleteById(id);
-
-        if (countOfDeleted <= 0) {
-            throw new NotFoundException("해당 id를 가진 Time 객체를 찾을 수 없습니다.");
-        }
-
+        reservationService.deleteTimeById(id);
         return ResponseEntity.noContent().build();
     }
 

@@ -7,7 +7,8 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import roomescape.entity.Reservation;
+import roomescape.entity.Dto.ReservationInDto;
+import roomescape.entity.Dto.ReservationOutDto;
 
 @Repository
 public class ReservationRepository {
@@ -22,23 +23,28 @@ public class ReservationRepository {
             .usingGeneratedKeyColumns("id");
     }
 
-    public List<Reservation> findAll() {
-        String sql = "SELECT * FROM reservation";
+    public List<ReservationOutDto> findAll() {
+        String sql = "SELECT \n" +
+            "    r.id as reservation_id, \n" +
+            "    r.name, \n" +
+            "    r.date, \n" +
+            "    t.id as time_id, \n" +
+            "    t.time as time_value \n" +
+            "FROM reservation as r inner join time as t on r.time_id = t.id\n";
         return jdbcTemplate.query(sql, (rs, rowNum) ->
-            new Reservation(
-                rs.getLong("id"),
+            new ReservationOutDto(
+                rs.getLong("reservation_id"),
                 rs.getString("name"),
                 rs.getString("date"),
-                rs.getString("time")));
+                rs.getLong("time_id")));
     }
 
-    public Reservation save(Reservation reservation) {
+    public Long save(ReservationInDto reservationInDto) {
         SqlParameterSource params = new MapSqlParameterSource()
-            .addValue("name", reservation.getName())
-            .addValue("date", reservation.getDate())
-            .addValue("time", reservation.getTime());
-        long id = simpleJdbcInsert.executeAndReturnKey(params).longValue();
-        return new Reservation(id, reservation.getName(), reservation.getDate(), reservation.getTime());
+            .addValue("name", reservationInDto.getName())
+            .addValue("date", reservationInDto.getDate())
+            .addValue("time_id", reservationInDto.getTimeId());
+        return simpleJdbcInsert.executeAndReturnKey(params).longValue();
     }
 
     public int deleteById(Long id) {
