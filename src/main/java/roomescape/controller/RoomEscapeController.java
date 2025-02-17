@@ -13,7 +13,7 @@ public class RoomEscapeController {
 
     @GetMapping("/reservation")
     public String reservation() {
-        return "reservation";
+        return "new-reservation";
     }
 
     @GetMapping("/time")
