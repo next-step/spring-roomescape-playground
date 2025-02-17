@@ -4,7 +4,6 @@ import roomescape.global.exception.BadRequestException;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.regex.Pattern;
 
 import static roomescape.global.exception.ExceptionMessage.INVALID_DATE;
@@ -13,7 +12,6 @@ import static roomescape.global.exception.ExceptionMessage.INVALID_TIME;
 
 public class Reservation {
 
-    public static final AtomicLong RESERVATION_ID = new AtomicLong(0);
     private static final int MIN_NAME_LENGTH = 2;
     private static final int MAX_NAME_LENGTH = 10;
     private static final Pattern NAME_FORMAT = Pattern.compile("^[가-힣]+$");
@@ -37,16 +35,11 @@ public class Reservation {
         this.time = time;
     }
 
-    public Reservation(String name, LocalDate date, LocalTime time) {
+    public Reservation(final String name, final LocalDate date, final LocalTime time) {
         validate(name, date, time);
-        this.id = RESERVATION_ID.incrementAndGet();
         this.name = name;
         this.date = date;
         this.time = time;
-    }
-
-    public boolean isSameId(final long reservationId) {
-        return id.equals(reservationId);
     }
 
     public Long getId() {

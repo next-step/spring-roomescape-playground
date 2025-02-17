@@ -4,20 +4,14 @@ import org.springframework.stereotype.Service;
 import roomescape.domain.Reservation;
 import roomescape.dto.request.CreateReservationRequest;
 import roomescape.dto.response.ReservationResponse;
-import roomescape.global.exception.BadRequestException;
 import roomescape.repository.ReservationRepository;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import static roomescape.global.exception.ExceptionMessage.RESERVATION_NOT_EXISTS;
 
 @Service
 public class ReservationService {
 
     private final ReservationRepository reservationRepository;
-
-    private final List<Reservation> reservations = new ArrayList<>();
 
     public ReservationService(final ReservationRepository reservationRepository) {
         this.reservationRepository = reservationRepository;
@@ -25,8 +19,9 @@ public class ReservationService {
 
     public ReservationResponse createReservation(final CreateReservationRequest request) {
         Reservation reservation = request.toReservation();
-        reservations.add(reservation);
-        return new ReservationResponse(reservation);
+        //TODO: 동일한 날짜 및 시간에 예약내역 검증
+        Reservation reservationWithId = reservationRepository.save(reservation);
+        return new ReservationResponse(reservationWithId);
     }
 
     public List<ReservationResponse> getReservations() {
@@ -37,14 +32,9 @@ public class ReservationService {
     }
 
     public void deleteReservation(final long reservationId) {
-        Reservation reservation = findReservation(reservationId);
-        reservations.remove(reservation);
-    }
-
-    private Reservation findReservation(final long reservationId) {
-        return reservations.stream()
-                .filter(reservation -> reservation.isSameId(reservationId))
-                .findFirst()
-                .orElseThrow(() -> new BadRequestException(RESERVATION_NOT_EXISTS.getMessage()));
+        //TODO: 커스텀 예외 추가
+        Reservation reservation = reservationRepository.findById(reservationId)
+                .orElseThrow();
+        reservationRepository.deleteById(reservation.getId());
     }
 }
