@@ -1,9 +1,11 @@
 package roomescape.service;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import roomescape.dto.request.CreateReservationRequest;
@@ -11,24 +13,39 @@ import roomescape.dto.response.ReservationResponse;
 import roomescape.global.exception.BadRequestException;
 import roomescape.global.exception.ExceptionMessage;
 
+import java.time.Clock;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.Mockito.doReturn;
 
 @SpringBootTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class ReservationServiceTest {
+
+    private static final Clock FIXED_CLOCK = Clock.fixed(Instant.parse("2025-02-17T10:00:00Z"), ZoneId.of("UTC"));
+
+    @SpyBean
+    private Clock clock;
 
     @Autowired
     private ReservationService reservationService;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    @BeforeEach
+    void setUp() {
+        doReturn(FIXED_CLOCK.instant()).when(clock).instant();
+        doReturn(FIXED_CLOCK.getZone()).when(clock).getZone();
+    }
 
     @AfterEach
     void tearDown() {
@@ -60,6 +77,17 @@ class ReservationServiceTest {
                 .isInstanceOf(BadRequestException.class)
                 .hasMessage(
                         ExceptionMessage.RESERVATION_ALREADY_EXISTS.getMessage());
+    }
+
+    @Test
+    void 현재_시간_이전의_예약_생성_시_예외가_발생한다() {
+        // given
+        CreateReservationRequest request = createReservationRequest("김철수", 2025, 2, 17, 9, 0);
+        // when & then
+        assertThatThrownBy(() -> reservationService.createReservation(request))
+                .isInstanceOf(BadRequestException.class)
+                .hasMessage(
+                        ExceptionMessage.INVALID_DATETIME.getMessage());
     }
 
     @Test
