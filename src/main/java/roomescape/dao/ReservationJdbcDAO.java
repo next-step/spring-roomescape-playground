@@ -14,10 +14,9 @@ import roomescape.exception.NotFoundReservationException;
 public class ReservationJdbcDAO implements ReservationDAO {
 
     private final JdbcTemplate jdbcTemplate;
-    private final RowMapper<Reservation> rowMapper = new ReservationRowMapper(); //
+    private final RowMapper<Reservation> rowMapper = new ReservationRowMapper();
 
     public ReservationJdbcDAO(JdbcTemplate jdbcTemplate1) {
-
         this.jdbcTemplate = jdbcTemplate1;
     }
 
