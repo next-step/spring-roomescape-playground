@@ -13,10 +13,9 @@ public class Reservation {
     private final String name;
 
     private final LocalDate date;
-
-
+    
     @JsonFormat(pattern = "HH:mm")
-    private LocalTime time;
+    private final LocalTime time;
 
     public Reservation(long id, String name, LocalDate date, LocalTime time) {
         validateName(name);
