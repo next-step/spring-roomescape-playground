@@ -1,5 +1,6 @@
 package roomescape.repository;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -7,11 +8,9 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
-import roomescape.global.exception.BadRequestException;
 
 import java.util.List;
-
-import static roomescape.global.exception.ExceptionMessage.RESERVATION_NOT_EXISTS;
+import java.util.Optional;
 
 @Repository
 public class JdbcTemplateReservationRepository implements ReservationRepository {
@@ -38,7 +37,6 @@ public class JdbcTemplateReservationRepository implements ReservationRepository 
     @Override
     public Reservation save(final Reservation reservation) {
         SqlParameterSource parameters = new BeanPropertySqlParameterSource(reservation);
-
         long id = jdbcInsert.executeAndReturnKey(parameters).longValue();
         return new Reservation(
                 id,
@@ -54,14 +52,13 @@ public class JdbcTemplateReservationRepository implements ReservationRepository 
     }
 
     @Override
-    public Reservation findById(final long reservationId) {
-        Reservation reservation;
+    public Optional<Reservation> findById(final long reservationId) {
         try {
-            reservation = jdbcTemplate.queryForObject("SELECT * FROM RESERVATION WHERE id = ?", RESERVATION_ROW_MAPPER, reservationId);
-        } catch (RuntimeException runtimeException) {
-            throw new BadRequestException(RESERVATION_NOT_EXISTS.getMessage());
+            Reservation reservation = jdbcTemplate.queryForObject("SELECT * FROM RESERVATION WHERE id = ?", RESERVATION_ROW_MAPPER, reservationId);
+            return Optional.of(reservation);
+        } catch (EmptyResultDataAccessException emptyResultDataAccessException) {
+            return Optional.empty();
         }
-        return reservation;
     }
 
     @Override

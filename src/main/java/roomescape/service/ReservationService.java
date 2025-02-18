@@ -4,9 +4,12 @@ import org.springframework.stereotype.Service;
 import roomescape.domain.Reservation;
 import roomescape.dto.request.CreateReservationRequest;
 import roomescape.dto.response.ReservationResponse;
+import roomescape.global.exception.NotFoundException;
 import roomescape.repository.ReservationRepository;
 
 import java.util.List;
+
+import static roomescape.global.exception.ExceptionMessage.RESERVATION_NOT_EXISTS;
 
 @Service
 public class ReservationService {
@@ -32,7 +35,8 @@ public class ReservationService {
     }
 
     public void deleteReservation(final long reservationId) {
-        Reservation reservation = reservationRepository.findById(reservationId);
+        Reservation reservation = reservationRepository.findById(reservationId)
+                .orElseThrow(() -> new NotFoundException(RESERVATION_NOT_EXISTS.getMessage()));
         reservationRepository.deleteById(reservation.getId());
     }
 }
