@@ -88,15 +88,26 @@ public class Reservation {
         }
     }
 
+    private void validateDate(final LocalDate date) {
+        if (date == null) {
+            throw new BadRequestException(INVALID_DATE.getMessage());
+        }
+    }
+
     private void validateTime(final LocalTime time) {
+        validateTimeExists(time);
+        validateTimeOnTheHour(time);
+    }
+
+    private void validateTimeExists(final LocalTime time) {
         if (time == null) {
             throw new BadRequestException(INVALID_TIME.getMessage());
         }
     }
 
-    private void validateDate(final LocalDate date) {
-        if (date == null) {
-            throw new BadRequestException(INVALID_DATE.getMessage());
+    private void validateTimeOnTheHour(final LocalTime time) {
+        if (time.getMinute() != 0) {
+            throw new BadRequestException(INVALID_TIME.getMessage());
         }
     }
 }
