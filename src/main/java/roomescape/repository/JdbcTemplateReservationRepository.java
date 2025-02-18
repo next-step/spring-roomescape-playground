@@ -15,8 +15,6 @@ import java.util.Optional;
 @Repository
 public class JdbcTemplateReservationRepository implements ReservationRepository {
 
-    private final SimpleJdbcInsert jdbcInsert;
-
     private static final RowMapper<Reservation> RESERVATION_ROW_MAPPER = (rs, rowNum) ->
             new Reservation(
                     rs.getLong("id"),
@@ -25,6 +23,7 @@ public class JdbcTemplateReservationRepository implements ReservationRepository 
                     rs.getTime("time").toLocalTime()
             );
 
+    private final SimpleJdbcInsert jdbcInsert;
     private final JdbcTemplate jdbcTemplate;
 
     public JdbcTemplateReservationRepository(JdbcTemplate jdbcTemplate) {
@@ -48,14 +47,16 @@ public class JdbcTemplateReservationRepository implements ReservationRepository 
 
     @Override
     public List<Reservation> findAll() {
-        return jdbcTemplate.query("SELECT * FROM RESERVATION", RESERVATION_ROW_MAPPER);
+        String selectAll = "SELECT * FROM RESERVATION";
+        return jdbcTemplate.query(selectAll, RESERVATION_ROW_MAPPER);
     }
 
     @Override
     public Optional<Reservation> findById(final long reservationId) {
         try {
-            Reservation reservation = jdbcTemplate.queryForObject("SELECT * FROM RESERVATION WHERE id = ?", RESERVATION_ROW_MAPPER, reservationId);
-            return Optional.of(reservation);
+            String selectById = "SELECT * FROM RESERVATION WHERE id = ?";
+            Reservation reservation = jdbcTemplate.queryForObject(selectById, RESERVATION_ROW_MAPPER, reservationId);
+            return Optional.ofNullable(reservation);
         } catch (EmptyResultDataAccessException emptyResultDataAccessException) {
             return Optional.empty();
         }
@@ -63,6 +64,7 @@ public class JdbcTemplateReservationRepository implements ReservationRepository 
 
     @Override
     public void deleteById(final long reservationId) {
-        jdbcTemplate.update("DELETE FROM reservation WHERE id = ?", reservationId);
+        String deleteById = "DELETE FROM reservation WHERE id = ?";
+        jdbcTemplate.update(deleteById, reservationId);
     }
 }
