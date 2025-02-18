@@ -31,7 +31,7 @@ class ReservationServiceTest {
     @Test
     void 총_예약건수를_조회할_수_있다() {
         // given
-        jdbcTemplate.update("INSERT INTO reservation (customer_name, date, time) VALUES (?, ?, ?)", "예약생성못해쿼리투입", "2025-02-12", "15:00");
+        jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "예약생성못해쿼리투입", "2025-02-12", "15:00");
         // when
         List<ReservationResponse> reservations = reservationService.getReservations();
         // then

@@ -50,7 +50,7 @@ public class MissionStepTest {
     @Test
     void 삼단계() {
         Map<String, String> params = new HashMap<>();
-        params.put("customerName", "브라운");
+        params.put("name", "브라운");
         params.put("date", "2023-08-05");
         params.put("time", "15:40");
 
@@ -84,7 +84,7 @@ public class MissionStepTest {
     @Test
     void 사단계() {
         Map<String, String> params = new HashMap<>();
-        params.put("customerName", "브라운");
+        params.put("name", "브라운");
         params.put("date", "");
         params.put("time", "");
 
@@ -116,7 +116,7 @@ public class MissionStepTest {
 
     @Test
     void 육단계() {
-        jdbcTemplate.update("INSERT INTO reservation (customer_name, date, time) VALUES (?, ?, ?)", "브라운", "2023-08-05", "15:40");
+        jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "브라운", "2023-08-05", "15:40");
 
         List<Reservation> reservations = RestAssured.given().log().all()
                 .when().get("/reservations")
@@ -132,7 +132,7 @@ public class MissionStepTest {
     @Test
     void 칠단계() {
         Map<String, String> params = new HashMap<>();
-        params.put("customerName", "브라운");
+        params.put("name", "브라운");
         params.put("date", "2023-08-05");
         params.put("time", "10:00");
 

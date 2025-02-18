@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public record CreateReservationRequest(
-        String customerName,
+        String name,
 
         LocalDate date,
 
@@ -14,7 +14,7 @@ public record CreateReservationRequest(
 ) {
     public Reservation toReservation() {
         return new Reservation(
-                customerName,
+                name,
                 date,
                 time
         );

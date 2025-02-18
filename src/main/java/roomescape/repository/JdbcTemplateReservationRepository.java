@@ -20,7 +20,7 @@ public class JdbcTemplateReservationRepository implements ReservationRepository 
     private static final RowMapper<Reservation> RESERVATION_ROW_MAPPER = (rs, rowNum) ->
             new Reservation(
                     rs.getLong("id"),
-                    rs.getString("customer_name"),
+                    rs.getString("name"),
                     rs.getDate("date").toLocalDate(),
                     rs.getTime("time").toLocalTime()
             );
@@ -41,7 +41,7 @@ public class JdbcTemplateReservationRepository implements ReservationRepository 
         long id = jdbcInsert.executeAndReturnKey(parameters).longValue();
         return new Reservation(
                 id,
-                reservation.getCustomerName(),
+                reservation.getName(),
                 reservation.getDate(),
                 reservation.getTime()
         );

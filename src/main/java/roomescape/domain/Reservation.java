@@ -18,7 +18,7 @@ public class Reservation {
 
     private Long id;
 
-    private String customerName;
+    private String name;
 
     private LocalDate date;
 
@@ -27,17 +27,17 @@ public class Reservation {
     protected Reservation() {
     }
 
-    public Reservation(final Long id, final String customerName, final LocalDate date, final LocalTime time) {
-        validate(customerName, date, time);
+    public Reservation(final Long id, final String name, final LocalDate date, final LocalTime time) {
+        validate(name, date, time);
         this.id = id;
-        this.customerName = customerName;
+        this.name = name;
         this.date = date;
         this.time = time;
     }
 
-    public Reservation(final String customerName, final LocalDate date, final LocalTime time) {
-        validate(customerName, date, time);
-        this.customerName = customerName;
+    public Reservation(final String name, final LocalDate date, final LocalTime time) {
+        validate(name, date, time);
+        this.name = name;
         this.date = date;
         this.time = time;
     }
@@ -46,8 +46,8 @@ public class Reservation {
         return id;
     }
 
-    public String getCustomerName() {
-        return customerName;
+    public String getName() {
+        return name;
     }
 
     public LocalDate getDate() {
@@ -58,13 +58,13 @@ public class Reservation {
         return time;
     }
 
-    private void validate(final String customerName, final LocalDate date, final LocalTime time) {
-        validateCustomerName(customerName);
+    private void validate(final String name, final LocalDate date, final LocalTime time) {
+        validateName(name);
         validateDate(date);
         validateTime(time);
     }
 
-    private void validateCustomerName(final String customerName) {
+    private void validateName(final String customerName) {
         validateNameExists(customerName);
         validateNameLength(customerName);
         validateNameFormat(customerName);
