@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import roomescape.domain.Reservation;
 import roomescape.dto.request.CreateReservationRequest;
 import roomescape.dto.response.ReservationResponse;
+import roomescape.global.exception.BadRequestException;
 import roomescape.global.exception.NotFoundException;
 import roomescape.repository.ReservationRepository;
 
@@ -22,9 +23,15 @@ public class ReservationService {
 
     public ReservationResponse createReservation(final CreateReservationRequest request) {
         Reservation reservation = request.toReservation();
-        //TODO: 동일한 날짜 및 시간에 예약내역 검증
+        validateAlreadyOccupied(reservation);
         Reservation reservationWithId = reservationRepository.save(reservation);
         return new ReservationResponse(reservationWithId);
+    }
+
+    private void validateAlreadyOccupied(final Reservation reservation) {
+        if (reservationRepository.existsByDateAndTime(reservation.getDate(), reservation.getTime())) {
+            throw new BadRequestException(RESERVATION_NOT_EXISTS.getMessage());
+        }
     }
 
     public List<ReservationResponse> getReservations() {

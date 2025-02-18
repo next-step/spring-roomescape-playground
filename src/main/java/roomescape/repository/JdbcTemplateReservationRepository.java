@@ -9,6 +9,8 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -60,6 +62,13 @@ public class JdbcTemplateReservationRepository implements ReservationRepository 
         } catch (EmptyResultDataAccessException emptyResultDataAccessException) {
             return Optional.empty();
         }
+    }
+
+    @Override
+    public boolean existsByDateAndTime(final LocalDate date, final LocalTime time) {
+        String selectByDateAndTime = "SELECT * FROM RESERVATION" +
+                "WHERE EXISTS(SELECT * FROM RESERVATION WHERE `date` = ? AND `time` = ?)";
+        return jdbcTemplate.queryForObject(selectByDateAndTime, Boolean.class, date, time);
     }
 
     @Override
