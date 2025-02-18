@@ -2,7 +2,9 @@ package roomescape.domain;
 
 import roomescape.global.exception.BadRequestException;
 
+import java.time.Clock;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.regex.Pattern;
 
@@ -15,6 +17,7 @@ public class Reservation {
     private static final int MIN_NAME_LENGTH = 2;
     private static final int MAX_NAME_LENGTH = 10;
     private static final Pattern NAME_FORMAT = Pattern.compile("^[가-힣]+$");
+    private static final int OCLOCK = 0;
 
     private Long id;
 
@@ -40,6 +43,11 @@ public class Reservation {
         this.name = name;
         this.date = date;
         this.time = time;
+    }
+
+    public boolean isExpired(Clock clock) {
+        LocalDateTime dateTime = date.atTime(time);
+        return dateTime.isBefore(LocalDateTime.now(clock));
     }
 
     public Long getId() {
@@ -106,7 +114,7 @@ public class Reservation {
     }
 
     private void validateTimeOnTheHour(final LocalTime time) {
-        if (time.getMinute() != 0) {
+        if (time.getMinute() != OCLOCK) {
             throw new BadRequestException(INVALID_TIME.getMessage());
         }
     }
