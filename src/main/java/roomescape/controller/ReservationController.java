@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import roomescape.dao.ReservationRepository;
+import roomescape.dao.ReservationJdbcDAO;
 import roomescape.entity.Reservation;
 
 @RestController
@@ -23,15 +23,15 @@ public class ReservationController {
 
     private final List<Reservation> reservations = new ArrayList<>();
     private final AtomicLong reservationId = new AtomicLong(1);
-    private final ReservationRepository reservationRepository;
+    private final ReservationJdbcDAO reservationJdbcDAO;
 
-    public ReservationController(ReservationRepository reservationRepository) {
-        this.reservationRepository = reservationRepository;
+    public ReservationController(ReservationJdbcDAO reservationJdbcDAO) {
+        this.reservationJdbcDAO = reservationJdbcDAO;
     }
 
     @GetMapping
     public List<Reservation> getReservations() {
-        return reservationRepository.getAll();
+        return reservationJdbcDAO.getAll();
     }
 
 
@@ -44,20 +44,20 @@ public class ReservationController {
                 reservation.getTime()
         );
 
-        reservationRepository.save(newReservation);
+        reservationJdbcDAO.save(newReservation);
         return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId()))
                 .body(newReservation);
     }
 
     @GetMapping("/{id}")
     public Reservation getReservationDetail(@PathVariable int id) {
-        return reservationRepository.getById(id);
+        return reservationJdbcDAO.getById(id);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteReservation(@PathVariable int id) {
-        reservationRepository.delete(id);
+        reservationJdbcDAO.delete(id);
     }
 
 
