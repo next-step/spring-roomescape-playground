@@ -2,14 +2,16 @@ package roomescape.repository;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
+import roomescape.global.exception.BadRequestException;
 
 import java.util.List;
-import java.util.Optional;
+
+import static roomescape.global.exception.ExceptionMessage.RESERVATION_NOT_EXISTS;
 
 @Repository
 public class JdbcTemplateReservationRepository implements ReservationRepository {
@@ -20,8 +22,8 @@ public class JdbcTemplateReservationRepository implements ReservationRepository 
             new Reservation(
                     rs.getLong("id"),
                     rs.getString("customer_name"),
-                    rs.getDate("reservation_date").toLocalDate(),
-                    rs.getTime("reservation_time").toLocalTime()
+                    rs.getDate("date").toLocalDate(),
+                    rs.getTime("time").toLocalTime()
             );
 
     private final JdbcTemplate jdbcTemplate;
@@ -35,16 +37,12 @@ public class JdbcTemplateReservationRepository implements ReservationRepository 
 
     @Override
     public Reservation save(final Reservation reservation) {
-        SqlParameterSource parameters = new MapSqlParameterSource()
-                .addValue("id", reservation.getId())
-                .addValue("customer_name", reservation.getName())
-                .addValue("reservation_date", reservation.getDate())
-                .addValue("reservation_time", reservation.getTime());
+        SqlParameterSource parameters = new BeanPropertySqlParameterSource(reservation);
 
         long id = jdbcInsert.executeAndReturnKey(parameters).longValue();
         return new Reservation(
                 id,
-                reservation.getName(),
+                reservation.getCustomerName(),
                 reservation.getDate(),
                 reservation.getTime()
         );
@@ -56,8 +54,14 @@ public class JdbcTemplateReservationRepository implements ReservationRepository 
     }
 
     @Override
-    public Optional<Reservation> findById(final long reservationId) {
-        return Optional.of(jdbcTemplate.queryForObject("SELECT * FROM RESERVATION WHERE id = ?", RESERVATION_ROW_MAPPER, reservationId));
+    public Reservation findById(final long reservationId) {
+        Reservation reservation;
+        try {
+            reservation = jdbcTemplate.queryForObject("SELECT * FROM RESERVATION WHERE id = ?", RESERVATION_ROW_MAPPER, reservationId);
+        } catch (RuntimeException runtimeException) {
+            throw new BadRequestException(RESERVATION_NOT_EXISTS.getMessage());
+        }
+        return reservation;
     }
 
     @Override

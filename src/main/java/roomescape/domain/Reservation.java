@@ -18,7 +18,7 @@ public class Reservation {
 
     private Long id;
 
-    private String name;
+    private String customerName;
 
     private LocalDate date;
 
@@ -27,17 +27,17 @@ public class Reservation {
     protected Reservation() {
     }
 
-    public Reservation(final Long id, final String name, final LocalDate date, final LocalTime time) {
-        validate(name, date, time);
+    public Reservation(final Long id, final String customerName, final LocalDate date, final LocalTime time) {
+        validate(customerName, date, time);
         this.id = id;
-        this.name = name;
+        this.customerName = customerName;
         this.date = date;
         this.time = time;
     }
 
-    public Reservation(final String name, final LocalDate date, final LocalTime time) {
-        validate(name, date, time);
-        this.name = name;
+    public Reservation(final String customerName, final LocalDate date, final LocalTime time) {
+        validate(customerName, date, time);
+        this.customerName = customerName;
         this.date = date;
         this.time = time;
     }
@@ -46,8 +46,8 @@ public class Reservation {
         return id;
     }
 
-    public String getName() {
-        return name;
+    public String getCustomerName() {
+        return customerName;
     }
 
     public LocalDate getDate() {
@@ -58,32 +58,32 @@ public class Reservation {
         return time;
     }
 
-    private void validate(final String name, final LocalDate date, final LocalTime time) {
-        validateName(name);
+    private void validate(final String customerName, final LocalDate date, final LocalTime time) {
+        validateCustomerName(customerName);
         validateDate(date);
         validateTime(time);
     }
 
-    private void validateName(final String name) {
-        validateNameExists(name);
-        validateNameLength(name);
-        validateNameFormat(name);
+    private void validateCustomerName(final String customerName) {
+        validateNameExists(customerName);
+        validateNameLength(customerName);
+        validateNameFormat(customerName);
     }
 
-    private void validateNameExists(final String name) {
-        if (name == null || name.isBlank()) {
+    private void validateNameExists(final String customerName) {
+        if (customerName == null || customerName.isBlank()) {
             throw new BadRequestException(INVALID_NAME.getMessage());
         }
     }
 
-    private void validateNameLength(final String name) {
-        if (name.length() < MIN_NAME_LENGTH || name.length() > MAX_NAME_LENGTH) {
+    private void validateNameLength(final String customerName) {
+        if (customerName.length() < MIN_NAME_LENGTH || customerName.length() > MAX_NAME_LENGTH) {
             throw new BadRequestException(INVALID_NAME.getMessage());
         }
     }
 
-    private void validateNameFormat(final String name) {
-        if (!NAME_FORMAT.matcher(name).find()) {
+    private void validateNameFormat(final String customerName) {
+        if (!NAME_FORMAT.matcher(customerName).find()) {
             throw new BadRequestException(INVALID_NAME.getMessage());
         }
     }

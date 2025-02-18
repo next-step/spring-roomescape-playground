@@ -32,9 +32,7 @@ public class ReservationService {
     }
 
     public void deleteReservation(final long reservationId) {
-        //TODO: 커스텀 예외 추가
-        Reservation reservation = reservationRepository.findById(reservationId)
-                .orElseThrow();
+        Reservation reservation = reservationRepository.findById(reservationId);
         reservationRepository.deleteById(reservation.getId());
     }
 }

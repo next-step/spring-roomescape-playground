@@ -8,7 +8,7 @@ import java.time.LocalTime;
 public record ReservationResponse(
         long id,
 
-        String name,
+        String customerName,
 
         LocalDate date,
 
@@ -16,7 +16,7 @@ public record ReservationResponse(
 ) {
     public ReservationResponse(Reservation reservation) {
         this(reservation.getId(),
-                reservation.getName(),
+                reservation.getCustomerName(),
                 reservation.getDate(),
                 reservation.getTime());
     }
