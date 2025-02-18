@@ -7,8 +7,3 @@ CREATE TABLE reservation
     PRIMARY KEY (id)
 );
 
-<<<<<<< HEAD
-=======
-
-SELECT * FROM reservation;
->>>>>>> 6ac9242 (refator : 공백 수정)

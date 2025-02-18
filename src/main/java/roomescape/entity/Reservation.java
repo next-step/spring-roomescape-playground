@@ -13,7 +13,7 @@ public class Reservation {
     private final String name;
 
     private final LocalDate date;
-    
+
     @JsonFormat(pattern = "HH:mm")
     private final LocalTime time;
 
