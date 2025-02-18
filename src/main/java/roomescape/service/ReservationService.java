@@ -5,7 +5,6 @@ import roomescape.domain.Reservation;
 import roomescape.dto.request.CreateReservationRequest;
 import roomescape.dto.response.ReservationResponse;
 import roomescape.global.exception.BadRequestException;
-import roomescape.global.exception.NotFoundException;
 import roomescape.repository.ReservationRepository;
 
 import java.util.List;
@@ -43,7 +42,7 @@ public class ReservationService {
 
     public void deleteReservation(final long reservationId) {
         Reservation reservation = reservationRepository.findById(reservationId)
-                .orElseThrow(() -> new NotFoundException(RESERVATION_NOT_EXISTS.getMessage()));
+                .orElseThrow(() -> new BadRequestException(RESERVATION_NOT_EXISTS.getMessage()));
         reservationRepository.deleteById(reservation.getId());
     }
 }
