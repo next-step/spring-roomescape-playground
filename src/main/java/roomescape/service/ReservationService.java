@@ -9,6 +9,7 @@ import roomescape.repository.ReservationRepository;
 
 import java.util.List;
 
+import static roomescape.global.exception.ExceptionMessage.RESERVATION_ALREADY_EXISTS;
 import static roomescape.global.exception.ExceptionMessage.RESERVATION_NOT_EXISTS;
 
 @Service
@@ -29,7 +30,7 @@ public class ReservationService {
 
     private void validateAlreadyOccupied(final Reservation reservation) {
         if (reservationRepository.existsByDateAndTime(reservation.getDate(), reservation.getTime())) {
-            throw new BadRequestException(RESERVATION_NOT_EXISTS.getMessage());
+            throw new BadRequestException(RESERVATION_ALREADY_EXISTS.getMessage());
         }
     }
 
