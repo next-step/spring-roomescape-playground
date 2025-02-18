@@ -51,11 +51,10 @@ public class MissionStep2Test {
     }
 
     @Test
-    @Disabled
     void 칠단계() {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
-        params.put("date", "2023-08-05");
+        params.put("date", "2025-08-05");
         params.put("time", "10:00");
 
         RestAssured.given().log().all()
@@ -66,7 +65,7 @@ public class MissionStep2Test {
                 .statusCode(201)
                 .header("Location", "/reservations/1");
 
-        Integer count = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
+        Integer count = jdbcTemplate.queryForObject("SELECT count(1) from reservations", Integer.class);
         assertThat(count).isEqualTo(1);
 
         RestAssured.given().log().all()
@@ -74,7 +73,7 @@ public class MissionStep2Test {
                 .then().log().all()
                 .statusCode(204);
 
-        Integer countAfterDelete = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
+        Integer countAfterDelete = jdbcTemplate.queryForObject("SELECT count(1) from reservations", Integer.class);
         assertThat(countAfterDelete).isEqualTo(0);
     }
 }

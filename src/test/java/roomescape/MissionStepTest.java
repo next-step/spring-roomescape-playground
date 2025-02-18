@@ -33,7 +33,6 @@ public class MissionStepTest {
     }
 
     @Test
-    @Disabled
     void 삼단계() {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");

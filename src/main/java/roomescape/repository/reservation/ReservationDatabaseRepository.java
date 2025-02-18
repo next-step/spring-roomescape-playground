@@ -1,12 +1,19 @@
 package roomescape.repository.reservation;
 
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.reservation.Reservation;
 import roomescape.domain.reservation.ReservedDateTime;
@@ -31,9 +38,17 @@ public class ReservationDatabaseRepository implements ReservationRepository {
 
     @Override
     public Reservation save(Reservation reservation) {
+        KeyHolder keyHolder = new GeneratedKeyHolder();
         String sql = "INSERT INTO reservations (name, reserved_date, reserved_time) VALUES (?, ?, ?)";
-        // TODO 미션 7단계 진행하며 구현 예정
-        return new Reservation(1L, reservation.getName(), reservation.getReservedDateTime());
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql, new String[]{"reservation_id"});
+            ps.setString(1, reservation.getName());
+            ps.setDate(2, Date.valueOf(reservation.reservedDateValue()));
+            ps.setTime(3, Time.valueOf(reservation.reservedTimeValue()));
+            return ps;
+        }, keyHolder);
+        return new Reservation(Objects.requireNonNull(keyHolder.getKey()).longValue(), reservation.getName(),
+                reservation.getReservedDateTime());
     }
 
     @Override
@@ -51,5 +66,7 @@ public class ReservationDatabaseRepository implements ReservationRepository {
     @Override
     public void delete(Reservation reservation) {
         // TODO 미션 7단계 진행하며 구현 예정
+        String sql = "DELETE FROM reservations WHERE reservation_id = ?";
+        jdbcTemplate.update(sql, reservation.getId());
     }
 }
