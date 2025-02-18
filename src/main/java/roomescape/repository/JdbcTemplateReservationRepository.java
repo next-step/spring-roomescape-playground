@@ -66,8 +66,8 @@ public class JdbcTemplateReservationRepository implements ReservationRepository 
 
     @Override
     public boolean existsByDateAndTime(final LocalDate date, final LocalTime time) {
-        String selectByDateAndTime = "SELECT * FROM RESERVATION" +
-                "WHERE EXISTS(SELECT * FROM RESERVATION WHERE `date` = ? AND `time` = ?)";
+        String selectByDateAndTime = "SELECT EXISTS (" +
+                "SELECT 1 FROM RESERVATION WHERE `date` = ? AND `time` = ?)";
         return jdbcTemplate.queryForObject(selectByDateAndTime, Boolean.class, date, time);
     }
 
