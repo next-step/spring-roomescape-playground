@@ -7,14 +7,14 @@ import roomescape.exception.InvalidException;
 
 public class Reservation {
 
-    private long id;
+    private final long id;
 
-    private String name;
+    private final String name;
 
-    private LocalDate date;
+    private final LocalDate date;
 
     @JsonFormat(pattern = "HH:mm")
-    private LocalTime time;
+    private final LocalTime time;
 
     public Reservation(long id, String name, LocalDate date, LocalTime time) {
         validateName(name);
@@ -27,7 +27,23 @@ public class Reservation {
         this.time = time;
     }
 
-    private Reservation() {
+
+    private void validateName(String name) {
+        if (name == null || name.isBlank()) {
+            throw new InvalidException("Name is required");
+        }
+    }
+
+    private void validateDate(LocalDate reservation_date) {
+        if (reservation_date == null) {
+            throw new InvalidException("Date is required");
+        }
+    }
+
+    private void validateTime(LocalTime reservation_time) {
+        if (reservation_time == null) {
+            throw new InvalidException("Time is required");
+        }
     }
 
     public long getId() {
@@ -46,23 +62,6 @@ public class Reservation {
         return time;
     }
 
-    private void validateName(String name) {
-        if (name == null || name.isBlank()) {
-            throw new InvalidException("Name is required");
-        }
-    }
-
-    private void validateDate(LocalDate date) {
-        if (date == null) {
-            throw new InvalidException("Date is required");
-        }
-    }
-
-    private void validateTime(LocalTime time) {
-        if (time == null) {
-            throw new InvalidException("Time is required");
-        }
-    }
 
 }
 
