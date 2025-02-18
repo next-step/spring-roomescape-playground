@@ -7,5 +7,3 @@ CREATE TABLE reservation
     PRIMARY KEY (id)
 );
 
-
-SELECT * FROM reservation;

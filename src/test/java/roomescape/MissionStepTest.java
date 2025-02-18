@@ -12,7 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.annotation.DirtiesContext;
 
-//RANDOM_PORT로 적용하였다가 로컬에서의 테스트 적용이 되지 않기 때문에 DEFINED_PORT로 적용해두었습니다.
+//RANDOM_PORT로 추후 적용 예정
 @SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class MissionStepTest {
