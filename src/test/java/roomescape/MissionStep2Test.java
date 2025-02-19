@@ -6,10 +6,11 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,6 +21,9 @@ import roomescape.application.dto.ReservationResponseDto;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class MissionStep2Test {
+
+    private static final String reservedDate = LocalDate.now().plusDays(10).toString();
+    private static final String reservedTime = LocalTime.now().toString();
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -37,7 +41,8 @@ public class MissionStep2Test {
 
     @Test
     void 육단계() {
-        jdbcTemplate.update("INSERT INTO reservations (name, reserved_date, reserved_time) VALUES (?, ?, ?)", "브라운", "2023-08-05", "15:40");
+
+        jdbcTemplate.update("INSERT INTO reservations (name, reserved_date, reserved_time) VALUES (?, ?, ?)", "브라운", reservedDate, reservedTime);
 
         List<ReservationResponseDto> reservations = RestAssured.given().log().all()
                 .when().get("/reservations")
@@ -54,8 +59,8 @@ public class MissionStep2Test {
     void 칠단계() {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
-        params.put("date", "2025-08-05");
-        params.put("time", "10:00");
+        params.put("date", reservedDate);
+        params.put("time", reservedTime);
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)

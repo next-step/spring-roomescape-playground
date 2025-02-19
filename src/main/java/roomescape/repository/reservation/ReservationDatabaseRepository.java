@@ -1,6 +1,5 @@
 package roomescape.repository.reservation;
 
-import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.Time;
@@ -65,7 +64,6 @@ public class ReservationDatabaseRepository implements ReservationRepository {
 
     @Override
     public void delete(Reservation reservation) {
-        // TODO 미션 7단계 진행하며 구현 예정
         String sql = "DELETE FROM reservations WHERE reservation_id = ?";
         jdbcTemplate.update(sql, reservation.getId());
     }
