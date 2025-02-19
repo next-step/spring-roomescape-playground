@@ -26,6 +26,7 @@ public class MissionStepTest {
                 .statusCode(200);
     }
 
+    //임의의 List에 넣어준 갯수를 확인했던 테스트 코드이기 때문에 7단계 시점에서는 통과하지 않습니다.
     @Test
     @DisplayName("이단계")
     void 이단계() {
@@ -39,7 +40,7 @@ public class MissionStepTest {
                 .when().get("/reservations")
                 .then().log().all()
                 .statusCode(200)
-                .body("size()", is(3)); // 아직 생성 요청이 없으니 Controller에서 임의로 넣어준 Reservation 갯수 만큼 검증하거나 0개임을 확인하세요.
+                .body("size()", is(3));
     }
 
     @Test
