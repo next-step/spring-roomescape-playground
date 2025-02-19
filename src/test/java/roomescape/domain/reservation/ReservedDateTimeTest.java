@@ -20,7 +20,7 @@ class ReservedDateTimeTest {
     @Test
     void 생성시에_예약날짜_Null으로_생성될경우_에러() {
         // when
-        Throwable catchThrowable = catchThrowable(() -> new ReservedDateTime(LocalDate.parse(reservedDate), null));
+        Throwable catchThrowable = catchThrowable(() -> createReservedDate(LocalDate.parse(reservedDate), null));
         // then
         assertThat(catchThrowable).isInstanceOf(ReservationException.class);
     }
@@ -28,9 +28,13 @@ class ReservedDateTimeTest {
     @Test
     void 생성시에_예약시간_Null으로_생성될경우_에러() {
         // when
-        Throwable catchThrowable = catchThrowable(() -> new ReservedDateTime(null, LocalTime.parse(reservedTime)));
+        Throwable catchThrowable = catchThrowable(() -> createReservedDate(null, LocalTime.parse(reservedTime)));
         // then
         assertThat(catchThrowable).isInstanceOf(ReservationException.class);
+    }
+
+    private ReservedDateTime createReservedDate(LocalDate reservedDate, LocalTime reservedTime) {
+        return new ReservedDateTime(reservedDate, reservedTime);
     }
 
     @Test
