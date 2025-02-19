@@ -2,28 +2,45 @@ package roomescape;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import roomescape.domain.Reservation;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.doReturn;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class MissionStepTest {
 
+    private static final Clock FIXED_CLOCK = Clock.fixed(Instant.parse("2023-08-01T00:00:00Z"), ZoneId.of("UTC"));
+    
+    @SpyBean
+    private Clock clock;
+
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    @BeforeEach
+    void setUp() {
+        doReturn(FIXED_CLOCK.instant()).when(clock).instant();
+        doReturn(FIXED_CLOCK.getZone()).when(clock).getZone();
+    }
 
     @Test
     void 일단계() {
@@ -52,7 +69,7 @@ public class MissionStepTest {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
         params.put("date", "2023-08-05");
-        params.put("time", "15:40");
+        params.put("time", "15:00");
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -116,7 +133,7 @@ public class MissionStepTest {
 
     @Test
     void 육단계() {
-        jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "브라운", "2023-08-05", "15:40");
+        jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "브라운", "2023-08-05", "15:00");
 
         List<Reservation> reservations = RestAssured.given().log().all()
                 .when().get("/reservations")
