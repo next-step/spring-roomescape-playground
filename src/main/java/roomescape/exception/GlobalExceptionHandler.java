@@ -1,7 +1,5 @@
 package roomescape.exception;
 
-import java.util.HashMap;
-import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -21,6 +19,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> notFoundReservation(NotFoundReservationException ex) {
         ErrorResponse errorResponse = new ErrorResponse("Not Found", ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    }
+
+    @ExceptionHandler(DataInvalidException.class)
+    public ResponseEntity<ErrorResponse> dataInvalidException(DataInvalidException ex) {
+        ErrorResponse errorResponse = new ErrorResponse("Data Access Exception", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
 }
