@@ -27,7 +27,6 @@ public class Reservation {
         this.time = time;
     }
 
-
     private void validateName(String name) {
         if (name == null || name.isBlank()) {
             throw new InvalidException("Name is required");
