@@ -14,10 +14,10 @@ import roomescape.exception.NotFoundReservationException;
 public class ReservationJdbcDAO implements ReservationDAO {
 
     private final JdbcTemplate jdbcTemplate;
-    private final RowMapper<Reservation> rowMapper = new ReservationRowMapper();
+    private final RowMapper<Reservation> rowMapper = new ReservationRowMapper(); //
 
-    public ReservationJdbcDAO(JdbcTemplate jdbcTemplate1) {
-        this.jdbcTemplate = jdbcTemplate1;
+    public ReservationJdbcDAO(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
@@ -37,6 +37,8 @@ public class ReservationJdbcDAO implements ReservationDAO {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
+
+
     @Override
     public void delete(long id) {
         String sql = "DELETE FROM reservation WHERE id = ?";
@@ -46,7 +48,6 @@ public class ReservationJdbcDAO implements ReservationDAO {
             throw new InvalidException("예약을 찾을 수 없습니다. ID: " + id);
         }
     }
-
 
     @Override
     public Reservation getById(int id) {
