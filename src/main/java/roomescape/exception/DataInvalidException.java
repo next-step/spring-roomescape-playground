@@ -1,7 +1,12 @@
 package roomescape.exception;
 
-public class DataInvalidException extends RuntimeException {
-  public DataInvalidException(String message) {
-    super(message);
-  }
+import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+@ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Bad Request")
+public class DataInvalidException extends DataAccessException {
+    public DataInvalidException(String message) {
+        super(message);
+    }
 }
