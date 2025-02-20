@@ -27,13 +27,13 @@ public class ReservationService {
 
     public ReservationResponse createReservation(final CreateReservationRequest request) {
         Reservation reservation = request.toReservation();
-        validateAlreadyOccupied(reservation);
+        validateAvailability(reservation);
         validateExpiredDateTime(reservation);
         Reservation reservationWithId = reservationRepository.save(reservation);
         return new ReservationResponse(reservationWithId);
     }
 
-    private void validateAlreadyOccupied(final Reservation reservation) {
+    private void validateAvailability(final Reservation reservation) {
         if (reservationRepository.existsByDateAndTime(reservation.getDate(), reservation.getTime())) {
             throw new BadRequestException(RESERVATION_ALREADY_EXISTS.getMessage());
         }
