@@ -22,10 +22,6 @@ class ReservationDatabaseRepositoryTest {
 
     @Autowired
     private ReservationDatabaseRepository reservationDatabaseRepository;
-    // 할 일 레포지터리 테스트 작성하기
-    /**
-     * JDBC 테스트하는 방법을 알아보기 무엇을 테스트할 것인지!!? = 데이터베이스에 잘 저장되고 리턴값이 잘 가져오는지?
-     */
 
     private static final LocalDate reservedDate = LocalDate.now().plusDays(10);
 
