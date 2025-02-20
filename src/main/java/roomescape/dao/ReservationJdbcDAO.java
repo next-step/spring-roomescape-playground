@@ -67,7 +67,7 @@ public class ReservationJdbcDAO implements ReservationDAO {
     }
 
     @Override
-    public Reservation getById(int id) {
+    public Reservation getById(long id) {
         String sql = "SELECT * FROM reservation WHERE id = ?";
 
         try {
