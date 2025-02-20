@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import roomescape.entity.Dto.TimeInDto;
+import roomescape.entity.dto.TimeCreateDto;
 import roomescape.entity.value.Time;
 import roomescape.service.ReservationService;
 
@@ -32,8 +32,8 @@ public class TimeController {
 
     @Transactional
     @PostMapping
-    public ResponseEntity<Time> createTime(@RequestBody TimeInDto timeInDto) {
-        final Time time = reservationService.saveTime(timeInDto);
+    public ResponseEntity<Time> createTime(@RequestBody TimeCreateDto timeCreateDto) {
+        final Time time = reservationService.saveTime(timeCreateDto);
         URI location = URI.create("/times/" + time.getId());
         return ResponseEntity.created(location).body(time);
     }

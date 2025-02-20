@@ -8,7 +8,7 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
-import roomescape.entity.Dto.TimeInDto;
+import roomescape.entity.dto.TimeCreateDto;
 import roomescape.entity.value.Time;
 
 @Component
@@ -32,11 +32,11 @@ public class TimeDao {
                 rs.getString("time")));
     }
 
-    public Time save(TimeInDto timeInDto) {
+    public Time save(TimeCreateDto timeCreateDto) {
         SqlParameterSource params = new MapSqlParameterSource()
-            .addValue("time", timeInDto.getTime());
+            .addValue("time", timeCreateDto.getTime());
         long id = simpleJdbcInsert.executeAndReturnKey(params).longValue();
-        return new Time(id, timeInDto.getTime());
+        return new Time(id, timeCreateDto.getTime());
     }
 
     public Optional<Time> findById(Long id) {

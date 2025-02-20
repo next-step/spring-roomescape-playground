@@ -7,8 +7,8 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
-import roomescape.entity.Dto.ReservationInDto;
-import roomescape.entity.Dto.ReservationOutDto;
+import roomescape.entity.dto.ReservationCreateDto;
+import roomescape.entity.dto.ReservationDto;
 
 @Component
 public class ReservationDao {
@@ -23,7 +23,7 @@ public class ReservationDao {
             .usingGeneratedKeyColumns("id");
     }
 
-    public List<ReservationOutDto> findAll() {
+    public List<ReservationDto> findAll() {
         String sql = "SELECT \n" +
             "    r.id as reservation_id, \n" +
             "    r.name, \n" +
@@ -32,18 +32,18 @@ public class ReservationDao {
             "    t.time as time_value \n" +
             "FROM reservation as r inner join time as t on r.time_id = t.id\n";
         return jdbcTemplate.query(sql, (rs, rowNum) ->
-            new ReservationOutDto(
+            new ReservationDto(
                 rs.getLong("reservation_id"),
                 rs.getString("name"),
                 rs.getString("date"),
                 rs.getLong("time_id")));
     }
 
-    public Long save(ReservationInDto reservationInDto) {
+    public Long save(ReservationCreateDto reservationCreateDto) {
         SqlParameterSource params = new MapSqlParameterSource()
-            .addValue("name", reservationInDto.getName())
-            .addValue("date", reservationInDto.getDate())
-            .addValue("time_id", reservationInDto.getTimeId());
+            .addValue("name", reservationCreateDto.getName())
+            .addValue("date", reservationCreateDto.getDate())
+            .addValue("time_id", reservationCreateDto.getTimeId());
         return simpleJdbcInsert.executeAndReturnKey(params).longValue();
     }
 

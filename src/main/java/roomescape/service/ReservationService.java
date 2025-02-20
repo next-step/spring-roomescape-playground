@@ -3,8 +3,8 @@ package roomescape.service;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
-import roomescape.entity.Dto.ReservationInDto;
-import roomescape.entity.Dto.TimeInDto;
+import roomescape.entity.dto.ReservationCreateDto;
+import roomescape.entity.dto.TimeCreateDto;
 import roomescape.entity.Reservation;
 import roomescape.entity.dao.ReservationDao;
 import roomescape.entity.dao.TimeDao;
@@ -22,11 +22,11 @@ public class ReservationService {
         this.timeDao = timeDao;
     }
 
-    public Reservation saveReservation(ReservationInDto reservationInDto) {
-        final Time time = findTimeById(reservationInDto.getTimeId());
+    public Reservation saveReservation(ReservationCreateDto reservationCreateDto) {
+        final Time time = findTimeById(reservationCreateDto.getTimeId());
 
-        final Long savedId = reservationDao.save(reservationInDto);
-        return new Reservation(savedId, reservationInDto.getName(), reservationInDto.getDate(), time);
+        final Long savedId = reservationDao.save(reservationCreateDto);
+        return new Reservation(savedId, reservationCreateDto.getName(), reservationCreateDto.getDate(), time);
     }
 
     private Time findTimeById(Long timeId) {
@@ -55,8 +55,8 @@ public class ReservationService {
         return timeDao.findAll();
     }
 
-    public Time saveTime(TimeInDto timeInDto) {
-        return timeDao.save(timeInDto);
+    public Time saveTime(TimeCreateDto timeCreateDto) {
+        return timeDao.save(timeCreateDto);
     }
 
     public void deleteTimeById(Long id) {

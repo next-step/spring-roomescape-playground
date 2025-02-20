@@ -1,6 +1,6 @@
-package roomescape.entity.Dto;
+package roomescape.entity.dto;
 
-public class ReservationOutDto {
+public class ReservationDto {
 
     private Long id;
 
@@ -8,7 +8,7 @@ public class ReservationOutDto {
     private String date;
     private Long timeId;
 
-    public ReservationOutDto(Long id, String name, String date, Long timeId) {
+    public ReservationDto(Long id, String name, String date, Long timeId) {
         this.id = id;
         this.name = name;
         this.date = date;

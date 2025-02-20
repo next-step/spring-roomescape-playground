@@ -1,12 +1,12 @@
-package roomescape.entity.Dto;
+package roomescape.entity.dto;
 
-public class ReservationInDto {
+public class ReservationCreateDto {
 
     private String name;
     private String date;
     private Long time;
 
-    public ReservationInDto(String name, String date, Long time) {
+    public ReservationCreateDto(String name, String date, Long time) {
         this.name = name;
         this.date = date;
         this.time = time;

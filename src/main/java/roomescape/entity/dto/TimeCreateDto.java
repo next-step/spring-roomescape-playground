@@ -1,14 +1,14 @@
-package roomescape.entity.Dto;
+package roomescape.entity.dto;
 
-public class TimeInDto {
+public class TimeCreateDto {
 
     private String time;
 
-    private TimeInDto() {
+    private TimeCreateDto() {
         this.time = null;
     }
 
-    public TimeInDto(String time) {
+    public TimeCreateDto(String time) {
         this.time = time;
     }
 

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import roomescape.entity.Dto.ReservationInDto;
+import roomescape.entity.dto.ReservationCreateDto;
 import roomescape.entity.Reservation;
 import roomescape.exception.ReservationException;
 import roomescape.service.ReservationService;
@@ -35,8 +35,8 @@ public class ReservationController {
 
     @Transactional
     @PostMapping
-    public ResponseEntity<Reservation> createReservation(@RequestBody ReservationInDto reservationInDto) {
-        final Reservation reservation = reservationService.saveReservation(reservationInDto);
+    public ResponseEntity<Reservation> createReservation(@RequestBody ReservationCreateDto reservationCreateDto) {
+        final Reservation reservation = reservationService.saveReservation(reservationCreateDto);
         URI location = URI.create("/reservations/" + reservation.getId());
         return ResponseEntity.created(location).body(reservation);
     }

@@ -1,6 +1,6 @@
 package roomescape.entity;
 
-import roomescape.entity.Dto.ReservationOutDto;
+import roomescape.entity.dto.ReservationDto;
 import roomescape.entity.value.Date;
 import roomescape.entity.value.Name;
 import roomescape.entity.value.Time;
@@ -19,8 +19,8 @@ public class Reservation {
         this.time = time;
     }
 
-    public static Reservation of(ReservationOutDto reservationOutDto, Time time) {
-        return new Reservation(reservationOutDto.getId(), reservationOutDto.getName(), reservationOutDto.getDate(), time);
+    public static Reservation of(ReservationDto reservationDto, Time time) {
+        return new Reservation(reservationDto.getId(), reservationDto.getName(), reservationDto.getDate(), time);
     }
 
     private Reservation() {
