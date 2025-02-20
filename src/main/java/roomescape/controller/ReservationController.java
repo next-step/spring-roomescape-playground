@@ -21,8 +21,6 @@ import roomescape.entity.Reservation;
 @RequestMapping("/reservations")
 public class ReservationController {
 
-    private final List<Reservation> reservations = new ArrayList<>();
-    private final AtomicLong reservationId = new AtomicLong(1);
     private final ReservationJdbcDAO reservationJdbcDAO;
 
     public ReservationController(ReservationJdbcDAO reservationJdbcDAO) {
@@ -38,15 +36,15 @@ public class ReservationController {
     @PostMapping
     public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservation) {
         Reservation newReservation = new Reservation(
-                reservationId.getAndIncrement(),
+                0, //이후 데이터베이스에서 자동 생성된 아이디로 대체
                 reservation.getName(),
                 reservation.getDate(),
                 reservation.getTime()
         );
 
-        reservationJdbcDAO.save(newReservation);
-        return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId()))
-                .body(newReservation);
+        Reservation savedReservation = reservationJdbcDAO.save(newReservation);
+        return ResponseEntity.created(URI.create("/reservations/" + savedReservation.getId()))
+                .body(savedReservation);
     }
 
     @GetMapping("/{id}")
