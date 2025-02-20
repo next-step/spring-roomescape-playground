@@ -15,7 +15,7 @@ import roomescape.domain.reservation.dto.ReservationRequest;
 @Repository
 public class ReservationRepository {
 
-    private static final RowMapper<Reservation> reservationRowMapper = (resultSet, rowNum) ->
+    private static final RowMapper<Reservation> RESERVATION_ROW_MAPPER = (resultSet, rowNum) ->
             new Reservation(
                     resultSet.getLong("id"),
                     resultSet.getString("name"),
@@ -53,6 +53,6 @@ public class ReservationRepository {
     public List<Reservation> getReservations() {
         String sql = "SELECT * FROM reservation";
 
-        return jdbcTemplate.query(sql, reservationRowMapper);
+        return jdbcTemplate.query(sql, RESERVATION_ROW_MAPPER);
     }
 }
