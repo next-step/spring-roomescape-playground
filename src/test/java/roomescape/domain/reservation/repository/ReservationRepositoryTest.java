@@ -48,7 +48,6 @@ class ReservationRepositoryTest {
 
     @Test
     void addReservation_테스트() {
-        String pattern = "^\\d{2}:\\d{2}";
         ReservationRequest reservationRequest = new ReservationRequest(
                 "망고",
                 LocalDate.of(2020, 1, 1),
@@ -68,12 +67,8 @@ class ReservationRepositoryTest {
 
     @Test
     void removeReservation_테스트() {
-        jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "브라운", "2023-08-05",
-                "15:41");
         jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "커찬", "2024-08-05",
                 "15:42");
-        jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "망고", "2025-08-05",
-                "15:43");
         Integer beforeSize = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
         Integer id = jdbcTemplate.queryForObject("SELECT id FROM reservation WHERE name = ?", Integer.class, "커찬");
 

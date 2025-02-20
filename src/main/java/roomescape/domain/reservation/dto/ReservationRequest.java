@@ -2,6 +2,7 @@ package roomescape.domain.reservation.dto;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import roomescape.domain.reservation.domain.Reservation;
 import roomescape.global.exception.RoomescapeBadRequestException;
 
 public record ReservationRequest(String name, LocalDate date, LocalTime time) {
@@ -12,4 +13,7 @@ public record ReservationRequest(String name, LocalDate date, LocalTime time) {
         }
     }
 
+    public Reservation newReservation() {
+        return new Reservation(null, this.name(), this.date(), this.time());
+    }
 }

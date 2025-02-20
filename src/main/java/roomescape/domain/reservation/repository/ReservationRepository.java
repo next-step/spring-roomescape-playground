@@ -10,7 +10,6 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.reservation.domain.Reservation;
-import roomescape.domain.reservation.dto.ReservationRequest;
 
 @Repository
 public class ReservationRepository {
@@ -33,15 +32,15 @@ public class ReservationRepository {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public Reservation addReservation(final ReservationRequest reservationRequest) {
+    public Reservation addReservation(final Reservation reservation) {
         Map<String, Object> params = Map.of(
-                "name", reservationRequest.name(),
-                "date", reservationRequest.date(),
-                "time", reservationRequest.time()
+                "name", reservation.getName(),
+                "date", reservation.getDate(),
+                "time", reservation.getTime()
         );
         Long number = simpleJdbcInsert.executeAndReturnKey(params).longValue();
 
-        return new Reservation(number, reservationRequest.name(), reservationRequest.date(), reservationRequest.time());
+        return new Reservation(number, reservation.getName(), reservation.getDate(), reservation.getTime());
     }
 
     public boolean removeReservation(final long id) {
