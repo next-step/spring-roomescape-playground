@@ -25,14 +25,14 @@ import roomescape.entity.Reservation;
 public class JDBCMissionStepTest {
 
     @LocalServerPort
-    private int port; //랜덤 포트 값을 주입받음
+    private int port;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
     @BeforeEach
     void setUp() {
-        RestAssured.port = port; //ResetAssured 가 테스트 포트의 랜덤 값 사용
+        RestAssured.port = port;
     }
 
     @Test
