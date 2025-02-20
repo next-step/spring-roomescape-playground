@@ -32,7 +32,6 @@ class ReservationRepositoryTest {
 
     @Test
     void getReservations_테스트() {
-
         jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "브라운", "2023-08-05",
                 "15:41");
         jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "커찬", "2024-08-05",
@@ -63,6 +62,24 @@ class ReservationRepositoryTest {
         Assertions.assertThat(savedReservation).isNotNull();
         Assertions.assertThat(foundReservation.get("name")).isEqualTo(savedReservation.getName());
         Assertions.assertThat(foundReservation.get("date").toString()).isEqualTo(savedReservation.getDate().toString());
-        Assertions.assertThat(foundReservation.get("time").toString().substring(0,5)).isEqualTo(savedReservation.getTime().toString());
+        Assertions.assertThat(foundReservation.get("time").toString().substring(0, 5))
+                .isEqualTo(savedReservation.getTime().toString());
+    }
+
+    @Test
+    void removeReservation_테스트() {
+        jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "브라운", "2023-08-05",
+                "15:41");
+        jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "커찬", "2024-08-05",
+                "15:42");
+        jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "망고", "2025-08-05",
+                "15:43");
+        Integer beforeSize = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
+        Integer id = jdbcTemplate.queryForObject("SELECT id FROM reservation WHERE name = ?", Integer.class, "커찬");
+
+        reservationRepository.removeReservation(id);
+        Integer afterSize = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
+
+        Assertions.assertThat(afterSize).isEqualTo(beforeSize - 1);
     }
 }
