@@ -65,23 +65,10 @@ public class ReservationJdbcDAO implements ReservationDAO {
             throw new DataInvalidException("예약을 찾을 수 없습니다. ID: " + id);
         }
     }
+    
 
     @Override
-    public int count() {
-        String sql = "SELECT COUNT(*) FROM reservation";
-        try {
-            Integer count = jdbcTemplate.queryForObject(sql, Integer.class);
-            if (count == null) {
-                return 0;
-            }
-            return count;
-        } catch (Exception e) {
-            throw new InvalidException("ID를 조회하는 동안 오류 발생 : " + e.getMessage());
-        }
-    }
-
-    @Override
-    public Reservation getById(int id) {
+    public Reservation getById(long id) {
         String sql = "SELECT * FROM reservation WHERE id = ?";
 
         try {
