@@ -17,22 +17,21 @@ public class MissionStepTest {
     @Test
     void 일단계() {
         RestAssured.given().log().all()
-            .when().get("/")
-            .then().log().all()
-            .statusCode(200);
+                .when().get("/")
+                .then().log().all()
+                .statusCode(200);
     }
 
     @Test
     void 이단계() {
         RestAssured.given().log().all()
-            .when().get("/reservations")
-            .then().log().all()
-            .statusCode(200)
-            .body("size()", is(0));
+                .when().get("/reservations")
+                .then().log().all()
+                .statusCode(200)
+                .body("size()", is(0));
     }
 
     @Test
-    @Disabled
     void 삼단계() {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
@@ -40,30 +39,30 @@ public class MissionStepTest {
         params.put("time", "15:40");
 
         RestAssured.given().log().all()
-            .contentType(ContentType.JSON)
-            .body(params)
-            .when().post("/reservations")
-            .then().log().all()
-            .statusCode(201)
-            .header("Location", "/reservations/1")
-            .body("id", is(1));
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(201)
+                .header("Location", "/reservations/1")
+                .body("id", is(1));
 
         RestAssured.given().log().all()
-            .when().get("/reservations")
-            .then().log().all()
-            .statusCode(200)
-            .body("size()", is(1));
+                .when().get("/reservations")
+                .then().log().all()
+                .statusCode(200)
+                .body("size()", is(1));
 
         RestAssured.given().log().all()
-            .when().delete("/reservations/1")
-            .then().log().all()
-            .statusCode(204);
+                .when().delete("/reservations/1")
+                .then().log().all()
+                .statusCode(204);
 
         RestAssured.given().log().all()
-            .when().get("/reservations")
-            .then().log().all()
-            .statusCode(200)
-            .body("size()", is(0));
+                .when().get("/reservations")
+                .then().log().all()
+                .statusCode(200)
+                .body("size()", is(0));
     }
 
     @Test
@@ -75,16 +74,16 @@ public class MissionStepTest {
 
         // 필요한 인자가 없는 경우
         RestAssured.given().log().all()
-            .contentType(ContentType.JSON)
-            .body(params)
-            .when().post("/reservations")
-            .then().log().all()
-            .statusCode(400);
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(400);
 
         // 삭제할 예약이 없는 경우
         RestAssured.given().log().all()
-            .when().delete("/reservations/1")
-            .then().log().all()
-            .statusCode(404);
+                .when().delete("/reservations/1")
+                .then().log().all()
+                .statusCode(404);
     }
 }
