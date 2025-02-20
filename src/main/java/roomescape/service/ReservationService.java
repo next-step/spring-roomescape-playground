@@ -32,12 +32,7 @@ public class ReservationService {
         return reservationDAO.createReservation(request);
     }
 
-//    public void cancelReservation(Long reservationId) {
-//        Reservation targetReservation = reservations.stream()
-//                .filter(reservation -> reservation.isSameReservation(reservationId))
-//                .findFirst()
-//                .orElseThrow(() -> new InvalidValueException(ErrorMessage.NO_RESERVATION.getMessage()));
-//
-//        reservations.remove(targetReservation);
-//    }
+    public void cancelReservation(Long reservationId) {
+        reservationDAO.deleteReservation(reservationId);
+    }
 }

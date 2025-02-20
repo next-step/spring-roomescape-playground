@@ -33,9 +33,9 @@ public class ReservationController {
         return reservationService.reserve(request);
     }
 
-//    @DeleteMapping("/reservations/{reservationId}")
-//    @ResponseStatus(HttpStatus.NO_CONTENT)
-//    public void cancelReservation(@PathVariable Long reservationId) {
-//        reservationService.cancelReservation(reservationId);
-//    }
+    @DeleteMapping("/reservations/{reservationId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void cancelReservation(@PathVariable Long reservationId) {
+        reservationService.cancelReservation(reservationId);
+    }
 }
