@@ -1,13 +1,18 @@
 package roomescape.domain.reservation.repository;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
 import javax.sql.DataSource;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import roomescape.domain.reservation.domain.Reservation;
+import roomescape.domain.reservation.dto.ReservationRequest;
 
 @JdbcTest
 class ReservationRepositoryTest {
@@ -18,9 +23,15 @@ class ReservationRepositoryTest {
     @Autowired
     private DataSource dataSource;
 
+    private ReservationRepository reservationRepository;
+
+    @BeforeEach
+    public void setUp() {
+        reservationRepository = new ReservationRepository(jdbcTemplate, dataSource);
+    }
+
     @Test
     void getReservations_테스트() {
-        ReservationRepository reservationRepository = new ReservationRepository(jdbcTemplate, dataSource);
 
         jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "브라운", "2023-08-05",
                 "15:41");
@@ -34,5 +45,24 @@ class ReservationRepositoryTest {
         Assertions.assertThat(reservations)
                 .extracting(Reservation::getName)
                 .containsExactly("브라운", "커찬", "망고");
+    }
+
+    @Test
+    void addReservation_테스트() {
+        String pattern = "^\\d{2}:\\d{2}";
+        ReservationRequest reservationRequest = new ReservationRequest(
+                "망고",
+                LocalDate.of(2020, 1, 1),
+                LocalTime.of(15, 45)
+        );
+
+        Reservation savedReservation = reservationRepository.addReservation(reservationRequest);
+        Map<String, Object> foundReservation = jdbcTemplate.queryForMap("SELECT * FROM reservation WHERE id = ?",
+                savedReservation.getId());
+
+        Assertions.assertThat(savedReservation).isNotNull();
+        Assertions.assertThat(foundReservation.get("name")).isEqualTo(savedReservation.getName());
+        Assertions.assertThat(foundReservation.get("date").toString()).isEqualTo(savedReservation.getDate().toString());
+        Assertions.assertThat(foundReservation.get("time").toString().substring(0,5)).isEqualTo(savedReservation.getTime().toString());
     }
 }
