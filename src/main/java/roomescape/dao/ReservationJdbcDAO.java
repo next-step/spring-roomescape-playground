@@ -1,13 +1,13 @@
 package roomescape.dao;
 
-import java.sql.PreparedStatement;
-import java.sql.Statement;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import javax.sql.DataSource;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import roomescape.entity.Reservation;
 import roomescape.exception.DataInvalidException;
@@ -18,29 +18,29 @@ public class ReservationJdbcDAO implements ReservationDAO {
 
     private final JdbcTemplate jdbcTemplate;
     private final RowMapper<Reservation> rowMapper = new ReservationRowMapper();
+    private final SimpleJdbcInsert simpleJdbcInsert;
 
-    public ReservationJdbcDAO(JdbcTemplate jdbcTemplate) {
+    public ReservationJdbcDAO(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
+        this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource)
+                .withTableName("reservation")
+                .usingGeneratedKeyColumns("id");
+
     }
 
     @Override
     public Reservation save(Reservation reservation) {
 
-        String sql = "INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)";
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-
         try {
-            jdbcTemplate.update(connection -> {
-                PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-                ps.setString(1, reservation.getName());
-                ps.setDate(2, java.sql.Date.valueOf(reservation.getDate()));
-                ps.setTime(3, java.sql.Time.valueOf(reservation.getTime()));
-                return ps;
-            }, keyHolder);
+            Map<String, Object> parameters = new HashMap<>();
+            parameters.put("name", reservation.getName());
+            parameters.put("date", reservation.getDate());
+            parameters.put("time", reservation.getTime());
 
-            long generatedId = keyHolder.getKey().longValue();
+            Number generatedId = simpleJdbcInsert.executeAndReturnKey(parameters);
 
-            return new Reservation(generatedId, reservation.getName(), reservation.getDate(), reservation.getTime());
+            return new Reservation(generatedId.longValue(), reservation.getName(), reservation.getDate(),
+                    reservation.getTime());
 
         } catch (DataInvalidException e) {
             throw new DataInvalidException(e.getMessage());
