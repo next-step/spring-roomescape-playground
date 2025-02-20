@@ -25,7 +25,7 @@ public class Reservation {
     private void validate(String name, LocalDate reservationDate, LocalTime reservationTime) {
         validateName(name);
         validateDate(reservationDate);
-        validateTime(reservationTime);
+        validateTime(reservationDate, reservationTime);
     }
 
     public boolean isSameReservation(Long reservationId) {
@@ -69,11 +69,11 @@ public class Reservation {
         }
     }
 
-    private void validateTime(LocalTime reservationTime) {
+    private void validateTime(LocalDate reservationDate, LocalTime reservationTime) {
         if (reservationTime == null) {
             throw new InvalidValueException(ErrorMessage.INVALID_TIME.getMessage());
         }
-        if (this.date.equals(LocalDate.now()) && reservationTime.isBefore(LocalTime.now())) {
+        if (reservationDate.equals(LocalDate.now()) && reservationTime.isBefore(LocalTime.now())) {
             throw new InvalidValueException(ErrorMessage.INVALID_FUTURE_TIME.getMessage());
         }
     }
