@@ -3,10 +3,14 @@ package roomescape.domain.reservation.repository;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
+import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.reservation.domain.Reservation;
 import roomescape.domain.reservation.dto.ReservationRequest;
@@ -23,25 +27,30 @@ public class ReservationRepository {
             );
 
     private final JdbcTemplate jdbcTemplate;
-    private final List<Reservation> reservations = new ArrayList<>();
-    private final AtomicLong index = new AtomicLong(1);
+    private final SimpleJdbcInsert simpleJdbcInsert;
 
-
-    public ReservationRepository(final JdbcTemplate jdbcTemplate) {
+    public ReservationRepository(final JdbcTemplate jdbcTemplate, final DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
+        this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource)
+                .withTableName("reservation")
+                .usingGeneratedKeyColumns("id");
     }
 
-    public Reservation addReservation(final ReservationRequest ReservationRequest) {
-        long id = index.getAndIncrement();
-        Reservation newReservation = new Reservation(id, ReservationRequest.name(), ReservationRequest.date(),
-                ReservationRequest.time());
-        reservations.add(newReservation);
+    public Reservation addReservation(final ReservationRequest reservationRequest) {
+        Map<String, Object> params = Map.of(
+                "name", reservationRequest.name(),
+                "date", reservationRequest.date(),
+                "time", reservationRequest.time()
+        );
+        Long number = simpleJdbcInsert.executeAndReturnKey(params).longValue();
 
-        return newReservation;
+        return new Reservation(number, reservationRequest.name(), reservationRequest.date(), reservationRequest.time());
     }
 
     public boolean removeReservation(final long id) {
-        return reservations.removeIf(reservation -> reservation.getId() == id);
+        String sql = "delete from reservation where id = ?";
+
+        return jdbcTemplate.update(sql, id) > 0;
     }
 
     public List<Reservation> getReservations() {
