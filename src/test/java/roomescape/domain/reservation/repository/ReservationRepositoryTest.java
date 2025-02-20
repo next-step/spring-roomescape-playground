@@ -1,6 +1,7 @@
 package roomescape.domain.reservation.repository;
 
 import java.util.List;
+import javax.sql.DataSource;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +15,12 @@ class ReservationRepositoryTest {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    @Autowired
+    private DataSource dataSource;
+
     @Test
     void getReservations_테스트() {
-        ReservationRepository reservationRepository = new ReservationRepository(jdbcTemplate);
+        ReservationRepository reservationRepository = new ReservationRepository(jdbcTemplate, dataSource);
 
         jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "브라운", "2023-08-05",
                 "15:41");
