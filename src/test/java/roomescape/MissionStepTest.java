@@ -64,7 +64,7 @@ public class MissionStepTest {
     void 칠단계() {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
-        params.put("date", "2023-08-05");
+        params.put("date", "2025-10-05");
         params.put("time", "10:00");
 
         RestAssured.given().log().all()
