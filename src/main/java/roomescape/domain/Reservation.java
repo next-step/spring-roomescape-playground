@@ -64,11 +64,17 @@ public class Reservation {
         if (reservationDate == null) {
             throw new InvalidValueException(ErrorMessage.INVALID_DATE.getMessage());
         }
+        if (reservationDate.isBefore(LocalDate.now())) {
+            throw new InvalidValueException(ErrorMessage.INVALID_FUTURE_TIME.getMessage());
+        }
     }
 
     private void validateTime(LocalTime reservationTime) {
         if (reservationTime == null) {
             throw new InvalidValueException(ErrorMessage.INVALID_TIME.getMessage());
+        }
+        if (this.date.equals(LocalDate.now()) && reservationTime.isBefore(LocalTime.now())) {
+            throw new InvalidValueException(ErrorMessage.INVALID_FUTURE_TIME.getMessage());
         }
     }
 }
