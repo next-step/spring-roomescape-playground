@@ -7,6 +7,7 @@ import java.sql.SQLException;
 
 public class ReservationRowMapper implements RowMapper<Reservation> {
 
+
     @Override
     public Reservation mapRow(ResultSet rs, int rowNum) throws SQLException {
 
@@ -16,6 +17,6 @@ public class ReservationRowMapper implements RowMapper<Reservation> {
                 rs.getDate("date").toLocalDate(),
                 rs.getTime("time").toLocalTime()
         );
-
     }
+  
 }

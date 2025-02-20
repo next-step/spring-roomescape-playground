@@ -62,12 +62,14 @@ public class ReservationJdbcDAO implements ReservationDAO {
 
         int rowsAffected = jdbcTemplate.update(sql, id);
         if (rowsAffected == 0) {
+
             throw new DataInvalidException("예약을 찾을 수 없습니다. ID: " + id);
         }
     }
 
     @Override
     public Reservation getById(long id) {
+  
         String sql = "SELECT * FROM reservation WHERE id = ?";
 
         try {

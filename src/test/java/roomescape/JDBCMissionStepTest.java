@@ -30,6 +30,7 @@ public class JDBCMissionStepTest {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+
     @BeforeEach
     void setUp() {
         RestAssured.port = port;
@@ -62,6 +63,7 @@ public class JDBCMissionStepTest {
         assertThat(reservations.size()).isEqualTo(count);
     }
 
+
     @Test
     void 칠단계() {
 
@@ -89,6 +91,5 @@ public class JDBCMissionStepTest {
         Integer countAfterDelete = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
         assertThat(countAfterDelete).isEqualTo(0);
     }
-
 
 }
