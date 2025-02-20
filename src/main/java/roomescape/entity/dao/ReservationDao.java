@@ -1,4 +1,4 @@
-package roomescape.entity.repository;
+package roomescape.entity.dao;
 
 import java.util.List;
 import javax.sql.DataSource;
@@ -6,17 +6,17 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 import roomescape.entity.Dto.ReservationInDto;
 import roomescape.entity.Dto.ReservationOutDto;
 
-@Repository
-public class ReservationRepository {
+@Component
+public class ReservationDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert simpleJdbcInsert;
 
-    public ReservationRepository(JdbcTemplate jdbcTemplate, DataSource source) {
+    public ReservationDao(JdbcTemplate jdbcTemplate, DataSource source) {
         this.jdbcTemplate = jdbcTemplate;
         this.simpleJdbcInsert = new SimpleJdbcInsert(source)
             .withTableName("reservation")

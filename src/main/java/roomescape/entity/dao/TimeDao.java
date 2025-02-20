@@ -1,4 +1,4 @@
-package roomescape.entity.repository;
+package roomescape.entity.dao;
 
 import java.util.List;
 import java.util.Optional;
@@ -7,17 +7,17 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 import roomescape.entity.Dto.TimeInDto;
 import roomescape.entity.value.Time;
 
-@Repository
-public class TimeRepository {
+@Component
+public class TimeDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert simpleJdbcInsert;
 
-    public TimeRepository(JdbcTemplate jdbcTemplate, DataSource source) {
+    public TimeDao(JdbcTemplate jdbcTemplate, DataSource source) {
         this.jdbcTemplate = jdbcTemplate;
         this.simpleJdbcInsert = new SimpleJdbcInsert(source)
             .withTableName("time")
