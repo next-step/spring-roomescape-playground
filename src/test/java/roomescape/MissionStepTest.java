@@ -6,16 +6,27 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import java.util.HashMap;
 import java.util.Map;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.annotation.DirtiesContext;
 
-//RANDOM_PORT로 추후 적용 예정
-@SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
+
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class MissionStepTest {
+
+    @LocalServerPort
+    private int port; //랜덤 포트 값 주입
+
+    @BeforeEach
+    void setUp() {
+        RestAssured.port = port;
+    }
+
 
     @Test
     @DisplayName("일단계")
