@@ -1,8 +1,6 @@
 package roomescape.service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.stereotype.Service;
 import roomescape.domain.Reservation;
 import roomescape.dto.request.ReservationCreateRequest;
@@ -11,8 +9,6 @@ import roomescape.repository.ReservationDAO;
 
 @Service
 public class ReservationService {
-    private final AtomicLong index = new AtomicLong(0);
-    private final List<Reservation> reservations = new ArrayList<>();
     private final ReservationDAO reservationDAO;
 
     public ReservationService(ReservationDAO reservationDAO) {
