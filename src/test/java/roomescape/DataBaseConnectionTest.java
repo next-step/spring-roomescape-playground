@@ -23,7 +23,7 @@ public class DataBaseConnectionTest {
         try (Connection connection = jdbcTemplate.getDataSource().getConnection()) {
             assertThat(connection).isNotNull();
 //            assertThat(connection.getCatalog()).isEqualTo("TEST"); <- 데이터베이스 정보가 이상하게나옴 UUID 처럼
-            assertThat(connection.getMetaData().getTables(null,null,"RESERVATIONS", null).next()).isTrue();
+            assertThat(connection.getMetaData().getTables(null, null, "RESERVATIONS", null).next()).isTrue();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
