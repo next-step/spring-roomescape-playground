@@ -24,13 +24,16 @@ public class ReservationDao {
     }
 
     public List<ReservationDto> findAll() {
-        String sql = "SELECT \n" +
-            "    r.id as reservation_id, \n" +
-            "    r.name, \n" +
-            "    r.date, \n" +
-            "    t.id as time_id, \n" +
-            "    t.time as time_value \n" +
-            "FROM reservation as r inner join time as t on r.time_id = t.id\n";
+        String sql = """
+            SELECT 
+                r.id AS reservation_id,
+                r.name,
+                r.date,
+                t.id AS time_id,
+                t.time AS time_value
+            FROM reservation AS r
+            INNER JOIN time AS t ON r.time_id = t.id
+            """;
         return jdbcTemplate.query(sql, (rs, rowNum) ->
             new ReservationDto(
                 rs.getLong("reservation_id"),
