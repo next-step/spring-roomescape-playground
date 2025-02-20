@@ -1,10 +1,11 @@
 package roomescape.global.exception;
 
-import roomescape.global.exception.code.ErrorStatus;
+
+import org.springframework.http.HttpStatus;
 
 public class RoomescapeNotFoundException extends RoomescapeException {
 
-    public RoomescapeNotFoundException(final ErrorStatus errorStatus,final Object data) {
-        super(errorStatus.getHttpStatus(), String.format(errorStatus.getMessage(), data));
+    public RoomescapeNotFoundException(final String message) {
+        super(HttpStatus.NOT_FOUND, message);
     }
 }
