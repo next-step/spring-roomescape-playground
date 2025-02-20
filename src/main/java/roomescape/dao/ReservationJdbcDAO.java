@@ -44,7 +44,7 @@ public class ReservationJdbcDAO implements ReservationDAO {
                     reservation.getTime());
 
         } catch (DataInvalidException e) {
-            throw new DataInvalidException(e.getMessage());
+            throw new DataInvalidException("데이터 저장 중 오류 발생: " + e.getMessage());
         }
 
     }
