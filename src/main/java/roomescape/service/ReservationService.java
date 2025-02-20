@@ -29,21 +29,15 @@ public class ReservationService {
     }
 
     public ReservationResponse reserve(ReservationCreateRequest request) {
-        Long id = index.incrementAndGet();
-        String name = request.getName();
-        LocalDate reservationDate = request.getDate();
-        LocalTime reservationTime = request.getTime();
-
-        reservations.add(new Reservation(id, name, reservationDate, reservationTime));
-        return new ReservationResponse(id, name, reservationDate, reservationTime);
+        return reservationDAO.createReservation(request);
     }
 
-    public void cancelReservation(Long reservationId) {
-        Reservation targetReservation = reservations.stream()
-                .filter(reservation -> reservation.isSameReservation(reservationId))
-                .findFirst()
-                .orElseThrow(() -> new InvalidValueException(ErrorMessage.NO_RESERVATION.getMessage()));
-
-        reservations.remove(targetReservation);
-    }
+//    public void cancelReservation(Long reservationId) {
+//        Reservation targetReservation = reservations.stream()
+//                .filter(reservation -> reservation.isSameReservation(reservationId))
+//                .findFirst()
+//                .orElseThrow(() -> new InvalidValueException(ErrorMessage.NO_RESERVATION.getMessage()));
+//
+//        reservations.remove(targetReservation);
+//    }
 }
