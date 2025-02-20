@@ -4,7 +4,6 @@ import java.net.URI;
 import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import java.util.ArrayList;
 import java.util.List;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,7 +30,6 @@ public class ReservationController {
     public List<Reservation> getReservations() {
         return reservationJdbcDAO.getAll();
     }
-
 
     @PostMapping
     public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservation) {
