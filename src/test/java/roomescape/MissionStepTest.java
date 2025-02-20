@@ -20,13 +20,12 @@ import org.springframework.test.annotation.DirtiesContext;
 public class MissionStepTest {
 
     @LocalServerPort
-    private int port; //랜덤 포트 값 주입
+    private int port;
 
     @BeforeEach
     void setUp() {
         RestAssured.port = port;
     }
-
 
     @Test
     @DisplayName("일단계")
