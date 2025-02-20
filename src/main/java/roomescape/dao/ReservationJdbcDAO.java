@@ -32,6 +32,7 @@ public class ReservationJdbcDAO implements ReservationDAO {
     public Reservation save(Reservation reservation) {
 
         try {
+
             Map<String, Object> parameters = new HashMap<>();
             parameters.put("name", reservation.getName());
             parameters.put("date", reservation.getDate());
