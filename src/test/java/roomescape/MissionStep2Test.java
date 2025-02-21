@@ -22,8 +22,8 @@ import roomescape.application.dto.ReservationResponseDto;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class MissionStep2Test {
 
-    private static final String reservedDate = LocalDate.now().plusDays(10).toString();
-    private static final String reservedTime = LocalTime.now().toString();
+    private static final LocalDate reservedDate = LocalDate.now().plusDays(10);
+    private static final LocalTime reservedTime = LocalTime.now();
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -60,8 +60,8 @@ public class MissionStep2Test {
     void 칠단계() {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
-        params.put("date", reservedDate);
-        params.put("time", reservedTime);
+        params.put("date", String.valueOf(reservedDate));
+        params.put("time", String.valueOf(reservedTime));
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
