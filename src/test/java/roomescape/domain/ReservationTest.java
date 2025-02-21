@@ -47,7 +47,7 @@ class ReservationTest {
     @ParameterizedTest
     @NullAndEmptySource
     @ValueSource(strings = {" ", "김", "아야어여오요우유으이이"})
-    void 이름_길이가_2보다_작거나_19보다_크면_오류_발생(String name) {
+    void 이름_길이가_2보다_작거나_10보다_크면_오류_발생(String name) {
         assertThatThrownBy(() -> new Reservation(name, LocalDate.of(2025, 2, 19), LocalTime.of(13, 0)))
                 .isInstanceOf(BadRequestException.class)
                 .hasMessage(
