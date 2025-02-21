@@ -100,7 +100,7 @@ class ReservationServiceTest {
         // when
         List<ReservationResponse> reservationResponses = reservationService.getReservations();
         // then
-        assertThat(reservationResponses.size() == 2).isTrue();
+        assertThat(reservationResponses).hasSize(2);
     }
 
     @Test
