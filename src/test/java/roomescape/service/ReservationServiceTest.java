@@ -21,7 +21,6 @@ import java.time.ZoneId;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.doReturn;
@@ -108,9 +107,11 @@ class ReservationServiceTest {
         // given
         CreateReservationRequest request = createReservationRequest("김철수", 2025, 2, 18, 13, 0);
         ReservationResponse response = reservationService.createReservation(request);
-        // when & then
-        assertThatCode(() -> reservationService.deleteReservation(response.id()))
-                .doesNotThrowAnyException();
+        int reservationSizeBeforeDelete = reservationService.getReservations().size();
+        // when
+        reservationService.deleteReservation(response.id());
+        // then
+        assertThat(reservationService.getReservations()).hasSize(reservationSizeBeforeDelete - 1);
     }
 
     @Test
