@@ -40,7 +40,7 @@ class ReservationRepositoryTest {
                 "15:43");
         List<Reservation> reservations = reservationRepository.getReservations();
 
-        Assertions.assertThat(3).isEqualTo(reservations.size());
+        Assertions.assertThat(reservations.size()).isEqualTo(3);
         Assertions.assertThat(reservations)
                 .extracting(Reservation::getName)
                 .containsExactly("브라운", "커찬", "망고");
@@ -54,15 +54,16 @@ class ReservationRepositoryTest {
                 LocalTime.of(15, 45)
         );
 
-        Reservation savedReservation = reservationRepository.addReservation(reservationRequest);
+        Reservation savedReservation = reservationRepository.addReservation(reservationRequest.newReservation());
         Map<String, Object> foundReservation = jdbcTemplate.queryForMap("SELECT * FROM reservation WHERE id = ?",
                 savedReservation.getId());
+        LocalDate foundDate = ((java.sql.Date) foundReservation.get("date")).toLocalDate();
+        LocalTime foundTime = ((java.sql.Time) foundReservation.get("time")).toLocalTime();
 
         Assertions.assertThat(savedReservation).isNotNull();
         Assertions.assertThat(foundReservation.get("name")).isEqualTo(savedReservation.getName());
-        Assertions.assertThat(foundReservation.get("date").toString()).isEqualTo(savedReservation.getDate().toString());
-        Assertions.assertThat(foundReservation.get("time").toString().substring(0, 5))
-                .isEqualTo(savedReservation.getTime().toString());
+        Assertions.assertThat(foundDate).isEqualTo(savedReservation.getDate());
+        Assertions.assertThat(foundTime).isEqualTo(savedReservation.getTime());
     }
 
     @Test
