@@ -7,12 +7,15 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 
 @JdbcTest
 @ActiveProfiles(value = "test")
+@AutoConfigureTestDatabase(replace = Replace.NONE)
 public class DataBaseConnectionTest {
 
     @Autowired
@@ -22,7 +25,7 @@ public class DataBaseConnectionTest {
     void testConnection() {
         try (Connection connection = jdbcTemplate.getDataSource().getConnection()) {
             assertThat(connection).isNotNull();
-//            assertThat(connection.getCatalog()).isEqualTo("TEST"); <- 데이터베이스 정보가 이상하게나옴 UUID 처럼
+            assertThat(connection.getCatalog()).isEqualTo("TEST");
             assertThat(connection.getMetaData().getTables(null, null, "RESERVATIONS", null).next()).isTrue();
         } catch (SQLException e) {
             throw new RuntimeException(e);

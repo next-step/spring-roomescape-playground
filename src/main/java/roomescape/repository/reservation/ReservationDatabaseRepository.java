@@ -39,6 +39,12 @@ public class ReservationDatabaseRepository implements ReservationRepository {
     public Reservation save(Reservation reservation) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         String sql = "INSERT INTO reservations (name, reserved_date, reserved_time) VALUES (?, ?, ?)";
+        Long pkValue = getSavedPkValue(reservation, sql, keyHolder);
+        return new Reservation(pkValue, reservation.getName(),
+                reservation.getReservedDateTime());
+    }
+
+    private Long getSavedPkValue(Reservation reservation, String sql, KeyHolder keyHolder) {
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, new String[]{"reservation_id"});
             ps.setString(1, reservation.getName());
@@ -46,8 +52,7 @@ public class ReservationDatabaseRepository implements ReservationRepository {
             ps.setTime(3, Time.valueOf(reservation.reservedTimeValue()));
             return ps;
         }, keyHolder);
-        return new Reservation(Objects.requireNonNull(keyHolder.getKey()).longValue(), reservation.getName(),
-                reservation.getReservedDateTime());
+        return Objects.requireNonNull(keyHolder.getKey()).longValue();
     }
 
     @Override
