@@ -34,7 +34,7 @@ class ReservationRepositoryTest {
     @Test
     void 예약을_생성한다() {
         // given
-        Reservation reservation = new Reservation(1L, "김철수", LocalDate.of(2025, 2, 19), LocalTime.of(13, 0));
+        Reservation reservation = new Reservation("김철수", LocalDate.of(2025, 2, 19), LocalTime.of(13, 0));
         // when
         Reservation savedReservation = reservationRepository.save(reservation);
         // then
@@ -49,13 +49,18 @@ class ReservationRepositoryTest {
     @Test
     void 아이디를_통해_특정_예약을_조회한다() {
         // given
-        Reservation reservation = new Reservation(1L, "김철수", LocalDate.of(2025, 2, 19), LocalTime.of(13, 0));
+        Reservation reservation = new Reservation("김철수", LocalDate.of(2025, 2, 19), LocalTime.of(13, 0));
         Reservation savedReservation = reservationRepository.save(reservation);
         // when
         Optional<Reservation> foundReservation = reservationRepository.findById(savedReservation.getId());
         // then
-        assertThat(foundReservation).isPresent();
-        assertThat(foundReservation.get().getName()).isEqualTo("김철수");
+        assertAll(
+                () -> assertThat(foundReservation).isPresent(),
+                () -> assertThat(savedReservation.getId()).isEqualTo(1L),
+                () -> assertThat(savedReservation.getName()).isEqualTo("김철수"),
+                () -> assertThat(savedReservation.getDate()).isEqualTo("2025-02-19"),
+                () -> assertThat(savedReservation.getTime()).isEqualTo("13:00")
+        );
     }
 
     @Test
