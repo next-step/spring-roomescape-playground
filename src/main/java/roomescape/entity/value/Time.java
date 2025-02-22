@@ -18,28 +18,24 @@ public class Time {
         this.time = null;
     }
 
-
     public Time(Long id, String value) {
         this.id = id;
         this.time = parseTime(value);
     }
 
-    private Time(String value) {
-        validateInput(value);
-        this.time = parseTime(value);
-    }
-
-    private static void validateInput(String time) {
-        if (time == null || time.isBlank()) {
-            throw new InvalidInputException("time은 null이거나 공백이 들어갈 수 없습니다.");
-        }
-    }
-
     private LocalTime parseTime(String time) {
+        validateTime(time);
         try {
             return LocalTime.parse(time, formatter);
         } catch (DateTimeParseException e) {
             throw new InvalidInputException("time값이 HH:mm 형식이 아닙니다.");
+        }
+    }
+
+
+    private static void validateTime(String time) {
+        if (time == null || time.isBlank()) {
+            throw new InvalidInputException("time은 null이거나 공백이 들어갈 수 없습니다.");
         }
     }
 

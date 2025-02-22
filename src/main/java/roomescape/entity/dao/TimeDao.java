@@ -48,6 +48,15 @@ public class TimeDao {
         return times.stream().findFirst();
     }
 
+    public Optional<Time> findByTime(String time) {
+        String sql = "SELECT * FROM time WHERE time = ?";
+        final List<Time> times = jdbcTemplate.query(sql, new Object[]{time}, (rs, rowNum) ->
+            new  Time(
+                rs.getLong("id"),
+                rs.getString("time")));
+        return times.stream().findFirst();
+    }
+
     public int deleteById(Long id) {
         String sql = "DELETE FROM time WHERE id = ?";
         return jdbcTemplate.update(sql, id);

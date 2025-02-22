@@ -9,6 +9,7 @@ import roomescape.entity.Reservation;
 import roomescape.entity.dao.ReservationDao;
 import roomescape.entity.dao.TimeDao;
 import roomescape.entity.value.Time;
+import roomescape.exception.InvalidInputException;
 import roomescape.exception.NotFoundException;
 
 @Service
@@ -56,6 +57,9 @@ public class ReservationService {
     }
 
     public Time saveTime(TimeCreateDto timeCreateDto) {
+        if (timeDao.findByTime(timeCreateDto.getTime()).isPresent()) {
+            throw new InvalidInputException("중복된 time가 존재합니다.");
+        }
         return timeDao.save(timeCreateDto);
     }
 
