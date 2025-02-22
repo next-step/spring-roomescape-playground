@@ -47,20 +47,18 @@ class ReservationTest {
     @ParameterizedTest
     @NullAndEmptySource
     @ValueSource(strings = {" ", "김", "아야어여오요우유으이이"})
-    void 이름_길이가_2보다_작거나_10보다_크면_오류_발생(String name) {
+    void 이름_길이가_2보다_작거나_10보다_크면_예외가_발생한다(String name) {
         assertThatThrownBy(() -> new Reservation(name, LocalDate.of(2025, 2, 19), LocalTime.of(13, 0)))
                 .isInstanceOf(BadRequestException.class)
-                .hasMessage(
-                        ExceptionMessage.INVALID_NAME.getMessage());
+                .hasMessage(ExceptionMessage.INVALID_NAME.getMessage());
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"kim", "나자바!", "철수 Kim"})
-    void 이름에_한글_외_다른_문자_넣을시_오류_발생(String name) {
+    void 이름에_한글_외_다른_문자_넣을시_예외가_발생한다(String name) {
         assertThatThrownBy(() -> new Reservation(name, LocalDate.of(2025, 2, 19), LocalTime.of(13, 0)))
                 .isInstanceOf(BadRequestException.class)
-                .hasMessage(
-                        ExceptionMessage.INVALID_NAME.getMessage());
+                .hasMessage(ExceptionMessage.INVALID_NAME.getMessage());
     }
 
     @ParameterizedTest
@@ -68,12 +66,11 @@ class ReservationTest {
     void 시간이_정각_단위가_아니면_예외가_발생한다(int time) {
         assertThatThrownBy(() -> new Reservation("김철수", LocalDate.of(2025, 2, 19), LocalTime.of(13, time)))
                 .isInstanceOf(BadRequestException.class)
-                .hasMessage(
-                        ExceptionMessage.INVALID_TIME.getMessage());
+                .hasMessage(ExceptionMessage.INVALID_TIME.getMessage());
     }
 
     @Test
-    void 필수_인자_입력하지_않을시_오류_발생() {
+    void 필수_인자_입력하지_않을시_예외가_발생한다() {
         assertAll(
                 () -> assertThatThrownBy(() -> new Reservation("김철수", null, LocalTime.of(13, 0)))
                         .isInstanceOf(BadRequestException.class)
