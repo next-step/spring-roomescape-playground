@@ -24,12 +24,11 @@ public class ReservationService {
 
     @Transactional(readOnly = true)
     public List<ReservationResponse> getReservationResponses() {
-        List<ReservationResponse> reservationResponses = reservationRepository.getReservations()
+
+        return reservationRepository.getReservations()
                 .stream()
                 .map(ReservationResponse::fromReservation)
                 .collect(Collectors.toList());
-
-        return reservationResponses;
     }
 
     @Transactional
