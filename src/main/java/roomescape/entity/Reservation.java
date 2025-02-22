@@ -11,18 +11,18 @@ public class Reservation {
     private final Date date;
     private final Time time;
 
-    public Reservation(Long id, String name, String date, String time) {
+    public Reservation(Long id, String name, String date, Time time) {
         this.id = id;
         this.name = Name.of(name);
         this.date = Date.of(date);
-        this.time = Time.of(time);
+        this.time = time;
     }
 
-    public Reservation(String name, String date, String time) {
-        this.id = null;
+    public Reservation(Long id, String name, String date, Long timdeId, String timeValue) {
+        this.id = id;
         this.name = Name.of(name);
         this.date = Date.of(date);
-        this.time = Time.of(time);
+        this.time = new Time(timdeId, timeValue);
     }
 
     private Reservation() {
@@ -44,8 +44,8 @@ public class Reservation {
         return date.getValue();
     }
 
-    public String getTime() {
-        return time.getValue();
+    public Time getTime() {
+        return time;
     }
 
 

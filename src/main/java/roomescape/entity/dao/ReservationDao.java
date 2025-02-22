@@ -1,4 +1,4 @@
-package roomescape.entity.repository;
+package roomescape.entity.dao;
 
 import java.util.List;
 import javax.sql.DataSource;
@@ -6,16 +6,17 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 import roomescape.entity.Reservation;
+import roomescape.entity.dto.ReservationCreateDto;
 
-@Repository
-public class ReservationRepository {
+@Component
+public class ReservationDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert simpleJdbcInsert;
 
-    public ReservationRepository(JdbcTemplate jdbcTemplate, DataSource source) {
+    public ReservationDao(JdbcTemplate jdbcTemplate, DataSource source) {
         this.jdbcTemplate = jdbcTemplate;
         this.simpleJdbcInsert = new SimpleJdbcInsert(source)
             .withTableName("reservation")
@@ -23,22 +24,31 @@ public class ReservationRepository {
     }
 
     public List<Reservation> findAll() {
-        String sql = "SELECT * FROM reservation";
+        String sql = """
+            SELECT 
+                r.id AS reservation_id,
+                r.name,
+                r.date,
+                t.id AS time_id,
+                t.time AS time_value
+            FROM reservation AS r
+            INNER JOIN time AS t ON r.time_id = t.id
+            """;
         return jdbcTemplate.query(sql, (rs, rowNum) ->
             new Reservation(
-                rs.getLong("id"),
+                rs.getLong("reservation_id"),
                 rs.getString("name"),
                 rs.getString("date"),
-                rs.getString("time")));
+                rs.getLong("time_id"),
+                rs.getString("time_value")));
     }
 
-    public Reservation save(Reservation reservation) {
+    public Long save(ReservationCreateDto reservationCreateDto) {
         SqlParameterSource params = new MapSqlParameterSource()
-            .addValue("name", reservation.getName())
-            .addValue("date", reservation.getDate())
-            .addValue("time", reservation.getTime());
-        long id = simpleJdbcInsert.executeAndReturnKey(params).longValue();
-        return new Reservation(id, reservation.getName(), reservation.getDate(), reservation.getTime());
+            .addValue("name", reservationCreateDto.getName())
+            .addValue("date", reservationCreateDto.getDate())
+            .addValue("time_id", reservationCreateDto.getTimeId());
+        return simpleJdbcInsert.executeAndReturnKey(params).longValue();
     }
 
     public int deleteById(Long id) {
