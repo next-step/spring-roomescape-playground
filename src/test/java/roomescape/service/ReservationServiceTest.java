@@ -106,11 +106,11 @@ class ReservationServiceTest {
         // given
         CreateReservationRequest request = createReservationRequest("김철수", 2025, 2, 18, 13, 0);
         ReservationResponse response = reservationService.createReservation(request);
-        int reservationSizeBeforeDelete = reservationService.getReservations().size();
+        int initialReservationSize = reservationService.getReservations().size();
         // when
         reservationService.deleteReservation(response.id());
         // then
-        assertThat(reservationService.getReservations()).hasSize(reservationSizeBeforeDelete - 1);
+        assertThat(reservationService.getReservations()).hasSize(initialReservationSize - 1);
     }
 
     @Test
