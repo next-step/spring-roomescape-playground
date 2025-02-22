@@ -6,13 +6,16 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.web.format.DateTimeFormatters;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
@@ -24,7 +27,8 @@ public class MissionStep2Test {
 
     private static final LocalDate reservedDate = LocalDate.now().plusDays(10);
     private static final LocalTime reservedTime = LocalTime.now();
-
+    private final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private final DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm");
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
@@ -60,8 +64,8 @@ public class MissionStep2Test {
     void 칠단계() {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
-        params.put("date", String.valueOf(reservedDate));
-        params.put("time", String.valueOf(reservedTime));
+        params.put("date", dateFormat.format(reservedDate));
+        params.put("time", timeFormat.format(reservedTime));
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
