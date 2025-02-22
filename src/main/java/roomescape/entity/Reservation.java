@@ -1,6 +1,5 @@
 package roomescape.entity;
 
-import roomescape.entity.dto.ReservationDto;
 import roomescape.entity.value.Date;
 import roomescape.entity.value.Name;
 import roomescape.entity.value.Time;
@@ -19,8 +18,11 @@ public class Reservation {
         this.time = time;
     }
 
-    public static Reservation of(ReservationDto reservationDto, Time time) {
-        return new Reservation(reservationDto.getId(), reservationDto.getName(), reservationDto.getDate(), time);
+    public Reservation(Long id, String name, String date, Long timdeId, String timeValue) {
+        this.id = id;
+        this.name = Name.of(name);
+        this.date = Date.of(date);
+        this.time = new Time(timdeId, timeValue);
     }
 
     private Reservation() {

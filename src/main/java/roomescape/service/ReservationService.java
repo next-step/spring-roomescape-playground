@@ -1,13 +1,12 @@
 package roomescape.service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
-import roomescape.entity.dto.ReservationCreateDto;
-import roomescape.entity.dto.TimeCreateDto;
 import roomescape.entity.Reservation;
 import roomescape.entity.dao.ReservationDao;
 import roomescape.entity.dao.TimeDao;
+import roomescape.entity.dto.ReservationCreateDto;
+import roomescape.entity.dto.TimeCreateDto;
 import roomescape.entity.value.Time;
 import roomescape.exception.InvalidInputException;
 import roomescape.exception.NotFoundException;
@@ -36,12 +35,7 @@ public class ReservationService {
     }
 
     public List<Reservation> findAllReservations() {
-        return reservationDao.findAll().stream()
-            .map(reservationOutDto -> {
-                Time time = findTimeById(reservationOutDto.getTimeId());
-                return Reservation.of(reservationOutDto, time);
-            })
-            .collect(Collectors.toList());
+        return reservationDao.findAll();
     }
 
     public void deleteReservationById(Long id) {

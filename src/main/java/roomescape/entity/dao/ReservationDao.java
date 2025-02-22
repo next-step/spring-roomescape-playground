@@ -7,8 +7,8 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
+import roomescape.entity.Reservation;
 import roomescape.entity.dto.ReservationCreateDto;
-import roomescape.entity.dto.ReservationDto;
 
 @Component
 public class ReservationDao {
@@ -23,7 +23,7 @@ public class ReservationDao {
             .usingGeneratedKeyColumns("id");
     }
 
-    public List<ReservationDto> findAll() {
+    public List<Reservation> findAll() {
         String sql = """
             SELECT 
                 r.id AS reservation_id,
@@ -35,11 +35,12 @@ public class ReservationDao {
             INNER JOIN time AS t ON r.time_id = t.id
             """;
         return jdbcTemplate.query(sql, (rs, rowNum) ->
-            new ReservationDto(
+            new Reservation(
                 rs.getLong("reservation_id"),
                 rs.getString("name"),
                 rs.getString("date"),
-                rs.getLong("time_id")));
+                rs.getLong("time_id"),
+                rs.getString("time_value")));
     }
 
     public Long save(ReservationCreateDto reservationCreateDto) {
