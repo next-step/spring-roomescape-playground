@@ -14,6 +14,6 @@ public record ReservationRequest(String name, LocalDate date, LocalTime time) {
     }
 
     public Reservation newReservation() {
-        return new Reservation(null, this.name(), this.date(), this.time());
+        return new Reservation(this.name(), this.date(), this.time());
     }
 }

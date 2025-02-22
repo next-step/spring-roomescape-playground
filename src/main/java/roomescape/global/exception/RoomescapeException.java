@@ -15,4 +15,3 @@ public class RoomescapeException extends RuntimeException {
         return this.status;
     }
 }
-
