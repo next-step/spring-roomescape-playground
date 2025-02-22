@@ -17,7 +17,7 @@ public class Reservation {
     private static final int MIN_NAME_LENGTH = 2;
     private static final int MAX_NAME_LENGTH = 10;
     private static final Pattern NAME_FORMAT = Pattern.compile("^[가-힣]+$");
-    private static final int OCLOCK = 0;
+    private static final int VALID_MINUTE_UNIT = 0;
 
     private Long id;
 
@@ -104,7 +104,7 @@ public class Reservation {
 
     private void validateTime(final LocalTime time) {
         validateTimeExists(time);
-        validateTimeOnTheHour(time);
+        validateTimeFormat(time);
     }
 
     private void validateTimeExists(final LocalTime time) {
@@ -113,8 +113,8 @@ public class Reservation {
         }
     }
 
-    private void validateTimeOnTheHour(final LocalTime time) {
-        if (time.getMinute() != OCLOCK) {
+    private void validateTimeFormat(final LocalTime time) {
+        if (time.getMinute() != VALID_MINUTE_UNIT) {
             throw new BadRequestException(INVALID_TIME.getMessage());
         }
     }
