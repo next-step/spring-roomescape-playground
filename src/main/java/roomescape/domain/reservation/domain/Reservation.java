@@ -13,15 +13,15 @@ public class Reservation {
 
     private final LocalTime time;
 
+    public static Reservation newWithoutId(final String name, final LocalDate date, final LocalTime time) {
+        return new Reservation(null, name, date, time);
+    }
+
     public Reservation(final Long id, final String name, final LocalDate date, final LocalTime time) {
         this.id = id;
         this.name = name;
         this.date = date;
         this.time = time;
-    }
-
-    public Reservation(String name, LocalDate date, LocalTime time) {
-        this(null, name, date, time);
     }
 
     public Long getId() {

@@ -48,7 +48,7 @@ class ReservationRepositoryTest {
 
     @Test
     void addReservation_테스트() {
-        Reservation reservation = new Reservation("망고", LocalDate.of(2020, 1, 1),
+        Reservation reservation = Reservation.newWithoutId("망고", LocalDate.of(2020, 1, 1),
                 LocalTime.of(15, 45));
 
         Reservation savedReservation = reservationRepository.addReservation(reservation);
