@@ -55,7 +55,7 @@ public class ReservationDAO {
         );
     }
 
-    public void deleteReservation(Long reservationId) {
+    public void deleteReservation(long reservationId) {
         String sql = "delete from reservation where id = ?";
         jdbcTemplate.update(sql, reservationId);
     }
