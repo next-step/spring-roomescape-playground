@@ -106,10 +106,9 @@ public class ReservationServiceTest {
         List<Reservation> reservations = reservationService.showReservations();
 
         //then
-        assertAll(
-            () -> assertThat(reservations).hasSize(2),
-            () -> assertThat(reservations.get(0).getName()).isEqualTo("콜리"),
-            () -> assertThat(reservations.get(1).getName()).isEqualTo("파도")
+        assertThat(reservations).containsExactly(
+            new Reservation(1L, "콜리", LocalDate.now().plusDays(1), fixedTime),
+            new Reservation(2L, "파도", LocalDate.now().plusDays(2), fixedTime)
         );
 
         verify(reservationDAO, times(1)).findReservations();
