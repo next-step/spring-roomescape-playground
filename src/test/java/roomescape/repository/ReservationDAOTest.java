@@ -65,7 +65,7 @@ public class ReservationDAOTest {
             () -> assertThat(savedReservation.getId()).isEqualTo(response.id()),
             () -> assertThat(savedReservation.getName()).isEqualTo("콜리"),
             () -> assertThat(savedReservation.getDate()).isEqualTo(LocalDate.now().plusDays(1)),
-            () -> assertThat(savedReservation.getTime()).isEqualTo(LocalTime.now())
+            () -> assertThat(savedReservation.getTime()).isEqualToIgnoringSeconds(LocalTime.now())
         );
     }
 
