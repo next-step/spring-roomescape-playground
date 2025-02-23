@@ -2,6 +2,7 @@ package roomescape.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -52,10 +53,12 @@ public class ReservationServiceTest {
         ReservationResponse response = reservationService.reserve(validRequest);
 
         //then
-        assertThat(response.id()).isEqualTo(1L);
-        assertThat(response.name()).isEqualTo("파도");
-        assertThat(response.date()).isEqualTo(LocalDate.now().plusDays(1));
-        assertThat(response.time()).isEqualTo(fixedTime);
+        assertAll(
+            () -> assertThat(response.id()).isEqualTo(1L),
+            () -> assertThat(response.name()).isEqualTo("파도"),
+            () -> assertThat(response.date()).isEqualTo(LocalDate.now().plusDays(1)),
+            () -> assertThat(response.time()).isEqualTo(fixedTime)
+        );
 
         verify(reservationDAO, times(1)).createReservation(validRequest);
     }
@@ -103,9 +106,11 @@ public class ReservationServiceTest {
         List<Reservation> reservations = reservationService.showReservations();
 
         //then
-        assertThat(reservations).hasSize(2);
-        assertThat(reservations.get(0).getName()).isEqualTo("콜리");
-        assertThat(reservations.get(1).getName()).isEqualTo("파도");
+        assertAll(
+            () -> assertThat(reservations).hasSize(2),
+            () -> assertThat(reservations.get(0).getName()).isEqualTo("콜리"),
+            () -> assertThat(reservations.get(1).getName()).isEqualTo("파도")
+        );
 
         verify(reservationDAO, times(1)).findReservations();
     }
