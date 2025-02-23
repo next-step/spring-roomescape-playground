@@ -5,6 +5,7 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,7 @@ import roomescape.dto.response.ReservationResponse;
 import roomescape.mapper.ReservationRowMapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @JdbcTest
 public class ReservationDAOTest {
@@ -41,10 +43,12 @@ public class ReservationDAOTest {
         ReservationResponse response = reservationDAO.createReservation(request);
 
         //then
-        assertThat(response.id()).isNotNull();
-        assertThat(response.name()).isEqualTo("파도");
-        assertThat(response.date()).isEqualTo(LocalDate.now().plusDays(1));
-        assertThat(response.time()).isEqualTo(fixTime);
+        assertAll(
+            () -> assertThat(response.id()).isNotNull(),
+            () -> assertThat(response.name()).isEqualTo("파도"),
+            () -> assertThat(response.date()).isEqualTo(LocalDate.now().plusDays(1)),
+            () -> assertThat(response.time()).isEqualTo(fixTime)
+        );
     }
 
     @Test
@@ -63,8 +67,10 @@ public class ReservationDAOTest {
         Set<String> names = reservations.stream().map(Reservation::getName).collect(Collectors.toSet());
 
         //then
-        assertThat(reservations).hasSize(3);
-        assertThat(names).isEqualTo(Set.of("콜리", "파도", "커찬"));
+        assertAll(
+            () -> assertThat(reservations).hasSize(3),
+            () -> assertThat(names).isEqualTo(Set.of("콜리", "파도", "커찬"))
+        );
     }
 
     @Test
@@ -81,7 +87,9 @@ public class ReservationDAOTest {
         List<Reservation> reservations = reservationDAO.findReservations();
 
         //then
-        assertThat(reservations).hasSize(1);
-        assertThat(reservations.get(0).getName()).isEqualTo("콜리");
+        assertAll(
+            () -> assertThat(reservations).hasSize(1),
+            () -> assertThat(reservations.get(0).getName()).isEqualTo("콜리")
+        );
     }
 }
