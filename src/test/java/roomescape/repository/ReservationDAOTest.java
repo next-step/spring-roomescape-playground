@@ -55,21 +55,19 @@ public class ReservationDAOTest {
     @DisplayName("저장된 예약들을 제대로 조회하는지 확인")
     void 예약을_조회할_수_있다() {
         //given
-        ReservationCreateRequest request1 = new ReservationCreateRequest("콜리", LocalDate.now().plusDays(1), LocalTime.now());
-        ReservationCreateRequest request2 = new ReservationCreateRequest("파도", LocalDate.now().plusDays(3), LocalTime.now());
-        ReservationCreateRequest request3 = new ReservationCreateRequest("커찬", LocalDate.now().plusDays(2), LocalTime.now());
-        reservationDAO.createReservation(request1);
-        reservationDAO.createReservation(request2);
-        reservationDAO.createReservation(request3);
+        ReservationCreateRequest request = new ReservationCreateRequest("콜리", LocalDate.now().plusDays(1), LocalTime.now());
+        ReservationResponse response = reservationDAO.createReservation(request);
 
         //when
         List<Reservation> reservations = reservationDAO.findReservations();
-        Set<String> names = reservations.stream().map(Reservation::getName).collect(Collectors.toSet());
+        Reservation savedReservation = reservations.get(0);
 
         //then
         assertAll(
-            () -> assertThat(reservations).hasSize(3),
-            () -> assertThat(names).isEqualTo(Set.of("콜리", "파도", "커찬"))
+            () -> assertThat(savedReservation.getId()).isEqualTo(response.id()),
+            () -> assertThat(savedReservation.getName()).isEqualTo("콜리"),
+            () -> assertThat(savedReservation.getDate()).isEqualTo(LocalDate.now().plusDays(1)),
+            () -> assertThat(savedReservation.getTime()).isEqualTo(LocalTime.now())
         );
     }
 
