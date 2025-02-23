@@ -1,6 +1,7 @@
 package roomescape.service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import org.springframework.stereotype.Service;
@@ -24,8 +25,7 @@ public class ReservationService {
     }
 
     public ReservationResponse reserve(ReservationCreateRequest request) {
-        validateDate(request.date());
-        validateTime(request.date(), request.time());
+        validateDateTime(request.date(), request.time());
         return reservationDAO.createReservation(request);
     }
 
@@ -33,20 +33,14 @@ public class ReservationService {
         reservationDAO.deleteReservation(reservationId);
     }
 
-    private void validateDate(LocalDate reservationDate) {
-        if (reservationDate == null) {
-            throw new InvalidValueException(ErrorMessage.INVALID_DATE.getMessage());
+    private void validateDateTime(LocalDate reservationDate, LocalTime reservationTime) {
+        if (reservationDate == null || reservationTime == null) {
+            throw new InvalidValueException(ErrorMessage.INVALID_DATE_TIME.getMessage());
         }
-        if (reservationDate.isBefore(LocalDate.now())) {
-            throw new InvalidValueException(ErrorMessage.INVALID_FUTURE_TIME.getMessage());
-        }
-    }
 
-    private void validateTime(LocalDate reservationDate, LocalTime reservationTime) {
-        if (reservationTime == null) {
-            throw new InvalidValueException(ErrorMessage.INVALID_TIME.getMessage());
-        }
-        if (reservationDate.equals(LocalDate.now()) && reservationTime.isBefore(LocalTime.now())) {
+        LocalDateTime reservationDateTime = LocalDateTime.of(reservationDate, reservationTime);
+
+        if (reservationDateTime.isBefore(LocalDateTime.now())) {
             throw new InvalidValueException(ErrorMessage.INVALID_FUTURE_TIME.getMessage());
         }
     }
