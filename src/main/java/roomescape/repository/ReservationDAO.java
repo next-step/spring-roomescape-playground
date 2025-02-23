@@ -45,10 +45,10 @@ public class ReservationDAO {
         parameters.put("reservation_date", Date.valueOf(request.date()));
         parameters.put("reservation_time", Time.valueOf(request.time()));
 
-        Number key = simpleJdbcInsert.executeAndReturnKey(parameters);
+        long key = simpleJdbcInsert.executeAndReturnKey(parameters).longValue();
 
         return new ReservationResponse(
-            key.longValue(),
+            key,
             request.name(),
             request.date(),
             request.time()
