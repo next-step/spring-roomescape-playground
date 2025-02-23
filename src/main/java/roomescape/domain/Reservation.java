@@ -2,6 +2,7 @@ package roomescape.domain;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Objects;
 import java.util.regex.Pattern;
 import roomescape.error.ErrorMessage;
 import roomescape.error.exception.InvalidValueException;
@@ -52,5 +53,20 @@ public class Reservation {
         if (!NAME_FORMAT.matcher(name).find()) {
             throw new InvalidValueException(ErrorMessage.INVALID_NAME.getMessage());
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Reservation that = (Reservation) o;
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name)
+            && Objects.equals(date, that.date) && Objects.equals(time, that.time);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, date, time);
     }
 }
