@@ -41,17 +41,17 @@ public class ReservationDAO {
 
     public ReservationResponse createReservation(ReservationCreateRequest request) {
         Map<String, Object> parameters = new HashMap<>();
-        parameters.put("name", request.getName());
-        parameters.put("reservation_date", Date.valueOf(request.getDate()));
-        parameters.put("reservation_time", Time.valueOf(request.getTime()));
+        parameters.put("name", request.name());
+        parameters.put("reservation_date", Date.valueOf(request.date()));
+        parameters.put("reservation_time", Time.valueOf(request.time()));
 
         Number key = simpleJdbcInsert.executeAndReturnKey(parameters);
 
         return new ReservationResponse(
             key.longValue(),
-            request.getName(),
-            request.getDate(),
-            request.getTime()
+            request.name(),
+            request.date(),
+            request.time()
         );
     }
 
