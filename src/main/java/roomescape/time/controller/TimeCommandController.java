@@ -26,7 +26,7 @@ public class TimeCommandController {
     @GetMapping("/times/{id}")
     public Time getTime(@PathVariable("id") long id) {
         return timeDao.findById(id)
-                .orElseThrow();
+                .orElseThrow(TimeNotFoundException::new);
     }
 
     @GetMapping("/times")
