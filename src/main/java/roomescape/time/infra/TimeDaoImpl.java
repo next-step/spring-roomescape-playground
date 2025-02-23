@@ -1,11 +1,11 @@
 package roomescape.time.infra;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import roomescape.exception.NotFoundReservationException;
 import roomescape.time.Time;
 import roomescape.time.TimeDao;
 
@@ -30,7 +30,21 @@ public class TimeDaoImpl implements TimeDao {
     @Override
     public Optional<Time> findById(Long id) {
         String sql = "SELECT * FROM reservation_time WHERE id = ?";
-        return Optional.ofNullable(jdbcTemplate.queryForObject(sql, TIME_ROW_MAPPER, id));
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, TIME_ROW_MAPPER, id));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public Optional<Time> findByTime(Time time) {
+        String sql = "SELECT * FROM reservation_time WHERE time = ?";
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, TIME_ROW_MAPPER, time.getTime()));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     @Override

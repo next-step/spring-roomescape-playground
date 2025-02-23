@@ -6,10 +6,13 @@ import roomescape.time.Time;
 import roomescape.time.TimeDao;
 import roomescape.time.dto.TimeCreateRequest;
 import roomescape.time.dto.TimeCreateResponse;
+import roomescape.time.exception.TimeAlreadyExistException;
+import roomescape.time.exception.TimeNotFoundException;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class TimeCommandController {
@@ -33,9 +36,15 @@ public class TimeCommandController {
 
     @PostMapping("/times")
     public ResponseEntity<TimeCreateResponse> createTime(@RequestBody TimeCreateRequest request) throws URISyntaxException {
-        Time time = timeDao.save(Time.ofNew(
-                request.getTime()
-        ));
+
+        Time newTime = Time.ofNew(request.getTime());
+
+        Optional<Time> optionalTime = timeDao.findByTime(newTime);
+        if (optionalTime.isPresent()) {
+            throw new TimeAlreadyExistException();
+        }
+
+        Time time = timeDao.save(newTime);
 
         URI uri = new URI("/times/" + time.getId());
         return ResponseEntity

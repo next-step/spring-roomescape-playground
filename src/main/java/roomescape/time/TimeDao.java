@@ -7,6 +7,8 @@ public interface TimeDao {
 
     Optional<Time> findById(Long id);
 
+    Optional<Time> findByTime(Time time);
+
     List<Time> findAll();
 
     Time save(Time time);
