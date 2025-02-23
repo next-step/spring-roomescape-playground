@@ -29,7 +29,7 @@ public class ReservationJdbcDAO implements ReservationDAO {
     }
 
     @Override
-    public Reservation save(Reservation reservation) {
+    public Reservation create(Reservation reservation) {
 
         try {
 
@@ -65,7 +65,7 @@ public class ReservationJdbcDAO implements ReservationDAO {
             throw new DataInvalidException("예약을 찾을 수 없습니다. ID: " + id);
         }
     }
-    
+
 
     @Override
     public Reservation getById(long id) {

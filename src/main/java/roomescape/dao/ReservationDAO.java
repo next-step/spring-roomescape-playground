@@ -5,7 +5,7 @@ import roomescape.entity.Reservation;
 
 public interface ReservationDAO {
 
-    Reservation save(Reservation reservation);
+    Reservation create(Reservation reservation);
 
     List<Reservation> getAll();
 

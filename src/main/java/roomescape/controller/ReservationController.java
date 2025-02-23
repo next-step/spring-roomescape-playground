@@ -1,7 +1,6 @@
 package roomescape.controller;
 
 import java.net.URI;
-import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import java.util.List;
@@ -34,7 +33,7 @@ public class ReservationController {
     @PostMapping
     public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservation) {
 
-        Reservation newReservation = reservationJdbcDAO.save(reservation);
+        Reservation newReservation = reservationJdbcDAO.create(reservation);
         return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId()))
                 .body(newReservation);
     }
