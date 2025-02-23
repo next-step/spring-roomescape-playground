@@ -31,22 +31,15 @@ public class ReservationJdbcDAO implements ReservationDAO {
     @Override
     public Reservation create(Reservation reservation) {
 
-        try {
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("name", reservation.getName());
+        parameters.put("date", reservation.getDate());
+        parameters.put("time", reservation.getTime());
 
-            Map<String, Object> parameters = new HashMap<>();
-            parameters.put("name", reservation.getName());
-            parameters.put("date", reservation.getDate());
-            parameters.put("time", reservation.getTime());
+        Number generatedId = simpleJdbcInsert.executeAndReturnKey(parameters);
 
-            Number generatedId = simpleJdbcInsert.executeAndReturnKey(parameters);
-
-            return new Reservation(generatedId.longValue(), reservation.getName(), reservation.getDate(),
-                    reservation.getTime());
-
-        } catch (DataInvalidException e) {
-            throw new DataInvalidException("데이터 저장 중 오류 발생: " + e.getMessage());
-        }
-
+        return new Reservation(generatedId.longValue(), reservation.getName(), reservation.getDate(),
+                reservation.getTime());
     }
 
     @Override
