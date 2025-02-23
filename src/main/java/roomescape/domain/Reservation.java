@@ -16,16 +16,10 @@ public class Reservation {
 
     public Reservation(Long id, String name, LocalDate date, LocalTime time) {
         this.id = id;
-        validate(name, date, time);
+        validateName(name);
         this.name = name;
         this.date = date;
         this.time = time;
-    }
-
-    private void validate(String name, LocalDate reservationDate, LocalTime reservationTime) {
-        validateName(name);
-        validateDate(reservationDate);
-        validateTime(reservationDate, reservationTime);
     }
 
     public boolean isSameReservation(Long reservationId) {
@@ -57,24 +51,6 @@ public class Reservation {
         }
         if (!NAME_FORMAT.matcher(name).find()) {
             throw new InvalidValueException(ErrorMessage.INVALID_NAME.getMessage());
-        }
-    }
-
-    private void validateDate(LocalDate reservationDate) {
-        if (reservationDate == null) {
-            throw new InvalidValueException(ErrorMessage.INVALID_DATE.getMessage());
-        }
-        if (reservationDate.isBefore(LocalDate.now())) {
-            throw new InvalidValueException(ErrorMessage.INVALID_FUTURE_TIME.getMessage());
-        }
-    }
-
-    private void validateTime(LocalDate reservationDate, LocalTime reservationTime) {
-        if (reservationTime == null) {
-            throw new InvalidValueException(ErrorMessage.INVALID_TIME.getMessage());
-        }
-        if (reservationDate.equals(LocalDate.now()) && reservationTime.isBefore(LocalTime.now())) {
-            throw new InvalidValueException(ErrorMessage.INVALID_FUTURE_TIME.getMessage());
         }
     }
 }
