@@ -6,6 +6,8 @@ import roomescape.reservation.Reservation;
 import roomescape.reservation.ReservationDao;
 import roomescape.reservation.dto.ReservationCreateRequest;
 import roomescape.reservation.dto.ReservationCreateResponse;
+import roomescape.time.Time;
+import roomescape.time.TimeDao;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -15,9 +17,11 @@ import java.util.List;
 public class ReservationCommandController {
 
     private final ReservationDao reservationDao;
+    private final TimeDao timeDao;
 
-    public ReservationCommandController(ReservationDao reservationDao) {
+    public ReservationCommandController(ReservationDao reservationDao, TimeDao timeDao) {
         this.reservationDao = reservationDao;
+        this.timeDao = timeDao;
     }
 
     @GetMapping("/reservations")
@@ -28,10 +32,13 @@ public class ReservationCommandController {
 
     @PostMapping("/reservations")
     public ResponseEntity<ReservationCreateResponse> createReservation(@RequestBody ReservationCreateRequest request) throws URISyntaxException {
+        Time time = timeDao.findById(request.getTime())
+                .orElseThrow();
+
         Long id = reservationDao.save(Reservation.ofNew(
                 request.getName(),
                 request.getDate(),
-                request.getTime()
+                time
         ));
 
         URI uri = new URI("/reservations/" + id);
