@@ -1,11 +1,11 @@
 package roomescape.repository;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,9 +16,6 @@ import roomescape.domain.Reservation;
 import roomescape.dto.request.ReservationCreateRequest;
 import roomescape.dto.response.ReservationResponse;
 import roomescape.mapper.ReservationRowMapper;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 @JdbcTest
 public class ReservationDAOTest {
@@ -55,7 +52,8 @@ public class ReservationDAOTest {
     @DisplayName("저장된 예약들을 제대로 조회하는지 확인")
     void 예약을_조회할_수_있다() {
         //given
-        ReservationCreateRequest request = new ReservationCreateRequest("콜리", LocalDate.now().plusDays(1), LocalTime.now());
+        ReservationCreateRequest request = new ReservationCreateRequest("콜리", LocalDate.now().plusDays(1),
+            LocalTime.now());
         ReservationResponse response = reservationDAO.createReservation(request);
 
         //when
@@ -75,8 +73,10 @@ public class ReservationDAOTest {
     @DisplayName("예약을 잘 삭제할 수 있는지 확인")
     void 예약을_삭제할_수_있다() {
         //given
-        ReservationCreateRequest request1 = new ReservationCreateRequest("파도", LocalDate.now().plusDays(1), LocalTime.now());
-        ReservationCreateRequest request2 = new ReservationCreateRequest("콜리", LocalDate.now().plusDays(1), LocalTime.now());
+        ReservationCreateRequest request1 = new ReservationCreateRequest("파도", LocalDate.now().plusDays(1),
+            LocalTime.now());
+        ReservationCreateRequest request2 = new ReservationCreateRequest("콜리", LocalDate.now().plusDays(1),
+            LocalTime.now());
         ReservationResponse response1 = reservationDAO.createReservation(request1);
         ReservationResponse response2 = reservationDAO.createReservation(request2);
 
