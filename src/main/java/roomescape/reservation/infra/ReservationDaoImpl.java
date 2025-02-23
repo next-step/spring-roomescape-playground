@@ -38,15 +38,17 @@ public class ReservationDaoImpl implements ReservationDao {
 
     @Override
     public Optional<Reservation> findById(Long id) {
-        String sql = "SELECT " +
-                "r.id as reservation_id," +
-                "r.name," +
-                "r.date," +
-                "t.id as time_id," +
-                "t.time as time_value " +
-                "FROM reservation r " +
-                "INNER JOIN reservation_time t ON r.time_id = t.id " +
-                "WHERE r.id = ?";
+        String sql = """
+                SELECT
+                    r.id as reservation_id,
+                    r.name,
+                    r.date,
+                    t.id as time_id,
+                    t.time as time_value
+                FROM reservation r
+                INNER JOIN reservation_time t ON r.time_id = t.id
+                WHERE r.id = ?
+                """;
         try {
             Reservation reservation = jdbcTemplate.queryForObject(sql, RESERVATION_ROW_MAPPER, id);
             return Optional.ofNullable(reservation);
@@ -58,14 +60,16 @@ public class ReservationDaoImpl implements ReservationDao {
 
     @Override
     public List<Reservation> findAll() {
-        String sql = "SELECT " +
-                "r.id AS reservation_id," +
-                "r.name," +
-                "r.date," +
-                "t.id AS time_id," +
-                "t.time AS time_value " +
-                "FROM reservation r " +
-                "INNER JOIN reservation_time t ON r.time_id = r.id";
+        String sql = """
+                SELECT
+                    r.id AS reservation_id,
+                    r.name,
+                    r.date,
+                    t.id AS time_id,
+                    t.time AS time_value
+                FROM reservation r
+                INNER JOIN reservation_time t ON r.time_id = r.id
+                """;
         return jdbcTemplate.query(sql, RESERVATION_ROW_MAPPER);
     }
 
