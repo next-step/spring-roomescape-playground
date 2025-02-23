@@ -9,12 +9,13 @@ import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 
-//RANDOM_PORT로 추후 적용 예정
 @SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class MissionStepTest {
@@ -26,6 +27,10 @@ public class MissionStepTest {
     void setUp() {
         RestAssured.port = port;
     }
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
 
     @Test
     @DisplayName("일단계")
@@ -46,11 +51,20 @@ public class MissionStepTest {
                 .then().log().all()
                 .statusCode(200);
 
+        Integer initialCount = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM reservation", Integer.class);
+
+        jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "사용자1", "2025-02-23",
+                "10:00");
+        jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "사용자2", "2025-02-23",
+                "11:00");
+        jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "사용자3", "2025-02-23",
+                "12:00");
+
         RestAssured.given().log().all()
                 .when().get("/reservations")
                 .then().log().all()
                 .statusCode(200)
-                .body("size()", is(3));
+                .body("size()", is(initialCount + 3));
     }
 
     @Test
