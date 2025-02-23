@@ -5,9 +5,12 @@ import java.sql.PreparedStatement;
 import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import roomescape.domain.Reservation;
@@ -21,10 +24,14 @@ import roomescape.mapper.ReservationRowMapper;
 public class ReservationDAO {
     private final JdbcTemplate jdbcTemplate;
     private final ReservationRowMapper reservationRowMapper;
+    private final SimpleJdbcInsert simpleJdbcInsert;
 
     public ReservationDAO(JdbcTemplate jdbcTemplate, ReservationRowMapper reservationRowMapper) {
         this.jdbcTemplate = jdbcTemplate;
         this.reservationRowMapper = reservationRowMapper;
+        this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+            .withTableName("reservation")
+            .usingGeneratedKeyColumns("id");
     }
 
     public List<Reservation> findReservations() {
@@ -33,23 +40,19 @@ public class ReservationDAO {
     }
 
     public ReservationResponse createReservation(ReservationCreateRequest request) {
-        String sql = "insert into reservation(name, reservation_date, reservation_time) values (?, ?, ?)";
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        String name = request.getName();
-        LocalDate date = request.getDate();
-        LocalTime time = request.getTime();
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("name", request.getName());
+        parameters.put("reservation_date", Date.valueOf(request.getDate()));
+        parameters.put("reservation_time", Time.valueOf(request.getTime()));
 
-        PreparedStatementCreator preparedStatementCreator = (connection) -> {
-            PreparedStatement prepareStatement = connection.prepareStatement(sql, new String[]{"id"});
-            prepareStatement.setString(1, name);
-            prepareStatement.setDate(2, Date.valueOf(date));
-            prepareStatement.setTime(3, Time.valueOf(time));
-            return prepareStatement;
-        };
+        Number key = simpleJdbcInsert.executeAndReturnKey(parameters);
 
-        jdbcTemplate.update(preparedStatementCreator, keyHolder);
-        Long id = Objects.requireNonNull(keyHolder.getKey()).longValue();
-        return new ReservationResponse(id, name, date, time);
+        return new ReservationResponse(
+            key.longValue(),
+            request.getName(),
+            request.getDate(),
+            request.getTime()
+        );
     }
 
     public void deleteReservation(Long reservationId) {
