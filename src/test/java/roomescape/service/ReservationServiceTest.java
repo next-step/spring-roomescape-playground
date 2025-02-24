@@ -38,7 +38,8 @@ public class ReservationServiceTest {
 
     @BeforeEach
     void setUp() {
-        validRequest = new ReservationCreateRequest("파도", LocalDate.now().plusDays(1), LocalTime.now().plusHours(1));
+        LocalTime fixedTime = LocalTime.now();
+        validRequest = new ReservationCreateRequest("파도", LocalDate.now().plusDays(1), fixedTime);
     }
 
     @Test
@@ -46,21 +47,21 @@ public class ReservationServiceTest {
     void 예약을_정상적으로_생성할_수_있다() {
         //given
         LocalTime fixedTime = LocalTime.now();
-        ReservationResponse mockResponse = new ReservationResponse(1L, "파도", LocalDate.now().plusDays(1), fixedTime);
-        when(reservationDAO.createReservation(validRequest)).thenReturn(mockResponse);
+        Reservation reservation = new Reservation(validRequest.name(), validRequest.date(), validRequest.time());
+        when(reservationDAO.createReservation(reservation)).thenReturn(reservation);
 
         //when
         ReservationResponse response = reservationService.reserve(validRequest);
 
         //then
         assertAll(
-            () -> assertThat(response.id()).isEqualTo(1L),
+            () -> assertThat(response.id()).isEqualTo(reservation.getId()),
             () -> assertThat(response.name()).isEqualTo("파도"),
             () -> assertThat(response.date()).isEqualTo(LocalDate.now().plusDays(1)),
-            () -> assertThat(response.time()).isEqualTo(fixedTime)
+            () -> assertThat(response.time()).isEqualToIgnoringNanos(fixedTime)
         );
 
-        verify(reservationDAO, times(1)).createReservation(validRequest);
+        verify(reservationDAO, times(1)).createReservation(reservation);
     }
 
     @Test
@@ -68,13 +69,14 @@ public class ReservationServiceTest {
     void 예약_생성_시_유효하지_않은_날짜_예외() {
         //given
         ReservationCreateRequest invalidRequest = new ReservationCreateRequest("파도", LocalDate.now().minusDays(1), LocalTime.now().minusHours(1));
+        Reservation reservation = new Reservation(invalidRequest.name(), invalidRequest.date(), invalidRequest.time());
 
         //when & then
         assertThatThrownBy(() -> reservationService.reserve(invalidRequest))
             .isInstanceOf(InvalidValueException.class)
             .hasMessageContaining(ErrorMessage.INVALID_FUTURE_TIME.getMessage());
 
-        verify(reservationDAO, never()).createReservation(invalidRequest);
+        verify(reservationDAO, never()).createReservation(reservation);
     }
 
     @Test
@@ -82,13 +84,15 @@ public class ReservationServiceTest {
     void 예약_생성_시_유효하지_않은_시간_예외() {
         //given
         ReservationCreateRequest invalidTimeRequest = new ReservationCreateRequest("파도", LocalDate.now(), LocalTime.now().minusMinutes(10));
+        Reservation reservation = new Reservation(invalidTimeRequest.name(), invalidTimeRequest.date(),
+            invalidTimeRequest.time());
 
         //when & then
         assertThatThrownBy(() -> reservationService.reserve(invalidTimeRequest))
             .isInstanceOf(InvalidValueException.class)
             .hasMessageContaining(ErrorMessage.INVALID_FUTURE_TIME.getMessage());
 
-        verify(reservationDAO, never()).createReservation(invalidTimeRequest);
+        verify(reservationDAO, never()).createReservation(reservation);
     }
 
     @Test

@@ -34,17 +34,17 @@ public class ReservationDAOTest {
     void 예약을_생성할_수_있다() {
         //given
         LocalTime fixTime = LocalTime.now();
-        ReservationCreateRequest request = new ReservationCreateRequest("파도", LocalDate.now().plusDays(1), fixTime);
+        Reservation reservation = new Reservation("파도", LocalDate.now().plusDays(1), fixTime);
 
         //when
-        ReservationResponse response = reservationDAO.createReservation(request);
+        Reservation response = reservationDAO.createReservation(reservation);
 
         //then
         assertAll(
-            () -> assertThat(response.id()).isNotNull(),
-            () -> assertThat(response.name()).isEqualTo("파도"),
-            () -> assertThat(response.date()).isEqualTo(LocalDate.now().plusDays(1)),
-            () -> assertThat(response.time()).isEqualTo(fixTime)
+            () -> assertThat(response.getId()).isNotNull(),
+            () -> assertThat(response.getName()).isEqualTo("파도"),
+            () -> assertThat(response.getDate()).isEqualTo(LocalDate.now().plusDays(1)),
+            () -> assertThat(response.getTime()).isEqualTo(fixTime)
         );
     }
 
@@ -52,9 +52,9 @@ public class ReservationDAOTest {
     @DisplayName("저장된 예약들을 제대로 조회하는지 확인")
     void 예약을_조회할_수_있다() {
         //given
-        ReservationCreateRequest request = new ReservationCreateRequest("콜리", LocalDate.now().plusDays(1),
-            LocalTime.now());
-        ReservationResponse response = reservationDAO.createReservation(request);
+        LocalTime fixTime = LocalTime.now();
+        Reservation reservation = new Reservation("콜리", LocalDate.now().plusDays(1), fixTime);
+        Reservation response = reservationDAO.createReservation(reservation);
 
         //when
         List<Reservation> reservations = reservationDAO.findReservations();
@@ -62,7 +62,7 @@ public class ReservationDAOTest {
 
         //then
         assertAll(
-            () -> assertThat(savedReservation.getId()).isEqualTo(response.id()),
+            () -> assertThat(savedReservation.getId()).isEqualTo(response.getId()),
             () -> assertThat(savedReservation.getName()).isEqualTo("콜리"),
             () -> assertThat(savedReservation.getDate()).isEqualTo(LocalDate.now().plusDays(1)),
             () -> assertThat(savedReservation.getTime()).isEqualToIgnoringSeconds(LocalTime.now())
@@ -73,15 +73,14 @@ public class ReservationDAOTest {
     @DisplayName("예약을 잘 삭제할 수 있는지 확인")
     void 예약을_삭제할_수_있다() {
         //given
-        ReservationCreateRequest request1 = new ReservationCreateRequest("파도", LocalDate.now().plusDays(1),
-            LocalTime.now());
-        ReservationCreateRequest request2 = new ReservationCreateRequest("콜리", LocalDate.now().plusDays(1),
-            LocalTime.now());
-        ReservationResponse response1 = reservationDAO.createReservation(request1);
-        ReservationResponse response2 = reservationDAO.createReservation(request2);
+        LocalTime fixTime = LocalTime.now();
+        Reservation reservation1 = new Reservation("파도", LocalDate.now().plusDays(1), fixTime);
+        Reservation reservation2 = new Reservation("콜리", LocalDate.now().plusDays(2), fixTime);
+        Reservation response1 = reservationDAO.createReservation(reservation1);
+        Reservation response2 = reservationDAO.createReservation(reservation2);
 
         //when
-        reservationDAO.deleteReservation(response1.id());
+        reservationDAO.deleteReservation(response1.getId());
         List<Reservation> reservations = reservationDAO.findReservations();
 
         //then
