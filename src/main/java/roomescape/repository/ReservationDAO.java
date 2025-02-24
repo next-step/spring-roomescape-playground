@@ -1,23 +1,11 @@
 package roomescape.repository;
 
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.Time;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import roomescape.domain.Reservation;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-import roomescape.dto.request.ReservationCreateRequest;
-import roomescape.dto.response.ReservationResponse;
 import roomescape.mapper.ReservationRowMapper;
 
 @Repository
@@ -35,24 +23,15 @@ public class ReservationDAO {
     }
 
     public List<Reservation> findReservations() {
-        String sql = "select id, name, reservation_date, reservation_time from reservation";
+        String sql = "select id, name, date, time from reservation";
         return jdbcTemplate.query(sql, reservationRowMapper);
     }
 
-    public ReservationResponse createReservation(ReservationCreateRequest request) {
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("name", request.name());
-        parameters.put("reservation_date", Date.valueOf(request.date()));
-        parameters.put("reservation_time", Time.valueOf(request.time()));
+    public Reservation createReservation(Reservation reservation) {
+        BeanPropertySqlParameterSource parameterSource = new BeanPropertySqlParameterSource(reservation);
+        long key = simpleJdbcInsert.executeAndReturnKey(parameterSource).longValue();
 
-        long key = simpleJdbcInsert.executeAndReturnKey(parameters).longValue();
-
-        return new ReservationResponse(
-            key,
-            request.name(),
-            request.date(),
-            request.time()
-        );
+        return new Reservation(key, reservation.getName(), reservation.getDate(), reservation.getTime());
     }
 
     public void deleteReservation(long reservationId) {

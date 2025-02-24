@@ -26,7 +26,9 @@ public class ReservationService {
 
     public ReservationResponse reserve(ReservationCreateRequest request) {
         validateDateTime(request.date(), request.time());
-        return reservationDAO.createReservation(request);
+        Reservation reservation = new Reservation(request.name(), request.date(), request.time());
+        Reservation response = reservationDAO.createReservation(reservation);
+        return new ReservationResponse(response.getId(), response.getName(), response.getDate(), response.getTime());
     }
 
     public void cancelReservation(Long reservationId) {
