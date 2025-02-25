@@ -33,4 +33,9 @@ public class TimeDAO {
         String sql = "select id, time from time";
         return jdbcTemplate.query(sql, timeRowMapper);
     }
+
+    public void deleteTime(Long timeId) {
+        String sql = "delete from time where id = ?";
+        jdbcTemplate.update(sql, timeId);
+    }
 }

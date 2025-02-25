@@ -27,4 +27,8 @@ public class TimeService {
             .map(time -> new TimeResponse(time.getId(), time.getTime()))
             .toList();
     }
+
+    public void deleteTime(Long timeId) {
+        timeDAO.deleteTime(timeId);
+    }
 }
