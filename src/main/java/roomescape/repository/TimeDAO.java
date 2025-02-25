@@ -1,8 +1,8 @@
 package roomescape.repository;
 
 import java.util.List;
+import java.util.Map;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Time;
@@ -23,8 +23,10 @@ public class TimeDAO {
     }
 
     public Time createTime(Time time) {
-        BeanPropertySqlParameterSource parameterSource = new BeanPropertySqlParameterSource(time);
-        long key = simpleJdbcInsert.executeAndReturnKey(parameterSource).longValue();
+        Map<String, Object> params = Map.of(
+            "time", time.getTime()
+        );
+        long key = simpleJdbcInsert.executeAndReturnKey(params).longValue();
 
         return new Time(key, time.getTime());
     }
@@ -37,5 +39,10 @@ public class TimeDAO {
     public void deleteTime(Long timeId) {
         String sql = "delete from time where id = ?";
         jdbcTemplate.update(sql, timeId);
+    }
+
+    public Time findTime(Long timeId) {
+        String sql = "select * from time where id = ?";
+        return jdbcTemplate.queryForObject(sql, timeRowMapper, timeId);
     }
 }

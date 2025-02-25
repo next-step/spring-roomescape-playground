@@ -1,11 +1,11 @@
 package roomescape.repository;
 
 import java.util.List;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import roomescape.domain.Reservation;
+import java.util.Map;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import roomescape.domain.Reservation;
 import roomescape.mapper.ReservationRowMapper;
 
 @Repository
@@ -23,13 +23,22 @@ public class ReservationDAO {
     }
 
     public List<Reservation> findReservations() {
-        String sql = "select id, name, date, time from reservation";
+        String sql = "select r.id as reservation_id, "
+            + "r.name, "
+            + "r.date, "
+            + "t.id as time_id, "
+            + "t.time as time_value "
+            + "from reservation as r inner join time as t on r.time_id = t.id";
         return jdbcTemplate.query(sql, reservationRowMapper);
     }
 
     public Reservation createReservation(Reservation reservation) {
-        BeanPropertySqlParameterSource parameterSource = new BeanPropertySqlParameterSource(reservation);
-        long key = simpleJdbcInsert.executeAndReturnKey(parameterSource).longValue();
+        Map<String, Object> params = Map.of(
+            "name", reservation.getName(),
+            "date", reservation.getDate(),
+            "time_id", reservation.getTime().getId()
+        );
+        long key = simpleJdbcInsert.executeAndReturnKey(params).longValue();
 
         return new Reservation(key, reservation.getName(), reservation.getDate(), reservation.getTime());
     }
