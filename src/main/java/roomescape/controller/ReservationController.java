@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import roomescape.domain.Reservation;
-import roomescape.dto.reservation.request.ReservationCreateRequest;
+import roomescape.dto.reservation.request.ReservationRequest;
 import roomescape.dto.reservation.response.ReservationResponse;
 import roomescape.service.ReservationService;
 
@@ -29,7 +29,7 @@ public class ReservationController {
 
     @PostMapping("/reservations")
     @ResponseStatus(HttpStatus.CREATED)
-    public ReservationResponse createReservation(@RequestBody ReservationCreateRequest request) {
+    public ReservationResponse createReservation(@RequestBody ReservationRequest request) {
         return reservationService.reserve(request);
     }
 

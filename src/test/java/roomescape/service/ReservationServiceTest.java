@@ -19,7 +19,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import roomescape.domain.Reservation;
-import roomescape.dto.reservation.request.ReservationCreateRequest;
+import roomescape.dto.reservation.request.ReservationRequest;
 import roomescape.dto.reservation.response.ReservationResponse;
 import roomescape.error.ErrorMessage;
 import roomescape.error.exception.InvalidValueException;
@@ -34,12 +34,12 @@ public class ReservationServiceTest {
     @InjectMocks
     private ReservationService reservationService;
 
-    private ReservationCreateRequest validRequest;
+    private ReservationRequest validRequest;
 
     @BeforeEach
     void setUp() {
         LocalTime fixedTime = LocalTime.now();
-        validRequest = new ReservationCreateRequest("파도", LocalDate.now().plusDays(1), fixedTime);
+        validRequest = new ReservationRequest("파도", LocalDate.now().plusDays(1), fixedTime);
     }
 
     @Test
@@ -68,7 +68,7 @@ public class ReservationServiceTest {
     @DisplayName("예약 생성 시 유효하지 않은 날짜가 주어지면 예외를 발생시킨다")
     void 예약_생성_시_유효하지_않은_날짜_예외() {
         //given
-        ReservationCreateRequest invalidRequest = new ReservationCreateRequest("파도", LocalDate.now().minusDays(1), LocalTime.now().minusHours(1));
+        ReservationRequest invalidRequest = new ReservationRequest("파도", LocalDate.now().minusDays(1), LocalTime.now().minusHours(1));
         Reservation reservation = new Reservation(invalidRequest.name(), invalidRequest.date(), invalidRequest.time());
 
         //when & then
@@ -83,7 +83,7 @@ public class ReservationServiceTest {
     @DisplayName("예약 생성 시 유효하지 않은 시간이 주어지면 예외를 발생시킨다")
     void 예약_생성_시_유효하지_않은_시간_예외() {
         //given
-        ReservationCreateRequest invalidTimeRequest = new ReservationCreateRequest("파도", LocalDate.now(), LocalTime.now().minusMinutes(10));
+        ReservationRequest invalidTimeRequest = new ReservationRequest("파도", LocalDate.now(), LocalTime.now().minusMinutes(10));
         Reservation reservation = new Reservation(invalidTimeRequest.name(), invalidTimeRequest.date(),
             invalidTimeRequest.time());
 

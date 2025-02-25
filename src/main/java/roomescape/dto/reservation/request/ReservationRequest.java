@@ -3,6 +3,6 @@ package roomescape.dto.reservation.request;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-public record ReservationCreateRequest(String name, LocalDate date, LocalTime time) {
+public record ReservationRequest(String name, LocalDate date, LocalTime time) {
 
 }

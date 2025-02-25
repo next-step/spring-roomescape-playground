@@ -6,7 +6,7 @@ import java.time.LocalTime;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import roomescape.domain.Reservation;
-import roomescape.dto.reservation.request.ReservationCreateRequest;
+import roomescape.dto.reservation.request.ReservationRequest;
 import roomescape.dto.reservation.response.ReservationResponse;
 import roomescape.error.ErrorMessage;
 import roomescape.error.exception.InvalidValueException;
@@ -24,7 +24,7 @@ public class ReservationService {
         return reservationDAO.findReservations();
     }
 
-    public ReservationResponse reserve(ReservationCreateRequest request) {
+    public ReservationResponse reserve(ReservationRequest request) {
         validateDateTime(request.date(), request.time());
         Reservation reservation = new Reservation(request.name(), request.date(), request.time());
         Reservation response = reservationDAO.createReservation(reservation);
