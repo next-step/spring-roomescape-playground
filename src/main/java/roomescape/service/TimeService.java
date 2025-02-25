@@ -4,9 +4,12 @@ import org.springframework.stereotype.Service;
 import roomescape.domain.Time;
 import roomescape.dto.request.CreateTimeRequest;
 import roomescape.dto.response.TimeResponse;
+import roomescape.global.exception.BadRequestException;
 import roomescape.repository.TimeRepository;
 
 import java.util.List;
+
+import static roomescape.global.exception.ExceptionMessage.TIME_NOT_EXISTS;
 
 @Service
 public class TimeService {
@@ -27,5 +30,11 @@ public class TimeService {
                 .stream()
                 .map(TimeResponse::new)
                 .toList();
+    }
+
+    public void deleteTime(final long timeId) {
+        timeRepository.findById(timeId)
+                .orElseThrow(() -> new BadRequestException(TIME_NOT_EXISTS.getMessage()));
+        timeRepository.deleteById(timeId);
     }
 }
