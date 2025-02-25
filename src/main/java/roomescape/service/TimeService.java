@@ -1,5 +1,7 @@
 package roomescape.service;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.stereotype.Service;
 import roomescape.domain.Time;
 import roomescape.dto.time.request.TimeRequest;
@@ -18,5 +20,12 @@ public class TimeService {
         Time time = new Time(request.time());
         Time response = timeDAO.createTime(time);
         return new TimeResponse(response.getId(), response.getTime());
+    }
+
+    public List<TimeResponse> findTimes() {
+        List<Time> times = timeDAO.findTimes();
+        return times.stream()
+            .map(time -> new TimeResponse(time.getId(), time.getTime()))
+            .toList();
     }
 }
