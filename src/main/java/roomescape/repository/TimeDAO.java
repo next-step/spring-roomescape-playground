@@ -6,7 +6,6 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Time;
-import roomescape.dto.time.response.TimeResponse;
 import roomescape.mapper.TimeRowMapper;
 
 @Repository
