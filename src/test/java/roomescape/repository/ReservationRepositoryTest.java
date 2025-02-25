@@ -17,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @JdbcTest
-@Import(JdbcTemplateReservationRepository.class)
+@Import(ReservationRepository.class)
 class ReservationRepositoryTest {
 
     @Autowired
