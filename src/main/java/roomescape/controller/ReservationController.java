@@ -20,8 +20,8 @@ import java.util.List;
 @RequestMapping("/reservations")
 public class ReservationController {
 
-    public static final String HEADER_LOCATION = "Location";
-    public static final String LOCATION_DEFAULT_VALUE = "/reservations/";
+    private static final String HEADER_LOCATION = "Location";
+    private static final String LOCATION_DEFAULT_VALUE = "/reservations/";
 
     private final ReservationService reservationService;
 
