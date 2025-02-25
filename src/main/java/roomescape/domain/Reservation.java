@@ -19,7 +19,7 @@ public class Reservation {
     private static final Pattern NAME_FORMAT = Pattern.compile("^[가-힣]+$");
     private static final int VALID_MINUTE_UNIT = 0;
 
-    private Long id;
+    private long id;
 
     private String name;
 
@@ -30,7 +30,7 @@ public class Reservation {
     protected Reservation() {
     }
 
-    public Reservation(final Long id, final String name, final LocalDate date, final LocalTime time) {
+    public Reservation(final long id, final String name, final LocalDate date, final LocalTime time) {
         validate(name, date, time);
         this.id = id;
         this.name = name;
@@ -50,7 +50,7 @@ public class Reservation {
         return dateTime.isBefore(LocalDateTime.now(clock));
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
