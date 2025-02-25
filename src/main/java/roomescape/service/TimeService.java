@@ -2,8 +2,8 @@ package roomescape.service;
 
 import org.springframework.stereotype.Service;
 import roomescape.domain.Time;
-import roomescape.dto.time.request.TimeCreateRequest;
-import roomescape.dto.time.response.TimeCreateResponse;
+import roomescape.dto.time.request.TimeRequest;
+import roomescape.dto.time.response.TimeResponse;
 import roomescape.repository.TimeDAO;
 
 @Service
@@ -14,9 +14,9 @@ public class TimeService {
         this.timeDAO = timeDAO;
     }
 
-    public TimeCreateResponse createTime(TimeCreateRequest request) {
+    public TimeResponse createTime(TimeRequest request) {
         Time time = new Time(request.time());
         Time response = timeDAO.createTime(time);
-        return new TimeCreateResponse(response.getId(), response.getTime());
+        return new TimeResponse(response.getId(), response.getTime());
     }
 }
