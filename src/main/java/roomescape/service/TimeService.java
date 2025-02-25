@@ -6,6 +6,8 @@ import roomescape.dto.request.CreateTimeRequest;
 import roomescape.dto.response.TimeResponse;
 import roomescape.repository.TimeRepository;
 
+import java.util.List;
+
 @Service
 public class TimeService {
 
@@ -18,5 +20,12 @@ public class TimeService {
     public TimeResponse createTime(final CreateTimeRequest request) {
         Time time = timeRepository.save(request.toTime());
         return new TimeResponse(time);
+    }
+
+    public List<TimeResponse> getTimes() {
+        return timeRepository.findAll()
+                .stream()
+                .map(TimeResponse::new)
+                .toList();
     }
 }

@@ -8,6 +8,8 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Time;
 
+import java.util.List;
+
 @Repository
 public class TimeRepository {
 
@@ -34,5 +36,10 @@ public class TimeRepository {
                 id,
                 time.getTime()
         );
+    }
+
+    public List<Time> findAll() {
+        String selectAll = "SELECT * FROM TIME";
+        return jdbcTemplate.query(selectAll, TIME_ROW_MAPPER);
     }
 }

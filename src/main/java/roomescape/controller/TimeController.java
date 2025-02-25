@@ -3,6 +3,7 @@ package roomescape.controller;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,6 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 import roomescape.dto.request.CreateTimeRequest;
 import roomescape.dto.response.TimeResponse;
 import roomescape.service.TimeService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/times")
@@ -34,5 +37,12 @@ public class TimeController {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .headers(headers)
                 .body(response);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<TimeResponse>> getTimes() {
+        List<TimeResponse> responses = timeService.getTimes();
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(responses);
     }
 }
