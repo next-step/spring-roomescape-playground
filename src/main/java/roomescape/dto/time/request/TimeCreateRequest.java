@@ -1,4 +1,7 @@
 package roomescape.dto.time.request;
 
-public class TimeCreateRequest {
+import java.time.LocalTime;
+
+public record TimeCreateRequest(LocalTime time) {
+
 }

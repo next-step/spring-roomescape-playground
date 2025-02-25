@@ -1,4 +1,7 @@
 package roomescape.dto.time.response;
 
-public class TimeCreateResponse {
+import java.time.LocalTime;
+
+public record TimeCreateResponse(Long id, LocalTime time) {
+
 }
