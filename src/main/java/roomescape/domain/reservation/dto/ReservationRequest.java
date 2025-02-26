@@ -9,7 +9,7 @@ public record ReservationRequest(String name, LocalDate date, LocalTime time) {
 
     public ReservationRequest {
         if (name == null || name.isBlank() || date == null || time == null) {
-            throw new RoomescapeBadRequestException("잘못된 예약 데이터입니다: name/date/time이 null이거나 빈 값입니다.");
+            throw new RoomescapeBadRequestException("잘못된 예약 데이터입니다.");
         }
     }
 

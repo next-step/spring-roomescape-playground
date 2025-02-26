@@ -7,11 +7,11 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import roomescape.global.exception.RoomescapeBadRequestException;
-import roomescape.global.exception.RoomescapeNotFoundException;
 import roomescape.domain.reservation.domain.Reservation;
 import roomescape.domain.reservation.dto.ReservationRequest;
 import roomescape.domain.reservation.dto.ReservationResponse;
 import roomescape.domain.reservation.repository.ReservationRepository;
+import roomescape.global.exception.RoomescapeServerError;
 
 @Service
 public class ReservationService {
@@ -25,7 +25,7 @@ public class ReservationService {
     @Transactional(readOnly = true)
     public List<ReservationResponse> getReservationResponses() {
 
-        return reservationRepository.getReservations()
+        return reservationRepository.findAll()
                 .stream()
                 .map(ReservationResponse::fromReservation)
                 .collect(Collectors.toList());
@@ -39,7 +39,7 @@ public class ReservationService {
         if (reservationRequest.date().isEqual(LocalDate.now()) && reservationRequest.time().isBefore(LocalTime.now())) {
             throw new RoomescapeBadRequestException("잘못된 예약 날짜입니다. 현재 시작 이전 시간에 예약할 수 없습니다.");
         }
-        Reservation savedReservation = reservationRepository.addReservation(reservationRequest.newReservation());
+        Reservation savedReservation = reservationRepository.create(reservationRequest.newReservation());
 
         return ReservationResponse.fromReservation(savedReservation);
     }
@@ -50,10 +50,8 @@ public class ReservationService {
             throw new RoomescapeBadRequestException("잘못된 룸 아이디입니다.");
         }
 
-        boolean removed = reservationRepository.removeReservation(id);
-
-        if (!removed) {
-            throw new RoomescapeNotFoundException("존재하지 않은 예약입니다.");
+        if (!reservationRepository.remove(id)) {
+            throw new RoomescapeServerError();
         }
     }
 }
