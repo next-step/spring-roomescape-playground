@@ -2,6 +2,7 @@ package roomescape.service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import roomescape.domain.Reservation;
@@ -32,7 +33,7 @@ public class ReservationService {
 
     public ReservationResponse reserve(ReservationRequest request) {
         Time time = timeService.findTimeById(request.time());
-        validateDateTime(request.date(), time);
+        validateDateTime(request.date(), time.getTime());
         Reservation reservation = new Reservation(request.name(), request.date(), time);
         Reservation response = reservationDAO.createReservation(reservation);
         return new ReservationResponse(response.getId(), response.getName(), response.getDate(), response.getTime());
@@ -42,12 +43,12 @@ public class ReservationService {
         reservationDAO.deleteReservation(reservationId);
     }
 
-    private void validateDateTime(LocalDate reservationDate, Time reservationTime) {
+    private void validateDateTime(LocalDate reservationDate, LocalTime reservationTime) {
         if (reservationDate == null || reservationTime == null) {
             throw new InvalidValueException(ErrorMessage.INVALID_DATE_TIME.getMessage());
         }
 
-        LocalDateTime reservationDateTime = LocalDateTime.of(reservationDate, reservationTime.getTime());
+        LocalDateTime reservationDateTime = LocalDateTime.of(reservationDate, reservationTime);
 
         if (reservationDateTime.isBefore(LocalDateTime.now())) {
             throw new InvalidValueException(ErrorMessage.INVALID_FUTURE_TIME.getMessage());
