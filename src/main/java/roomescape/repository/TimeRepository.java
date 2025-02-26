@@ -48,13 +48,13 @@ public class TimeRepository {
     }
 
     public List<Time> findAll() {
-        String selectAll = "SELECT * FROM time";
+        String selectAll = "SELECT id, time FROM time";
         return jdbcTemplate.query(selectAll, TIME_ROW_MAPPER);
     }
 
     public Optional<Time> findById(final long timeId) {
         try {
-            String selectById = "SELECT * FROM time WHERE id = ?";
+            String selectById = "SELECT id, time FROM time WHERE id = ?";
             Time time = jdbcTemplate.queryForObject(selectById, TIME_ROW_MAPPER, timeId);
             return Optional.ofNullable(time);
         } catch (EmptyResultDataAccessException emptyResultDataAccessException) {
