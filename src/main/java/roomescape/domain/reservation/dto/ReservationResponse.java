@@ -11,6 +11,6 @@ public record ReservationResponse(Long id, String name, LocalDate date, String t
     public static ReservationResponse fromReservation(final Reservation reservation) {
 
         return new ReservationResponse(reservation.getId(), reservation.getName(), reservation.getDate(),
-                TIME_FORMATTER.format(reservation.getTime()));
+                TIME_FORMATTER.format(reservation.getReservationTime().getTime()));
     }
 }
