@@ -11,6 +11,7 @@ public enum ExceptionMessage {
     RESERVATION_NOT_EXISTS("존재하지 않는 예약 내역입니다."),
     RESERVATION_ALREADY_EXISTS("해당 시간에 예약이 이미 존재합니다."),
     TIME_NOT_EXISTS("존재하지 않는 시간입니다."),
+    TIME_ALREADY_EXISTS("이미 존재하는 시간입니다."),
     ;
 
     private static final String ERROR_PREFIX = "[ERROR] ";

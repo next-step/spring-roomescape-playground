@@ -40,6 +40,13 @@ public class TimeRepository {
         );
     }
 
+    public boolean existsByTime(final String time) {
+        String selectByTime = "SELECT EXISTS (" +
+                "SELECT 1 FROM time " +
+                "WHERE `time` = ?)";
+        return jdbcTemplate.queryForObject(selectByTime, Boolean.class, time);
+    }
+
     public List<Time> findAll() {
         String selectAll = "SELECT * FROM TIME";
         return jdbcTemplate.query(selectAll, TIME_ROW_MAPPER);

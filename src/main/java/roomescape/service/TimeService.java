@@ -9,6 +9,7 @@ import roomescape.repository.TimeRepository;
 
 import java.util.List;
 
+import static roomescape.global.exception.ExceptionMessage.TIME_ALREADY_EXISTS;
 import static roomescape.global.exception.ExceptionMessage.TIME_NOT_EXISTS;
 
 @Service
@@ -21,8 +22,15 @@ public class TimeService {
     }
 
     public TimeResponse createTime(final CreateTimeRequest request) {
+        validateDuplication(request);
         Time time = timeRepository.save(request.toTime());
         return new TimeResponse(time);
+    }
+
+    private void validateDuplication(final CreateTimeRequest request) {
+        if (timeRepository.existsByTime(request.time())) {
+            throw new BadRequestException(TIME_ALREADY_EXISTS.getMessage());
+        }
     }
 
     public List<TimeResponse> getTimes() {
