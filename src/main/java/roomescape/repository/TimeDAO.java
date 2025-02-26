@@ -1,5 +1,6 @@
 package roomescape.repository;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -23,9 +24,8 @@ public class TimeDAO {
     }
 
     public Time createTime(Time time) {
-        Map<String, Object> params = Map.of(
-            "time", time.getTime()
-        );
+        Map<String, Object> params = new HashMap<>();
+        params.put("time", time.getTime());
         long key = simpleJdbcInsert.executeAndReturnKey(params).longValue();
 
         return new Time(key, time.getTime());

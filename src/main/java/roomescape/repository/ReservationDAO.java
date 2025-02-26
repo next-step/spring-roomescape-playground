@@ -1,5 +1,6 @@
 package roomescape.repository;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -33,11 +34,11 @@ public class ReservationDAO {
     }
 
     public Reservation createReservation(Reservation reservation) {
-        Map<String, Object> params = Map.of(
-            "name", reservation.getName(),
-            "date", reservation.getDate(),
-            "time_id", reservation.getTime().getId()
-        );
+        Map<String, Object> params = new HashMap<>();
+        params.put("name", reservation.getName());
+        params.put("date", reservation.getDate());
+        params.put("time_id", reservation.getTime().getId());
+
         long key = simpleJdbcInsert.executeAndReturnKey(params).longValue();
 
         return new Reservation(key, reservation.getName(), reservation.getDate(), reservation.getTime());
