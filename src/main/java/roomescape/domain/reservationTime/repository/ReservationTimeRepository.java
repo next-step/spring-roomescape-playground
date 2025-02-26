@@ -40,7 +40,7 @@ public class ReservationTimeRepository {
     }
 
     public List<ReservationTime> findAll() {
-        String sql = "SELECT * FROM reservationTime ORDER BY time DESC";
+        String sql = "SELECT * FROM reservationTime ORDER BY time ASC";
 
         return jdbcTemplate.query(sql, RESERVATION_TIME_ROW_MAPPER);
     }
