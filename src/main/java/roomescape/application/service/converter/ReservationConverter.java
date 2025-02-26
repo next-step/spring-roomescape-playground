@@ -1,8 +1,8 @@
 package roomescape.application.service.converter;
 
 import org.springframework.stereotype.Component;
-import roomescape.application.dto.CreateReservationRequestDto;
-import roomescape.application.dto.ReservationResponseDto;
+import roomescape.application.dto.request.CreateReservationRequestDto;
+import roomescape.application.dto.response.ReservationResponseDto;
 import roomescape.domain.reservation.Reservation;
 import roomescape.domain.reservation.ReservedDateTime;
 

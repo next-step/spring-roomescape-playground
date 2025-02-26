@@ -3,7 +3,7 @@ package roomescape.application.service;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.stereotype.Service;
-import roomescape.application.dto.CreateReservationRequestDto;
+import roomescape.application.dto.request.CreateReservationRequestDto;
 import roomescape.common.error.ErrorCode;
 import roomescape.common.error.exception.EntityNotFoundException;
 import roomescape.domain.reservation.Reservation;

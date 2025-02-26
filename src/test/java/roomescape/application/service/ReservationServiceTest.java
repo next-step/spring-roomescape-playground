@@ -5,7 +5,7 @@ import java.time.LocalTime;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import roomescape.application.dto.CreateReservationRequestDto;
+import roomescape.application.dto.request.CreateReservationRequestDto;
 import roomescape.common.error.exception.EntityNotFoundException;
 import roomescape.domain.reservation.Reservation;
 import roomescape.fake.FakeReservationRepository;
