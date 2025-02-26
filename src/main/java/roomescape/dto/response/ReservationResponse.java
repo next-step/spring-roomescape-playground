@@ -3,7 +3,6 @@ package roomescape.dto.response;
 import roomescape.domain.Reservation;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 public record ReservationResponse(
         long id,
@@ -12,12 +11,12 @@ public record ReservationResponse(
 
         LocalDate date,
 
-        LocalTime time
+        TimeResponse time
 ) {
     public ReservationResponse(Reservation reservation) {
         this(reservation.getId(),
                 reservation.getName(),
                 reservation.getDate(),
-                reservation.getTime());
+                new TimeResponse(reservation.getTime()));
     }
 }

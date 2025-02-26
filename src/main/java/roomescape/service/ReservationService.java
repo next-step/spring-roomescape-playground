@@ -2,48 +2,57 @@ package roomescape.service;
 
 import org.springframework.stereotype.Service;
 import roomescape.domain.Reservation;
+import roomescape.domain.Time;
 import roomescape.dto.request.CreateReservationRequest;
 import roomescape.dto.response.ReservationResponse;
 import roomescape.global.exception.BadRequestException;
 import roomescape.repository.ReservationRepository;
+import roomescape.repository.TimeRepository;
 
 import java.time.Clock;
 import java.util.List;
+import java.util.Optional;
 
-import static roomescape.global.exception.ExceptionMessage.INVALID_DATETIME;
 import static roomescape.global.exception.ExceptionMessage.RESERVATION_ALREADY_EXISTS;
 import static roomescape.global.exception.ExceptionMessage.RESERVATION_NOT_EXISTS;
+import static roomescape.global.exception.ExceptionMessage.TIME_NOT_EXISTS;
 
 @Service
 public class ReservationService {
 
     private final Clock clock;
     private final ReservationRepository reservationRepository;
+    private final TimeRepository timeRepository;
 
-    public ReservationService(final Clock clock, final ReservationRepository reservationRepository) {
+    public ReservationService(final Clock clock, final ReservationRepository reservationRepository, final TimeRepository timeRepository) {
         this.clock = clock;
         this.reservationRepository = reservationRepository;
+        this.timeRepository = timeRepository;
     }
 
     public ReservationResponse createReservation(final CreateReservationRequest request) {
-        Reservation reservation = request.toReservation();
+        Optional<Time> time = timeRepository.findById(request.time());
+        if (time.isEmpty()) {
+            throw new BadRequestException(TIME_NOT_EXISTS.getMessage());
+        }
+        Reservation reservation = request.toReservation(time.get());
         validateAvailability(reservation);
-        validateExpiredDateTime(reservation);
+//        validateExpiredDateTime(reservation);
         Reservation reservationWithId = reservationRepository.save(reservation);
         return new ReservationResponse(reservationWithId);
     }
 
     private void validateAvailability(final Reservation reservation) {
-        if (reservationRepository.existsByDateAndTime(reservation.getDate(), reservation.getTime())) {
+        if (reservationRepository.existsByDateAndTime(reservation.getDate(), reservation.getTime().getTime())) {
             throw new BadRequestException(RESERVATION_ALREADY_EXISTS.getMessage());
         }
     }
 
-    private void validateExpiredDateTime(final Reservation reservation) {
-        if (reservation.isExpired(clock)) {
-            throw new BadRequestException(INVALID_DATETIME.getMessage());
-        }
-    }
+//    private void validateExpiredDateTime(final Reservation reservation) {
+//        if (reservation.isExpired(clock)) {
+//            throw new BadRequestException(INVALID_DATETIME.getMessage());
+//        }
+//    }
 
     public List<ReservationResponse> getReservations() {
         return reservationRepository.findAll()

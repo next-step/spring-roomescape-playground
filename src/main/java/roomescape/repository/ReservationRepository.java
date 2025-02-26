@@ -3,14 +3,14 @@ package roomescape.repository;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
+import roomescape.domain.Time;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,12 +18,18 @@ import java.util.Optional;
 public class ReservationRepository {
 
     private static final RowMapper<Reservation> RESERVATION_ROW_MAPPER = (rs, rowNum) ->
-            new Reservation(
-                    rs.getLong("id"),
-                    rs.getString("name"),
-                    rs.getDate("date").toLocalDate(),
-                    rs.getTime("time").toLocalTime()
-            );
+    {
+        Time time = new Time(
+                rs.getLong("time_id"),
+                rs.getString("time_value")
+        );
+        return new Reservation(
+                rs.getLong("reservation_id"),
+                rs.getString("name"),
+                rs.getDate("date").toLocalDate(),
+                time
+        );
+    };
 
     private final SimpleJdbcInsert jdbcInsert;
     private final JdbcTemplate jdbcTemplate;
@@ -36,7 +42,11 @@ public class ReservationRepository {
     }
 
     public Reservation save(final Reservation reservation) {
-        SqlParameterSource parameters = new BeanPropertySqlParameterSource(reservation);
+        SqlParameterSource parameters = new MapSqlParameterSource()
+                .addValue("name", reservation.getName())
+                .addValue("date", reservation.getDate())
+                .addValue("time_id", reservation.getTime().getId());
+
         long id = jdbcInsert.executeAndReturnKey(parameters).longValue();
         return new Reservation(
                 id,
@@ -53,7 +63,9 @@ public class ReservationRepository {
 
     public Optional<Reservation> findById(final long reservationId) {
         try {
-            String selectById = "SELECT * FROM RESERVATION WHERE id = ?";
+            String selectById = "SELECT r.id AS reservation_id, r.name, r.date, t.id AS time_id, t.time AS time_value " +
+                    "FROM reservation AS r INNER JOIN time AS t ON r.time_id = t.id " +
+                    "WHERE r.id = ?";
             Reservation reservation = jdbcTemplate.queryForObject(selectById, RESERVATION_ROW_MAPPER, reservationId);
             return Optional.ofNullable(reservation);
         } catch (EmptyResultDataAccessException emptyResultDataAccessException) {
@@ -61,9 +73,10 @@ public class ReservationRepository {
         }
     }
 
-    public boolean existsByDateAndTime(final LocalDate date, final LocalTime time) {
+    public boolean existsByDateAndTime(final LocalDate date, final String time) {
         String selectByDateAndTime = "SELECT EXISTS (" +
-                "SELECT 1 FROM RESERVATION WHERE `date` = ? AND `time` = ?)";
+                "SELECT 1 FROM reservation AS r INNER JOIN time AS t ON r.time_id = t.id " +
+                "WHERE r.`date` = ? AND t.`time` = ?)";
         return jdbcTemplate.queryForObject(selectByDateAndTime, Boolean.class, date, time);
     }
 

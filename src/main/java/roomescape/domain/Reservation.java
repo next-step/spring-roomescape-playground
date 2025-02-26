@@ -2,10 +2,7 @@ package roomescape.domain;
 
 import roomescape.global.exception.BadRequestException;
 
-import java.time.Clock;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.regex.Pattern;
 
 import static roomescape.global.exception.ExceptionMessage.INVALID_DATE;
@@ -17,7 +14,6 @@ public class Reservation {
     private static final int MIN_NAME_LENGTH = 2;
     private static final int MAX_NAME_LENGTH = 10;
     private static final Pattern NAME_FORMAT = Pattern.compile("^[가-힣]+$");
-    private static final int VALID_MINUTE_UNIT = 0;
 
     private long id;
 
@@ -25,12 +21,12 @@ public class Reservation {
 
     private LocalDate date;
 
-    private LocalTime time;
+    private Time time;
 
     protected Reservation() {
     }
 
-    public Reservation(final long id, final String name, final LocalDate date, final LocalTime time) {
+    public Reservation(final long id, final String name, final LocalDate date, final Time time) {
         validate(name, date, time);
         this.id = id;
         this.name = name;
@@ -38,17 +34,17 @@ public class Reservation {
         this.time = time;
     }
 
-    public Reservation(final String name, final LocalDate date, final LocalTime time) {
+    public Reservation(final String name, final LocalDate date, final Time time) {
         validate(name, date, time);
         this.name = name;
         this.date = date;
         this.time = time;
     }
 
-    public boolean isExpired(final Clock clock) {
-        LocalDateTime dateTime = date.atTime(time);
-        return dateTime.isBefore(LocalDateTime.now(clock));
-    }
+//    public boolean isExpired(final Clock clock) {
+//        LocalDateTime dateTime = date.atTime(time);
+//        return dateTime.isBefore(LocalDateTime.now(clock));
+//    }
 
     public long getId() {
         return id;
@@ -62,11 +58,11 @@ public class Reservation {
         return date;
     }
 
-    public LocalTime getTime() {
+    public Time getTime() {
         return time;
     }
 
-    private void validate(final String name, final LocalDate date, final LocalTime time) {
+    private void validate(final String name, final LocalDate date, final Time time) {
         validateName(name);
         validateDate(date);
         validateTime(time);
@@ -102,19 +98,8 @@ public class Reservation {
         }
     }
 
-    private void validateTime(final LocalTime time) {
-        validateTimeExists(time);
-        validateTimeFormat(time);
-    }
-
-    private void validateTimeExists(final LocalTime time) {
+    private void validateTime(final Time time) {
         if (time == null) {
-            throw new BadRequestException(INVALID_TIME.getMessage());
-        }
-    }
-
-    private void validateTimeFormat(final LocalTime time) {
-        if (time.getMinute() != VALID_MINUTE_UNIT) {
             throw new BadRequestException(INVALID_TIME.getMessage());
         }
     }
