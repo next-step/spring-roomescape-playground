@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import roomescape.domain.reservationTime.domain.ReservationTime;
+import roomescape.domain.reservationTime.repository.ReservationTimeRepository;
 import roomescape.global.exception.RoomescapeBadRequestException;
 import roomescape.domain.reservation.domain.Reservation;
 import roomescape.domain.reservation.dto.ReservationRequest;
@@ -17,9 +19,12 @@ import roomescape.global.exception.RoomescapeServerException;
 public class ReservationService {
 
     private final ReservationRepository reservationRepository;
+    private final ReservationTimeRepository reservationTimeRepository;
 
-    public ReservationService(final ReservationRepository reservationRepository) {
+    public ReservationService(final ReservationRepository reservationRepository,
+                              final ReservationTimeRepository reservationTimeRepository) {
         this.reservationRepository = reservationRepository;
+        this.reservationTimeRepository = reservationTimeRepository;
     }
 
     @Transactional(readOnly = true)
@@ -36,10 +41,13 @@ public class ReservationService {
         if (reservationRequest.date().isBefore(LocalDate.now())) {
             throw new RoomescapeBadRequestException("잘못된 예약 날짜입니다. 현재 날짜보다 이전 날짜에 예약할 수 없습니다.");
         }
-        if (reservationRequest.date().isEqual(LocalDate.now()) && reservationRequest.time().isBefore(LocalTime.now())) {
+
+        ReservationTime reservationTime = reservationTimeRepository.findById(reservationRequest.timeId());
+        if (reservationRequest.date().isEqual(LocalDate.now()) && reservationTime.getTime().isBefore(LocalTime.now())) {
             throw new RoomescapeBadRequestException("잘못된 예약 날짜입니다. 현재 시작 이전 시간에 예약할 수 없습니다.");
         }
-        Reservation savedReservation = reservationRepository.create(reservationRequest.newReservation());
+
+        Reservation savedReservation = reservationRepository.create(reservationRequest.newReservation(reservationTime));
 
         return ReservationResponse.fromReservation(savedReservation);
     }
