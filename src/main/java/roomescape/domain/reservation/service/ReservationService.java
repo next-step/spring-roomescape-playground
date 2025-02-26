@@ -11,7 +11,7 @@ import roomescape.domain.reservation.domain.Reservation;
 import roomescape.domain.reservation.dto.ReservationRequest;
 import roomescape.domain.reservation.dto.ReservationResponse;
 import roomescape.domain.reservation.repository.ReservationRepository;
-import roomescape.global.exception.RoomescapeServerError;
+import roomescape.global.exception.RoomescapeServerException;
 
 @Service
 public class ReservationService {
@@ -51,7 +51,7 @@ public class ReservationService {
         }
 
         if (!reservationRepository.remove(id)) {
-            throw new RoomescapeServerError();
+            throw new RoomescapeServerException();
         }
     }
 }

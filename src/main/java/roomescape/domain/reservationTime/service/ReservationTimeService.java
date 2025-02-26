@@ -9,7 +9,7 @@ import roomescape.domain.reservationTime.dto.ReservationTimeRequest;
 import roomescape.domain.reservationTime.dto.ReservationTimeResponse;
 import roomescape.domain.reservationTime.repository.ReservationTimeRepository;
 import roomescape.global.exception.RoomescapeBadRequestException;
-import roomescape.global.exception.RoomescapeServerError;
+import roomescape.global.exception.RoomescapeServerException;
 
 @Service
 public class ReservationTimeService {
@@ -43,7 +43,7 @@ public class ReservationTimeService {
         }
 
         if(!reservationTimeRepository.remove(id)) {
-            throw new RoomescapeServerError();
+            throw new RoomescapeServerException();
         }
     }
 }
