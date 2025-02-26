@@ -57,7 +57,8 @@ public class ReservationRepository {
     }
 
     public List<Reservation> findAll() {
-        String selectAll = "SELECT * FROM RESERVATION";
+        String selectAll = "SELECT r.id as reservation_id, r.name, r.date, t.id as time_id, t.time as time_value " +
+                "FROM reservation as r inner join time as t on r.time_id = t.id";
         return jdbcTemplate.query(selectAll, RESERVATION_ROW_MAPPER);
     }
 
