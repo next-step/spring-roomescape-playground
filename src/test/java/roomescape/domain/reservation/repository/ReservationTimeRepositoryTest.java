@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import roomescape.domain.reservation.domain.Reservation;
-import roomescape.domain.reservation.dto.ReservationRequest;
 
 @JdbcTest
 class ReservationRepositoryTest {
@@ -31,14 +30,14 @@ class ReservationRepositoryTest {
     }
 
     @Test
-    void getReservations_테스트() {
+    void findAll_테스트() {
         jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "브라운", "2023-08-05",
                 "15:41");
         jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "커찬", "2024-08-05",
                 "15:42");
         jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "망고", "2025-08-05",
                 "15:43");
-        List<Reservation> reservations = reservationRepository.getReservations();
+        List<Reservation> reservations = reservationRepository.findAll();
 
         Assertions.assertThat(reservations.size()).isEqualTo(3);
         Assertions.assertThat(reservations)
@@ -47,11 +46,11 @@ class ReservationRepositoryTest {
     }
 
     @Test
-    void addReservation_테스트() {
+    void create_테스트() {
         Reservation reservation = Reservation.newWithoutId("망고", LocalDate.of(2020, 1, 1),
                 LocalTime.of(15, 45));
 
-        Reservation savedReservation = reservationRepository.addReservation(reservation);
+        Reservation savedReservation = reservationRepository.create(reservation);
         Map<String, Object> foundReservation = jdbcTemplate.queryForMap("SELECT * FROM reservation WHERE id = ?",
                 savedReservation.getId());
         LocalDate foundDate = ((java.sql.Date) foundReservation.get("date")).toLocalDate();
@@ -64,12 +63,12 @@ class ReservationRepositoryTest {
     }
 
     @Test
-    void removeReservation_테스트() {
+    void remove_테스트() {
         jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "커찬", "2024-08-05",
                 "15:42");
         Integer id = jdbcTemplate.queryForObject("SELECT id FROM reservation WHERE name = ?", Integer.class, "커찬");
 
-        reservationRepository.removeReservation(id);
+        reservationRepository.remove(id);
         Integer afterSize = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
 
         Assertions.assertThat(afterSize).isEqualTo(0);
