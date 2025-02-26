@@ -1,4 +1,4 @@
-package roomescape.dao;
+package roomescape.dao.reservation;
 
 import java.util.HashMap;
 import java.util.List;
