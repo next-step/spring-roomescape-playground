@@ -11,8 +11,8 @@ import roomescape.repository.TimeRepository;
 
 import java.time.Clock;
 import java.util.List;
-import java.util.Optional;
 
+import static roomescape.global.exception.ExceptionMessage.INVALID_DATETIME;
 import static roomescape.global.exception.ExceptionMessage.RESERVATION_ALREADY_EXISTS;
 import static roomescape.global.exception.ExceptionMessage.RESERVATION_NOT_EXISTS;
 import static roomescape.global.exception.ExceptionMessage.TIME_NOT_EXISTS;
@@ -31,15 +31,19 @@ public class ReservationService {
     }
 
     public ReservationResponse createReservation(final CreateReservationRequest request) {
-        Optional<Time> time = timeRepository.findById(request.time());
-        if (time.isEmpty()) {
-            throw new BadRequestException(TIME_NOT_EXISTS.getMessage());
-        }
-        Reservation reservation = request.toReservation(time.get());
+        Time time = getTime(request.time());
+        Reservation reservation = request.toReservation(time);
+
         validateAvailability(reservation);
-//        validateExpiredDateTime(reservation);
+        validateExpiredDateTime(reservation);
+        
         Reservation reservationWithId = reservationRepository.save(reservation);
         return new ReservationResponse(reservationWithId);
+    }
+
+    private Time getTime(final Long timeId) {
+        return timeRepository.findById(timeId)
+                .orElseThrow(() -> new BadRequestException(TIME_NOT_EXISTS.getMessage()));
     }
 
     private void validateAvailability(final Reservation reservation) {
@@ -48,11 +52,11 @@ public class ReservationService {
         }
     }
 
-//    private void validateExpiredDateTime(final Reservation reservation) {
-//        if (reservation.isExpired(clock)) {
-//            throw new BadRequestException(INVALID_DATETIME.getMessage());
-//        }
-//    }
+    private void validateExpiredDateTime(final Reservation reservation) {
+        if (reservation.isExpired(clock)) {
+            throw new BadRequestException(INVALID_DATETIME.getMessage());
+        }
+    }
 
     public List<ReservationResponse> getReservations() {
         return reservationRepository.findAll()

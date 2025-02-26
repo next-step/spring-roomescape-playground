@@ -1,8 +1,12 @@
 package roomescape.domain;
 
 import roomescape.global.exception.BadRequestException;
+import roomescape.global.util.TimeParser;
 
+import java.time.Clock;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.regex.Pattern;
 
 import static roomescape.global.exception.ExceptionMessage.INVALID_DATE;
@@ -39,27 +43,6 @@ public class Reservation {
         this.name = name;
         this.date = date;
         this.time = time;
-    }
-
-//    public boolean isExpired(final Clock clock) {
-//        LocalDateTime dateTime = date.atTime(time);
-//        return dateTime.isBefore(LocalDateTime.now(clock));
-//    }
-
-    public long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public Time getTime() {
-        return time;
     }
 
     private void validate(final String name, final LocalDate date, final Time time) {
@@ -102,5 +85,27 @@ public class Reservation {
         if (time == null) {
             throw new BadRequestException(INVALID_TIME.getMessage());
         }
+    }
+
+    public boolean isExpired(final Clock clock) {
+        LocalTime parsedTime = TimeParser.parseToLocalTime(time.getTime());
+        LocalDateTime dateTime = date.atTime(parsedTime);
+        return dateTime.isBefore(LocalDateTime.now(clock));
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public Time getTime() {
+        return time;
     }
 }
