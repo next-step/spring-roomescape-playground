@@ -2,7 +2,7 @@ package roomescape.domain.reservation.domain;
 
 import java.sql.Time;
 import java.time.LocalDate;
-import java.time.LocalTime;
+import roomescape.domain.reservationTime.domain.ReservationTime;
 
 public class Reservation {
 
@@ -12,14 +12,13 @@ public class Reservation {
 
     private final LocalDate date;
 
-    private final Time time;
+    private final ReservationTime time;
 
-    public static Reservation newWithoutId(final String name, final LocalDate date, final LocalTime time,
-                                           final Time time2) {
-        return new Reservation(null, name, date, time2);
+    public static Reservation newWithoutId(final String name, final LocalDate date, final ReservationTime time) {
+        return new Reservation(null, name, date, time);
     }
 
-    public Reservation(final Long id, final String name, final LocalDate date, final Time time) {
+    public Reservation(final Long id, final String name, final LocalDate date, final ReservationTime time) {
         this.id = id;
         this.name = name;
         this.date = date;
