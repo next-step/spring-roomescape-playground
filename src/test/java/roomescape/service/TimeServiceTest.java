@@ -22,10 +22,6 @@ class TimeServiceTest {
     @Autowired
     private TimeService timeService;
 
-    private CreateTimeRequest createTimeRequest(String time) {
-        return new CreateTimeRequest(time);
-    }
-
     @Test
     void 시간을_생성할_수_있다() {
         // given
@@ -83,5 +79,9 @@ class TimeServiceTest {
                 .isInstanceOf(BadRequestException.class)
                 .hasMessage(
                         ExceptionMessage.TIME_NOT_EXISTS.getMessage());
+    }
+
+    private CreateTimeRequest createTimeRequest(String time) {
+        return new CreateTimeRequest(time);
     }
 }
