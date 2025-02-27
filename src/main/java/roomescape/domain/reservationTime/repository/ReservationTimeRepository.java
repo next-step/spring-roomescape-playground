@@ -47,7 +47,7 @@ public class ReservationTimeRepository {
 
             return jdbcTemplate.queryForObject(sql, RESERVATION_TIME_ROW_MAPPER, id);
         } catch (EmptyResultDataAccessException exception) {
-            throw new RoomescapeNotFoundException("예약 시간을 찾을 수 없습니다.");
+            throw new RoomescapeNotFoundException("예약 시간을 찾을 수 없습니다. id: " + id);
         }
     }
 

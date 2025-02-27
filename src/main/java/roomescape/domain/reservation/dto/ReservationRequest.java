@@ -5,7 +5,7 @@ import roomescape.domain.reservation.domain.Reservation;
 import roomescape.domain.reservationTime.domain.ReservationTime;
 import roomescape.global.exception.RoomescapeBadRequestException;
 
-public record ReservationRequest(String name, LocalDate date, long timeId) {
+public record ReservationRequest(String name, LocalDate date, long time) {
 
     public ReservationRequest {
         if (name == null || name.isBlank() || date == null) {

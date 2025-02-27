@@ -16,7 +16,7 @@ public class ReservationTimeService {
 
     private final ReservationTimeRepository reservationTimeRepository;
 
-    public ReservationTimeService(ReservationTimeRepository reservationTimeRepository) {
+    public ReservationTimeService(final ReservationTimeRepository reservationTimeRepository) {
         this.reservationTimeRepository = reservationTimeRepository;
     }
 
@@ -37,12 +37,12 @@ public class ReservationTimeService {
     }
 
     @Transactional
-    public void deleteReservationTime(final Long id) {
+    public void deleteReservationTime(final long id) {
         if (id < 0) {
             throw new RoomescapeBadRequestException("잘못된 아이디 입니다.");
         }
 
-        if(!reservationTimeRepository.remove(id)) {
+        if (!reservationTimeRepository.remove(id)) {
             throw new RoomescapeServerException();
         }
     }
