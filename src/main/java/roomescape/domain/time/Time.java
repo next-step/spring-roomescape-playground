@@ -26,4 +26,21 @@ public class Time {
     public LocalTime getTime() {
         return time;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Time time = (Time) o;
+        return Objects.equals(id, time.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 }

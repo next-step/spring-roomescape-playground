@@ -3,7 +3,6 @@ package roomescape.application.dto.request;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import roomescape.domain.reservation.Reservation;
 import roomescape.domain.reservation.ReservedDateTime;
 import roomescape.domain.time.Time;

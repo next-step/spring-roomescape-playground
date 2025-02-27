@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import roomescape.application.dto.request.CreateTimeRequest;
 import roomescape.application.dto.response.TimeResponse;
 import roomescape.domain.time.Time;
-import roomescape.repository.TimeRepository;
+import roomescape.repository.reservation.interfaces.TimeRepository;
 
 @Service
 public class TimeService {
@@ -17,7 +17,10 @@ public class TimeService {
     }
 
     public List<TimeResponse> findAll() {
-        return timeRepository.findAll().stream().map(this::toDto).toList();
+
+        List<Time> all = timeRepository.findAll();
+        List<TimeResponse> list = all.stream().map(this::toDto).toList();
+        return list;
     }
 
     public Long saveTime(CreateTimeRequest request) {

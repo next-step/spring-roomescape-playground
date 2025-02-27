@@ -9,8 +9,8 @@ import roomescape.common.error.exception.EntityNotFoundException;
 import roomescape.domain.reservation.Reservation;
 import roomescape.domain.reservation.exception.ReservationException;
 import roomescape.domain.time.Time;
-import roomescape.repository.TimeRepository;
 import roomescape.repository.reservation.interfaces.ReservationRepository;
+import roomescape.repository.reservation.interfaces.TimeRepository;
 
 @Service
 public class ReservationService {

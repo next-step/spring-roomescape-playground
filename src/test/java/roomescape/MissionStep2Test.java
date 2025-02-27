@@ -60,10 +60,11 @@ public class MissionStep2Test {
 
     @Test
     void 칠단계() {
+        jdbcTemplate.update("INSERT INTO TIMES (time) VALUES ('12:00:00')");
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
         params.put("date", dateFormat.format(reservedDate));
-        params.put("time", timeFormat.format(reservedTime));
+        params.put("time", "1");
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)

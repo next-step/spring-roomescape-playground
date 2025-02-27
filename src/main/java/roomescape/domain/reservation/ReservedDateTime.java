@@ -13,13 +13,13 @@ public class ReservedDateTime {
     private final Time time;
 
     public ReservedDateTime(LocalDate reservedDate, Time time) {
-        validate(reservedDate);
+        validate(reservedDate, time);
         this.reservedDate = reservedDate;
         this.time = time;
     }
 
-    private void validate(LocalDate reservedDate) {
-        if (Objects.isNull(reservedDate)) {
+    private void validate(LocalDate reservedDate, Time time) {
+        if (Objects.isNull(reservedDate) || Objects.isNull(time)) {
             throw new ReservationException(ErrorCode.INVALID_RESERVE_VALUE);
         }
     }
@@ -38,5 +38,22 @@ public class ReservedDateTime {
 
     public Long getTimeId() {
         return time.getId();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ReservedDateTime that = (ReservedDateTime) o;
+        return Objects.equals(reservedDate, that.reservedDate) && Objects.equals(time, that.time);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(reservedDate, time);
     }
 }

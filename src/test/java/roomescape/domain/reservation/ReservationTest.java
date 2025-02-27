@@ -5,10 +5,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import org.junit.jupiter.api.Test;
+import roomescape.domain.time.Time;
 
 class ReservationTest {
 
-    private final ReservedDateTime reservedDateTime = new ReservedDateTime(LocalDate.now(), LocalTime.now());
+    private final ReservedDateTime reservedDateTime = new ReservedDateTime(LocalDate.now(), new Time(1L,LocalTime.now()));
 
     @Test
     void id값이_같은_예약객체는_동일_테스트() {

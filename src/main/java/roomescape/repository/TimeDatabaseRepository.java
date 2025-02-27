@@ -11,9 +11,10 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.time.Time;
+import roomescape.repository.reservation.interfaces.TimeRepository;
 
 @Repository
-public class TimeRepository {
+public class TimeDatabaseRepository implements TimeRepository {
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
@@ -21,7 +22,7 @@ public class TimeRepository {
         return new Time(rs.getLong("time_id"), rs.getTime("time").toLocalTime());
     };
 
-    public TimeRepository(JdbcTemplate jdbcTemplate, DataSource source) {
+    public TimeDatabaseRepository(JdbcTemplate jdbcTemplate, DataSource source) {
         this.jdbcTemplate = jdbcTemplate;
         this.jdbcInsert = new SimpleJdbcInsert(source).withTableName("times").usingGeneratedKeyColumns("time_id");
     }
@@ -38,7 +39,7 @@ public class TimeRepository {
     }
 
     public List<Time> findAll() {
-        List<Time> times = jdbcTemplate.query("select time_id, time from times", timeRowMapper);
+        List<Time> times = jdbcTemplate.query("SELECT time_id, time FROM times", timeRowMapper);
         return List.copyOf(times);
     }
 
