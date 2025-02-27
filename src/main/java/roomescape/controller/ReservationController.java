@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import roomescape.dao.ReservationJdbcDAO;
+import roomescape.dao.reservation.ReservationJdbcDAO;
 import roomescape.entity.Reservation;
 
 @RestController
@@ -39,13 +39,13 @@ public class ReservationController {
     }
 
     @GetMapping("/{id}")
-    public Reservation getReservationDetail(@PathVariable int id) {
+    public Reservation getReservationDetail(@PathVariable long id) {
         return reservationJdbcDAO.getById(id);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteReservation(@PathVariable int id) {
+    public void deleteReservation(@PathVariable long id) {
         reservationJdbcDAO.delete(id);
     }
 

@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import roomescape.entity.Reservation;
+import roomescape.entity.Time;
 import roomescape.exception.DataInvalidException;
 
 
@@ -17,15 +18,16 @@ import roomescape.exception.DataInvalidException;
 public class ReservationJdbcDAO implements ReservationDAO {
 
     private final JdbcTemplate jdbcTemplate;
-    private final RowMapper<Reservation> rowMapper = new ReservationRowMapper();
+    private final RowMapper<Reservation> rowMapper;
     private final SimpleJdbcInsert simpleJdbcInsert;
 
-    public ReservationJdbcDAO(JdbcTemplate jdbcTemplate, DataSource dataSource) {
+
+    public ReservationJdbcDAO(JdbcTemplate jdbcTemplate, DataSource dataSource, RowMapper<Reservation> rowMapper) {
         this.jdbcTemplate = jdbcTemplate;
         this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource)
                 .withTableName("reservation")
                 .usingGeneratedKeyColumns("id");
-
+        this.rowMapper = rowMapper;
     }
 
     @Override
@@ -34,7 +36,7 @@ public class ReservationJdbcDAO implements ReservationDAO {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("name", reservation.getName());
         parameters.put("date", reservation.getDate());
-        parameters.put("time", reservation.getTime());
+        parameters.put("id", reservation.getTime().getId());
 
         Number generatedId = simpleJdbcInsert.executeAndReturnKey(parameters);
 
@@ -62,12 +64,32 @@ public class ReservationJdbcDAO implements ReservationDAO {
 
     @Override
     public Reservation getById(long id) {
-        String sql = "SELECT * FROM reservation WHERE id = ?";
+        String sql = """
+                    SELECT 
+                        r.id as reservation_id, 
+                        r.name, 
+                        r.date, 
+                        t.id as time_id, 
+                        t.time as time_value 
+                    FROM reservation as r 
+                    INNER JOIN time as t ON r.time_id = t.id
+                    WHERE r.id = ?
+                """;
 
         try {
-            return jdbcTemplate.queryForObject(sql, rowMapper, id);
+            return jdbcTemplate.queryForObject(sql, new Object[]{id}, (rs, rowNum) ->
+                    new Reservation(
+                            rs.getLong("reservation_id"),
+                            rs.getString("name"),
+                            rs.getDate("date").toLocalDate(),
+                            new Time(
+                                    rs.getLong("time_id"),
+                                    rs.getTime("time").toLocalTime()
+                            )
+                    )
+            );
         } catch (EmptyResultDataAccessException e) {
-            throw new DataInvalidException("해당 ID의 예약을 찾을 수 없습니다 : " + e.getMessage());
+            throw new DataInvalidException("예약을 찾을 수 없습니다. ID: " + id);
         }
     }
 

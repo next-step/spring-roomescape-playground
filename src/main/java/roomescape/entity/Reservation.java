@@ -1,8 +1,6 @@
 package roomescape.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import roomescape.exception.InvalidException;
 
 public class Reservation {
@@ -13,10 +11,9 @@ public class Reservation {
 
     private final LocalDate date;
 
-    @JsonFormat(pattern = "HH:mm")
-    private final LocalTime time;
+    private final Time time;
 
-    public Reservation(long id, String name, LocalDate date, LocalTime time) {
+    public Reservation(long id, String name, LocalDate date, Time time) {
         validateName(name);
         validateDate(date);
         validateTime(time);
@@ -39,7 +36,7 @@ public class Reservation {
         }
     }
 
-    private void validateTime(LocalTime reservation_time) {
+    private void validateTime(Time reservation_time) {
         if (reservation_time == null) {
             throw new InvalidException("Time is required");
         }
@@ -57,7 +54,7 @@ public class Reservation {
         return date;
     }
 
-    public LocalTime getTime() {
+    public Time getTime() {
         return time;
     }
 
