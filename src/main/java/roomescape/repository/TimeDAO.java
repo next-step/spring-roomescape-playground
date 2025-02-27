@@ -48,7 +48,7 @@ public class TimeDAO {
     }
 
     public boolean existsTime(LocalTime time) {
-        String sql = "select exists(select 1 from time where time = ?";
+        String sql = "select exists(select 1 from time where time = ?)";
         return jdbcTemplate.queryForObject(sql, Boolean.class, time);
     }
 }
