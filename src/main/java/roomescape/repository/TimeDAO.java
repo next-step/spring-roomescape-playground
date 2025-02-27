@@ -1,5 +1,6 @@
 package roomescape.repository;
 
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,5 +45,10 @@ public class TimeDAO {
     public Time findTime(Long timeId) {
         String sql = "select * from time where id = ?";
         return jdbcTemplate.queryForObject(sql, timeRowMapper, timeId);
+    }
+
+    public boolean existsTime(LocalTime time) {
+        String sql = "select exists(select 1 from time where time = ?";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, time);
     }
 }
