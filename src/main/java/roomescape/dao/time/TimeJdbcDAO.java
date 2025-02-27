@@ -21,7 +21,7 @@ public class TimeJdbcDAO implements TimeDAO {
     public TimeJdbcDAO(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource)
-                .withTableName("Time")
+                .withTableName("time")
                 .usingGeneratedKeyColumns("id");
     }
 
