@@ -1,6 +1,7 @@
 package roomescape.domain.reservationTime.domain;
 
 import java.time.LocalTime;
+import roomescape.global.exception.RoomescapeBadRequestException;
 
 public class ReservationTime {
 
@@ -9,6 +10,9 @@ public class ReservationTime {
     private final LocalTime time;
 
     public ReservationTime(final Long id, final LocalTime time) {
+        if (time == null) {
+            throw new RoomescapeBadRequestException("시간은 필수입니다.");
+        }
         this.id = id;
         this.time = time;
     }

@@ -3,6 +3,7 @@ package roomescape.domain.reservation.domain;
 import java.time.LocalDate;
 import java.util.Objects;
 import roomescape.domain.reservationTime.domain.ReservationTime;
+import roomescape.global.exception.RoomescapeBadRequestException;
 
 public class Reservation {
 
@@ -20,6 +21,9 @@ public class Reservation {
     }
 
     public Reservation(final Long id, final String name, final LocalDate date, final ReservationTime reservationTime) {
+        if (name == null || name.isEmpty() || reservationTime == null) {
+            throw new RoomescapeBadRequestException("예약 이름과 예약 시간은 필수입니다.");
+        }
         this.id = id;
         this.name = name;
         this.date = date;
