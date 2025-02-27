@@ -71,7 +71,7 @@ class ReservationRepositoryTest {
     void remove_테스트() {
         jdbcTemplate.update("INSERT INTO reservationTime (id, time) VALUES (?, ?)", 0L, LocalTime.of(11, 0));
         jdbcTemplate.update("INSERT INTO reservation (name, date, time_id) VALUES (?, ?, ?)", "커찬", "2024-08-05", 0L);
-        Integer id = jdbcTemplate.queryForObject("SELECT id FROM reservation WHERE name = ?", Integer.class, "커찬");
+        Long id = jdbcTemplate.queryForObject("SELECT id FROM reservation WHERE name = ?", Long.class, "커찬");
 
         reservationRepository.remove(id);
         Integer afterSize = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);

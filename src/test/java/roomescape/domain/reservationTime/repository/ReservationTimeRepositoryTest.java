@@ -57,7 +57,7 @@ public class ReservationTimeRepositoryTest {
     @Test
     void remove_테스트() {
         jdbcTemplate.update("INSERT INTO reservationTime (time) VALUES (?)", "11:00");
-        Integer id = jdbcTemplate.queryForObject("SELECT id FROM reservationTime WHERE time = ?", Integer.class,
+        Long id = jdbcTemplate.queryForObject("SELECT id FROM reservationTime WHERE time = ?", Long.class,
                 LocalTime.of(11, 00));
 
         reservationTimeRepository.remove(id);
