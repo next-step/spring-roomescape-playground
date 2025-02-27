@@ -18,14 +18,14 @@ public class CustomExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity handleException(Exception exception) {
+    public ResponseEntity handleException(final Exception exception) {
         exception.printStackTrace();
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(exception.getMessage());
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<String> handleInvalidFormatException(HttpMessageNotReadableException exception) {
+    public ResponseEntity<String> handleInvalidFormatException(final HttpMessageNotReadableException exception) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(exception.getMessage());
     }
