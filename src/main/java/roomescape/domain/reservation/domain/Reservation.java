@@ -22,7 +22,7 @@ public class Reservation {
     }
 
     public Reservation(final Long id, final String name, final LocalDate date, final ReservationTime reservationTime) {
-        if (name == null || name.isEmpty() || name.getBytes(StandardCharsets.UTF_8).length < 256
+        if (name == null || name.isEmpty() || name.getBytes(StandardCharsets.UTF_8).length > 255
                 || reservationTime == null) {
             throw new RoomescapeBadRequestException("예약 이름과 예약 시간은 필수입니다.");
         }
