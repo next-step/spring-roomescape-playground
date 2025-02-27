@@ -10,7 +10,7 @@ public record CreateReservationRequest(
 
         LocalDate date,
 
-        Long time
+        long time
 ) {
     public Reservation toReservation(final Time time) {
         return new Reservation(
