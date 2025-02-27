@@ -8,6 +8,12 @@ public enum ErrorCode {
 
     // Reservation
     INVALID_RESERVE_VALUE(400, "R001", "Invalid reserve value"),
+
+    // Time
+    INVALID_TIME_VALUE(400, "T001", "시간을 입력해주세요"),
+
+    // Server
+    SERVER_ERROR(500, "E003", "Server error"),
     ;
 
     private final int status;

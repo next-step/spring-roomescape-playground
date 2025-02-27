@@ -3,6 +3,7 @@ package roomescape.application.service;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import roomescape.application.dto.request.CreateTimeRequest;
+import roomescape.application.dto.response.TimeResponse;
 import roomescape.domain.time.Time;
 import roomescape.repository.TimeRepository;
 
@@ -15,8 +16,8 @@ public class TimeService {
         this.timeRepository = timeRepository;
     }
 
-    public List<Time> findAll() {
-        return timeRepository.findAll();
+    public List<TimeResponse> findAll() {
+        return timeRepository.findAll().stream().map(this::toDto).toList();
     }
 
     public Long saveTime(CreateTimeRequest request) {
@@ -26,5 +27,9 @@ public class TimeService {
 
     public void deleteTime(Long id) {
         timeRepository.delete(id);
+    }
+
+    private TimeResponse toDto(Time time) {
+        return new TimeResponse(time.getId(), time.getTime());
     }
 }

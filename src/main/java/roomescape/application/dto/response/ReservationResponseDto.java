@@ -10,12 +10,11 @@ public record ReservationResponseDto(
         String name,
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
         LocalDate date,
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
-        LocalTime time
+        TimeResponse time
 ) {
 
         public static ReservationResponseDto toDto(Reservation reservation) {
                 return new ReservationResponseDto(reservation.getId(), reservation.getName(),
-                        reservation.reservedDateValue(), reservation.reservedTimeValue());
+                        reservation.reservedDateValue(), new TimeResponse(reservation.getTimeId(), reservation.getTime().getTime()));
         }
 }

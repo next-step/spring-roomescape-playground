@@ -3,6 +3,7 @@ package roomescape.domain.reservation;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Objects;
+import roomescape.domain.time.Time;
 
 public class Reservation {
 
@@ -21,7 +22,7 @@ public class Reservation {
     }
 
     public LocalTime reservedTimeValue() {
-        return reservedDateTime.getReservedTime();
+        return reservedDateTime.getTimeAsLocalTime();
     }
 
     public Long getId() {
@@ -34,6 +35,14 @@ public class Reservation {
 
     public ReservedDateTime getReservedDateTime() {
         return reservedDateTime;
+    }
+
+    public Long getTimeId() {
+        return reservedDateTime.getTimeId();
+    }
+
+    public Time getTime() {
+        return this.reservedDateTime.getTime();
     }
 
     @Override

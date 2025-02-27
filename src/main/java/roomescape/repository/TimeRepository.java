@@ -4,6 +4,7 @@ import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -29,6 +30,11 @@ public class TimeRepository {
         Map<String, LocalTime> params = new HashMap<>();
         params.put("time", time.getTime());
         return jdbcInsert.executeAndReturnKey(params).longValue();
+    }
+
+    public Optional<Time> findById(Long id) {
+        String sql = "SELECT time_id, time FROM times WHERE time_id = ?";
+        return jdbcTemplate.query(sql, timeRowMapper, id).stream().findFirst();
     }
 
     public List<Time> findAll() {

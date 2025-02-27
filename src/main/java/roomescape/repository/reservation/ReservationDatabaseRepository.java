@@ -25,8 +25,10 @@ public class ReservationDatabaseRepository implements ReservationRepository {
         Long reservationId = resultSet.getLong("reservation_id");
         String name = resultSet.getString("name");
         LocalDate reservedDate = resultSet.getDate("reserved_date").toLocalDate();
+        Long timeId = resultSet.getLong("time_id");
         LocalTime reservedTime = resultSet.getTime("reserved_time").toLocalTime();
-        return new Reservation(reservationId, name, new ReservedDateTime(reservedDate, reservedTime));
+        roomescape.domain.time.Time time = new roomescape.domain.time.Time(timeId, reservedTime);
+        return new Reservation(reservationId, name, new ReservedDateTime(reservedDate, time));
     };
 
     private final JdbcTemplate jdbcTemplate;
@@ -38,12 +40,13 @@ public class ReservationDatabaseRepository implements ReservationRepository {
     @Override
     public Reservation save(Reservation reservation) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        String sql = "INSERT INTO reservations (name, reserved_date, reserved_time) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO reservations (name, reserved_date, time_id, reserved_time) VALUES (?, ?, ?, ?)";
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, new String[]{"reservation_id"});
             ps.setString(1, reservation.getName());
             ps.setDate(2, Date.valueOf(reservation.reservedDateValue()));
-            ps.setTime(3, Time.valueOf(reservation.reservedTimeValue()));
+            ps.setLong(3, reservation.getTimeId());
+            ps.setTime(4, Time.valueOf(reservation.reservedTimeValue()));
             return ps;
         }, keyHolder);
         long pkValue = Objects.requireNonNull(keyHolder.getKey()).longValue();
@@ -53,13 +56,13 @@ public class ReservationDatabaseRepository implements ReservationRepository {
 
     @Override
     public Optional<Reservation> findById(Long id) {
-        String sql = "SELECT reservation_id, name, reserved_date, reserved_time FROM reservations WHERE reservation_id = ?";
+        String sql = "SELECT reservation_id, name, reserved_date, time_id, reserved_time FROM reservations WHERE reservation_id = ?";
         return jdbcTemplate.query(sql, RESERVATION_ROW_MAPPER, id).stream().findFirst();
     }
 
     @Override
     public List<Reservation> findAll() {
-        String sql = "SELECT reservation_id, name, reserved_date, reserved_time FROM reservations";
+        String sql = "SELECT reservation_id, name, reserved_date, time_id, reserved_time FROM reservations";
         return Collections.unmodifiableList(jdbcTemplate.query(sql, RESERVATION_ROW_MAPPER));
     }
 

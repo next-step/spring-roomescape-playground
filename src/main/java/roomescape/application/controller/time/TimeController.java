@@ -39,11 +39,8 @@ public class TimeController {
 
     @GetMapping
     public ResponseEntity<List<TimeResponse>> findAll() {
-        List<Time> times = timeService.findAll();
-        List<TimeResponse> timeResponses = times.stream()
-                .map(it -> new TimeResponse(it.getId(), it.getTime()))
-                .toList();
-        return ResponseEntity.status(HttpStatus.OK).body(timeResponses);
+        List<TimeResponse> times = timeService.findAll();
+        return ResponseEntity.status(HttpStatus.OK).body(times);
     }
 
     @DeleteMapping("/{timeId}")
