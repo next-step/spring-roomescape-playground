@@ -2,6 +2,8 @@ package roomescape.global.exception.advice;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import roomescape.global.exception.RoomescapeException;
@@ -11,12 +13,21 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(RoomescapeException.class)
     public ResponseEntity handleInvalidParameterException(final RoomescapeException exception) {
-        return ResponseEntity.status(exception.getHttpStatus()).body(exception.getMessage());
+        exception.printStackTrace();
+        return ResponseEntity.status(exception.getHttpStatus())
+                .body(exception.getMessage());
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity handleException(Exception exception) {
         exception.printStackTrace();
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 관련 에러");
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(exception.getMessage());
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<String> handleInvalidFormatException(HttpMessageNotReadableException exception) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(exception.getMessage());
     }
 }
