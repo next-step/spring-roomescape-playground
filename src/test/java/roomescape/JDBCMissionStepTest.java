@@ -6,6 +6,8 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +19,9 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
+import roomescape.dao.reservation.ReservationRowMapper;
 import roomescape.entity.Reservation;
+import roomescape.entity.Time;
 
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -48,8 +52,18 @@ public class JDBCMissionStepTest {
 
     @Test
     void 육단계() {
-        jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "브라운", "2023-08-05",
-                "15:40");
+
+        jdbcTemplate.update("INSERT INTO time (time) VALUES (?)", "15:40");
+
+        Long timeId = jdbcTemplate.queryForObject("SELECT id FROM time WHERE time = ?", new Object[]{"15:40"},
+                Long.class);
+        assertThat(timeId).isNotNull();
+
+        Time time = new Time(timeId, LocalTime.parse("15:40"));
+
+        jdbcTemplate.update("INSERT INTO reservation (name, date, time_id) VALUES (?, ?, ?)", "브라운", "2023-08-05", timeId);
+
+        Reservation reservation = new Reservation(1, "브라운", LocalDate.parse("2023-08-05"), time);
 
         List<Reservation> reservations = RestAssured.given().log().all()
                 .when().get("/reservations")
