@@ -38,7 +38,7 @@ public class MissionStepTest {
 
     @Test
     void 삼단계() {
-        jdbcTemplate.update("INSERT INTO TIMES (time) VALUES ('12:00:00')");
+        jdbcTemplate.update("INSERT INTO TIMES (available_time) VALUES ('12:00:00')");
 
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");

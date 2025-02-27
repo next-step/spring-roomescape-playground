@@ -43,9 +43,10 @@ public class MissionStep2Test {
 
     @Test
     void 육단계() {
+        int savedTimeId = jdbcTemplate.update("INSERT INTO TIMES (available_time) VALUES ('12:00:00')");
 
-        jdbcTemplate.update("INSERT INTO reservations (name, reserved_date, reserved_time) VALUES (?, ?, ?)", "브라운",
-                reservedDate, reservedTime);
+        jdbcTemplate.update("INSERT INTO reservations (name, reserved_date, time_id) VALUES (?, ?, ?)", "브라운",
+                reservedDate, savedTimeId);
 
         List<ReservationResponseDto> reservations = RestAssured.given().log().all()
                 .when().get("/reservations")
@@ -60,7 +61,7 @@ public class MissionStep2Test {
 
     @Test
     void 칠단계() {
-        jdbcTemplate.update("INSERT INTO TIMES (time) VALUES ('12:00:00')");
+        jdbcTemplate.update("INSERT INTO TIMES (available_time) VALUES ('12:00:00')");
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
         params.put("date", dateFormat.format(reservedDate));
