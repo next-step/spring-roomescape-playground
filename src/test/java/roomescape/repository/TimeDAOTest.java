@@ -29,37 +29,40 @@ public class TimeDAOTest {
     }
 
     @Test
-    void 시간을_생성할_수_있다() {
+    void 시간을_정상적으로_생성할_수_있다() {
         // given
-        Time newTime = new Time(LocalTime.of(12, 0));
+        LocalTime reservationTime = LocalTime.of(10, 0);
+        Time newTime = new Time(reservationTime);
 
         // when
-        Time saved = timeDAO.createTime(newTime);
+        Time savedTime = timeDAO.createTime(newTime);
 
         // then
         assertAll(
-            () -> assertThat(saved.getId()).isNotNull(),
-            () -> assertThat(saved.getTime()).isEqualTo(newTime.getTime())
+            () -> assertThat(savedTime.getId()).isNotNull(),
+            () -> assertThat(savedTime.getTime()).isEqualTo(newTime.getTime())
         );
     }
 
     @Test
-    void 시간들을_조회할_수_있다() {
+    void 모든_시간들을_정상적으로_조회할_수_있다() {
         // given
-        Time savedTime = timeDAO.createTime(new Time(LocalTime.of(10, 0)));
+        LocalTime reservationTime = LocalTime.of(10, 0);
+        Time savedTime = timeDAO.createTime(new Time(reservationTime));
 
         // when
-        List<Time> times = timeDAO.findTimes();
+        List<Time> allTimes = timeDAO.findTimes();
 
         // then
-        assertThat(times).isNotEmpty();
-        assertThat(times).anyMatch(time -> time.equals(savedTime));
+        assertThat(allTimes).isNotEmpty();
+        assertThat(allTimes).anyMatch(anyTime -> anyTime.equals(savedTime));
     }
 
     @Test
-    void 시간을_조회할_수_있다() {
+    void 특정_시간을_정상적으로_조회할_수_있다() {
         // given
-        Time savedTime = timeDAO.createTime(new Time(LocalTime.of(10, 0)));
+        LocalTime reservationTime = LocalTime.of(10, 0);
+        Time savedTime = timeDAO.createTime(new Time(reservationTime));
 
         // when
         Time foundTime = timeDAO.findTime(savedTime.getId());
@@ -72,9 +75,10 @@ public class TimeDAOTest {
     }
 
     @Test
-    void 시간을_삭제할_수_있다() {
+    void 시간을_정상적으로_삭제할_수_있다() {
         // given
-        Time savedTime = timeDAO.createTime(new Time(LocalTime.of(10, 0)));
+        LocalTime reservationTime = LocalTime.of(10, 0);
+        Time savedTime = timeDAO.createTime(new Time(reservationTime));
 
         // when
         timeDAO.deleteTime(savedTime.getId());
@@ -86,9 +90,10 @@ public class TimeDAOTest {
     }
 
     @Test
-    void 특정_시간이_존재한다() {
+    void 특정_시간의_존재여부를_확인할_수_있다() {
         // given
-        Time savedTime = timeDAO.createTime(new Time(LocalTime.of(10, 0)));
+        LocalTime reservationTime = LocalTime.of(10, 0);
+        Time savedTime = timeDAO.createTime(new Time(reservationTime));
 
         // when
         boolean exists = timeDAO.existsTime(savedTime.getTime());

@@ -42,10 +42,13 @@ public class ReservationServiceTest {
     @Test
     void 예약을_정상적으로_생성할_수_있다() {
         // given
-        Time time = new Time(1L, LocalTime.now());
-        ReservationRequest validRequest = new ReservationRequest("파도", LocalDate.now().plusDays(1), time.getId());
+        LocalTime reservationTime = LocalTime.of(15, 0);
+        LocalDate futureDate = LocalDate.now().plusDays(1);
 
+        Time time = new Time(1L, reservationTime);
+        ReservationRequest validRequest = new ReservationRequest("파도", futureDate, time.getId());
         when(timeService.findTimeById(time.getId())).thenReturn(time);
+
         Reservation reservation = new Reservation(validRequest.name(), validRequest.date(), time);
         when(reservationDAO.createReservation(argThat(newReservation ->
             newReservation.getName().equals(reservation.getName()) &&
@@ -60,7 +63,7 @@ public class ReservationServiceTest {
         assertAll(
             () -> assertThat(response.id()).isEqualTo(reservation.getId()),
             () -> assertThat(response.name()).isEqualTo("파도"),
-            () -> assertThat(response.date()).isEqualTo(LocalDate.now().plusDays(1)),
+            () -> assertThat(response.date()).isEqualTo(futureDate),
             () -> assertThat(response.time()).isEqualTo(time)
         );
 
@@ -70,8 +73,11 @@ public class ReservationServiceTest {
     @Test
     void 예약_생성_시_유효하지_않은_날짜_예외() {
         // given
-        Time time = new Time(1L, LocalTime.now());
-        ReservationRequest invalidRequest = new ReservationRequest("파도", LocalDate.now().minusDays(1), time.getId());
+        LocalTime reservationTime = LocalTime.of(15, 0);
+        LocalDate pastDate = LocalDate.now().minusDays(1);
+
+        Time time = new Time(1L, reservationTime);
+        ReservationRequest invalidRequest = new ReservationRequest("파도", pastDate, time.getId());
         when(timeService.findTimeById(time.getId())).thenReturn(time);
 
         // when & then
@@ -85,8 +91,11 @@ public class ReservationServiceTest {
     @Test
     void 예약_생성_시_유효하지_않은_시간_예외() {
         // given
-        Time time = new Time(1L, LocalTime.now());
-        ReservationRequest invalidTimeRequest = new ReservationRequest("파도", LocalDate.now(), time.getId());
+        LocalDate validDate = LocalDate.now();
+        LocalTime reservationTime = LocalTime.now().minusHours(1);
+
+        Time time = new Time(1L, reservationTime);
+        ReservationRequest invalidTimeRequest = new ReservationRequest("파도", validDate, time.getId());
         when(timeService.findTimeById(time.getId())).thenReturn(time);
 
         // when & then
@@ -100,10 +109,14 @@ public class ReservationServiceTest {
     @Test
     void 예약_조회() {
         // given
-        Time time = new Time(1L, LocalTime.now());
+        LocalTime reservationTime = LocalTime.of(15, 0);
+        LocalDate firstDate = LocalDate.now().plusDays(1);
+        LocalDate secondDate = LocalDate.now().plusDays(2);
+
+        Time time = new Time(1L, reservationTime);
         List<Reservation> mockReservations = List.of(
-            new Reservation(1L, "콜리", LocalDate.now().plusDays(1), time),
-            new Reservation(2L, "파도", LocalDate.now().plusDays(2), time)
+            new Reservation(1L, "콜리", firstDate, time),
+            new Reservation(2L, "파도", secondDate, time)
         );
         when(reservationDAO.findReservations()).thenReturn(mockReservations);
 
@@ -112,8 +125,8 @@ public class ReservationServiceTest {
 
         // then
         assertThat(reservations).containsExactly(
-            new ReservationResponse(1L, "콜리", LocalDate.now().plusDays(1), time),
-            new ReservationResponse(2L, "파도", LocalDate.now().plusDays(2), time)
+            new ReservationResponse(1L, "콜리", firstDate, time),
+            new ReservationResponse(2L, "파도", secondDate, time)
         );
 
         verify(reservationDAO, times(1)).findReservations();
