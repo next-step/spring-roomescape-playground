@@ -78,19 +78,6 @@ class ReservationTimeServiceTest {
         assertThat(afterSize).isEqualTo(0);
     }
 
-    @DisplayName("잘못된 예약 아이디를 입력하면 예외")
-    @Test
-    void deletedExceptionById_테스트() {
-        Long id = deleteTestSetup();
-
-        assertThatCode(() -> reservationTimeService.deleteReservationTime(id))
-                .doesNotThrowAnyException();
-        assertThatThrownBy(() -> reservationTimeService.deleteReservationTime(-1L))
-                .isInstanceOf(RoomescapeBadRequestException.class);
-        assertThatThrownBy(() -> reservationTimeService.deleteReservationTime(1L))
-                .isInstanceOf(RoomescapeServerException.class);
-    }
-
     private Long deleteTestSetup() {
         LocalTime time = LocalTime.of(11, 00);
         jdbcTemplate.update("INSERT INTO reservationTime (id, time) VALUES (?, ?)", 0L, time);

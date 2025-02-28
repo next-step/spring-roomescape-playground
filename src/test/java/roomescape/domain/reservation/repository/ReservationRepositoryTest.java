@@ -54,7 +54,8 @@ class ReservationRepositoryTest {
     @Test
     void create_테스트() {
         ReservationTime reservationTime = new ReservationTime(1L, LocalTime.of(11, 00));
-        Reservation reservation = Reservation.newWithoutId("망고", LocalDate.of(2020, 1, 1), reservationTime);
+        Reservation reservation = new Reservation("망고", LocalDate.of(2020, 1, 1), reservationTime);
+
         jdbcTemplate.update("INSERT INTO reservationTime (id, time) values (?,?)", reservationTime.getId(),
                 reservationTime.getTime());
 
