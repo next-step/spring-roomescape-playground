@@ -16,9 +16,8 @@ public class Reservation {
 
     private final ReservationTime reservationTime;
 
-    public static Reservation newWithoutId(final String name, final LocalDate date,
-                                           final ReservationTime reservationTime) {
-        return new Reservation(null, name, date, reservationTime);
+    public Reservation(final String name, final LocalDate date, final ReservationTime reservationTime) {
+        this(null, name, date, reservationTime);
     }
 
     public Reservation(final Long id, final String name, final LocalDate date, final ReservationTime reservationTime) {
@@ -33,7 +32,7 @@ public class Reservation {
     }
 
     public String formatTime() {
-            return reservationTime.formatTime();
+        return reservationTime.formatTime();
     }
 
     public Long getId() {
