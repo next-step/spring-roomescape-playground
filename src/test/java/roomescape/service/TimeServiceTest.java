@@ -100,15 +100,15 @@ public class TimeServiceTest {
     @DisplayName("시간을 삭제하면 해당 시간이 삭제된다")
     void 시간_삭제_테스트() {
         // given
-        Long timeIdToDelete = time.getId();
-        when(timeDAO.findTime(timeIdToDelete)).thenReturn(time);
+        Long timeId = time.getId();
+        when(timeDAO.findTime(timeId)).thenReturn(time);
 
         // when
-        timeService.deleteTime(timeIdToDelete);
+        timeService.deleteTime(timeId);
 
         // then
-        verify(timeDAO, times(1)).deleteTime(timeIdToDelete);
-        when(timeDAO.findTime(timeIdToDelete)).thenReturn(null);
-        assertThat(timeService.findTimeById(timeIdToDelete)).isNull();
+        verify(timeDAO, times(1)).deleteTime(timeId);
+        when(timeDAO.findTime(timeId)).thenReturn(null);
+        assertThat(timeService.findTimeById(timeId)).isNull();
     }
 }
