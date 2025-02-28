@@ -55,10 +55,10 @@ public class ReservationServiceTest {
         //given
         when(timeService.findTimeById(time.getId())).thenReturn(time);
         Reservation reservation = new Reservation(validRequest.name(), validRequest.date(), time);
-        when(reservationDAO.createReservation(argThat(r ->
-            r.getName().equals(reservation.getName()) &&
-                r.getDate().equals(reservation.getDate()) &&
-                r.getTime().equals(reservation.getTime())
+        when(reservationDAO.createReservation(argThat(newReservation ->
+            newReservation.getName().equals(reservation.getName()) &&
+                newReservation.getDate().equals(reservation.getDate()) &&
+                newReservation.getTime().equals(reservation.getTime())
         ))).thenReturn(reservation);
 
         // when
