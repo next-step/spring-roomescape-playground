@@ -74,15 +74,21 @@ class ReservationTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    void 필수_인자_입력하지_않을시_예외가_발생한다(String name) {
+    void 이름을_입력하지_않을시_예외가_발생한다(String name) {
+        // given
+        Time time = new Time(1L, "13:00");
+        // when &  then
+        assertThatThrownBy(() -> new Reservation(name, LocalDate.of(2025, 2, 19), time))
+                .isInstanceOf(BadRequestException.class)
+                .hasMessage(ExceptionMessage.INVALID_NAME.getMessage());
+    }
+
+    @Test
+    void 필수_인자_입력하지_않을시_예외가_발생한다() {
         // given
         Time time = new Time(1L, "13:00");
         // when &  then
         assertAll(
-                () -> assertThatThrownBy(() -> new Reservation(name, null, time))
-                        .isInstanceOf(BadRequestException.class)
-                        .hasMessage(ExceptionMessage.INVALID_NAME.getMessage()),
-
                 () -> assertThatThrownBy(() -> new Reservation("김철수", null, time))
                         .isInstanceOf(BadRequestException.class)
                         .hasMessage(ExceptionMessage.INVALID_DATE.getMessage()),
