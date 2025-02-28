@@ -8,7 +8,6 @@ import roomescape.error.exception.NotFoundReservationException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-
     @ExceptionHandler(NotFoundReservationException.class)
     public ResponseEntity<CustomErrorResponse> handleNotFoundReservationException(NotFoundReservationException e) {
         CustomErrorResponse errorResponse = new CustomErrorResponse(e.getStatusCode(), e.getMessage());

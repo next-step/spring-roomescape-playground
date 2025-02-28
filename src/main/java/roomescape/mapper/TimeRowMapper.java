@@ -8,7 +8,6 @@ import roomescape.domain.Time;
 
 @Component
 public class TimeRowMapper implements RowMapper<Time> {
-
     @Override
     public Time mapRow(ResultSet resultSet, int rowNum) throws SQLException {
         return new Time(

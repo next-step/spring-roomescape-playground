@@ -30,7 +30,6 @@ import roomescape.repository.ReservationDAO;
 
 @ExtendWith(MockitoExtension.class)
 public class ReservationServiceTest {
-
     @Mock
     private ReservationDAO reservationDAO;
 

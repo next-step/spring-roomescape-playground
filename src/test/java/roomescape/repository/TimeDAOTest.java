@@ -78,7 +78,8 @@ public class TimeDAOTest {
 
         // then
         assertThatThrownBy(() -> timeDAO.findTime(savedTime.getId()))
-            .isInstanceOf(Exception.class);
+            .isInstanceOf(NotFoundTimeException.class)
+            .hasMessage("존재하지 않는 시간입니다.");
     }
 
     @Test

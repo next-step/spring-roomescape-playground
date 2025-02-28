@@ -10,7 +10,6 @@ import roomescape.domain.Time;
 
 @Component
 public class ReservationRowMapper implements RowMapper<Reservation> {
-
     @Override
     public Reservation mapRow(ResultSet resultSet, int rowNum) throws SQLException {
         Long timeId = resultSet.getLong("time_id");
