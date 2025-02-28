@@ -70,7 +70,7 @@ public class ReservationDAOTest {
             () -> assertThat(savedReservation.getId()).isEqualTo(response.getId()),
             () -> assertThat(savedReservation.getName()).isEqualTo("콜리"),
             () -> assertThat(savedReservation.getDate()).isEqualTo(LocalDate.now().plusDays(1)),
-            () -> assertThat(savedReservation.getTime()).usingRecursiveComparison().isEqualTo(time)
+            () -> assertThat(savedReservation.getTime()).isEqualTo(time)
         );
     }
 
