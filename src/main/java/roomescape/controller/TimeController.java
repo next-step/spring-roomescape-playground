@@ -15,38 +15,39 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import roomescape.dao.time.TimeJdbcDAO;
 import roomescape.entity.Time;
+import roomescape.service.TimeService;
 
 @RestController
 @RequestMapping("/times")
 public class TimeController {
 
-    private final TimeJdbcDAO timeJdbcDAO;
+    private final TimeService timeService;
 
-    public TimeController(TimeJdbcDAO timeJdbcDAO) {
-        this.timeJdbcDAO = timeJdbcDAO;
+    public TimeController(TimeService timeService) {
+        this.timeService = timeService;
     }
 
     @PostMapping
     public ResponseEntity<Time> createTimeTable(@RequestBody Time time) {
-        Time newTimeTable = timeJdbcDAO.create(time);
+        Time newTimeTable = timeService.createTime(time);
         return ResponseEntity.created(URI.create("/times/" + newTimeTable.getId()))
                 .body(newTimeTable);
     }
 
     @GetMapping
     public List<Time> getTimeTables() {
-        return timeJdbcDAO.getAll();
+        return timeService.getAllTimes();
     }
 
     @GetMapping("/{id}")
     public Time getTimeDetail(@PathVariable long id) {
-        return timeJdbcDAO.getById(id);
+        return timeService.getTimeById(id);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteTimeTable(@PathVariable long id) {
-        timeJdbcDAO.delete(id);
+        timeService.deleteTime(id);
     }
 
 
