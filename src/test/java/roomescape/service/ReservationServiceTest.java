@@ -39,18 +39,12 @@ public class ReservationServiceTest {
     @InjectMocks
     private ReservationService reservationService;
 
-    private ReservationRequest validRequest;
-    private Time time;
-
-    @BeforeEach
-    void setUp() {
-        time = new Time(1L, LocalTime.now());
-        validRequest = new ReservationRequest("파도", LocalDate.now().plusDays(1), time.getId());
-    }
-
     @Test
     void 예약을_정상적으로_생성할_수_있다() {
-        //given
+        // given
+        Time time = new Time(1L, LocalTime.now());
+        ReservationRequest validRequest = new ReservationRequest("파도", LocalDate.now().plusDays(1), time.getId());
+
         when(timeService.findTimeById(time.getId())).thenReturn(time);
         Reservation reservation = new Reservation(validRequest.name(), validRequest.date(), time);
         when(reservationDAO.createReservation(argThat(newReservation ->
@@ -76,6 +70,7 @@ public class ReservationServiceTest {
     @Test
     void 예약_생성_시_유효하지_않은_날짜_예외() {
         // given
+        Time time = new Time(1L, LocalTime.now());
         ReservationRequest invalidRequest = new ReservationRequest("파도", LocalDate.now().minusDays(1), time.getId());
         when(timeService.findTimeById(time.getId())).thenReturn(time);
 
@@ -90,6 +85,7 @@ public class ReservationServiceTest {
     @Test
     void 예약_생성_시_유효하지_않은_시간_예외() {
         // given
+        Time time = new Time(1L, LocalTime.now());
         ReservationRequest invalidTimeRequest = new ReservationRequest("파도", LocalDate.now(), time.getId());
         when(timeService.findTimeById(time.getId())).thenReturn(time);
 
@@ -104,6 +100,7 @@ public class ReservationServiceTest {
     @Test
     void 예약_조회() {
         // given
+        Time time = new Time(1L, LocalTime.now());
         List<Reservation> mockReservations = List.of(
             new Reservation(1L, "콜리", LocalDate.now().plusDays(1), time),
             new Reservation(2L, "파도", LocalDate.now().plusDays(2), time)

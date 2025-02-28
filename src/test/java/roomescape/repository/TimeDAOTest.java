@@ -19,17 +19,13 @@ import roomescape.mapper.TimeRowMapper;
 
 @JdbcTest
 public class TimeDAOTest {
-    private TimeDAO timeDAO;
+    private final TimeDAO timeDAO;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    private Time savedTime;
-
-    @BeforeEach
-    void setUp() {
-        timeDAO = new TimeDAO(jdbcTemplate, new TimeRowMapper());
-        savedTime = timeDAO.createTime(new Time(LocalTime.of(10, 0)));
+    public TimeDAOTest(@Autowired JdbcTemplate jdbcTemplate) {
+        this.timeDAO = new TimeDAO(jdbcTemplate, new TimeRowMapper());
     }
 
     @Test
@@ -49,6 +45,9 @@ public class TimeDAOTest {
 
     @Test
     void 시간들을_조회할_수_있다() {
+        // given
+        Time savedTime = timeDAO.createTime(new Time(LocalTime.of(10, 0)));
+
         // when
         List<Time> times = timeDAO.findTimes();
 
@@ -59,6 +58,9 @@ public class TimeDAOTest {
 
     @Test
     void 시간을_조회할_수_있다() {
+        // given
+        Time savedTime = timeDAO.createTime(new Time(LocalTime.of(10, 0)));
+
         // when
         Time foundTime = timeDAO.findTime(savedTime.getId());
 
@@ -71,6 +73,9 @@ public class TimeDAOTest {
 
     @Test
     void 시간을_삭제할_수_있다() {
+        // given
+        Time savedTime = timeDAO.createTime(new Time(LocalTime.of(10, 0)));
+
         // when
         timeDAO.deleteTime(savedTime.getId());
 
@@ -82,6 +87,9 @@ public class TimeDAOTest {
 
     @Test
     void 특정_시간이_존재한다() {
+        // given
+        Time savedTime = timeDAO.createTime(new Time(LocalTime.of(10, 0)));
+
         // when
         boolean exists = timeDAO.existsTime(savedTime.getTime());
         boolean notExists = timeDAO.existsTime(LocalTime.of(15, 0));

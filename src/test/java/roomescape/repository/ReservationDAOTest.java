@@ -18,33 +18,34 @@ import roomescape.mapper.ReservationRowMapper;
 
 @JdbcTest
 public class ReservationDAOTest {
-    private ReservationDAO reservationDAO;
+    private final ReservationDAO reservationDAO;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    private Time time;
-
-    @BeforeEach
-    void setUp() {
-        reservationDAO = new ReservationDAO(jdbcTemplate, new ReservationRowMapper());
-
-        jdbcTemplate.update("delete from reservation");
-        jdbcTemplate.update("delete from time");
-
-        jdbcTemplate.update("insert into time (id, time) values (?, ?)", 1L, LocalTime.of(15, 0));
-        time = new Time(1L, LocalTime.of(15, 0));
+    public ReservationDAOTest(@Autowired JdbcTemplate jdbcTemplate) {
+        this.reservationDAO = new ReservationDAO(jdbcTemplate, new ReservationRowMapper());
     }
 
     @Test
     void 예약을_생성할_수_있다() {
-        //given
+        // given
+        jdbcTemplate.update("delete from reservation");
+        jdbcTemplate.update("delete from time");
+        jdbcTemplate.update("insert into time (id, time) values (?, ?)", 1L, LocalTime.of(15, 0));
+
+        Time time = jdbcTemplate.queryForObject(
+            "SELECT id, time FROM time WHERE id = ?",
+            new Object[]{1L},
+            (rs, rowNum) -> new Time(rs.getLong("id"), rs.getTime("time").toLocalTime())
+        );
+
         Reservation reservation = new Reservation("파도", LocalDate.now().plusDays(1), time);
 
-        //when
+        // when
         Reservation response = reservationDAO.createReservation(reservation);
 
-        //then
+        // then
         assertAll(
             () -> assertThat(response.getId()).isNotNull(),
             () -> assertThat(response.getName()).isEqualTo("파도"),
@@ -55,15 +56,25 @@ public class ReservationDAOTest {
 
     @Test
     void 예약을_조회할_수_있다() {
-        //given
+        // given
+        jdbcTemplate.update("delete from reservation");
+        jdbcTemplate.update("delete from time");
+        jdbcTemplate.update("insert into time (id, time) values (?, ?)", 1L, LocalTime.of(15, 0));
+
+        Time time = jdbcTemplate.queryForObject(
+            "SELECT id, time FROM time WHERE id = ?",
+            new Object[]{1L},
+            (rs, rowNum) -> new Time(rs.getLong("id"), rs.getTime("time").toLocalTime())
+        );
+
         Reservation reservation = new Reservation("콜리", LocalDate.now().plusDays(1), time);
         Reservation response = reservationDAO.createReservation(reservation);
 
-        //when
+        // when
         List<Reservation> reservations = reservationDAO.findReservations();
         Reservation savedReservation = reservations.get(0);
 
-        //then
+        // then
         assertAll(
             () -> assertThat(savedReservation.getId()).isEqualTo(response.getId()),
             () -> assertThat(savedReservation.getName()).isEqualTo("콜리"),
@@ -74,17 +85,27 @@ public class ReservationDAOTest {
 
     @Test
     void 예약을_삭제할_수_있다() {
-        //given
+        // given
+        jdbcTemplate.update("delete from reservation");
+        jdbcTemplate.update("delete from time");
+        jdbcTemplate.update("insert into time (id, time) values (?, ?)", 1L, LocalTime.of(15, 0));
+
+        Time time = jdbcTemplate.queryForObject(
+            "SELECT id, time FROM time WHERE id = ?",
+            new Object[]{1L},
+            (rs, rowNum) -> new Time(rs.getLong("id"), rs.getTime("time").toLocalTime())
+        );
+
         Reservation reservation1 = new Reservation("파도", LocalDate.now().plusDays(1), time);
         Reservation reservation2 = new Reservation("콜리", LocalDate.now().plusDays(2), time);
         Reservation response1 = reservationDAO.createReservation(reservation1);
         Reservation response2 = reservationDAO.createReservation(reservation2);
 
-        //when
+        // when
         reservationDAO.deleteReservation(response1.getId());
         List<Reservation> reservations = reservationDAO.findReservations();
 
-        //then
+        // then
         assertAll(
             () -> assertThat(reservations).hasSize(1),
             () -> assertThat(reservations.get(0).getName()).isEqualTo("콜리")

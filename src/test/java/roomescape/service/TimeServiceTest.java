@@ -32,18 +32,11 @@ public class TimeServiceTest {
     @InjectMocks
     private TimeService timeService;
 
-    private TimeRequest validRequest;
-    private Time time;
-
-    @BeforeEach
-    void setUp() {
-        time = new Time(1L, LocalTime.now());
-        validRequest = new TimeRequest(time.getTime());
-    }
-
     @Test
     void 시간을_정상적으로_생성할_수_있다() {
         // given
+        Time time = new Time(1L, LocalTime.now());
+        TimeRequest validRequest = new TimeRequest(time.getTime());
         when(timeDAO.createTime(any(Time.class))).thenReturn(time);
 
         // when
@@ -61,6 +54,7 @@ public class TimeServiceTest {
     @Test
     void 중복된_시간_예외() {
         // given
+        TimeRequest validRequest = new TimeRequest(LocalTime.now());
         when(timeDAO.existsTime(validRequest.time())).thenReturn(true);
 
         // when & then
@@ -72,7 +66,9 @@ public class TimeServiceTest {
     @Test
     void 시간을_모두_조회할_수_있다() {
         // given
-        List<Time> mockTimes = List.of(time, new Time(2L, LocalTime.of(10, 0)));
+        Time time = new Time(1L, LocalTime.now());
+        Time anotherTime = new Time(2L, LocalTime.of(10, 0));
+        List<Time> mockTimes = List.of(time, anotherTime);
         when(timeDAO.findTimes()).thenReturn(mockTimes);
 
         // when
@@ -86,7 +82,7 @@ public class TimeServiceTest {
             },
             () -> {
                 assertThat(responses.get(1).id()).isEqualTo(2L);
-                assertThat(responses.get(1).time()).isEqualTo(LocalTime.of(10, 0));
+                assertThat(responses.get(1).time()).isEqualTo(anotherTime.getTime());
             }
         );
 
@@ -96,7 +92,8 @@ public class TimeServiceTest {
     @Test
     void 시간_삭제_테스트() {
         // given
-        Long timeId = time.getId();
+        Long timeId = 1L;
+        Time time = new Time(timeId, LocalTime.now());
         when(timeDAO.findTime(timeId)).thenReturn(time);
 
         // when
@@ -104,7 +101,9 @@ public class TimeServiceTest {
 
         // then
         verify(timeDAO, times(1)).deleteTime(timeId);
-        when(timeDAO.findTime(timeId)).thenReturn(null);
-        assertThat(timeService.findTimeById(timeId)).isNull();
+        when(timeDAO.findTime(timeId)).thenThrow(new InvalidValueException(ErrorMessage.NO_TIME.getMessage()));
+        assertThatThrownBy(() -> timeService.findTimeById(timeId))
+            .isInstanceOf(InvalidValueException.class)
+            .hasMessage(ErrorMessage.NO_TIME.getMessage());
     }
 }
