@@ -57,20 +57,24 @@ public class ReservationRepository {
     }
 
     public List<Reservation> findAll() {
-        String selectAll = "SELECT r.id AS reservation_id, r.name, r.date, t.id AS time_id, t.time AS time_value " +
-                "FROM reservation AS r " +
-                "INNER JOIN time AS t " +
-                "ON r.time_id = t.id";
+        String selectAll = """
+                SELECT r.id AS reservation_id, r.name, r.date, t.id AS time_id, t.time AS time_value
+                FROM reservation AS r
+                INNER JOIN time AS t
+                ON r.time_id = t.id
+                """;
         return jdbcTemplate.query(selectAll, RESERVATION_ROW_MAPPER);
     }
 
     public Optional<Reservation> findById(final long reservationId) {
         try {
-            String selectById = "SELECT r.id AS reservation_id, r.name, r.date, t.id AS time_id, t.time AS time_value " +
-                    "FROM reservation AS r " +
-                    "INNER JOIN time AS t" +
-                    "ON r.time_id = t.id " +
-                    "WHERE r.id = ?";
+            String selectById = """
+                    SELECT r.id AS reservation_id, r.name, r.date, t.id AS time_id, t.time AS time_value
+                    FROM reservation AS r
+                    INNER JOIN time AS t
+                    ON r.time_id = t.id
+                    WHERE r.id = ?
+                    """;
             Reservation reservation = jdbcTemplate.queryForObject(selectById, RESERVATION_ROW_MAPPER, reservationId);
             return Optional.ofNullable(reservation);
         } catch (EmptyResultDataAccessException emptyResultDataAccessException) {
@@ -79,12 +83,14 @@ public class ReservationRepository {
     }
 
     public boolean existsByDateAndTime(final LocalDate date, final String time) {
-        String selectByDateAndTime = "SELECT EXISTS (" +
-                "SELECT 1 " +
-                "FROM reservation AS r " +
-                "INNER JOIN time AS t " +
-                "ON r.time_id = t.id " +
-                "WHERE r.`date` = ? AND t.`time` = ?)";
+        String selectByDateAndTime = """
+                SELECT EXISTS (
+                SELECT 1
+                FROM reservation AS r
+                INNER JOIN time AS t
+                ON r.time_id = t.id
+                WHERE r.`date` = ? AND t.`time` = ?)
+                """;
         return jdbcTemplate.queryForObject(selectByDateAndTime, Boolean.class, date, time);
     }
 

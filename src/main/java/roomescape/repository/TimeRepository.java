@@ -41,10 +41,12 @@ public class TimeRepository {
     }
 
     public boolean existsByTime(final String time) {
-        String selectByTime = "SELECT EXISTS (" +
-                "SELECT 1 " +
-                "FROM time " +
-                "WHERE `time` = ?)";
+        String selectByTime = """
+                SELECT EXISTS (
+                SELECT 1
+                FROM time
+                WHERE `time` = ?)
+                """;
         return jdbcTemplate.queryForObject(selectByTime, Boolean.class, time);
     }
 
