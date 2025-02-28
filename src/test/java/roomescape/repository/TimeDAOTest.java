@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import roomescape.domain.Time;
+import roomescape.error.ErrorMessage;
+import roomescape.error.exception.InvalidValueException;
 import roomescape.mapper.TimeRowMapper;
 
 @JdbcTest
@@ -78,8 +80,8 @@ public class TimeDAOTest {
 
         // then
         assertThatThrownBy(() -> timeDAO.findTime(savedTime.getId()))
-            .isInstanceOf(NotFoundTimeException.class)
-            .hasMessage("존재하지 않는 시간입니다.");
+            .isInstanceOf(InvalidValueException.class)
+            .hasMessage(ErrorMessage.NO_TIME.getMessage());
     }
 
     @Test

@@ -4,10 +4,13 @@ import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Time;
+import roomescape.error.ErrorMessage;
+import roomescape.error.exception.InvalidValueException;
 import roomescape.mapper.TimeRowMapper;
 
 @Repository
@@ -44,7 +47,11 @@ public class TimeDAO {
 
     public Time findTime(Long timeId) {
         String sql = "select * from time where id = ?";
-        return jdbcTemplate.queryForObject(sql, timeRowMapper, timeId);
+        try {
+            return jdbcTemplate.queryForObject(sql, timeRowMapper, timeId);
+        } catch (EmptyResultDataAccessException e) {
+            throw new InvalidValueException(ErrorMessage.NO_TIME.getMessage());
+        }
     }
 
     public boolean existsTime(LocalTime time) {
