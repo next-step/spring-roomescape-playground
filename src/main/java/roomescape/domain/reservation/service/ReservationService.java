@@ -13,7 +13,6 @@ import roomescape.domain.reservation.domain.Reservation;
 import roomescape.domain.reservation.dto.ReservationRequest;
 import roomescape.domain.reservation.dto.ReservationResponse;
 import roomescape.domain.reservation.repository.ReservationRepository;
-import roomescape.global.exception.RoomescapeServerException;
 
 @Service
 public class ReservationService {
@@ -47,7 +46,7 @@ public class ReservationService {
             throw new RoomescapeBadRequestException("잘못된 예약 날짜입니다. 현재 시각 이전 시간에 예약할 수 없습니다.");
         }
 
-        Reservation savedReservation = reservationRepository.create(reservationRequest.newReservation(reservationTime));
+        Reservation savedReservation = reservationRepository.create(reservationRequest.toReservation(reservationTime));
 
         return ReservationResponse.fromReservation(savedReservation);
     }
