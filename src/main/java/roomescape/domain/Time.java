@@ -16,7 +16,7 @@ public class Time {
     }
 
     public Time(LocalTime time) {
-        this.time = time;
+        this(null, time);
     }
 
     public Long getId() {

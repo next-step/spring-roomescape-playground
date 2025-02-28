@@ -23,10 +23,7 @@ public class Reservation {
     }
 
     public Reservation(String name, LocalDate date, Time time) {
-        this.name = name;
-        validateName(name);
-        this.date = date;
-        this.time = time;
+        this(null, name, date, time);
     }
 
     public Long getId() {
