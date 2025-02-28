@@ -1,9 +1,12 @@
 package roomescape.domain.reservationTime.domain;
 
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import roomescape.global.exception.RoomescapeBadRequestException;
 
 public class ReservationTime {
+
+    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
     private final Long id;
 
@@ -19,6 +22,10 @@ public class ReservationTime {
 
     public ReservationTime(final LocalTime time) {
         this(null, time);
+    }
+
+    public String formatTime() {
+        return time.format(TIME_FORMATTER);
     }
 
     public Long getId() {

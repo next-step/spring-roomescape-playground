@@ -32,6 +32,10 @@ public class Reservation {
         this.reservationTime = reservationTime;
     }
 
+    public String formatTime() {
+            return reservationTime.formatTime();
+    }
+
     public Long getId() {
         return id;
     }
