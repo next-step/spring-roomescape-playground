@@ -1,12 +1,10 @@
 package roomescape.domain;
 
 import roomescape.global.exception.BadRequestException;
-import roomescape.global.util.TimeParser;
 
 import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.regex.Pattern;
 
 import static roomescape.global.exception.ExceptionMessage.INVALID_DATE;
@@ -88,8 +86,7 @@ public class Reservation {
     }
 
     public boolean isExpired(final Clock clock) {
-        LocalTime parsedTime = TimeParser.parseToLocalTime(time.getTime());
-        LocalDateTime dateTime = date.atTime(parsedTime);
+        LocalDateTime dateTime = date.atTime(time.getTime());
         return dateTime.isBefore(LocalDateTime.now(clock));
     }
 

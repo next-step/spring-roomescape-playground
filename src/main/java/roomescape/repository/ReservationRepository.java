@@ -11,6 +11,7 @@ import roomescape.domain.Reservation;
 import roomescape.domain.Time;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,7 +22,7 @@ public class ReservationRepository {
     {
         Time time = new Time(
                 rs.getLong("time_id"),
-                rs.getString("time_value")
+                rs.getTime("time_value").toLocalTime()
         );
         return new Reservation(
                 rs.getLong("reservation_id"),
@@ -82,7 +83,7 @@ public class ReservationRepository {
         }
     }
 
-    public boolean existsByDateAndTime(final LocalDate date, final String time) {
+    public boolean existsByDateAndTime(final LocalDate date, final LocalTime time) {
         String selectByDateAndTime = """
                 SELECT EXISTS (
                 SELECT 1

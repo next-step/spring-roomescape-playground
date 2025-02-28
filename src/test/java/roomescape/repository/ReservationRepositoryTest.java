@@ -8,6 +8,7 @@ import roomescape.domain.Reservation;
 import roomescape.domain.Time;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,7 +28,7 @@ class ReservationRepositoryTest {
     @Test
     void 예약을_생성한다() {
         // given
-        Time time = new Time("13:00");
+        Time time = new Time(LocalTime.of(13, 0));
         Time savedTime = timeRepository.save(time);
         Reservation reservation = new Reservation("김철수", LocalDate.of(2025, 2, 19), savedTime);
         // when
@@ -44,7 +45,7 @@ class ReservationRepositoryTest {
     @Test
     void 아이디를_통해_특정_예약을_조회한다() {
         // given
-        Time time = new Time("13:00");
+        Time time = new Time(LocalTime.of(13, 0));
         Time savedTime = timeRepository.save(time);
         Reservation reservation = new Reservation("김철수", LocalDate.of(2025, 2, 19), savedTime);
         Reservation savedReservation = reservationRepository.save(reservation);
@@ -64,8 +65,8 @@ class ReservationRepositoryTest {
     @Test
     void 모든_예약을_조회한다() {
         // given
-        Time time1 = new Time("13:00");
-        Time time2 = new Time("14:00");
+        Time time1 = new Time(LocalTime.of(13, 0));
+        Time time2 = new Time(LocalTime.of(14, 0));
         Time savedTime1 = timeRepository.save(time1);
         Time savedTime2 = timeRepository.save(time2);
         Reservation reservation1 = new Reservation("김철수", LocalDate.of(2025, 2, 19), savedTime1);
@@ -82,7 +83,7 @@ class ReservationRepositoryTest {
     void 해당_날짜_및_시간에_예약이_존재하면_true를_반환한다() {
         // given
         LocalDate date = LocalDate.of(2025, 2, 19);
-        Time time = new Time("13:00");
+        Time time = new Time(LocalTime.of(13, 0));
         Time savedTime = timeRepository.save(time);
         Reservation reservation = new Reservation("김철수", date, savedTime);
         reservationRepository.save(reservation);
@@ -95,7 +96,7 @@ class ReservationRepositoryTest {
     @Test
     void 아이디를_통해_특정_예약을_삭제한다() {
         // given
-        Time time = new Time("13:00");
+        Time time = new Time(LocalTime.of(13, 0));
         Time savedTime = timeRepository.save(time);
         Reservation reservation = new Reservation("김철수", LocalDate.of(2025, 2, 19), savedTime);
         Reservation savedReservation = reservationRepository.save(reservation);

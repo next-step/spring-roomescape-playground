@@ -16,6 +16,7 @@ import roomescape.repository.TimeRepository;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.List;
 
@@ -49,7 +50,7 @@ class ReservationServiceTest {
     @Test
     void 예약을_생성할_수_있다() {
         // given
-        Time time = saveTime("13:00");
+        Time time = saveTime(LocalTime.of(13, 0));
         CreateReservationRequest request = createReservationRequest("김철수", 2025, 2, 18, time.getId());
         // when
         ReservationResponse response = reservationService.createReservation(request);
@@ -64,7 +65,7 @@ class ReservationServiceTest {
     @Test
     void 동시간대에_예약이_존재한다면_예외가_발생한다() {
         // given
-        Time time = saveTime("13:00");
+        Time time = saveTime(LocalTime.of(13, 0));
         CreateReservationRequest request1 = createReservationRequest("김철수", 2025, 2, 18, time.getId());
         reservationService.createReservation(request1);
         CreateReservationRequest request2 = createReservationRequest("김영희", 2025, 2, 18, time.getId());
@@ -78,7 +79,7 @@ class ReservationServiceTest {
     @Test
     void 현재_시간_이전의_예약_생성_시_예외가_발생한다() {
         // given
-        Time time = saveTime("09:00");
+        Time time = saveTime(LocalTime.of(9, 0));
         CreateReservationRequest request = createReservationRequest("김철수", 2025, 2, 17, time.getId());
         // when & then
         assertThatThrownBy(() -> reservationService.createReservation(request))
@@ -90,9 +91,9 @@ class ReservationServiceTest {
     @Test
     void 총_예약건수를_조회할_수_있다() {
         // given
-        Time time1 = saveTime("13:00");
+        Time time1 = saveTime(LocalTime.of(13, 0));
         CreateReservationRequest request1 = createReservationRequest("김철수", 2025, 2, 18, time1.getId());
-        Time time2 = saveTime("14:00");
+        Time time2 = saveTime(LocalTime.of(14, 0));
         CreateReservationRequest request2 = createReservationRequest("김영희", 2025, 2, 18, time2.getId());
         reservationService.createReservation(request1);
         reservationService.createReservation(request2);
@@ -105,7 +106,7 @@ class ReservationServiceTest {
     @Test
     void 예약을_삭제할_수_있다() {
         // given
-        Time time = saveTime("13:00");
+        Time time = saveTime(LocalTime.of(13, 0));
         CreateReservationRequest request = createReservationRequest("김철수", 2025, 2, 18, time.getId());
         ReservationResponse response = reservationService.createReservation(request);
         int initialReservationSize = reservationService.getReservations().size();
@@ -123,7 +124,7 @@ class ReservationServiceTest {
                         ExceptionMessage.RESERVATION_NOT_EXISTS.getMessage());
     }
 
-    private Time saveTime(String time) {
+    private Time saveTime(LocalTime time) {
         Time newTime = new Time(time);
         return timeRepository.save(newTime);
     }

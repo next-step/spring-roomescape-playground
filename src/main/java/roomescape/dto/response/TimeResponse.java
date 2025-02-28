@@ -2,9 +2,11 @@ package roomescape.dto.response;
 
 import roomescape.domain.Time;
 
+import java.time.LocalTime;
+
 public record TimeResponse(
         long id,
-        String time
+        LocalTime time
 ) {
     public TimeResponse(Time time) {
         this(time.getId(),

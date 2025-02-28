@@ -9,6 +9,7 @@ import roomescape.dto.response.TimeResponse;
 import roomescape.global.exception.BadRequestException;
 import roomescape.global.exception.ExceptionMessage;
 
+import java.time.LocalTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,7 +26,7 @@ class TimeServiceTest {
     @Test
     void 시간을_생성할_수_있다() {
         // given
-        CreateTimeRequest request = new CreateTimeRequest("13:00");
+        CreateTimeRequest request = new CreateTimeRequest(LocalTime.of(13, 0));
         // when
         TimeResponse response = timeService.createTime(request);
         // then
@@ -38,9 +39,9 @@ class TimeServiceTest {
     @Test
     void 동일한_시간이_이미_존재한다면_예외가_발생한다() {
         // given
-        CreateTimeRequest request1 = new CreateTimeRequest("13:00");
+        CreateTimeRequest request1 = new CreateTimeRequest(LocalTime.of(13, 0));
         timeService.createTime(request1);
-        CreateTimeRequest request2 = new CreateTimeRequest("13:00");
+        CreateTimeRequest request2 = new CreateTimeRequest(LocalTime.of(13, 0));
         // when & then
         assertThatThrownBy(() -> timeService.createTime(request2))
                 .isInstanceOf(BadRequestException.class)
@@ -51,9 +52,9 @@ class TimeServiceTest {
     @Test
     void 저장한_시간을_모두_조회할_수_있다() {
         // given
-        CreateTimeRequest request1 = new CreateTimeRequest("13:00");
+        CreateTimeRequest request1 = new CreateTimeRequest(LocalTime.of(13, 0));
         timeService.createTime(request1);
-        CreateTimeRequest request2 = new CreateTimeRequest("14:00");
+        CreateTimeRequest request2 = new CreateTimeRequest(LocalTime.of(14, 0));
         timeService.createTime(request2);
         // when
         List<TimeResponse> timeResponses = timeService.getTimes();
@@ -64,7 +65,7 @@ class TimeServiceTest {
     @Test
     void 시간을_삭제할_수_있다() {
         // given
-        CreateTimeRequest request = new CreateTimeRequest("13:00");
+        CreateTimeRequest request = new CreateTimeRequest(LocalTime.of(13, 0));
         TimeResponse response = timeService.createTime(request);
         int initialTimeSize = timeService.getTimes().size();
         // when

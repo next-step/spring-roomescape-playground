@@ -2,30 +2,32 @@ package roomescape.domain;
 
 import roomescape.global.exception.BadRequestException;
 
+import java.time.LocalTime;
+
 import static roomescape.global.exception.ExceptionMessage.INVALID_TIME;
 
 public class Time {
 
     private long id;
 
-    private String time;
+    private LocalTime time;
 
     protected Time() {
     }
 
-    public Time(final long id, final String time) {
+    public Time(final long id, final LocalTime time) {
         validateTime(time);
         this.id = id;
         this.time = time;
     }
 
-    public Time(final String time) {
+    public Time(final LocalTime time) {
         validateTime(time);
         this.time = time;
     }
 
-    private void validateTime(final String time) {
-        if (time == null || time.isBlank()) {
+    private void validateTime(final LocalTime time) {
+        if (time == null) {
             throw new BadRequestException(INVALID_TIME.getMessage());
         }
     }
@@ -34,7 +36,7 @@ public class Time {
         return id;
     }
 
-    public String getTime() {
+    public LocalTime getTime() {
         return time;
     }
 }

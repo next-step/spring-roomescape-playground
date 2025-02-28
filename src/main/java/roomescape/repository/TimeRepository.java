@@ -9,6 +9,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Time;
 
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,7 +19,7 @@ public class TimeRepository {
     private static final RowMapper<Time> TIME_ROW_MAPPER = (rs, rowNum) ->
             new Time(
                     rs.getLong("id"),
-                    rs.getString("time")
+                    rs.getTime("time").toLocalTime()
             );
 
     private final SimpleJdbcInsert jdbcInsert;
@@ -40,7 +41,7 @@ public class TimeRepository {
         );
     }
 
-    public boolean existsByTime(final String time) {
+    public boolean existsByTime(final LocalTime time) {
         String selectByTime = """
                 SELECT EXISTS (
                 SELECT 1
