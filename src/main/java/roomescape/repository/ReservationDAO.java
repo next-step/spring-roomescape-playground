@@ -24,12 +24,15 @@ public class ReservationDAO {
     }
 
     public List<Reservation> findReservations() {
-        String sql = "select r.id as reservation_id, "
-            + "r.name, "
-            + "r.date, "
-            + "t.id as time_id, "
-            + "t.time as time_value "
-            + "from reservation as r inner join time as t on r.time_id = t.id";
+        String sql = """
+                select r.id as reservation_id,
+                       r.name,
+                       r.date,
+                       t.id as time_id,
+                       t.time as time_value
+                from reservation as r
+                inner join time as t on r.time_id = t.id
+                """;
         return jdbcTemplate.query(sql, reservationRowMapper);
     }
 
