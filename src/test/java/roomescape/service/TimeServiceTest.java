@@ -25,7 +25,7 @@ class TimeServiceTest {
     @Test
     void 시간을_생성할_수_있다() {
         // given
-        CreateTimeRequest request = createTimeRequest("13:00");
+        CreateTimeRequest request = new CreateTimeRequest("13:00");
         // when
         TimeResponse response = timeService.createTime(request);
         // then
@@ -38,9 +38,9 @@ class TimeServiceTest {
     @Test
     void 동일한_시간이_이미_존재한다면_예외가_발생한다() {
         // given
-        CreateTimeRequest request1 = createTimeRequest("13:00");
+        CreateTimeRequest request1 = new CreateTimeRequest("13:00");
         timeService.createTime(request1);
-        CreateTimeRequest request2 = createTimeRequest("13:00");
+        CreateTimeRequest request2 = new CreateTimeRequest("13:00");
         // when & then
         assertThatThrownBy(() -> timeService.createTime(request2))
                 .isInstanceOf(BadRequestException.class)
@@ -51,9 +51,9 @@ class TimeServiceTest {
     @Test
     void 저장한_시간을_모두_조회할_수_있다() {
         // given
-        CreateTimeRequest request1 = createTimeRequest("13:00");
+        CreateTimeRequest request1 = new CreateTimeRequest("13:00");
         timeService.createTime(request1);
-        CreateTimeRequest request2 = createTimeRequest("14:00");
+        CreateTimeRequest request2 = new CreateTimeRequest("14:00");
         timeService.createTime(request2);
         // when
         List<TimeResponse> timeResponses = timeService.getTimes();
@@ -64,7 +64,7 @@ class TimeServiceTest {
     @Test
     void 시간을_삭제할_수_있다() {
         // given
-        CreateTimeRequest request = createTimeRequest("13:00");
+        CreateTimeRequest request = new CreateTimeRequest("13:00");
         TimeResponse response = timeService.createTime(request);
         int initialTimeSize = timeService.getTimes().size();
         // when
@@ -79,9 +79,5 @@ class TimeServiceTest {
                 .isInstanceOf(BadRequestException.class)
                 .hasMessage(
                         ExceptionMessage.TIME_NOT_EXISTS.getMessage());
-    }
-
-    private CreateTimeRequest createTimeRequest(String time) {
-        return new CreateTimeRequest(time);
     }
 }
