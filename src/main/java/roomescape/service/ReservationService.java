@@ -12,15 +12,16 @@ import roomescape.dto.reservation.response.ReservationResponse;
 import roomescape.error.ErrorMessage;
 import roomescape.error.exception.InvalidValueException;
 import roomescape.repository.ReservationDAO;
+import roomescape.repository.TimeDAO;
 
 @Service
 public class ReservationService {
     private final ReservationDAO reservationDAO;
-    private final TimeService timeService;
+    private final TimeDAO timeDAO;
 
-    public ReservationService(ReservationDAO reservationDAO, TimeService timeService) {
+    public ReservationService(ReservationDAO reservationDAO, TimeDAO timeDAO) {
         this.reservationDAO = reservationDAO;
-        this.timeService = timeService;
+        this.timeDAO = timeDAO;
     }
 
     public List<ReservationResponse> showReservations() {
@@ -32,7 +33,7 @@ public class ReservationService {
     }
 
     public ReservationResponse reserve(ReservationRequest request) {
-        Time time = timeService.findTimeById(request.time());
+        Time time = timeDAO.findTime(request.time());
         validateDateTime(request.date(), time.getTime());
         Reservation reservation = new Reservation(request.name(), request.date(), time);
         Reservation response = reservationDAO.createReservation(reservation);
