@@ -33,7 +33,6 @@ public class TimeDAOTest {
     }
 
     @Test
-    @DisplayName("시간아 DB애 저장이 잘 되는지 확인")
     void 시간을_생성할_수_있다() {
         // given
         Time newTime = new Time(LocalTime.of(12, 0));
@@ -49,7 +48,6 @@ public class TimeDAOTest {
     }
 
     @Test
-    @DisplayName("저장된 시간들을 제대로 조회하는지 확인")
     void 시간들을_조회할_수_있다() {
         // when
         List<Time> times = timeDAO.findTimes();
@@ -60,7 +58,6 @@ public class TimeDAOTest {
     }
 
     @Test
-    @DisplayName("저장된 시간중 하나를 ID로 시간을 조회하는지 확인")
     void 시간을_조회할_수_있다() {
         // when
         Time foundTime = timeDAO.findTime(savedTime.getId());
@@ -73,7 +70,6 @@ public class TimeDAOTest {
     }
 
     @Test
-    @DisplayName("시간을 삭제할 수 있는 지 확인")
     void 시간을_삭제할_수_있다() {
         // when
         timeDAO.deleteTime(savedTime.getId());
@@ -85,7 +81,6 @@ public class TimeDAOTest {
     }
 
     @Test
-    @DisplayName("특정 시간이 존재하는지 확인할 수 있는지 확인")
     void 특정_시간이_존재한다() {
         // when
         boolean exists = timeDAO.existsTime(savedTime.getTime());

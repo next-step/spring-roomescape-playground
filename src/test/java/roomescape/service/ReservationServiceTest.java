@@ -49,7 +49,6 @@ public class ReservationServiceTest {
     }
 
     @Test
-    @DisplayName("예약을 정상적으로 생성하는지 확인")
     void 예약을_정상적으로_생성할_수_있다() {
         //given
         when(timeService.findTimeById(time.getId())).thenReturn(time);
@@ -75,7 +74,6 @@ public class ReservationServiceTest {
     }
 
     @Test
-    @DisplayName("예약 생성 시 유효하지 않은 날짜가 주어지면 예외를 발생시킨다")
     void 예약_생성_시_유효하지_않은_날짜_예외() {
         // given
         ReservationRequest invalidRequest = new ReservationRequest("파도", LocalDate.now().minusDays(1), time.getId());
@@ -90,7 +88,6 @@ public class ReservationServiceTest {
     }
 
     @Test
-    @DisplayName("예약 생성 시 유효하지 않은 시간이 주어지면 예외를 발생시킨다")
     void 예약_생성_시_유효하지_않은_시간_예외() {
         // given
         ReservationRequest invalidTimeRequest = new ReservationRequest("파도", LocalDate.now(), time.getId());
@@ -105,7 +102,6 @@ public class ReservationServiceTest {
     }
 
     @Test
-    @DisplayName("예약 조회 시 모든 예약 목록을 반환한다")
     void 예약_조회() {
         // given
         List<Reservation> mockReservations = List.of(

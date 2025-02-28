@@ -37,7 +37,6 @@ public class ReservationDAOTest {
     }
 
     @Test
-    @DisplayName("예약이 DB에 저장이 잘 되는지 확인")
     void 예약을_생성할_수_있다() {
         //given
         Reservation reservation = new Reservation("파도", LocalDate.now().plusDays(1), time);
@@ -55,7 +54,6 @@ public class ReservationDAOTest {
     }
 
     @Test
-    @DisplayName("저장된 예약들을 제대로 조회하는지 확인")
     void 예약을_조회할_수_있다() {
         //given
         Reservation reservation = new Reservation("콜리", LocalDate.now().plusDays(1), time);
@@ -75,7 +73,6 @@ public class ReservationDAOTest {
     }
 
     @Test
-    @DisplayName("예약을 잘 삭제할 수 있는지 확인")
     void 예약을_삭제할_수_있다() {
         //given
         Reservation reservation1 = new Reservation("파도", LocalDate.now().plusDays(1), time);

@@ -42,7 +42,6 @@ public class TimeServiceTest {
     }
 
     @Test
-    @DisplayName("시간을 정상적으로 생성하는지 확인")
     void 시간을_정상적으로_생성할_수_있다() {
         // given
         when(timeDAO.createTime(any(Time.class))).thenReturn(time);
@@ -60,7 +59,6 @@ public class TimeServiceTest {
     }
 
     @Test
-    @DisplayName("중복된 시간이 주어지면 예외를 발생시킨다")
     void 중복된_시간_예외() {
         // given
         when(timeDAO.existsTime(validRequest.time())).thenReturn(true);
@@ -72,7 +70,6 @@ public class TimeServiceTest {
     }
 
     @Test
-    @DisplayName("모든 시간 목록을 조회할 수 있다")
     void 시간을_모두_조회할_수_있다() {
         // given
         List<Time> mockTimes = List.of(time, new Time(2L, LocalTime.of(10, 0)));
@@ -97,7 +94,6 @@ public class TimeServiceTest {
     }
 
     @Test
-    @DisplayName("시간을 삭제하면 해당 시간이 삭제된다")
     void 시간_삭제_테스트() {
         // given
         Long timeId = time.getId();
