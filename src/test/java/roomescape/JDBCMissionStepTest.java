@@ -59,11 +59,7 @@ public class JDBCMissionStepTest {
                 Long.class);
         assertThat(timeId).isNotNull();
 
-        Time time = new Time(timeId, LocalTime.parse("15:40"));
-
         jdbcTemplate.update("INSERT INTO reservation (name, date, time_id) VALUES (?, ?, ?)", "브라운", "2023-08-05", timeId);
-
-        Reservation reservation = new Reservation(1, "브라운", LocalDate.parse("2023-08-05"), time);
 
         List<Reservation> reservations = RestAssured.given().log().all()
                 .when().get("/reservations")
@@ -79,10 +75,16 @@ public class JDBCMissionStepTest {
     @Test
     void 칠단계() {
 
-        Map<String, String> params = new HashMap<>();
+        jdbcTemplate.update("INSERT INTO time (time) VALUES (?)", "10:00");
+
+        Long timeId = jdbcTemplate.queryForObject("SELECT id FROM time WHERE time = ?", new Object[]{"10:00"},
+                Long.class);
+        assertThat(timeId).isNotNull();
+
+        Map<String, Object> params = new HashMap<>();
         params.put("name", "브라운");
         params.put("date", "2023-08-05");
-        params.put("time", "10:00");
+        params.put("time_id", timeId);
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)

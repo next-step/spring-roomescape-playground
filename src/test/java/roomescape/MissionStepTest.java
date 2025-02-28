@@ -1,5 +1,6 @@
 package roomescape;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.hamcrest.Matchers.is;
 
 import io.restassured.RestAssured;
@@ -41,7 +42,6 @@ public class MissionStepTest {
                 .statusCode(200);
     }
 
-    //임의의 List에 넣어준 갯수를 확인했던 테스트 코드이기 때문에 7단계 시점에서는 통과하지 않습니다.
     @Test
     @DisplayName("이단계")
     void 이단계() {
@@ -53,12 +53,26 @@ public class MissionStepTest {
 
         Integer initialCount = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM reservation", Integer.class);
 
-        jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "사용자1", "2025-02-23",
-                "10:00");
-        jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "사용자2", "2025-02-23",
-                "11:00");
-        jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "사용자3", "2025-02-23",
-                "12:00");
+        jdbcTemplate.update("INSERT INTO time (time) VALUES (?)", "10:00");
+        jdbcTemplate.update("INSERT INTO time (time) VALUES (?)", "11:00");
+        jdbcTemplate.update("INSERT INTO time (time) VALUES (?)", "12:00");
+
+        Long timeId1 = jdbcTemplate.queryForObject("SELECT id FROM time WHERE time = ?", new Object[]{"10:00"},
+                Long.class);
+        assertThat(timeId1).isNotNull();
+        Long timeId2 = jdbcTemplate.queryForObject("SELECT id FROM time WHERE time = ?", new Object[]{"11:00"},
+                Long.class);
+        assertThat(timeId2).isNotNull();
+        Long timeId3 = jdbcTemplate.queryForObject("SELECT id FROM time WHERE time = ?", new Object[]{"12:00"},
+                Long.class);
+        assertThat(timeId3).isNotNull();
+
+        jdbcTemplate.update("INSERT INTO reservation (name, date, time_id) VALUES (?, ?, ?)", "사용자1", "2025-02-23",
+                timeId1);
+        jdbcTemplate.update("INSERT INTO reservation (name, date, time_id) VALUES (?, ?, ?)", "사용자2", "2025-02-23",
+                timeId2);
+        jdbcTemplate.update("INSERT INTO reservation (name, date, time_id) VALUES (?, ?, ?)", "사용자3", "2025-02-23",
+                timeId3);
 
         RestAssured.given().log().all()
                 .when().get("/reservations")
