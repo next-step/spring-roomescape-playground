@@ -32,7 +32,7 @@ public class ReservationService {
         return reservationRepository.findAll()
                 .stream()
                 .map(ReservationResponse::fromReservation)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Transactional
