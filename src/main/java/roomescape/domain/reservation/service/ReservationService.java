@@ -58,8 +58,6 @@ public class ReservationService {
             throw new RoomescapeBadRequestException("잘못된 룸 아이디입니다.");
         }
 
-        if (!reservationRepository.remove(id)) {
-            throw new RoomescapeServerException();
-        }
+        reservationRepository.remove(id);
     }
 }

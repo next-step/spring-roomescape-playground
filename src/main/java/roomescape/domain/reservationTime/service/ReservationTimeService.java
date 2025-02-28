@@ -42,8 +42,6 @@ public class ReservationTimeService {
             throw new RoomescapeBadRequestException("잘못된 아이디 입니다.");
         }
 
-        if (!reservationTimeRepository.remove(id)) {
-            throw new RoomescapeServerException();
-        }
+        reservationTimeRepository.remove(id);
     }
 }
