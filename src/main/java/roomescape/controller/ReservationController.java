@@ -1,6 +1,5 @@
 package roomescape.controller;
 
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,13 +13,13 @@ import roomescape.dto.request.CreateReservationRequest;
 import roomescape.dto.response.ReservationResponse;
 import roomescape.service.ReservationService;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
 @RequestMapping("/reservations")
 public class ReservationController {
 
-    private static final String HEADER_LOCATION = "Location";
     private static final String LOCATION_DEFAULT_VALUE = "/reservations/";
 
     private final ReservationService reservationService;
@@ -32,12 +31,7 @@ public class ReservationController {
     @PostMapping()
     public ResponseEntity<ReservationResponse> createReservation(@RequestBody CreateReservationRequest request) {
         ReservationResponse response = reservationService.createReservation(request);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HEADER_LOCATION, LOCATION_DEFAULT_VALUE + response.id());
-
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .headers(headers)
+        return ResponseEntity.created(URI.create(LOCATION_DEFAULT_VALUE + response.id()))
                 .body(response);
     }
 
