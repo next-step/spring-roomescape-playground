@@ -15,13 +15,13 @@ public class ReservationRowMapper implements RowMapper<Reservation> {
     public Reservation mapRow(ResultSet resultSet, int rowNum) throws SQLException {
         Long timeId = resultSet.getLong("time_id");
         LocalTime time = resultSet.getTime("time").toLocalTime();
-        Time timeObj = new Time(timeId, time);
+        Time reservationTime = new Time(timeId, time);
 
         return new Reservation(
                 resultSet.getLong("id"),
                 resultSet.getString("name"),
                 resultSet.getDate("date").toLocalDate(),
-                timeObj
+                reservationTime
         );
     }
 }
