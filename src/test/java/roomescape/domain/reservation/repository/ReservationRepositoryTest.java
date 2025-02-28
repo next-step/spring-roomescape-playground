@@ -39,21 +39,24 @@ class ReservationRepositoryTest {
                 2L, LocalTime.of(13, 0)
         );
         jdbcTemplate.update("INSERT INTO reservation (name, date, time_id) VALUES (?, ?, ?)", "브라운", "2023-08-05", 0L);
+        jdbcTemplate.update("INSERT INTO reservation (name, date, time_id) VALUES (?, ?, ?)", "바바", "2023-08-05", 0L);
+        jdbcTemplate.update("INSERT INTO reservation (name, date, time_id) VALUES (?, ?, ?)", "보보", "2023-08-05", 0L);
         jdbcTemplate.update("INSERT INTO reservation (name, date, time_id) VALUES (?, ?, ?)", "커찬", "2024-08-05", 1L);
         jdbcTemplate.update("INSERT INTO reservation (name, date, time_id) VALUES (?, ?, ?)", "망고", "2025-08-05", 2L);
         List<Reservation> reservations = reservationRepository.findAll();
 
-        Assertions.assertThat(reservations.size()).isEqualTo(3);
+        Assertions.assertThat(reservations.size()).isEqualTo(5);
         Assertions.assertThat(reservations)
                 .extracting(Reservation::getName)
-                .containsExactly("브라운", "커찬", "망고");
+                .containsExactly("브라운", "바바", "보보", "커찬", "망고");
     }
 
     @Test
     void create_테스트() {
         ReservationTime reservationTime = new ReservationTime(1L, LocalTime.of(11, 00));
         Reservation reservation = Reservation.newWithoutId("망고", LocalDate.of(2020, 1, 1), reservationTime);
-        jdbcTemplate.update("INSERT INTO reservationTime (id, time) values (?,?)", reservationTime.getId(), reservationTime.getTime());
+        jdbcTemplate.update("INSERT INTO reservationTime (id, time) values (?,?)", reservationTime.getId(),
+                reservationTime.getTime());
 
         Reservation savedReservation = reservationRepository.create(reservation);
         Map<String, Object> foundReservation = jdbcTemplate.queryForMap("SELECT * FROM reservation WHERE id = ?",
