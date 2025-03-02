@@ -31,7 +31,7 @@ public class ReservationService {
     }
 
     public ReservationResponse createReservation(final CreateReservationRequest request) {
-        final Time time = getTime(request.time());
+        final Time time = getTime(request.timeId());
         final Reservation reservation = request.toReservation(time);
 
         validateAvailability(reservation);

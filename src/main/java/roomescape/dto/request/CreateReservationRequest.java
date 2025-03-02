@@ -1,5 +1,6 @@
 package roomescape.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import roomescape.domain.Reservation;
 import roomescape.domain.Time;
 
@@ -10,7 +11,8 @@ public record CreateReservationRequest(
 
         LocalDate date,
 
-        long time
+        @JsonProperty("timeId")
+        long timeId
 ) {
     public Reservation toReservation(final Time time) {
         return new Reservation(

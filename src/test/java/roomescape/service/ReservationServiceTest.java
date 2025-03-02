@@ -58,7 +58,7 @@ class ReservationServiceTest {
         assertAll(
                 () -> assertThat(response.name()).isEqualTo(request.name()),
                 () -> assertThat(response.date()).isEqualTo(request.date()),
-                () -> assertThat(response.time().id()).isEqualTo(request.time())
+                () -> assertThat(response.time().id()).isEqualTo(request.timeId())
         );
     }
 

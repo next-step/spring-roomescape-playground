@@ -77,7 +77,7 @@ public class MissionStepTest {
         Map<String, String> reservationParams = new HashMap<>();
         reservationParams.put("name", "브라운");
         reservationParams.put("date", "2023-08-05");
-        reservationParams.put("time", "1");
+        reservationParams.put("timeId", "1");
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -171,7 +171,7 @@ public class MissionStepTest {
         Map<String, String> reservationParams = new HashMap<>();
         reservationParams.put("name", "브라운");
         reservationParams.put("date", "2023-08-05");
-        reservationParams.put("time", "1");
+        reservationParams.put("timeId", "1");
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
