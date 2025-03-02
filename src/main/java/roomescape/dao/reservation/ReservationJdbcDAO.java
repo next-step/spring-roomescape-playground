@@ -46,8 +46,34 @@ public class ReservationJdbcDAO implements ReservationDAO {
 
     @Override
     public List<Reservation> getAll() {
-        String sql = "SELECT * FROM reservation";
-        return jdbcTemplate.query(sql, rowMapper);
+        String sql = """
+                SELECT
+                r.id as reservation_id,
+                r.name,
+                r.date,
+                t.id as time_id,
+                t.time as time_value 
+                 FROM reservation as r
+                    INNER JOIN time as t ON r.time_id = t.id
+                """;
+
+        try {
+            return jdbcTemplate.query(sql, (resultSet, rowNum) ->
+                    new Reservation(
+                            resultSet.getLong("reservation_id"),
+                            resultSet.getString("name"),
+                            resultSet.getDate("date").toLocalDate(),
+                            new Time(
+                                    resultSet.getLong("id"),
+                                    resultSet.getTime("time_value").toLocalTime()
+                            )
+                    )
+            );
+
+        } catch (EmptyResultDataAccessException e) {
+            throw new DataInvalidException("예약을 찾을 수 없습니다.");
+        }
+
     }
 
 
@@ -77,14 +103,14 @@ public class ReservationJdbcDAO implements ReservationDAO {
                 """;
 
         try {
-            return jdbcTemplate.queryForObject(sql, new Object[]{id}, (rs, rowNum) ->
+            return jdbcTemplate.queryForObject(sql, (resultSet, rowNum) ->
                     new Reservation(
-                            rs.getLong("reservation_id"),
-                            rs.getString("name"),
-                            rs.getDate("date").toLocalDate(),
+                            resultSet.getLong("reservation_id"),
+                            resultSet.getString("name"),
+                            resultSet.getDate("date").toLocalDate(),
                             new Time(
-                                    rs.getLong("time_id"),
-                                    rs.getTime("time").toLocalTime()
+                                    resultSet.getLong("time_id"),
+                                    resultSet.getTime("time").toLocalTime()
                             )
                     )
             );

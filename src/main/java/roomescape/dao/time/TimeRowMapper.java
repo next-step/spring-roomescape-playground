@@ -8,10 +8,10 @@ import roomescape.entity.Time;
 public class TimeRowMapper implements RowMapper<Time> {
 
     @Override
-    public Time mapRow(ResultSet rs, int rowNum) throws SQLException {
+    public Time mapRow(ResultSet resultSet, int rowNum) throws SQLException {
         return new Time(
-                rs.getLong("id"),
-                rs.getTime("time").toLocalTime()
+                resultSet.getLong("id"),
+                resultSet.getTime("time").toLocalTime()
         );
     }
 

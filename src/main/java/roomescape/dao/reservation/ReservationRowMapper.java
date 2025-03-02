@@ -17,27 +17,26 @@ public class ReservationRowMapper implements RowMapper<Reservation> {
     }
 
     @Override
-    public Reservation mapRow(ResultSet rs, int rowNum) throws SQLException {
+    public Reservation mapRow(ResultSet resultSet, int rowNum) throws SQLException {
 
-        Long timeId = rs.getLong("time_id");
+        Long timeId = resultSet.getLong("time_id");
         Time time = getTimeById(timeId);
 
         return new Reservation(
-                rs.getInt("id"),
-                rs.getString("name"),
-                rs.getDate("date").toLocalDate(),
+                resultSet.getInt("id"),
+                resultSet.getString("name"),
+                resultSet.getDate("date").toLocalDate(),
                 time
-
         );
 
     }
 
     private Time getTimeById(Long timeId) {
 
-        return jdbcTemplate.queryForObject("SELECT * FROM time WHERE id = ?", new Object[]{timeId}, (rs, rowNum) ->
+        return jdbcTemplate.queryForObject("SELECT * FROM time WHERE id = ?", new Object[]{timeId}, (resultSet, rowNum) ->
                 new Time(
-                        rs.getLong("id"),
-                        rs.getTime("time").toLocalTime()
+                        resultSet.getLong("id"),
+                        resultSet.getTime("time").toLocalTime()
                 )
         );
     }
