@@ -13,7 +13,7 @@ public record ReservationResponse(
 
         TimeResponse time
 ) {
-    public ReservationResponse(Reservation reservation) {
+    public ReservationResponse(final Reservation reservation) {
         this(reservation.getId(),
                 reservation.getName(),
                 reservation.getDate(),

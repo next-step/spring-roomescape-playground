@@ -8,7 +8,7 @@ public record TimeResponse(
         long id,
         LocalTime time
 ) {
-    public TimeResponse(Time time) {
+    public TimeResponse(final Time time) {
         this(time.getId(),
                 time.getTime());
     }

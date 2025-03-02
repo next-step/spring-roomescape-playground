@@ -23,7 +23,7 @@ public class TimeService {
 
     public TimeResponse createTime(final CreateTimeRequest request) {
         validateDuplication(request);
-        Time time = timeRepository.save(request.toTime());
+        final Time time = timeRepository.save(request.toTime());
         return new TimeResponse(time);
     }
 

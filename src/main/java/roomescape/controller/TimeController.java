@@ -28,20 +28,20 @@ public class TimeController {
     }
 
     @PostMapping
-    public ResponseEntity<TimeResponse> createTime(@RequestBody CreateTimeRequest request) {
-        TimeResponse response = timeService.createTime(request);
+    public ResponseEntity<TimeResponse> createTime(final @RequestBody CreateTimeRequest request) {
+        final TimeResponse response = timeService.createTime(request);
         return ResponseEntity.created(URI.create(LOCATION_DEFAULT_VALUE + response.id()))
                 .body(response);
     }
 
     @GetMapping
     public ResponseEntity<List<TimeResponse>> getTimes() {
-        List<TimeResponse> responses = timeService.getTimes();
+        final List<TimeResponse> responses = timeService.getTimes();
         return ResponseEntity.ok(responses);
     }
 
     @DeleteMapping("/{timeId}")
-    public ResponseEntity<Void> deleteTime(@PathVariable long timeId) {
+    public ResponseEntity<Void> deleteTime(final @PathVariable long timeId) {
         timeService.deleteTime(timeId);
         return ResponseEntity.noContent()
                 .build();

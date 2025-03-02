@@ -14,9 +14,9 @@ import static roomescape.global.exception.ExceptionMessage.INVALID_INPUT_FORMAT;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(RoomScapeException.class)
-    public ResponseEntity<CustomErrorResponse> handleRoomScapeException(RoomScapeException roomScapeException) {
-        HttpStatus status = HttpStatus.valueOf(roomScapeException.getStatusCode());
-        CustomErrorResponse errorResponse = new CustomErrorResponse(
+    public ResponseEntity<CustomErrorResponse> handleRoomScapeException(final RoomScapeException roomScapeException) {
+        final HttpStatus status = HttpStatus.valueOf(roomScapeException.getStatusCode());
+        final CustomErrorResponse errorResponse = new CustomErrorResponse(
                 roomScapeException.getStatusCode(), roomScapeException.getMessage()
         );
         return ResponseEntity.status(status)
@@ -25,7 +25,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<CustomErrorResponse> handleHttpMessageNotReadableException() {
-        CustomErrorResponse errorResponse = new CustomErrorResponse(
+        final CustomErrorResponse errorResponse = new CustomErrorResponse(
                 HttpStatus.BAD_REQUEST.value(),
                 INVALID_INPUT_FORMAT.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)

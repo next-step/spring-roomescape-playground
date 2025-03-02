@@ -25,7 +25,7 @@ public class TimeRepository {
     private final SimpleJdbcInsert jdbcInsert;
     private final JdbcTemplate jdbcTemplate;
 
-    public TimeRepository(JdbcTemplate jdbcTemplate) {
+    public TimeRepository(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("TIME")
@@ -33,8 +33,8 @@ public class TimeRepository {
     }
 
     public Time save(final Time time) {
-        SqlParameterSource parameters = new BeanPropertySqlParameterSource(time);
-        long id = jdbcInsert.executeAndReturnKey(parameters).longValue();
+        final SqlParameterSource parameters = new BeanPropertySqlParameterSource(time);
+        final long id = jdbcInsert.executeAndReturnKey(parameters).longValue();
         return new Time(
                 id,
                 time.getTime()
@@ -42,7 +42,7 @@ public class TimeRepository {
     }
 
     public boolean existsByTime(final LocalTime time) {
-        String selectByTime = """
+        final String selectByTime = """
                 SELECT EXISTS (
                 SELECT 1
                 FROM time
@@ -52,22 +52,22 @@ public class TimeRepository {
     }
 
     public List<Time> findAll() {
-        String selectAll = "SELECT id, time FROM time";
+        final String selectAll = "SELECT id, time FROM time";
         return jdbcTemplate.query(selectAll, TIME_ROW_MAPPER);
     }
 
     public Optional<Time> findById(final long timeId) {
         try {
-            String selectById = "SELECT id, time FROM time WHERE id = ?";
-            Time time = jdbcTemplate.queryForObject(selectById, TIME_ROW_MAPPER, timeId);
+            final String selectById = "SELECT id, time FROM time WHERE id = ?";
+            final Time time = jdbcTemplate.queryForObject(selectById, TIME_ROW_MAPPER, timeId);
             return Optional.ofNullable(time);
-        } catch (EmptyResultDataAccessException emptyResultDataAccessException) {
+        } catch (final EmptyResultDataAccessException emptyResultDataAccessException) {
             return Optional.empty();
         }
     }
 
     public void deleteById(final long timeId) {
-        String deleteById = "DELETE FROM time WHERE id = ?";
+        final String deleteById = "DELETE FROM time WHERE id = ?";
         jdbcTemplate.update(deleteById, timeId);
     }
 }

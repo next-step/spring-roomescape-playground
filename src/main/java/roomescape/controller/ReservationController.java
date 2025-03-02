@@ -28,20 +28,20 @@ public class ReservationController {
     }
 
     @PostMapping()
-    public ResponseEntity<ReservationResponse> createReservation(@RequestBody CreateReservationRequest request) {
-        ReservationResponse response = reservationService.createReservation(request);
+    public ResponseEntity<ReservationResponse> createReservation(final @RequestBody CreateReservationRequest request) {
+        final ReservationResponse response = reservationService.createReservation(request);
         return ResponseEntity.created(URI.create(LOCATION_DEFAULT_VALUE + response.id()))
                 .body(response);
     }
 
     @GetMapping()
     public ResponseEntity<List<ReservationResponse>> getReservations() {
-        List<ReservationResponse> reservationResponses = reservationService.getReservations();
+        final List<ReservationResponse> reservationResponses = reservationService.getReservations();
         return ResponseEntity.ok(reservationResponses);
     }
 
     @DeleteMapping("/{reservationId}")
-    public ResponseEntity<Void> deleteReservation(@PathVariable long reservationId) {
+    public ResponseEntity<Void> deleteReservation(final @PathVariable long reservationId) {
         reservationService.deleteReservation(reservationId);
         return ResponseEntity.noContent()
                 .build();

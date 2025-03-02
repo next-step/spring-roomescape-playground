@@ -31,13 +31,13 @@ public class ReservationService {
     }
 
     public ReservationResponse createReservation(final CreateReservationRequest request) {
-        Time time = getTime(request.time());
-        Reservation reservation = request.toReservation(time);
+        final Time time = getTime(request.time());
+        final Reservation reservation = request.toReservation(time);
 
         validateAvailability(reservation);
         validateExpiredDateTime(reservation);
-        
-        Reservation reservationWithId = reservationRepository.save(reservation);
+
+        final Reservation reservationWithId = reservationRepository.save(reservation);
         return new ReservationResponse(reservationWithId);
     }
 
@@ -66,7 +66,7 @@ public class ReservationService {
     }
 
     public void deleteReservation(final long reservationId) {
-        Reservation reservation = reservationRepository.findById(reservationId)
+        final Reservation reservation = reservationRepository.findById(reservationId)
                 .orElseThrow(() -> new BadRequestException(RESERVATION_NOT_EXISTS.getMessage()));
         reservationRepository.deleteById(reservation.getId());
     }

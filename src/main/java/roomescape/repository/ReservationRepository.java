@@ -20,7 +20,7 @@ public class ReservationRepository {
 
     private static final RowMapper<Reservation> RESERVATION_ROW_MAPPER = (rs, rowNum) ->
     {
-        Time time = new Time(
+        final Time time = new Time(
                 rs.getLong("time_id"),
                 rs.getTime("time_value").toLocalTime()
         );
@@ -35,7 +35,7 @@ public class ReservationRepository {
     private final SimpleJdbcInsert jdbcInsert;
     private final JdbcTemplate jdbcTemplate;
 
-    public ReservationRepository(JdbcTemplate jdbcTemplate) {
+    public ReservationRepository(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("RESERVATION")
@@ -43,12 +43,12 @@ public class ReservationRepository {
     }
 
     public Reservation save(final Reservation reservation) {
-        SqlParameterSource parameters = new MapSqlParameterSource()
+        final SqlParameterSource parameters = new MapSqlParameterSource()
                 .addValue("name", reservation.getName())
                 .addValue("date", reservation.getDate())
                 .addValue("time_id", reservation.getTime().getId());
 
-        long id = jdbcInsert.executeAndReturnKey(parameters).longValue();
+        final long id = jdbcInsert.executeAndReturnKey(parameters).longValue();
         return new Reservation(
                 id,
                 reservation.getName(),
@@ -58,7 +58,7 @@ public class ReservationRepository {
     }
 
     public List<Reservation> findAll() {
-        String selectAll = """
+        final String selectAll = """
                 SELECT r.id AS reservation_id, r.name, r.date, t.id AS time_id, t.time AS time_value
                 FROM reservation AS r
                 INNER JOIN time AS t
@@ -69,22 +69,22 @@ public class ReservationRepository {
 
     public Optional<Reservation> findById(final long reservationId) {
         try {
-            String selectById = """
+            final String selectById = """
                     SELECT r.id AS reservation_id, r.name, r.date, t.id AS time_id, t.time AS time_value
                     FROM reservation AS r
                     INNER JOIN time AS t
                     ON r.time_id = t.id
                     WHERE r.id = ?
                     """;
-            Reservation reservation = jdbcTemplate.queryForObject(selectById, RESERVATION_ROW_MAPPER, reservationId);
+            final Reservation reservation = jdbcTemplate.queryForObject(selectById, RESERVATION_ROW_MAPPER, reservationId);
             return Optional.ofNullable(reservation);
-        } catch (EmptyResultDataAccessException emptyResultDataAccessException) {
+        } catch (final EmptyResultDataAccessException emptyResultDataAccessException) {
             return Optional.empty();
         }
     }
 
     public boolean existsByDateAndTime(final LocalDate date, final LocalTime time) {
-        String selectByDateAndTime = """
+        final String selectByDateAndTime = """
                 SELECT EXISTS (
                 SELECT 1
                 FROM reservation AS r
@@ -96,7 +96,7 @@ public class ReservationRepository {
     }
 
     public void deleteById(final long reservationId) {
-        String deleteById = "DELETE FROM reservation WHERE id = ?";
+        final String deleteById = "DELETE FROM reservation WHERE id = ?";
         jdbcTemplate.update(deleteById, reservationId);
     }
 }

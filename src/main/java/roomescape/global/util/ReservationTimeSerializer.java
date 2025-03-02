@@ -15,7 +15,7 @@ public class ReservationTimeSerializer extends JsonSerializer<LocalTime> {
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
 
     @Override
-    public void serialize(LocalTime value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+    public void serialize(final LocalTime value, final JsonGenerator gen, final SerializerProvider serializers) throws IOException {
         gen.writeString(formatter.format(value));
     }
 }

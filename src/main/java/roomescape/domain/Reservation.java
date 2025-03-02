@@ -86,7 +86,7 @@ public class Reservation {
     }
 
     public boolean isExpired(final Clock clock) {
-        LocalDateTime dateTime = date.atTime(time.getTime());
+        final LocalDateTime dateTime = date.atTime(time.getTime());
         return dateTime.isBefore(LocalDateTime.now(clock));
     }
 
