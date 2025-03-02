@@ -59,7 +59,8 @@ public class JDBCMissionStepTest {
                 Long.class);
         assertThat(timeId).isNotNull();
 
-        jdbcTemplate.update("INSERT INTO reservation (name, date, time_id) VALUES (?, ?, ?)", "브라운", "2023-08-05", timeId);
+        jdbcTemplate.update("INSERT INTO reservation (name, date, time_id) VALUES (?, ?, ?)", "브라운", "2023-08-05",
+                timeId);
 
         List<Reservation> reservations = RestAssured.given().log().all()
                 .when().get("/reservations")
@@ -74,21 +75,25 @@ public class JDBCMissionStepTest {
 
     @Test
     void 칠단계() {
+        Map<String, String> timeParams = new HashMap<>();
+        timeParams.put("time", "15:40");
 
-        jdbcTemplate.update("INSERT INTO time (time) VALUES (?)", "10:00");
-
-        Long timeId = jdbcTemplate.queryForObject("SELECT id FROM time WHERE time = ?", new Object[]{"10:00"},
-                Long.class);
-        assertThat(timeId).isNotNull();
-
-        Map<String, Object> params = new HashMap<>();
-        params.put("name", "브라운");
-        params.put("date", "2023-08-05");
-        params.put("time_id", timeId);
+        Map<String, Object> reservationParams = new HashMap<>();
+        reservationParams.put("name", "브라운");
+        reservationParams.put("date", "2023-08-05");
+        reservationParams.put("time", timeParams);
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
-                .body(params)
+                .body(timeParams)
+                .when().post("/times")
+                .then().log().all()
+                .statusCode(201)
+                .header("Location", "/times/1");
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(reservationParams)
                 .when().post("/reservations")
                 .then().log().all()
                 .statusCode(201)
