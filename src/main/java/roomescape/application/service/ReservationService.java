@@ -26,29 +26,33 @@ public class ReservationService {
         this.timeRepository = timeRepository;
     }
 
-    public Reservation findByIdOrThrow(Long reservationId) {
-        return reservationRepository.findById(reservationId).orElseThrow(EntityNotFoundException::new);
-    }
-
     public List<Reservation> findAll() {
         return reservationRepository.findAll();
     }
 
     public Reservation createReservation(CreateReservationRequestDto createReservationRequestDto) {
-        Time foundTime = timeRepository.findById(createReservationRequestDto.time())
-                .orElseThrow(EntityNotFoundException::new);
-        throwInvalidReservedDateTime(createReservationRequestDto, foundTime);
+        Time foundTime = getFoundTimeOrThrow(createReservationRequestDto);
+        validReservationDateTime(createReservationRequestDto, foundTime);
 
         Reservation reservationIdNull = createReservationRequestDto.toReservation(foundTime);
         return reservationRepository.save(reservationIdNull);
     }
 
+    private Time getFoundTimeOrThrow(CreateReservationRequestDto createReservationRequestDto) {
+        return timeRepository.findById(createReservationRequestDto.time())
+                .orElseThrow(EntityNotFoundException::new);
+    }
+
     public void deleteReservation(Long reservationId) {
-        Reservation foundReservation = findByIdOrThrow(reservationId);
+        Reservation foundReservation = getFoundReservationOrThrow(reservationId);
         reservationRepository.delete(foundReservation);
     }
 
-    private void throwInvalidReservedDateTime(CreateReservationRequestDto createReservationRequestDto, Time foundTime) {
+    private Reservation getFoundReservationOrThrow(Long reservationId) {
+        return reservationRepository.findById(reservationId).orElseThrow(EntityNotFoundException::new);
+    }
+
+    private void validReservationDateTime(CreateReservationRequestDto createReservationRequestDto, Time foundTime) {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime reservedDateTime = LocalDateTime.of(createReservationRequestDto.date(), foundTime.getTime());
         if (reservedDateTime.isBefore(now)) {

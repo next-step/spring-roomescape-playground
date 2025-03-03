@@ -64,7 +64,8 @@ class ReservationServiceTest {
     }
 
     private Reservation getByIdOrThrow(Reservation savedReservation) {
-        return reservationService.findByIdOrThrow(savedReservation.getId());
+        return RESERVATION_REPOSITORY.findById(savedReservation.getId())
+                .orElseThrow(EntityNotFoundException::new);
     }
 
     private Reservation saveReservation() {
