@@ -2,6 +2,7 @@ package roomescape.dao.reservation;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import roomescape.dao.time.TimeRowMapper;
 import roomescape.entity.Reservation;
 import roomescape.entity.Time;
 import java.sql.ResultSet;
@@ -33,12 +34,11 @@ public class ReservationRowMapper implements RowMapper<Reservation> {
 
     private Time getTimeById(Long timeId) {
 
-        return jdbcTemplate.queryForObject("SELECT * FROM time WHERE id = ?", new Object[]{timeId}, (resultSet, rowNum) ->
-                new Time(
-                        resultSet.getLong("id"),
-                        resultSet.getTime("time").toLocalTime()
-                )
+        return jdbcTemplate.queryForObject("SELECT * FROM time WHERE id = ?",
+                new TimeRowMapper(),
+                timeId
         );
+
     }
 
 }
