@@ -2,6 +2,7 @@ package roomescape.domain.reservation.domain;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Objects;
 import roomescape.domain.reservationTime.domain.ReservationTime;
 import roomescape.global.exception.RoomescapeBadRequestException;
@@ -31,10 +32,6 @@ public class Reservation {
         this.reservationTime = reservationTime;
     }
 
-    public String formatTime() {
-        return reservationTime.formatTime();
-    }
-
     public Long getId() {
         return id;
     }
@@ -49,6 +46,10 @@ public class Reservation {
 
     public ReservationTime getReservationTime() {
         return reservationTime;
+    }
+
+    public LocalTime getTime() {
+        return reservationTime.getTime();
     }
 
     @Override
