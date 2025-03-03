@@ -27,7 +27,6 @@ public class ReservationTimeService {
         return ReservationTimeResponse.fromReservationTime(newReservationTime);
     }
 
-    @Transactional(readOnly = true)
     public List<ReservationTimeResponse> getReservationTimes() {
 
         return reservationTimeRepository.findAll()
