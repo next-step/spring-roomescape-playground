@@ -33,7 +33,7 @@ public class ReservationTimeService {
         return reservationTimeRepository.findAll()
                 .stream()
                 .map(ReservationTimeResponse::fromReservationTime)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Transactional
