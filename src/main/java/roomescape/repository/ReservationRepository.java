@@ -59,7 +59,11 @@ public class ReservationRepository {
 
     public List<Reservation> findAll() {
         final String selectAll = """
-                SELECT r.id AS reservation_id, r.name, r.date, t.id AS time_id, t.time AS time_value
+                SELECT r.id AS reservation_id,
+                       r.name,
+                       r.date,
+                       t.id AS time_id,
+                       t.time AS time_value
                 FROM reservation AS r
                 INNER JOIN time AS t
                 ON r.time_id = t.id
@@ -70,7 +74,11 @@ public class ReservationRepository {
     public Optional<Reservation> findById(final long reservationId) {
         try {
             final String selectById = """
-                    SELECT r.id AS reservation_id, r.name, r.date, t.id AS time_id, t.time AS time_value
+                    SELECT r.id AS reservation_id,
+                           r.name,
+                           r.date,
+                           t.id AS time_id,
+                           t.time AS time_value
                     FROM reservation AS r
                     INNER JOIN time AS t
                     ON r.time_id = t.id
