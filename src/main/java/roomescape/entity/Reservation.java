@@ -36,8 +36,8 @@ public class Reservation {
         }
     }
 
-    private void validateTime(Time reservation_time) {
-        if (reservation_time == null) {
+    private void validateTime(Time time) {
+        if (time == null) {
             throw new InvalidException("Time is required");
         }
     }
