@@ -58,17 +58,7 @@ public class ReservationJdbcDAO implements ReservationDAO {
                 """;
 
         try {
-            return jdbcTemplate.query(sql, (resultSet, rowNum) ->
-                    new Reservation(
-                            resultSet.getLong("reservation_id"),
-                            resultSet.getString("name"),
-                            resultSet.getDate("date").toLocalDate(),
-                            new Time(
-                                    resultSet.getLong("id"),
-                                    resultSet.getTime("time_value").toLocalTime()
-                            )
-                    )
-            );
+            return jdbcTemplate.query(sql, rowMapper);
 
         } catch (EmptyResultDataAccessException e) {
             throw new DataInvalidException("예약을 찾을 수 없습니다.");
@@ -103,17 +93,7 @@ public class ReservationJdbcDAO implements ReservationDAO {
                 """;
 
         try {
-            return jdbcTemplate.queryForObject(sql, (resultSet, rowNum) ->
-                    new Reservation(
-                            resultSet.getLong("reservation_id"),
-                            resultSet.getString("name"),
-                            resultSet.getDate("date").toLocalDate(),
-                            new Time(
-                                    resultSet.getLong("time_id"),
-                                    resultSet.getTime("time").toLocalTime()
-                            )
-                    )
-            );
+            return jdbcTemplate.queryForObject(sql, rowMapper);
         } catch (EmptyResultDataAccessException e) {
             throw new DataInvalidException("예약을 찾을 수 없습니다. ID: " + id);
         }
