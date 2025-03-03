@@ -32,5 +32,11 @@ public class ReservationTest {
     }
 
 
+    @Test
+    @DisplayName("이름이_null인_경우_예외_발생")
+    void validNameTest() {
+        Time validTime = new Time(1, LocalDate.now().atTime(12, 0).toLocalTime());
+        assertThrows(InvalidException.class, () -> new Reservation(1, null, LocalDate.now(), validTime));
+    }
 
 }
