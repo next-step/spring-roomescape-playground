@@ -1,55 +1,79 @@
 package roomescape.application.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import roomescape.application.dto.request.CreateReservationRequestDto;
 import roomescape.common.error.exception.EntityNotFoundException;
 import roomescape.domain.reservation.Reservation;
+import roomescape.domain.time.Time;
 import roomescape.fake.FakeReservationRepository;
 import roomescape.fake.FakeTimeRepository;
 import roomescape.repository.reservation.interfaces.ReservationRepository;
+import roomescape.repository.reservation.interfaces.TimeRepository;
 
 class ReservationServiceTest {
 
+    public static final int ONE_DAY_LATER = 1;
+    public static final String RESERVE_REQUESTER = "곰곰";
+
     private ReservationService reservationService;
-    private ReservationRepository reservationRepository;
+    private final ReservationRepository RESERVATION_REPOSITORY = new FakeReservationRepository();
+    private final TimeRepository TIME_REPOSITORY = new FakeTimeRepository();
+    private Long savedTimeId;
 
     @BeforeEach
     void init() {
-        reservationService = new ReservationService(new FakeReservationRepository(), new FakeTimeRepository());
+        savedTimeId = getSavedTimeId();
+        reservationService = getReservationService();
     }
 
     @Test
-    @Disabled
     void 예약_생성_조회_테스트() {
         // given
-        Reservation createdReservation = createdReservation();
+        Reservation savedReservation = saveReservation();
         // when
-        Reservation foundReservation = reservationService.findByIdOrThrow(createdReservation.getId());
+        Reservation foundReservation = getByIdOrThrow(savedReservation);
         // then
-        Assertions.assertThat(foundReservation.getName()).isEqualTo(createdReservation.getName());
+        assertThat(foundReservation.getName()).isEqualTo(savedReservation.getName());
     }
 
     @Test
-    @Disabled
     void 예약_삭제_테스트() {
         // given
-        Reservation createdReservation = createdReservation();
-        reservationService.deleteReservation(createdReservation.getId());
+        Reservation savedReservation = saveReservation();
+        reservationService.deleteReservation(savedReservation.getId());
         // when
-        Throwable catchThrowable = Assertions.catchThrowable(
-                () -> reservationService.findByIdOrThrow(createdReservation.getId()));
+        Throwable catchThrowable = catchThrowable(() -> getByIdOrThrow(savedReservation));
+
         // then
-        Assertions.assertThat(catchThrowable).isInstanceOf(EntityNotFoundException.class);
+        assertThat(catchThrowable).isInstanceOf(EntityNotFoundException.class);
     }
 
-    private Reservation createdReservation() {
-        CreateReservationRequestDto request =
-                new CreateReservationRequestDto("곰곰", LocalDate.now().plusDays(1), 1L);
-        return reservationService.createReservation(request);
+    private ReservationService getReservationService() {
+        return new ReservationService(RESERVATION_REPOSITORY, TIME_REPOSITORY);
+    }
+
+    private Long getSavedTimeId() {
+        Time time = new Time(null, LocalTime.now());
+        return TIME_REPOSITORY.save(time);
+    }
+
+    private Reservation getByIdOrThrow(Reservation savedReservation) {
+        return reservationService.findByIdOrThrow(savedReservation.getId());
+    }
+
+    private Reservation saveReservation() {
+        CreateReservationRequestDto createReservationRequestDto = getCreateReservationRequestDto();
+        return reservationService.createReservation(createReservationRequestDto);
+    }
+
+    private CreateReservationRequestDto getCreateReservationRequestDto() {
+        LocalDate oneDayLater = LocalDate.now().plusDays(ONE_DAY_LATER);
+        return new CreateReservationRequestDto(RESERVE_REQUESTER, oneDayLater, savedTimeId);
     }
 }
