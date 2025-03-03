@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import roomescape.entity.Reservation;
@@ -31,12 +30,19 @@ public class ReservationTest {
 
     }
 
-
     @Test
     @DisplayName("이름이_null인_경우_예외_발생")
     void validNameTest() {
         Time validTime = new Time(1, LocalDate.now().atTime(12, 0).toLocalTime());
         assertThrows(InvalidException.class, () -> new Reservation(1, null, LocalDate.now(), validTime));
     }
+
+    @Test
+    @DisplayName("날짜가_null인_경우_예외_발생")
+    void validDateTest() {
+        Time validTime = new Time(1, LocalDate.now().atTime(12, 0).toLocalTime());
+        assertThrows(InvalidException.class, () -> new Reservation(1, "도요", null, validTime));
+    }
+
 
 }
