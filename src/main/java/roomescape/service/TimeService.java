@@ -19,7 +19,7 @@ public class TimeService {
     }
 
     public TimeResponse createTime(TimeRequest request) {
-        validateTimeFormat(request.time());
+        validateNotNullTime(request.time());
         validateDuplicateTime(request.time());
 
         Time time = new Time(request.time());
@@ -27,12 +27,9 @@ public class TimeService {
         return new TimeResponse(response.getId(), response.getTime());
     }
 
-    private void validateTimeFormat(LocalTime time) {
+    private void validateNotNullTime(LocalTime time) {
         if (time == null) {
             throw new InvalidValueException(ErrorMessage.INVALID_NULL_TIME.getMessage());
-        }
-        if (time.getHour() < 0 || time.getHour() >= 24 || time.getMinute() < 0 || time.getMinute() >= 60) {
-            throw new InvalidValueException(ErrorMessage.INVALID_TIME.getMessage());
         }
     }
 
