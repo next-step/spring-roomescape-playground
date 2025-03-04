@@ -7,7 +7,6 @@ import java.util.Objects;
 
 public class Time {
     private Long id;
-    @JsonFormat(shape = Shape.STRING, pattern = "HH:mm")
     private LocalTime time;
 
     public Time(Long id, LocalTime time) {
