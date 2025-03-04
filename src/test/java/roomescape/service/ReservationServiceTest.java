@@ -13,8 +13,6 @@ import static org.mockito.Mockito.when;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,9 +22,11 @@ import roomescape.domain.Reservation;
 import roomescape.domain.Time;
 import roomescape.dto.reservation.request.ReservationRequest;
 import roomescape.dto.reservation.response.ReservationResponse;
+import roomescape.dto.time.response.TimeResponse;
 import roomescape.error.ErrorMessage;
 import roomescape.error.exception.InvalidValueException;
 import roomescape.repository.ReservationDAO;
+import roomescape.repository.TimeDAO;
 
 @ExtendWith(MockitoExtension.class)
 public class ReservationServiceTest {
@@ -34,7 +34,7 @@ public class ReservationServiceTest {
     private ReservationDAO reservationDAO;
 
     @Mock
-    private TimeService timeService;
+    private TimeDAO timeDAO;
 
     @InjectMocks
     private ReservationService reservationService;
@@ -47,7 +47,7 @@ public class ReservationServiceTest {
 
         Time time = new Time(1L, reservationTime);
         ReservationRequest validRequest = new ReservationRequest("파도", futureDate, time.getId());
-        when(timeService.findTimeById(time.getId())).thenReturn(time);
+        when(timeDAO.findTime(time.getId())).thenReturn(time);
 
         Reservation reservation = new Reservation(validRequest.name(), validRequest.date(), time);
         when(reservationDAO.createReservation(argThat(newReservation ->
@@ -64,7 +64,7 @@ public class ReservationServiceTest {
             () -> assertThat(response.id()).isEqualTo(reservation.getId()),
             () -> assertThat(response.name()).isEqualTo("파도"),
             () -> assertThat(response.date()).isEqualTo(futureDate),
-            () -> assertThat(response.time()).isEqualTo(time)
+            () -> assertThat(response.time()).isEqualTo(new TimeResponse(time.getId(), time.getTime()))
         );
 
         verify(reservationDAO, times(1)).createReservation(any(Reservation.class));
@@ -78,7 +78,7 @@ public class ReservationServiceTest {
 
         Time time = new Time(1L, reservationTime);
         ReservationRequest invalidRequest = new ReservationRequest("파도", pastDate, time.getId());
-        when(timeService.findTimeById(time.getId())).thenReturn(time);
+        when(timeDAO.findTime(time.getId())).thenReturn(time);
 
         // when & then
         assertThatThrownBy(() -> reservationService.reserve(invalidRequest))
@@ -96,7 +96,7 @@ public class ReservationServiceTest {
 
         Time time = new Time(1L, reservationTime);
         ReservationRequest invalidTimeRequest = new ReservationRequest("파도", validDate, time.getId());
-        when(timeService.findTimeById(time.getId())).thenReturn(time);
+        when(timeDAO.findTime(time.getId())).thenReturn(time);
 
         // when & then
         assertThatThrownBy(() -> reservationService.reserve(invalidTimeRequest))
@@ -125,8 +125,8 @@ public class ReservationServiceTest {
 
         // then
         assertThat(reservations).containsExactly(
-            new ReservationResponse(1L, "콜리", firstDate, time),
-            new ReservationResponse(2L, "파도", secondDate, time)
+            new ReservationResponse(1L, "콜리", firstDate, new TimeResponse(time.getId(), time.getTime())),
+            new ReservationResponse(2L, "파도", secondDate, new TimeResponse(time.getId(), time.getTime()))
         );
 
         verify(reservationDAO, times(1)).findReservations();
