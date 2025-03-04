@@ -54,7 +54,7 @@ public class ReservationService {
 
     private void validReservationDateTime(CreateReservationRequest createReservationRequestDto, Time foundTime) {
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime reservedDateTime = LocalDateTime.of(createReservationRequestDto.date(), foundTime.getTime());
+        LocalDateTime reservedDateTime = LocalDateTime.of(createReservationRequestDto.date(), foundTime.getAvailableTime());
         if (reservedDateTime.isBefore(now)) {
             throw new ReservationException(ErrorCode.INVALID_RESERVE_VALUE);
         }

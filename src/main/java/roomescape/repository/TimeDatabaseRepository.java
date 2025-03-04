@@ -8,6 +8,8 @@ import java.util.Optional;
 import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.time.Time;
@@ -18,6 +20,7 @@ public class TimeDatabaseRepository implements TimeRepository {
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
+
     private final RowMapper<Time> timeRowMapper = (rs, rowNum) -> {
         return new Time(rs.getLong("time_id"), rs.getTime("available_time").toLocalTime());
     };
@@ -28,8 +31,7 @@ public class TimeDatabaseRepository implements TimeRepository {
     }
 
     public Long save(Time time) {
-        Map<String, LocalTime> params = new HashMap<>();
-        params.put("available_time", time.getTime());
+        SqlParameterSource params = new BeanPropertySqlParameterSource(time);
         return jdbcInsert.executeAndReturnKey(params).longValue();
     }
 

@@ -22,7 +22,7 @@ public class FakeTimeRepository implements TimeRepository {
     public Long save(Time time) {
         Long id = time.getId();
         if (Objects.isNull(id)) {
-            time = new Time(index.getAndIncrement(), time.getTime());
+            time = new Time(index.getAndIncrement(), time.getAvailableTime());
         }
         times.put(id, time);
         return id;

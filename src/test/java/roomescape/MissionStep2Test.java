@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
-import roomescape.application.dto.response.ReservationResponse;
+import roomescape.application.dto.response.ReservationResponseDto;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -48,11 +48,11 @@ public class MissionStep2Test {
         jdbcTemplate.update("INSERT INTO reservations (name, reserved_date, time_id) VALUES (?, ?, ?)", "브라운",
                 reservedDate, savedTimeId);
 
-        List<ReservationResponse> reservations = RestAssured.given().log().all()
+        List<ReservationResponseDto> reservations = RestAssured.given().log().all()
                 .when().get("/reservations")
                 .then().log().all()
                 .statusCode(200).extract()
-                .jsonPath().getList(".", ReservationResponse.class);
+                .jsonPath().getList(".", ReservationResponseDto.class);
 
         Integer count = jdbcTemplate.queryForObject("SELECT count(1) from reservations", Integer.class);
 

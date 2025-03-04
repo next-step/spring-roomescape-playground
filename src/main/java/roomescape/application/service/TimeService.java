@@ -33,6 +33,6 @@ public class TimeService {
     }
 
     private TimeResponse toDto(Time time) {
-        return new TimeResponse(time.getId(), time.getTime());
+        return new TimeResponse(time.getId(), time.getAvailableTime());
     }
 }

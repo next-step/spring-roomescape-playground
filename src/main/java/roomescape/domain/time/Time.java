@@ -23,7 +23,7 @@ public class Time {
         return id;
     }
 
-    public LocalTime getTime() {
+    public LocalTime getAvailableTime() {
         return availableTime;
     }
 
