@@ -55,10 +55,10 @@ class ReservationRequestTest {
     }
 
     private static List<String> getExceptionMessages(final MethodArgumentNotValidException exception) {
-        List<String> list = exception.getBindingResult().getFieldErrors().stream()
+
+        return exception.getBindingResult().getFieldErrors().stream()
                 .map(error -> String.format("[%s] %s", error.getField(), error.getDefaultMessage()))
                 .toList();
-        return list;
     }
 }
 
