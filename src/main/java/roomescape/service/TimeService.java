@@ -29,6 +29,9 @@ public class TimeService {
 
     private void validateTimeFormat(LocalTime time) {
         if (time == null) {
+            throw new InvalidValueException(ErrorMessage.INVALID_NULL_TIME.getMessage());
+        }
+        if (time.getHour() < 0 || time.getHour() >= 24 || time.getMinute() < 0 || time.getMinute() >= 60) {
             throw new InvalidValueException(ErrorMessage.INVALID_TIME.getMessage());
         }
     }
