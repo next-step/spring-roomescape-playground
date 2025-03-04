@@ -54,7 +54,7 @@ public class ReservationJdbcDAO implements ReservationDAO {
                 t.id as time_id,
                 t.time as time_value 
                  FROM reservation as r
-                    INNER JOIN time as t ON r.time_id = t.id
+                    JOIN time as t ON r.time_id = t.id
                 """;
 
         try {
