@@ -42,7 +42,7 @@ class ReservationRequestTest {
                         .content(reservationJson))
                 .andExpect(status().isBadRequest())
                 .andReturn();
-        Throwable resolvedException = result.getResolvedException();
+        Exception resolvedException = result.getResolvedException();
 
         assertThat(resolvedException).isInstanceOf(MethodArgumentNotValidException.class);
         MethodArgumentNotValidException exception = (MethodArgumentNotValidException) resolvedException;
