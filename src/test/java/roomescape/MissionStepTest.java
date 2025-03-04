@@ -57,14 +57,14 @@ public class MissionStepTest {
         jdbcTemplate.update("INSERT INTO time (time) VALUES (?)", "11:00");
         jdbcTemplate.update("INSERT INTO time (time) VALUES (?)", "12:00");
 
-        Long timeId1 = jdbcTemplate.queryForObject("SELECT id FROM time WHERE time = ?", new Object[]{"10:00"},
-                Long.class);
+        Long timeId1 = jdbcTemplate.queryForObject("SELECT id FROM time WHERE time = ?", Long.class,
+                "10:00");
         assertThat(timeId1).isNotNull();
-        Long timeId2 = jdbcTemplate.queryForObject("SELECT id FROM time WHERE time = ?", new Object[]{"11:00"},
-                Long.class);
+        Long timeId2 = jdbcTemplate.queryForObject("SELECT id FROM time WHERE time = ?", Long.class,
+                "11:00");
         assertThat(timeId2).isNotNull();
-        Long timeId3 = jdbcTemplate.queryForObject("SELECT id FROM time WHERE time = ?", new Object[]{"12:00"},
-                Long.class);
+        Long timeId3 = jdbcTemplate.queryForObject("SELECT id FROM time WHERE time = ?", Long.class,
+                "12:00");
         assertThat(timeId3).isNotNull();
 
         jdbcTemplate.update("INSERT INTO reservation (name, date, time_id) VALUES (?, ?, ?)", "사용자1", "2025-02-23",
@@ -84,14 +84,26 @@ public class MissionStepTest {
     @Test
     @DisplayName("삼단계")
     void 삼단계() {
-        Map<String, String> params = new HashMap<>();
-        params.put("name", "브라운");
-        params.put("date", "2023-08-05");
-        params.put("time", "15:40");
+
+        Map<String, String> timeParams = new HashMap<>();
+        timeParams.put("time", "15:40");
+
+        Map<String, Object> reservationParams = new HashMap<>();
+        reservationParams.put("name", "브라운");
+        reservationParams.put("date", "2023-08-05");
+        reservationParams.put("time", timeParams);
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
-                .body(params)
+                .body(timeParams)
+                .when().post("/times")
+                .then().log().all()
+                .statusCode(201)
+                .header("Location", "/times/1");
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(reservationParams)
                 .when().post("/reservations")
                 .then().log().all()
                 .statusCode(201)
