@@ -2,14 +2,15 @@ package roomescape.dao.reservation;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
 import roomescape.dao.time.TimeRowMapper;
 import roomescape.entity.Reservation;
 import roomescape.entity.Time;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+@Component
 public class ReservationRowMapper implements RowMapper<Reservation> {
-
 
     private final JdbcTemplate jdbcTemplate;
 
