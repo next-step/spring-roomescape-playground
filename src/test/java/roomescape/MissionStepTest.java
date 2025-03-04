@@ -1,6 +1,7 @@
 package roomescape;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
 
 import io.restassured.RestAssured;
@@ -147,5 +148,25 @@ public class MissionStepTest {
         }
 
         assertThat(isJdbcTemplateInjected).isFalse();
+    }
+
+    @Test
+    void DTO_예외처리() {
+        Map<String, String> reservation = new HashMap<>();
+        reservation.put("name", "a".repeat(256));
+        reservation.put("date", "");
+        reservation.put("time", "");
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(reservation)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(400)
+                .body("", containsInAnyOrder(
+                        "[date] 예약 날짜는 필수 입력값입니다.",
+                        "[name] 이름은 255자 이하여야 합니다.",
+                        "[time] 예약 시간은 필수 입력값입니다."
+                ));
     }
 }
