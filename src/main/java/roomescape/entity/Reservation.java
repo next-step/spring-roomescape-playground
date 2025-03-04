@@ -30,8 +30,8 @@ public class Reservation {
         }
     }
 
-    private void validateDate(LocalDate reservation_date) {
-        if (reservation_date == null) {
+    private void validateDate(LocalDate date) {
+        if (date == null) {
             throw new InvalidException("Date is required");
         }
     }
