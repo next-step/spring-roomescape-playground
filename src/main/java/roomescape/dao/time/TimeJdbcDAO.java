@@ -18,9 +18,9 @@ public class TimeJdbcDAO implements TimeDAO {
     private final RowMapper<Time> rowMapper = new TimeRowMapper();
     private final SimpleJdbcInsert simpleJdbcInsert;
 
-    public TimeJdbcDAO(JdbcTemplate jdbcTemplate, DataSource dataSource) {
+    public TimeJdbcDAO(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource)
+        this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("time")
                 .usingGeneratedKeyColumns("id");
     }

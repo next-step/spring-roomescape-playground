@@ -22,9 +22,9 @@ public class ReservationJdbcDAO implements ReservationDAO {
     private final SimpleJdbcInsert simpleJdbcInsert;
 
 
-    public ReservationJdbcDAO(JdbcTemplate jdbcTemplate, DataSource dataSource, RowMapper<Reservation> rowMapper) {
+    public ReservationJdbcDAO(JdbcTemplate jdbcTemplate, RowMapper<Reservation> rowMapper) {
         this.jdbcTemplate = jdbcTemplate;
-        this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource)
+        this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("reservation")
                 .usingGeneratedKeyColumns("id");
         this.rowMapper = rowMapper;
