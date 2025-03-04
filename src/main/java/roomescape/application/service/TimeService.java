@@ -4,6 +4,8 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import roomescape.application.dto.request.CreateTimeRequest;
 import roomescape.application.dto.response.TimeResponse;
+import roomescape.common.error.ErrorCode;
+import roomescape.common.error.exception.InvalidValueException;
 import roomescape.domain.time.Time;
 import roomescape.repository.reservation.interfaces.TimeRepository;
 
@@ -24,8 +26,15 @@ public class TimeService {
     }
 
     public Long saveTime(CreateTimeRequest request) {
+        if (isAlreadyExistTime(request)) {
+            throw new InvalidValueException(ErrorCode.INVALID_TIME_VALUE);
+        }
         Time time = new Time(null, request.time());
         return timeRepository.save(time);
+    }
+
+    private boolean isAlreadyExistTime(CreateTimeRequest request) {
+        return timeRepository.findByTime(request.time()).isPresent();
     }
 
     public void deleteTime(Long id) {

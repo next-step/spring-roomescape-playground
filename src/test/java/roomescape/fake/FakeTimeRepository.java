@@ -1,5 +1,6 @@
 package roomescape.fake;
 
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +31,11 @@ public class FakeTimeRepository implements TimeRepository {
 
     public Optional<Time> findById(Long id) {
         return Optional.ofNullable(times.get(id));
+    }
+
+    @Override
+    public Optional<Time> findByTime(LocalTime time) {
+        return Optional.empty();
     }
 
     public List<Time> findAll() {
