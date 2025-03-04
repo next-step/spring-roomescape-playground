@@ -63,7 +63,7 @@ public class TimeServiceTest {
         // when & then
         assertThatThrownBy(() -> timeService.createTime(validRequest))
             .isInstanceOf(InvalidValueException.class)
-            .hasMessageContaining(ErrorMessage.DUPLICATE_TIME.getMessage());
+            .hasMessage(ErrorMessage.DUPLICATE_TIME.getMessage());
     }
 
     @Test
