@@ -29,7 +29,7 @@ public class ReservationService {
         List<Reservation> reservations = reservationDAO.findReservations();
         return reservations.stream()
             .map(reservation -> new ReservationResponse(reservation.getId(), reservation.getName(),
-                reservation.getDate(), new TimeResponse(reservation.getId(), reservation.getTime().getTime())))
+                reservation.getDate(), new TimeResponse(reservation.getTime().getId(), reservation.getTime().getTime())))
             .toList();
     }
 
@@ -39,7 +39,7 @@ public class ReservationService {
         Reservation reservation = new Reservation(request.name(), request.date(), time);
         Reservation response = reservationDAO.createReservation(reservation);
         return new ReservationResponse(response.getId(), response.getName(), response.getDate(), new TimeResponse(
-            reservation.getId(), reservation.getTime().getTime()));
+            reservation.getTime().getId(), reservation.getTime().getTime()));
     }
 
     public void cancelReservation(Long reservationId) {
