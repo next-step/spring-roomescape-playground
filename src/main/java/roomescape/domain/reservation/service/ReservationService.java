@@ -1,7 +1,6 @@
 package roomescape.domain.reservation.service;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,7 +39,7 @@ public class ReservationService {
         }
 
         ReservationTime reservationTime = reservationTimeRepository.findById(reservationRequest.time());
-        if (reservationRequest.date().isEqual(LocalDate.now()) && reservationTime.isNotValidTime()) {
+        if (reservationRequest.date().isEqual(LocalDate.now()) && reservationTime.isBefore()) {
             throw new RoomescapeBadRequestException("잘못된 예약 날짜입니다. 현재 시각 이전 시간에 예약할 수 없습니다.");
         }
 

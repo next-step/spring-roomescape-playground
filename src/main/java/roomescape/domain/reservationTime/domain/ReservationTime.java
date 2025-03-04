@@ -21,7 +21,7 @@ public class ReservationTime {
         this(null, time);
     }
 
-    public boolean isNotValidTime() {
+    public boolean isBefore() {
         return this.time.isBefore(LocalTime.now());
     }
 
