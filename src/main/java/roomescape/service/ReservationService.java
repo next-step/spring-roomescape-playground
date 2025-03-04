@@ -9,6 +9,7 @@ import roomescape.domain.Reservation;
 import roomescape.domain.Time;
 import roomescape.dto.reservation.request.ReservationRequest;
 import roomescape.dto.reservation.response.ReservationResponse;
+import roomescape.dto.time.response.TimeResponse;
 import roomescape.error.ErrorMessage;
 import roomescape.error.exception.InvalidValueException;
 import roomescape.repository.ReservationDAO;
@@ -28,7 +29,7 @@ public class ReservationService {
         List<Reservation> reservations = reservationDAO.findReservations();
         return reservations.stream()
             .map(reservation -> new ReservationResponse(reservation.getId(), reservation.getName(),
-                reservation.getDate(), reservation.getTime()))
+                reservation.getDate(), new TimeResponse(reservation.getId(), reservation.getTime().getTime())))
             .toList();
     }
 
@@ -37,7 +38,8 @@ public class ReservationService {
         validateDateTime(request.date(), time.getTime());
         Reservation reservation = new Reservation(request.name(), request.date(), time);
         Reservation response = reservationDAO.createReservation(reservation);
-        return new ReservationResponse(response.getId(), response.getName(), response.getDate(), response.getTime());
+        return new ReservationResponse(response.getId(), response.getName(), response.getDate(), new TimeResponse(
+            reservation.getId(), reservation.getTime().getTime()));
     }
 
     public void cancelReservation(Long reservationId) {
