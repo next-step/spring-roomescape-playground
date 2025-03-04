@@ -35,12 +35,12 @@ class TimeControllerTest {
     private int port;
 
     @BeforeEach
-    void setup() {
+    void setupRestAssured() {
         RestAssured.port = port;
     }
 
     @AfterEach
-    void tearDown() {
+    void clearDatabase() {
         jdbcTemplate.update("DELETE FROM time");
         jdbcTemplate.update("ALTER TABLE time ALTER COLUMN id RESTART WITH 1");
     }

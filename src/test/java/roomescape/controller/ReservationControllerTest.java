@@ -48,10 +48,10 @@ class ReservationControllerTest {
     private JdbcTemplate jdbcTemplate;
 
     @AfterEach
-    void tearDown() {
+    void clearDatabase() {
         jdbcTemplate.update("DELETE FROM reservation");
         jdbcTemplate.update("ALTER TABLE reservation ALTER COLUMN id RESTART WITH 1");
-        
+
         jdbcTemplate.update("DELETE FROM time");
         jdbcTemplate.update("ALTER TABLE time ALTER COLUMN id RESTART WITH 1");
     }
@@ -60,12 +60,12 @@ class ReservationControllerTest {
     private int port;
 
     @BeforeEach
-    void setup() {
+    void setupRestAssured() {
         RestAssured.port = port;
     }
 
     @BeforeEach
-    void setUp() {
+    void setupClock() {
         doReturn(FIXED_CLOCK.instant()).when(clock).instant();
         doReturn(FIXED_CLOCK.getZone()).when(clock).getZone();
     }
