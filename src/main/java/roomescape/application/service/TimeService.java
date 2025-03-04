@@ -17,10 +17,10 @@ public class TimeService {
     }
 
     public List<TimeResponse> findAll() {
-
-        List<Time> all = timeRepository.findAll();
-        List<TimeResponse> list = all.stream().map(this::toDto).toList();
-        return list;
+        List<Time> foundTimes = timeRepository.findAll();
+        return foundTimes.stream()
+                .map(this::toDto)
+                .toList();
     }
 
     public Long saveTime(CreateTimeRequest request) {

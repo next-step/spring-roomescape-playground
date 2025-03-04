@@ -9,14 +9,14 @@ public class Time {
 
     private Long id;
 
-    private final LocalTime time;
+    private final LocalTime availableTime;
 
     public Time(Long id, LocalTime time) {
         if (Objects.isNull(time)) {
             throw new InvalidValueException(ErrorCode.INVALID_TIME_VALUE);
         }
         this.id = id;
-        this.time = time;
+        this.availableTime = time;
     }
 
     public Long getId() {
@@ -24,7 +24,7 @@ public class Time {
     }
 
     public LocalTime getTime() {
-        return time;
+        return availableTime;
     }
 
     @Override

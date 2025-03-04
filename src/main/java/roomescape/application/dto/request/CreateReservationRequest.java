@@ -7,11 +7,10 @@ import roomescape.domain.reservation.Reservation;
 import roomescape.domain.reservation.ReservedDateTime;
 import roomescape.domain.time.Time;
 
-public record CreateReservationRequestDto(
+public record CreateReservationRequest(
         @NotBlank(message = "이름은 필수 입력값 입니다.") String name,
         @NotNull(message = "예약날짜는 필수 입력값 입니다.") LocalDate date,
-//        @NotNull(message = "예약시간은 필수 입력값 입니다.") LocalTime time
-        Long time
+        @NotNull Long time
 ) {
 
     public Reservation toReservation(Time time) {

@@ -7,7 +7,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import roomescape.application.dto.request.CreateReservationRequestDto;
+import roomescape.application.dto.request.CreateReservationRequest;
 import roomescape.common.error.exception.EntityNotFoundException;
 import roomescape.domain.reservation.Reservation;
 import roomescape.domain.time.Time;
@@ -69,12 +69,12 @@ class ReservationServiceTest {
     }
 
     private Reservation saveReservation() {
-        CreateReservationRequestDto createReservationRequestDto = getCreateReservationRequestDto();
+        CreateReservationRequest createReservationRequestDto = getCreateReservationRequestDto();
         return reservationService.createReservation(createReservationRequestDto);
     }
 
-    private CreateReservationRequestDto getCreateReservationRequestDto() {
+    private CreateReservationRequest getCreateReservationRequestDto() {
         LocalDate oneDayLater = LocalDate.now().plusDays(ONE_DAY_LATER);
-        return new CreateReservationRequestDto(RESERVE_REQUESTER, oneDayLater, savedTimeId);
+        return new CreateReservationRequest(RESERVE_REQUESTER, oneDayLater, savedTimeId);
     }
 }
