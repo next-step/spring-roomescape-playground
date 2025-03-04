@@ -46,9 +46,7 @@ public class ReservationDAOTest {
         paramsSelect.addValue("id", 1L);
 
         return namedParameterJdbcTemplate.queryForObject(
-            sqlSelect,
-            paramsSelect,
-            (rs, rowNum) -> new Time(rs.getLong("id"), rs.getTime("time").toLocalTime())
+            sqlSelect, paramsSelect, (rs, rowNum) -> new Time(rs.getLong("id"), rs.getTime("time").toLocalTime())
         );
     }
 
