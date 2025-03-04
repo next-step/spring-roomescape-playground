@@ -12,6 +12,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import roomescape.domain.Reservation;
 import roomescape.domain.Time;
 import roomescape.mapper.ReservationRowMapper;
@@ -23,18 +25,33 @@ public class ReservationDAOTest {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    public ReservationDAOTest(@Autowired JdbcTemplate jdbcTemplate) {
+    @Autowired
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+
+    public ReservationDAOTest(@Autowired JdbcTemplate jdbcTemplate, @Autowired NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.reservationDAO = new ReservationDAO(jdbcTemplate, new ReservationRowMapper());
+        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
 
     private Time createTime(LocalTime time) {
-        jdbcTemplate.update("insert into time (id, time) values (?, ?)", 1L, time);
-        return jdbcTemplate.queryForObject(
-            "SELECT id, time FROM time WHERE id = ?",
-            new Object[]{1L},
+        String sqlInsert = "insert into time (id, time) values (:id, :time)";
+        MapSqlParameterSource paramsInsert = new MapSqlParameterSource();
+        paramsInsert.addValue("id", 1L);
+        paramsInsert.addValue("time", time);
+
+        namedParameterJdbcTemplate.update(sqlInsert, paramsInsert);
+
+        String sqlSelect = "SELECT id, time FROM time WHERE id = :id";
+        MapSqlParameterSource paramsSelect = new MapSqlParameterSource();
+        paramsSelect.addValue("id", 1L);
+
+        return namedParameterJdbcTemplate.queryForObject(
+            sqlSelect,
+            paramsSelect,
             (rs, rowNum) -> new Time(rs.getLong("id"), rs.getTime("time").toLocalTime())
         );
     }
+
 
     @Test
     void 예약을_정상적으로_생성할_수_있다() {
