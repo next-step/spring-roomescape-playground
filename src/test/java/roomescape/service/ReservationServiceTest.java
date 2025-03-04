@@ -42,7 +42,7 @@ class ReservationServiceTest {
     private TimeRepository timeRepository;
 
     @BeforeEach
-    void setUp() {
+    void setUpClock() {
         doReturn(FIXED_CLOCK.instant()).when(clock).instant();
         doReturn(FIXED_CLOCK.getZone()).when(clock).getZone();
     }
@@ -50,10 +50,10 @@ class ReservationServiceTest {
     @Test
     void 예약을_생성할_수_있다() {
         // given
-        Time time = saveTime(LocalTime.of(13, 0));
-        CreateReservationRequest request = createReservationRequest("김철수", 2025, 2, 18, time.getId());
+        final Time time = saveTime(LocalTime.of(13, 0));
+        final CreateReservationRequest request = createReservationRequest("김철수", 2025, 2, 18, time.getId());
         // when
-        ReservationResponse response = reservationService.createReservation(request);
+        final ReservationResponse response = reservationService.createReservation(request);
         // then
         assertAll(
                 () -> assertThat(response.name()).isEqualTo(request.name()),
@@ -65,10 +65,10 @@ class ReservationServiceTest {
     @Test
     void 동시간대에_예약이_존재한다면_예외가_발생한다() {
         // given
-        Time time = saveTime(LocalTime.of(13, 0));
-        CreateReservationRequest request1 = createReservationRequest("김철수", 2025, 2, 18, time.getId());
+        final Time time = saveTime(LocalTime.of(13, 0));
+        final CreateReservationRequest request1 = createReservationRequest("김철수", 2025, 2, 18, time.getId());
         reservationService.createReservation(request1);
-        CreateReservationRequest request2 = createReservationRequest("김영희", 2025, 2, 18, time.getId());
+        final CreateReservationRequest request2 = createReservationRequest("김영희", 2025, 2, 18, time.getId());
         // when & then
         assertThatThrownBy(() -> reservationService.createReservation(request2))
                 .isInstanceOf(BadRequestException.class)
@@ -79,8 +79,8 @@ class ReservationServiceTest {
     @Test
     void 현재_시간_이전의_예약_생성_시_예외가_발생한다() {
         // given
-        Time time = saveTime(LocalTime.of(9, 0));
-        CreateReservationRequest request = createReservationRequest("김철수", 2025, 2, 17, time.getId());
+        final Time time = saveTime(LocalTime.of(9, 0));
+        final CreateReservationRequest request = createReservationRequest("김철수", 2025, 2, 17, time.getId());
         // when & then
         assertThatThrownBy(() -> reservationService.createReservation(request))
                 .isInstanceOf(BadRequestException.class)
@@ -91,14 +91,14 @@ class ReservationServiceTest {
     @Test
     void 총_예약건수를_조회할_수_있다() {
         // given
-        Time time1 = saveTime(LocalTime.of(13, 0));
-        CreateReservationRequest request1 = createReservationRequest("김철수", 2025, 2, 18, time1.getId());
-        Time time2 = saveTime(LocalTime.of(14, 0));
-        CreateReservationRequest request2 = createReservationRequest("김영희", 2025, 2, 18, time2.getId());
+        final Time time1 = saveTime(LocalTime.of(13, 0));
+        final CreateReservationRequest request1 = createReservationRequest("김철수", 2025, 2, 18, time1.getId());
+        final Time time2 = saveTime(LocalTime.of(14, 0));
+        final CreateReservationRequest request2 = createReservationRequest("김영희", 2025, 2, 18, time2.getId());
         reservationService.createReservation(request1);
         reservationService.createReservation(request2);
         // when
-        List<ReservationResponse> reservationResponses = reservationService.getReservations();
+        final List<ReservationResponse> reservationResponses = reservationService.getReservations();
         // then
         assertThat(reservationResponses).hasSize(2);
     }
@@ -106,10 +106,10 @@ class ReservationServiceTest {
     @Test
     void 예약을_삭제할_수_있다() {
         // given
-        Time time = saveTime(LocalTime.of(13, 0));
-        CreateReservationRequest request = createReservationRequest("김철수", 2025, 2, 18, time.getId());
-        ReservationResponse response = reservationService.createReservation(request);
-        int initialReservationSize = reservationService.getReservations().size();
+        final Time time = saveTime(LocalTime.of(13, 0));
+        final CreateReservationRequest request = createReservationRequest("김철수", 2025, 2, 18, time.getId());
+        final ReservationResponse response = reservationService.createReservation(request);
+        final int initialReservationSize = reservationService.getReservations().size();
         // when
         reservationService.deleteReservation(response.id());
         // then
@@ -125,7 +125,7 @@ class ReservationServiceTest {
     }
 
     private Time saveTime(LocalTime time) {
-        Time newTime = new Time(time);
+        final Time newTime = new Time(time);
         return timeRepository.save(newTime);
     }
 

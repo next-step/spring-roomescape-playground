@@ -26,9 +26,9 @@ class TimeServiceTest {
     @Test
     void 시간을_생성할_수_있다() {
         // given
-        CreateTimeRequest request = new CreateTimeRequest(LocalTime.of(13, 0));
+        final CreateTimeRequest request = new CreateTimeRequest(LocalTime.of(13, 0));
         // when
-        TimeResponse response = timeService.createTime(request);
+        final TimeResponse response = timeService.createTime(request);
         // then
         assertAll(
                 () -> assertThat(response.id()).isNotNull(),
@@ -39,9 +39,9 @@ class TimeServiceTest {
     @Test
     void 동일한_시간이_이미_존재한다면_예외가_발생한다() {
         // given
-        CreateTimeRequest request1 = new CreateTimeRequest(LocalTime.of(13, 0));
+        final CreateTimeRequest request1 = new CreateTimeRequest(LocalTime.of(13, 0));
         timeService.createTime(request1);
-        CreateTimeRequest request2 = new CreateTimeRequest(LocalTime.of(13, 0));
+        final CreateTimeRequest request2 = new CreateTimeRequest(LocalTime.of(13, 0));
         // when & then
         assertThatThrownBy(() -> timeService.createTime(request2))
                 .isInstanceOf(BadRequestException.class)
@@ -52,12 +52,12 @@ class TimeServiceTest {
     @Test
     void 저장한_시간을_모두_조회할_수_있다() {
         // given
-        CreateTimeRequest request1 = new CreateTimeRequest(LocalTime.of(13, 0));
+        final CreateTimeRequest request1 = new CreateTimeRequest(LocalTime.of(13, 0));
         timeService.createTime(request1);
-        CreateTimeRequest request2 = new CreateTimeRequest(LocalTime.of(14, 0));
+        final CreateTimeRequest request2 = new CreateTimeRequest(LocalTime.of(14, 0));
         timeService.createTime(request2);
         // when
-        List<TimeResponse> timeResponses = timeService.getTimes();
+        final List<TimeResponse> timeResponses = timeService.getTimes();
         // then
         assertThat(timeResponses).hasSize(2);
     }
@@ -65,9 +65,9 @@ class TimeServiceTest {
     @Test
     void 시간을_삭제할_수_있다() {
         // given
-        CreateTimeRequest request = new CreateTimeRequest(LocalTime.of(13, 0));
-        TimeResponse response = timeService.createTime(request);
-        int initialTimeSize = timeService.getTimes().size();
+        final CreateTimeRequest request = new CreateTimeRequest(LocalTime.of(13, 0));
+        final TimeResponse response = timeService.createTime(request);
+        final int initialTimeSize = timeService.getTimes().size();
         // when
         timeService.deleteTime(response.id());
         // then

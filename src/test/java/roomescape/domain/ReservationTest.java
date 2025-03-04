@@ -27,7 +27,7 @@ class ReservationTest {
     @Test
     void 예약을_생성할_수_있다() {
         // give
-        Time time = new Time(LocalTime.of(13, 0));
+        final Time time = new Time(LocalTime.of(13, 0));
         // when & then
         assertThatCode(() -> new Reservation("김철수", LocalDate.of(2025, 2, 19), time))
                 .doesNotThrowAnyException();
@@ -36,8 +36,8 @@ class ReservationTest {
     @Test
     void 현재보다_과거_시간대의_예약을_생성하면_true를_반환한다() {
         // given
-        Time time = new Time(LocalTime.of(9, 0));
-        Reservation reservation = new Reservation("김철수", LocalDate.of(2025, 2, 17), time);
+        final Time time = new Time(LocalTime.of(9, 0));
+        final Reservation reservation = new Reservation("김철수", LocalDate.of(2025, 2, 17), time);
         // when &  then
         assertThat(reservation.isExpired(FIXED_CLOCK)).isTrue();
     }
@@ -45,17 +45,17 @@ class ReservationTest {
     @Test
     void 현재_이후_시간대의_예약을_생성하면_false를_반환한다() {
         // given
-        Time time = new Time(LocalTime.of(11, 0));
-        Reservation reservation = new Reservation("김철수", LocalDate.of(2025, 2, 17), time);
+        final Time time = new Time(LocalTime.of(11, 0));
+        final Reservation reservation = new Reservation("김철수", LocalDate.of(2025, 2, 17), time);
         // when &  then
         assertThat(reservation.isExpired(FIXED_CLOCK)).isFalse();
     }
 
     @ParameterizedTest
     @ValueSource(ints = {MIN_NAME_LENGTH - 1, MAX_NAME_LENGTH + 1})
-    void 이름_길이가_범위내_존재하지_않으면_예외가_발생한다(int nameLength) {
+    void 이름_길이가_범위내_존재하지_않으면_예외가_발생한다(final int nameLength) {
         // given
-        Time time = new Time(LocalTime.of(13, 0));
+        final Time time = new Time(LocalTime.of(13, 0));
         // when &  then
         assertThatThrownBy(() -> new Reservation("a".repeat(nameLength), LocalDate.of(2025, 2, 19), time))
                 .isInstanceOf(BadRequestException.class)
@@ -64,9 +64,9 @@ class ReservationTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"kim", "나자바!", "철수 Kim"})
-    void 이름에_한글_외_다른_문자_넣을시_예외가_발생한다(String name) {
+    void 이름에_한글_외_다른_문자_넣을시_예외가_발생한다(final String name) {
         // given
-        Time time = new Time(LocalTime.of(13, 0));
+        final Time time = new Time(LocalTime.of(13, 0));
         // when &  then
         assertThatThrownBy(() -> new Reservation(name, LocalDate.of(2025, 2, 19), time))
                 .isInstanceOf(BadRequestException.class)
@@ -75,9 +75,9 @@ class ReservationTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    void 이름을_입력하지_않을시_예외가_발생한다(String name) {
+    void 이름을_입력하지_않을시_예외가_발생한다(final String name) {
         // given
-        Time time = new Time(LocalTime.of(13, 0));
+        final Time time = new Time(LocalTime.of(13, 0));
         // when &  then
         assertThatThrownBy(() -> new Reservation(name, LocalDate.of(2025, 2, 19), time))
                 .isInstanceOf(BadRequestException.class)
@@ -87,7 +87,7 @@ class ReservationTest {
     @Test
     void 필수_인자_입력하지_않을시_예외가_발생한다() {
         // given
-        Time time = new Time(LocalTime.of(13, 0));
+        final Time time = new Time(LocalTime.of(13, 0));
         // when &  then
         assertAll(
                 () -> assertThatThrownBy(() -> new Reservation("김철수", null, time))

@@ -39,10 +39,10 @@ class ReservationControllerTest {
     private Clock clock;
 
     @Autowired
-    TimeRepository timeRepository;
+    private TimeRepository timeRepository;
 
     @Autowired
-    ReservationRepository reservationRepository;
+    private ReservationRepository reservationRepository;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -72,11 +72,11 @@ class ReservationControllerTest {
 
     @Test
     void 예약을_생성할_수_있다() {
-        Time time = new Time(LocalTime.of(13, 0));
-        Time savedTime = timeRepository.save(time);
-        CreateReservationRequest request = new CreateReservationRequest("김철수", LocalDate.of(2024, 3, 3), savedTime.getId());
+        final Time time = new Time(LocalTime.of(13, 0));
+        final Time savedTime = timeRepository.save(time);
+        final CreateReservationRequest request = new CreateReservationRequest("김철수", LocalDate.of(2024, 3, 3), savedTime.getId());
 
-        ReservationResponse response = RestAssured.given()
+        final ReservationResponse response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .body(request)
                 .when().post("/reservations")
@@ -86,7 +86,7 @@ class ReservationControllerTest {
                 .extract()
                 .as(ReservationResponse.class);
 
-        List<Reservation> reservations = reservationRepository.findAll();
+        final List<Reservation> reservations = reservationRepository.findAll();
 
         assertAll(
                 () -> assertThat(response.name()).isEqualTo(request.name()),
@@ -98,9 +98,9 @@ class ReservationControllerTest {
 
     @Test
     void 시간이_현재보다_과거이면_예약_생성에_실패한다() {
-        Time time = new Time(LocalTime.of(13, 0));
-        Time savedTime = timeRepository.save(time);
-        CreateReservationRequest request = new CreateReservationRequest("김철수", LocalDate.of(2023, 7, 31), savedTime.getId());
+        final Time time = new Time(LocalTime.of(13, 0));
+        final Time savedTime = timeRepository.save(time);
+        final CreateReservationRequest request = new CreateReservationRequest("김철수", LocalDate.of(2023, 7, 31), savedTime.getId());
 
         RestAssured.given()
                 .contentType(ContentType.JSON)
@@ -112,13 +112,13 @@ class ReservationControllerTest {
 
     @Test
     void 해당_시간에_예약이_존재하면_예약_생성에_실패한다() {
-        Time time = new Time(LocalTime.of(13, 0));
-        Time savedTime = timeRepository.save(time);
+        final Time time = new Time(LocalTime.of(13, 0));
+        final Time savedTime = timeRepository.save(time);
 
-        CreateReservationRequest request = new CreateReservationRequest("김철수", LocalDate.of(2025, 3, 3), savedTime.getId());
+        final CreateReservationRequest request = new CreateReservationRequest("김철수", LocalDate.of(2025, 3, 3), savedTime.getId());
         reservationRepository.save(request.toReservation(savedTime));
 
-        CreateReservationRequest targetRequest = new CreateReservationRequest("김영희", LocalDate.of(2025, 3, 3), savedTime.getId());
+        final CreateReservationRequest targetRequest = new CreateReservationRequest("김영희", LocalDate.of(2025, 3, 3), savedTime.getId());
 
         RestAssured.given()
                 .contentType(ContentType.JSON)
@@ -130,14 +130,14 @@ class ReservationControllerTest {
 
     @Test
     void 생성된_모든_예약을_조회할_수_있다() {
-        Time time1 = new Time(LocalTime.of(13, 0));
-        Time savedTime1 = timeRepository.save(time1);
-        Time time2 = new Time(LocalTime.of(14, 0));
-        Time savedTime2 = timeRepository.save(time2);
+        final Time time1 = new Time(LocalTime.of(13, 0));
+        final Time savedTime1 = timeRepository.save(time1);
+        final Time time2 = new Time(LocalTime.of(14, 0));
+        final Time savedTime2 = timeRepository.save(time2);
 
-        CreateReservationRequest request1 = new CreateReservationRequest("김철수", LocalDate.of(2025, 3, 3), savedTime1.getId());
+        final CreateReservationRequest request1 = new CreateReservationRequest("김철수", LocalDate.of(2025, 3, 3), savedTime1.getId());
         reservationRepository.save(request1.toReservation(savedTime1));
-        CreateReservationRequest request2 = new CreateReservationRequest("김영희", LocalDate.of(2025, 3, 3), savedTime2.getId());
+        final CreateReservationRequest request2 = new CreateReservationRequest("김영희", LocalDate.of(2025, 3, 3), savedTime2.getId());
         reservationRepository.save(request2.toReservation(savedTime2));
 
         RestAssured.given()
@@ -150,9 +150,9 @@ class ReservationControllerTest {
 
     @Test
     void 특정_예약을_삭제할_수_있다() {
-        Time time = new Time(LocalTime.of(13, 0));
-        Time savedTime = timeRepository.save(time);
-        CreateReservationRequest request = new CreateReservationRequest("김철수", LocalDate.of(2024, 3, 3), savedTime.getId());
+        final Time time = new Time(LocalTime.of(13, 0));
+        final Time savedTime = timeRepository.save(time);
+        final CreateReservationRequest request = new CreateReservationRequest("김철수", LocalDate.of(2024, 3, 3), savedTime.getId());
         reservationRepository.save(request.toReservation(savedTime));
 
         RestAssured.given()

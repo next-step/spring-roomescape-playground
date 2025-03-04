@@ -28,11 +28,11 @@ class ReservationRepositoryTest {
     @Test
     void 예약을_생성한다() {
         // given
-        Time time = new Time(LocalTime.of(13, 0));
-        Time savedTime = timeRepository.save(time);
-        Reservation reservation = new Reservation("김철수", LocalDate.of(2025, 2, 19), savedTime);
+        final Time time = new Time(LocalTime.of(13, 0));
+        final Time savedTime = timeRepository.save(time);
+        final Reservation reservation = new Reservation("김철수", LocalDate.of(2025, 2, 19), savedTime);
         // when
-        Reservation savedReservation = reservationRepository.save(reservation);
+        final Reservation savedReservation = reservationRepository.save(reservation);
         // then
         assertAll(
                 () -> assertThat(savedReservation.getId()).isNotNull(),
@@ -45,12 +45,12 @@ class ReservationRepositoryTest {
     @Test
     void 아이디를_통해_특정_예약을_조회한다() {
         // given
-        Time time = new Time(LocalTime.of(13, 0));
-        Time savedTime = timeRepository.save(time);
-        Reservation reservation = new Reservation("김철수", LocalDate.of(2025, 2, 19), savedTime);
-        Reservation savedReservation = reservationRepository.save(reservation);
+        final Time time = new Time(LocalTime.of(13, 0));
+        final Time savedTime = timeRepository.save(time);
+        final Reservation reservation = new Reservation("김철수", LocalDate.of(2025, 2, 19), savedTime);
+        final Reservation savedReservation = reservationRepository.save(reservation);
         // when
-        Optional<Reservation> foundReservation = reservationRepository.findById(savedReservation.getId());
+        final Optional<Reservation> foundReservation = reservationRepository.findById(savedReservation.getId());
         // then
         assertThat(foundReservation)
                 .hasValueSatisfying(reservationResult -> assertAll(
@@ -65,16 +65,16 @@ class ReservationRepositoryTest {
     @Test
     void 모든_예약을_조회한다() {
         // given
-        Time time1 = new Time(LocalTime.of(13, 0));
-        Time time2 = new Time(LocalTime.of(14, 0));
-        Time savedTime1 = timeRepository.save(time1);
-        Time savedTime2 = timeRepository.save(time2);
-        Reservation reservation1 = new Reservation("김철수", LocalDate.of(2025, 2, 19), savedTime1);
-        Reservation reservation2 = new Reservation("김영희", LocalDate.of(2025, 2, 19), savedTime2);
+        final Time time1 = new Time(LocalTime.of(13, 0));
+        final Time time2 = new Time(LocalTime.of(14, 0));
+        final Time savedTime1 = timeRepository.save(time1);
+        final Time savedTime2 = timeRepository.save(time2);
+        final Reservation reservation1 = new Reservation("김철수", LocalDate.of(2025, 2, 19), savedTime1);
+        final Reservation reservation2 = new Reservation("김영희", LocalDate.of(2025, 2, 19), savedTime2);
         reservationRepository.save(reservation1);
         reservationRepository.save(reservation2);
         // when
-        List<Reservation> reservations = reservationRepository.findAll();
+        final List<Reservation> reservations = reservationRepository.findAll();
         // then
         assertThat(reservations).hasSize(2);
     }
@@ -82,13 +82,13 @@ class ReservationRepositoryTest {
     @Test
     void 해당_날짜_및_시간에_예약이_존재하면_true를_반환한다() {
         // given
-        LocalDate date = LocalDate.of(2025, 2, 19);
-        Time time = new Time(LocalTime.of(13, 0));
-        Time savedTime = timeRepository.save(time);
-        Reservation reservation = new Reservation("김철수", date, savedTime);
+        final LocalDate date = LocalDate.of(2025, 2, 19);
+        final Time time = new Time(LocalTime.of(13, 0));
+        final Time savedTime = timeRepository.save(time);
+        final Reservation reservation = new Reservation("김철수", date, savedTime);
         reservationRepository.save(reservation);
         // when
-        boolean exists = reservationRepository.existsByDateAndTime(date, time.getTime());
+        final boolean exists = reservationRepository.existsByDateAndTime(date, time.getTime());
         // then
         assertThat(exists).isTrue();
     }
@@ -96,14 +96,14 @@ class ReservationRepositoryTest {
     @Test
     void 아이디를_통해_특정_예약을_삭제한다() {
         // given
-        Time time = new Time(LocalTime.of(13, 0));
-        Time savedTime = timeRepository.save(time);
-        Reservation reservation = new Reservation("김철수", LocalDate.of(2025, 2, 19), savedTime);
-        Reservation savedReservation = reservationRepository.save(reservation);
+        final Time time = new Time(LocalTime.of(13, 0));
+        final Time savedTime = timeRepository.save(time);
+        final Reservation reservation = new Reservation("김철수", LocalDate.of(2025, 2, 19), savedTime);
+        final Reservation savedReservation = reservationRepository.save(reservation);
         // when
         reservationRepository.deleteById(savedReservation.getId());
         // then
-        Optional<Reservation> foundReservation = reservationRepository.findById(savedReservation.getId());
+        final Optional<Reservation> foundReservation = reservationRepository.findById(savedReservation.getId());
         assertThat(foundReservation).isEmpty();
     }
 }

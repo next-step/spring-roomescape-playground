@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 class TimeControllerTest {
 
     @Autowired
-    TimeRepository timeRepository;
+    private TimeRepository timeRepository;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -47,9 +47,9 @@ class TimeControllerTest {
 
     @Test
     void 시간을_생성할_수_있다() {
-        CreateTimeRequest request = new CreateTimeRequest(LocalTime.of(13, 0));
+        final CreateTimeRequest request = new CreateTimeRequest(LocalTime.of(13, 0));
 
-        TimeResponse response = RestAssured.given()
+        final TimeResponse response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .body(request)
                 .when().post("/times")
@@ -59,7 +59,7 @@ class TimeControllerTest {
                 .extract()
                 .as(TimeResponse.class);
 
-        List<Time> times = timeRepository.findAll();
+        final List<Time> times = timeRepository.findAll();
 
         assertAll(
                 () -> assertThat(response.time()).isEqualTo(request.time()),
@@ -69,10 +69,10 @@ class TimeControllerTest {
 
     @Test
     void 해당시간이_이미_존재하면_시간_생성에_실패한다() {
-        CreateTimeRequest request = new CreateTimeRequest(LocalTime.of(13, 0));
+        final CreateTimeRequest request = new CreateTimeRequest(LocalTime.of(13, 0));
         timeRepository.save(request.toTime());
 
-        CreateTimeRequest targetRequest = new CreateTimeRequest(LocalTime.of(13, 0));
+        final CreateTimeRequest targetRequest = new CreateTimeRequest(LocalTime.of(13, 0));
 
         RestAssured.given()
                 .contentType(ContentType.JSON)
@@ -84,9 +84,9 @@ class TimeControllerTest {
 
     @Test
     void 생성된_모든_시간을_조회할_수_있다() {
-        CreateTimeRequest request1 = new CreateTimeRequest(LocalTime.of(13, 0));
+        final CreateTimeRequest request1 = new CreateTimeRequest(LocalTime.of(13, 0));
         timeRepository.save(request1.toTime());
-        CreateTimeRequest request2 = new CreateTimeRequest(LocalTime.of(14, 0));
+        final CreateTimeRequest request2 = new CreateTimeRequest(LocalTime.of(14, 0));
         timeRepository.save(request2.toTime());
 
         RestAssured.given()
@@ -99,7 +99,7 @@ class TimeControllerTest {
 
     @Test
     void 특정_시간을_삭제할_수_있다() {
-        CreateTimeRequest request = new CreateTimeRequest(LocalTime.of(13, 0));
+        final CreateTimeRequest request = new CreateTimeRequest(LocalTime.of(13, 0));
         timeRepository.save(request.toTime());
 
         RestAssured.given()
