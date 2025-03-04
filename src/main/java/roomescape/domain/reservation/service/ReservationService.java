@@ -40,7 +40,7 @@ public class ReservationService {
         }
 
         ReservationTime reservationTime = reservationTimeRepository.findById(reservationRequest.time());
-        if (reservationRequest.date().isEqual(LocalDate.now()) && reservationTime.getTime().isBefore(LocalTime.now())) {
+        if (reservationRequest.date().isEqual(LocalDate.now()) && reservationTime.isNotValidTime()) {
             throw new RoomescapeBadRequestException("잘못된 예약 날짜입니다. 현재 시각 이전 시간에 예약할 수 없습니다.");
         }
 

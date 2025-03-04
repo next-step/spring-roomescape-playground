@@ -21,6 +21,10 @@ public class ReservationTime {
         this(null, time);
     }
 
+    public boolean isNotValidTime() {
+        return this.time.isBefore(LocalTime.now());
+    }
+
     public Long getId() {
         return id;
     }
