@@ -31,7 +31,7 @@ public class ReservationService {
     }
 
     public Reservation createReservation(CreateReservationRequest createReservationRequestDto) {
-        Time foundTime = getFoundTimeOrThrow(createReservationRequestDto);
+        Time foundTime = getFoundTime(createReservationRequestDto);
         validReservationDateTime(createReservationRequestDto, foundTime);
 
         Reservation reservationIdNull = createReservationRequestDto.toReservation(foundTime);
@@ -39,24 +39,46 @@ public class ReservationService {
     }
 
     public void deleteReservation(Long reservationId) {
-        Reservation foundReservation = getFoundReservationOrThrow(reservationId);
+        Reservation foundReservation = getFoundReservation(reservationId);
         reservationRepository.delete(foundReservation);
     }
 
-    private Time getFoundTimeOrThrow(CreateReservationRequest createReservationRequestDto) {
+    private Time getFoundTime(CreateReservationRequest createReservationRequestDto) {
         return timeRepository.findById(createReservationRequestDto.time())
                 .orElseThrow(EntityNotFoundException::new);
     }
 
-    private Reservation getFoundReservationOrThrow(Long reservationId) {
+    private Reservation getFoundReservation(Long reservationId) {
         return reservationRepository.findById(reservationId).orElseThrow(EntityNotFoundException::new);
     }
 
     private void validReservationDateTime(CreateReservationRequest createReservationRequestDto, Time foundTime) {
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime reservedDateTime = LocalDateTime.of(createReservationRequestDto.date(), foundTime.getAvailableTime());
-        if (reservedDateTime.isBefore(now)) {
+        LocalDateTime reservedDateTime = getRequestReservedDateTime(createReservationRequestDto, foundTime);
+
+        if (isBeforeCurrentTIme(reservedDateTime)) {
             throw new ReservationException(ErrorCode.INVALID_RESERVE_VALUE);
         }
+
+        if (isExistsReservationDateTime(createReservationRequestDto, foundTime)) {
+            throw new ReservationException(ErrorCode.EXISTS_TIME_VALUE);
+        }
+    }
+
+    private static LocalDateTime getRequestReservedDateTime(CreateReservationRequest createReservationRequestDto,
+                                                            Time foundTime) {
+        return LocalDateTime.of(createReservationRequestDto.date(),
+                foundTime.getAvailableTime());
+    }
+
+    private static boolean isBeforeCurrentTIme(LocalDateTime reservedDateTime) {
+        LocalDateTime now = LocalDateTime.now();
+        return reservedDateTime.isBefore(now);
+    }
+
+    private boolean isExistsReservationDateTime(
+            CreateReservationRequest createReservationRequestDto,
+            Time foundTime
+    ) {
+        return reservationRepository.isExistsByReservedDateAndTime(createReservationRequestDto.date(), foundTime);
     }
 }

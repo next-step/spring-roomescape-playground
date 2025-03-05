@@ -11,7 +11,7 @@ public enum ErrorCode {
 
     // Time
     INVALID_TIME_VALUE(400, "T001", "시간을 다시 입력해주세요"),
-
+    EXISTS_TIME_VALUE(400, "T002", "예약되지 않은 시간을 다시 입력해주세요."),
     // Server
     SERVER_ERROR(500, "E003", "Server error"),
     ;

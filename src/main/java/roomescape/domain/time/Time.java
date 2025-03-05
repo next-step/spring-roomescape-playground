@@ -36,11 +36,11 @@ public class Time {
             return false;
         }
         Time time = (Time) o;
-        return Objects.equals(id, time.id);
+        return Objects.equals(id, time.id) && Objects.equals(availableTime, time.availableTime);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id);
+        return Objects.hash(id, availableTime);
     }
 }

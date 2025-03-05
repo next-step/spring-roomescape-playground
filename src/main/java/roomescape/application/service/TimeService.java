@@ -19,10 +19,7 @@ public class TimeService {
     }
 
     public List<TimeResponse> findAll() {
-        List<Time> foundTimes = timeRepository.findAll();
-        return foundTimes.stream()
-                .map(this::toDto)
-                .toList();
+        return getAllTimeResponse();
     }
 
     public Long saveTime(CreateTimeRequest request) {
@@ -31,6 +28,13 @@ public class TimeService {
         }
         Time time = new Time(null, request.time());
         return timeRepository.save(time);
+    }
+
+    private List<TimeResponse> getAllTimeResponse() {
+        List<Time> foundTimes = timeRepository.findAll();
+        return foundTimes.stream()
+                .map(this::toDto)
+                .toList();
     }
 
     private boolean isAlreadyExistTime(CreateTimeRequest request) {

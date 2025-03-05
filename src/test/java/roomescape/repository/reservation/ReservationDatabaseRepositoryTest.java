@@ -1,11 +1,11 @@
 package roomescape.repository.reservation;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import roomescape.domain.reservation.Reservation;
 import roomescape.domain.reservation.ReservedDateTime;
+import roomescape.domain.reservation.exception.ReservationException;
 import roomescape.domain.time.Time;
 import roomescape.repository.TimeDatabaseRepository;
 
@@ -35,6 +36,7 @@ class ReservationDatabaseRepositoryTest {
     private static final LocalTime reservedTime = LocalTime.of(12, 0);
 
     private Time time;
+
     @BeforeEach
     void init() {
         Long saveId = timeDatabaseRepository.save(new Time(null, reservedTime));
@@ -91,6 +93,8 @@ class ReservationDatabaseRepositoryTest {
         // then
         assertThat(reservations.size()).isEqualTo(0);
     }
+
+
 
     private Reservation createReservation() {
         return new Reservation(null, "곰곰", new ReservedDateTime(reservedDate, time));
