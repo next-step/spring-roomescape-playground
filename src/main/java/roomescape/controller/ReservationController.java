@@ -1,5 +1,6 @@
 package roomescape.controller;
 
+import jakarta.servlet.http.HttpServletResponse;
 import java.net.URI;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,11 +33,12 @@ public class ReservationController {
     }
 
     @PostMapping
-    public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservation) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public Reservation createReservation(@RequestBody Reservation reservation, HttpServletResponse response) {
 
         Reservation newReservation = reservationService.createReservation(reservation);
-        return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId()))
-                .body(newReservation);
+        response.setHeader("Location", "/reservations/" + newReservation.getId());
+        return newReservation;
     }
 
     @GetMapping("/{id}")
