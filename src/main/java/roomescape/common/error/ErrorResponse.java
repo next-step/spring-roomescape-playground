@@ -21,18 +21,18 @@ public class ErrorResponse {
         this.errors = errors;
     }
 
-    private ErrorResponse(final ErrorCode errorCode) {
+    private ErrorResponse(ErrorCode errorCode) {
         this.description = errorCode.getDescription();
         this.status = errorCode.getStatus();
         this.code = errorCode.getCode();
         this.errors = new ArrayList<>();
     }
 
-    public static ErrorResponse of(final ErrorCode errorCode) {
+    public static ErrorResponse of(ErrorCode errorCode) {
         return new ErrorResponse(errorCode);
     }
 
-    public static ErrorResponse of(final ErrorCode errorCode, final BindingResult bindingResult) {
+    public static ErrorResponse of(ErrorCode errorCode, BindingResult bindingResult) {
         return new ErrorResponse(errorCode, FieldError.of(bindingResult));
     }
 
@@ -66,8 +66,8 @@ public class ErrorResponse {
             this.reason = reason;
         }
 
-        public static List<FieldError> of(final BindingResult bindingResult) {
-            final List<org.springframework.validation.FieldError> fieldErrors = bindingResult.getFieldErrors();
+        public static List<FieldError> of(BindingResult bindingResult) {
+            List<org.springframework.validation.FieldError> fieldErrors = bindingResult.getFieldErrors();
             return fieldErrors.stream()
                     .map(error -> new FieldError(
                             error.getField(),
