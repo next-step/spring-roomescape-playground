@@ -99,7 +99,8 @@ public class MissionStepTest {
                 .when().post("/times")
                 .then().log().all()
                 .statusCode(201)
-                .header("Location", "/times/1");
+                .header("Location", "/times/1")
+                .body("id", is(1));
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -108,7 +109,8 @@ public class MissionStepTest {
                 .then().log().all()
                 .statusCode(201)
                 .header("Location", "/reservations/1")
-                .body("id", is(1));
+                .body("id", is(1))
+        ;
 
         RestAssured.given().log().all()
                 .when().get("/reservations")

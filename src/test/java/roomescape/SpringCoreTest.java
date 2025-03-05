@@ -31,6 +31,8 @@ public class SpringCoreTest {
         RestAssured.port = port;
     }
 
+    @Autowired
+    private ReservationController reservationController;
 
     @Test
     void 팔단계() {
@@ -71,9 +73,6 @@ public class SpringCoreTest {
                 .then().log().all()
                 .statusCode(400);
     }
-
-    @Autowired
-    private ReservationController reservationController;
 
     @Test
     void 십단계() {
