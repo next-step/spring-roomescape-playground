@@ -3,14 +3,13 @@ package roomescape.dao.reservation;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.sql.DataSource;
+
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import roomescape.entity.Reservation;
-import roomescape.entity.Time;
 import roomescape.exception.DataInvalidException;
 
 
@@ -54,7 +53,7 @@ public class ReservationJdbcDAO implements ReservationDAO {
                 t.id as time_id,
                 t.time as time_value 
                  FROM reservation as r
-                    JOIN time as t ON r.time_id = t.id
+                    INNER JOIN time as t ON r.time_id = t.id
                 """;
 
         try {
