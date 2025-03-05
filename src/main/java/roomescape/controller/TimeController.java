@@ -1,6 +1,7 @@
 package roomescape.controller;
 
 
+import jakarta.servlet.http.HttpServletResponse;
 import java.net.URI;
 import java.util.List;
 import org.springframework.http.HttpStatus;
@@ -28,10 +29,11 @@ public class TimeController {
     }
 
     @PostMapping
-    public ResponseEntity<Time> createTimeTable(@RequestBody Time time) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public Time createTimeTable(@RequestBody Time time, HttpServletResponse response) {
         Time newTimeTable = timeService.createTime(time);
-        return ResponseEntity.created(URI.create("/times/" + newTimeTable.getId()))
-                .body(newTimeTable);
+        response.setHeader("Location", "/times/" + newTimeTable.getId());
+        return newTimeTable;
     }
 
     @GetMapping
