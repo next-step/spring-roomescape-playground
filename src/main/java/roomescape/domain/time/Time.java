@@ -9,22 +9,22 @@ public class Time {
 
     private Long id;
 
-    private final LocalTime time;
+    private final LocalTime availableTime;
 
     public Time(Long id, LocalTime time) {
         if (Objects.isNull(time)) {
             throw new InvalidValueException(ErrorCode.INVALID_TIME_VALUE);
         }
         this.id = id;
-        this.time = time;
+        this.availableTime = time;
     }
 
     public Long getId() {
         return id;
     }
 
-    public LocalTime getTime() {
-        return time;
+    public LocalTime getAvailableTime() {
+        return availableTime;
     }
 
     @Override
@@ -36,11 +36,11 @@ public class Time {
             return false;
         }
         Time time = (Time) o;
-        return Objects.equals(id, time.id);
+        return Objects.equals(id, time.id) && Objects.equals(availableTime, time.availableTime);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id);
+        return Objects.hash(id, availableTime);
     }
 }

@@ -17,14 +17,14 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(BusinessException.class)
-    protected ResponseEntity<ErrorResponse> handleBusinessException(final BusinessException exception) {
+    protected ResponseEntity<ErrorResponse> handleBusinessException(BusinessException exception) {
         ErrorCode errorCode = exception.getErrorCode();
         ErrorResponse errorResponse = ErrorResponse.of(errorCode);
         return ResponseEntity.status(errorResponse.getStatus()).body(errorResponse);
     }
 
     @ExceptionHandler(Exception.class)
-    protected ResponseEntity<ErrorResponse> handleException(final Exception exception) {
+    protected ResponseEntity<ErrorResponse> handleException(Exception exception) {
         ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.SERVER_ERROR);
         return ResponseEntity.status(errorResponse.getStatus()).body(errorResponse);
     }

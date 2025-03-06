@@ -33,7 +33,7 @@ public class ReservedDateTime {
     }
 
     public LocalTime getTimeAsLocalTime() {
-        return time.getTime();
+        return time.getAvailableTime();
     }
 
     public Long getTimeId() {

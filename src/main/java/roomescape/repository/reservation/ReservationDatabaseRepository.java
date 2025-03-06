@@ -56,21 +56,21 @@ public class ReservationDatabaseRepository implements ReservationRepository {
     @Override
     public Optional<Reservation> findById(Long id) {
         String sql = """
-        SELECT r.reservation_id, r.name, r.reserved_date, t.time_id, t.available_time
-          FROM reservations as r 
-         INNER JOIN times t ON r.time_id = t.time_id
-         WHERE r.time_id = ?
-        """;
+                SELECT r.reservation_id, r.name, r.reserved_date, t.time_id, t.available_time
+                  FROM reservations as r 
+                 INNER JOIN times t ON r.time_id = t.time_id
+                 WHERE r.time_id = ?
+                """;
         return jdbcTemplate.query(sql, RESERVATION_ROW_MAPPER, id).stream().findFirst();
     }
 
     @Override
     public List<Reservation> findAll() {
         String sql = """
-        SELECT r.reservation_id, r.name, r.reserved_date, t.time_id, t.available_time
-          FROM reservations as r 
-         INNER JOIN times t ON r.time_id = t.time_id
-        """;
+                SELECT r.reservation_id, r.name, r.reserved_date, t.time_id, t.available_time
+                  FROM reservations as r 
+                 INNER JOIN times t ON r.time_id = t.time_id
+                """;
         return Collections.unmodifiableList(jdbcTemplate.query(sql, RESERVATION_ROW_MAPPER));
     }
 
@@ -78,5 +78,19 @@ public class ReservationDatabaseRepository implements ReservationRepository {
     public void delete(Reservation reservation) {
         String sql = "DELETE FROM reservations WHERE reservation_id = ?";
         jdbcTemplate.update(sql, reservation.getId());
+    }
+
+    @Override
+    public boolean isExistsByReservedDateAndTime(LocalDate reservedDate, Time time) {
+        String sql = """
+                SELECT EXISTS (
+                    SELECT 1 
+                      FROM RESERVATIONS 
+                     WHERE reserved_date = ? 
+                       AND time_id = ?
+                )
+                """;
+        Boolean result = jdbcTemplate.queryForObject(sql, Boolean.class, reservedDate, time.getId());
+        return Boolean.TRUE.equals(result);
     }
 }

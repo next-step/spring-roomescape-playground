@@ -2,7 +2,6 @@ package roomescape.application.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import roomescape.domain.reservation.Reservation;
 
 public record ReservationResponseDto(
@@ -15,6 +14,6 @@ public record ReservationResponseDto(
 
         public static ReservationResponseDto toDto(Reservation reservation) {
                 return new ReservationResponseDto(reservation.getId(), reservation.getName(),
-                        reservation.reservedDateValue(), new TimeResponse(reservation.getTimeId(), reservation.getTime().getTime()));
+                        reservation.reservedDateValue(), new TimeResponse(reservation.getTimeId(), reservation.getTime().getAvailableTime()));
         }
 }

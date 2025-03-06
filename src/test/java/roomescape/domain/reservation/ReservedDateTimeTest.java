@@ -15,7 +15,7 @@ class ReservedDateTimeTest {
     private final String reservedDate = "2025-02-15";
     private final String reservedTime = "10:55";
 
-    private final ReservedDateTime reservedDateTime =
+    private final ReservedDateTime RESERVED_DATE_TIME =
             new ReservedDateTime(LocalDate.parse(reservedDate), new Time(1L, LocalTime.parse(reservedTime)));
 
     @Test
@@ -41,8 +41,8 @@ class ReservedDateTimeTest {
     @Test
     void 예약된_날짜를_가져오는_테스트() {
         // given
-        LocalDate targetReservedDate = reservedDateTime.getReservedDate();
-        LocalTime targetReservedTime = reservedDateTime.getTimeAsLocalTime();
+        LocalDate targetReservedDate = RESERVED_DATE_TIME.getReservedDate();
+        LocalTime targetReservedTime = RESERVED_DATE_TIME.getTimeAsLocalTime();
         // when
         boolean dateEqualResult = targetReservedDate.isEqual(LocalDate.parse(reservedDate));
         boolean timeEqualResult = targetReservedTime.equals(LocalTime.parse(reservedTime));
@@ -60,7 +60,7 @@ class ReservedDateTimeTest {
         ReservedDateTime newReservedDateTime =
                 new ReservedDateTime(LocalDate.parse(reservedDate), new Time(1L, LocalTime.parse(reservedTime)));
         // when
-        boolean isEqual = newReservedDateTime.equals(reservedDateTime);
+        boolean isEqual = newReservedDateTime.equals(RESERVED_DATE_TIME);
         // then
         assertThat(isEqual).isTrue();
     }

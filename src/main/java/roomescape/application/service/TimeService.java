@@ -4,6 +4,8 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import roomescape.application.dto.request.CreateTimeRequest;
 import roomescape.application.dto.response.TimeResponse;
+import roomescape.common.error.ErrorCode;
+import roomescape.common.error.exception.InvalidValueException;
 import roomescape.domain.time.Time;
 import roomescape.repository.reservation.interfaces.TimeRepository;
 
@@ -17,15 +19,26 @@ public class TimeService {
     }
 
     public List<TimeResponse> findAll() {
-
-        List<Time> all = timeRepository.findAll();
-        List<TimeResponse> list = all.stream().map(this::toDto).toList();
-        return list;
+        return getAllTimeResponse();
     }
 
     public Long saveTime(CreateTimeRequest request) {
+        if (isAlreadyExistTime(request)) {
+            throw new InvalidValueException(ErrorCode.INVALID_TIME_VALUE);
+        }
         Time time = new Time(null, request.time());
         return timeRepository.save(time);
+    }
+
+    private List<TimeResponse> getAllTimeResponse() {
+        List<Time> foundTimes = timeRepository.findAll();
+        return foundTimes.stream()
+                .map(this::toDto)
+                .toList();
+    }
+
+    private boolean isAlreadyExistTime(CreateTimeRequest request) {
+        return timeRepository.findByTime(request.time()).isPresent();
     }
 
     public void deleteTime(Long id) {
@@ -33,6 +46,6 @@ public class TimeService {
     }
 
     private TimeResponse toDto(Time time) {
-        return new TimeResponse(time.getId(), time.getTime());
+        return new TimeResponse(time.getId(), time.getAvailableTime());
     }
 }
