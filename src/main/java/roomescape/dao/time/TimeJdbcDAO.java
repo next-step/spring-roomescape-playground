@@ -15,11 +15,12 @@ import roomescape.exception.DataInvalidException;
 public class TimeJdbcDAO implements TimeDAO {
 
     private final JdbcTemplate jdbcTemplate;
-    private final RowMapper<Time> rowMapper = new TimeRowMapper();
+    private final RowMapper<Time> rowMapper;
     private final SimpleJdbcInsert simpleJdbcInsert;
 
-    public TimeJdbcDAO(JdbcTemplate jdbcTemplate) {
+    public TimeJdbcDAO(JdbcTemplate jdbcTemplate, TimeRowMapper timeRowMapper) {
         this.jdbcTemplate = jdbcTemplate;
+        this.rowMapper = timeRowMapper;
         this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("time")
                 .usingGeneratedKeyColumns("id");
