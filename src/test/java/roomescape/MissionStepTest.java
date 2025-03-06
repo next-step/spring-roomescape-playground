@@ -116,7 +116,7 @@ public class MissionStepTest {
                 .body("id", is(1))
         ;
 
-        //예약 조회가 불가능함
+        //getReservation 공백반환...
         RestAssured.given().log().all()
                 .when().get("/reservations")
                 .then().log().all()
