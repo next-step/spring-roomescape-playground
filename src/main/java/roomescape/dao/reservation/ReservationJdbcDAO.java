@@ -10,7 +10,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import roomescape.entity.Reservation;
-import roomescape.exception.DataInvalidException;
+import roomescape.exception.InvalidException;
 
 
 @Repository
@@ -55,25 +55,8 @@ public class ReservationJdbcDAO implements ReservationDAO {
                  FROM reservation as r
                     INNER JOIN time as t ON r.time_id = t.id
                 """;
+        return jdbcTemplate.query(sql, rowMapper);
 
-        try {
-            return jdbcTemplate.query(sql, rowMapper);
-
-        } catch (EmptyResultDataAccessException e) {
-            throw new DataInvalidException("예약을 찾을 수 없습니다.");
-        }
-
-    }
-
-
-    @Override
-    public void delete(long id) {
-        String sql = "DELETE FROM reservation WHERE id = ?";
-
-        int rowsAffected = jdbcTemplate.update(sql, id);
-        if (rowsAffected == 0) {
-            throw new DataInvalidException("예약을 찾을 수 없습니다. ID: " + id);
-        }
     }
 
 
@@ -90,12 +73,20 @@ public class ReservationJdbcDAO implements ReservationDAO {
                     INNER JOIN time as t ON r.time_id = t.id
                     WHERE r.id = ?
                 """;
-
         try {
-            return jdbcTemplate.queryForObject(sql, rowMapper);
+            return jdbcTemplate.queryForObject(sql, rowMapper, id);
         } catch (EmptyResultDataAccessException e) {
-            throw new DataInvalidException("예약을 찾을 수 없습니다. ID: " + id);
+            throw new InvalidException("예약을 찾을 수 없습니다. ID : " + id);
         }
     }
+
+
+    @Override
+    public void delete(long id) {
+        String sql = "DELETE FROM reservation WHERE id = ?";
+        jdbcTemplate.update(sql, id);
+
+    }
+
 
 }

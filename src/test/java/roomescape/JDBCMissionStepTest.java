@@ -55,8 +55,8 @@ public class JDBCMissionStepTest {
 
         jdbcTemplate.update("INSERT INTO time (time) VALUES (?)", "15:40");
 
-        Long timeId = jdbcTemplate.queryForObject("SELECT id FROM time WHERE time = ?", new Object[]{"15:40"},
-                Long.class);
+        Long timeId = jdbcTemplate.queryForObject("SELECT id FROM time WHERE time = ?", Long.class,
+                "15:40");
         assertThat(timeId).isNotNull();
 
         jdbcTemplate.update("INSERT INTO reservation (name, date, time_id) VALUES (?, ?, ?)", "브라운", "2023-08-05",
@@ -79,18 +79,23 @@ public class JDBCMissionStepTest {
         Map<String, String> timeParams = new HashMap<>();
         timeParams.put("time", "15:40");
 
-        Map<String, Object> reservationParams = new HashMap<>();
-        reservationParams.put("name", "브라운");
-        reservationParams.put("date", "2023-08-05");
-        reservationParams.put("time", timeParams);
-
-        RestAssured.given().log().all()
+        int timeId = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(timeParams)
                 .when().post("/times")
                 .then().log().all()
                 .statusCode(201)
-                .header("Location", "/times/1");
+                .header("Location", "/times/1")
+                .extract().path("id");
+
+        Map<String, Object> timeObject = new HashMap<>();
+        timeObject.put("id", timeId);
+        timeObject.put("time", "15:40");
+
+        Map<String, Object> reservationParams = new HashMap<>();
+        reservationParams.put("name", "브라운");
+        reservationParams.put("date", "2023-08-05");
+        reservationParams.put("time", timeObject);
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -103,6 +108,7 @@ public class JDBCMissionStepTest {
         Integer count = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
         assertThat(count).isEqualTo(1);
 
+        //getById 에서 예약번호를 가져오는게 불가능함
         RestAssured.given().log().all()
                 .when().delete("/reservations/1")
                 .then().log().all()

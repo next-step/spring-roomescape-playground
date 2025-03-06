@@ -15,8 +15,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
-    @ExceptionHandler(NotFoundReservationException.class)
-    public ResponseEntity<ErrorResponse> notFoundReservation(NotFoundReservationException ex) {
+    @ExceptionHandler(ReservationNotFoundException.class)
+    public ResponseEntity<ErrorResponse> notFoundReservation(ReservationNotFoundException ex) {
         ErrorResponse errorResponse = new ErrorResponse("Not Found", ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }

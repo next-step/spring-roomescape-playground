@@ -88,19 +88,23 @@ public class MissionStepTest {
         Map<String, String> timeParams = new HashMap<>();
         timeParams.put("time", "15:40");
 
-        Map<String, Object> reservationParams = new HashMap<>();
-        reservationParams.put("name", "브라운");
-        reservationParams.put("date", "2023-08-05");
-        reservationParams.put("time", timeParams);
-
-        RestAssured.given().log().all()
+        int timeId = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(timeParams)
                 .when().post("/times")
                 .then().log().all()
                 .statusCode(201)
                 .header("Location", "/times/1")
-                .body("id", is(1));
+                .extract().path("id");
+
+        Map<String, Object> timeObject = new HashMap<>();
+        timeObject.put("id", timeId);
+        timeObject.put("time", "15:40");
+
+        Map<String, Object> reservationParams = new HashMap<>();
+        reservationParams.put("name", "브라운");
+        reservationParams.put("date", "2023-08-05");
+        reservationParams.put("time", timeObject);
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -112,6 +116,7 @@ public class MissionStepTest {
                 .body("id", is(1))
         ;
 
+        //예약 조회가 불가능함
         RestAssured.given().log().all()
                 .when().get("/reservations")
                 .then().log().all()

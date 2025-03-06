@@ -25,7 +25,7 @@ public class ReservationRowMapper implements RowMapper<Reservation> {
         Time time = getTimeById(timeId);
 
         return new Reservation(
-                resultSet.getInt("id"),
+                resultSet.getInt("reservation_id"),
                 resultSet.getString("name"),
                 resultSet.getDate("date").toLocalDate(),
                 time
