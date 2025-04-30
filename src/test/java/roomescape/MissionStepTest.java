@@ -1,5 +1,6 @@
 package roomescape;
 
+import static org.hamcrest.Matchers.is;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -28,6 +29,6 @@ public class MissionStepTest {
                 .when().get("/reservations")
                 .then().log().all()
                 .statusCode(200)
-                .body("size()", org.hamcrest.Matchers.is(3));
+                .body("size()", is(3));
     }
 }
