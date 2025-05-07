@@ -28,14 +28,21 @@ public class ReservationController {
         if (request == null) {
             throw new InvalidReservationException("요청이 null입니다");
         }
-        if (request.getName() == null || request.getName().isBlank()) {
-            throw new InvalidReservationException("이름이 비어있습니다.");
+        if (request.getName() == null || request.getName().trim().isEmpty()) {
+            throw new InvalidReservationException("이름은 필수입니다.");
         }
-        if (request.getDate() == null) {
-            throw new InvalidReservationException("날짜가 비어있습니다.");
+        if (request.getDate() == null || request.getTime() == null) {
+            throw new InvalidReservationException("날짜와 시간은 필수입니다.");
         }
-        if (request.getTime() == null) {
-            throw new InvalidReservationException("시간이 비어있습니다.");
+        if (request.getDate().isBefore(LocalDate.now())) {
+            throw new InvalidReservationException("과거 날짜로 예약할 수 없습니다.");
+        }
+        boolean isDuplicate = reservations.stream().anyMatch(r ->
+                r.getName().equals(request.getName()) &&
+                        r.getDate().equals(request.getDate()) &&
+                        r.getTime().equals(request.getTime()));
+        if (isDuplicate) {
+            throw new InvalidReservationException("동일한 예약이 이미 존재합니다.");
         }
 
         Reservation newReservation = new Reservation(
