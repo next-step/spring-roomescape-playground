@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import roomescape.domain.Reservation;
 import roomescape.exception.InvalidReservationException;
 
-public class ReservationTest {
+public class ReservationValidationTest {
 
     @Test
     void 유효하지_않은_이름이면_예외발생() {
