@@ -82,13 +82,13 @@ public class MissionStepTest {
                 .when().post("/reservations")
                 .then().log().all()
                 .statusCode(400)
-                .body("error", is("날짜와 시간은 필수입니다."));
+                .body("message", is("날짜와 시간은 필수입니다."));
 
 
         RestAssured.given().log().all()
                 .when().delete("/reservations/1")
                 .then().log().all()
                 .statusCode(400)
-                .body("error", is("해당 ID가 없습니다."));
+                .body("message", is("해당 ID가 없습니다."));
     }
 }
