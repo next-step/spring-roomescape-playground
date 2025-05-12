@@ -60,13 +60,11 @@ public class Reservation {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Reservation that = (Reservation) o;
-        return Objects.equals(name, that.name) &&
-                Objects.equals(date, that.date) &&
-                Objects.equals(time, that.time);
+        return Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, date, time);
+        return Objects.hash(id);
     }
 }
