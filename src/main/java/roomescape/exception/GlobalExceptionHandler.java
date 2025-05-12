@@ -14,7 +14,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(InvalidFormatException.class)
     public ResponseEntity<Map<String, String>> handleInvalidFormat(InvalidFormatException e) {
         Map<String, String> error = new HashMap<>();
-        error.put("message", "입력 형식이 올바르지 않습니다.");
+        error.put("error", "입력 형식이 올바르지 않습니다.");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 

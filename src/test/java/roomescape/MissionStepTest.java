@@ -88,7 +88,7 @@ public class MissionStepTest {
         RestAssured.given().log().all()
                 .when().delete("/reservations/1")
                 .then().log().all()
-                .statusCode(400)
+                .statusCode(404)
                 .body("error", is("해당 ID가 없습니다."));
     }
 }
