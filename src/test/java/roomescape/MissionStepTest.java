@@ -90,5 +90,6 @@ public class MissionStepTest {
                 .then().log().all()
                 .statusCode(404)
                 .body("error", is("해당 ID가 없습니다."));
+                .body("size()", is(3));
     }
 }
