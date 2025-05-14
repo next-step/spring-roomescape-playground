@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.stereotype.Service;
+import roomescape.dao.ReservationDAO;
 import roomescape.domain.Reservation;
 import roomescape.exception.InvalidReservationException;
 import roomescape.exception.NotFoundReservationException;
@@ -11,18 +12,15 @@ import roomescape.exception.NotFoundReservationException;
 @Service
 public class ReservationService {
 
-    private final List<Reservation> reservations = new ArrayList<>();
+    private final ReservationDAO reservationDAO;
     private final AtomicLong index = new AtomicLong(1);
 
-    public Reservation add(Reservation reservation) {
-        Reservation newReservation = new Reservation(
-                (int) index.getAndIncrement(),
-                reservation.getName(),
-                reservation.getDate(),
-                reservation.getTime()
-        );
+    public ReservationService(ReservationDAO reservationDAO) {
+        this.reservationDAO = reservationDAO;
+    }
 
-        boolean isDuplicate = reservations.stream().anyMatch(r ->
+    public Reservation add(Reservation reservation) {
+        boolean isDuplicate = reservationDAO.findAll().stream().anyMatch(r ->
                 r.getName().equals(reservation.getName()) &&
                         r.getDate().equals(reservation.getDate()) &&
                         r.getTime().equals(reservation.getTime())
@@ -31,18 +29,26 @@ public class ReservationService {
             throw new InvalidReservationException("동일한 예약이 이미 존재합니다.");
         }
 
-        reservations.add(newReservation);
-        return newReservation;
+        return reservationDAO.addReservation(reservation);
     }
 
     public List<Reservation> findAll() {
-        return reservations;
+        return reservationDAO.findAll();
     }
 
     public void delete(int id) {
-        boolean removed = reservations.removeIf(r -> r.getId() == id);
-        if (!removed) {
+        boolean exists = reservationDAO.findByID(id).isPresent();
+        if (!exists) {
             throw new NotFoundReservationException("해당 ID가 없습니다.");
         }
+        reservationDAO.deleteReservation(id);
+    }
+
+    public void update(Reservation reservation) {
+        boolean exists = reservationDAO.findByID(reservation.getId()).isPresent();
+        if (!exists) {
+            throw new NotFoundReservationException("해당 ID가 없습니다.");
+        }
+        reservationDAO.updateReservation(reservation);
     }
 }

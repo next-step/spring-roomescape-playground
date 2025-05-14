@@ -17,7 +17,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import roomescape.dao.ReservationDAO;
 import roomescape.domain.Reservation;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class DAOTest {
 
     @Autowired
@@ -43,9 +43,10 @@ public class DAOTest {
         Reservation reservation = new Reservation(1, "전서희", LocalDate.parse("2026-05-12"), LocalTime.parse("19:00"));
         reservationDAO.addReservation(reservation);
 
-        Optional<Reservation> found = reservationDAO.findByID(1);
+        Reservation saved = reservationDAO.addReservation(reservation);
+        Optional<Reservation> found = reservationDAO.findByID(saved.getId());
         assertThat(found).isPresent();
-        assertThat(found.get()).isEqualTo(reservation);
+        assertThat(found.get()).isEqualTo(saved);
     }
 
     @Test
@@ -56,6 +57,22 @@ public class DAOTest {
 
         Optional<Reservation> result = reservationDAO.findByID(1);
         assertThat(result).isEmpty();
+    }
+
+    @Test
+    void updateReservation() {
+        LocalDate date = LocalDate.now().plusDays(1);
+        Reservation original = new Reservation(null, "전서희", date, LocalTime.of(19, 0));
+        Reservation saved = reservationDAO.addReservation(original);
+
+        Reservation updated = new Reservation(saved.getId(), "서희전", date.plusDays(1), LocalTime.of(14, 0));
+        reservationDAO.updateReservation(updated);
+
+        Optional<Reservation> result = reservationDAO.findByID(saved.getId());
+        assertThat(result).isPresent();
+        assertThat(result.get().getName()).isEqualTo("서희전");
+        assertThat(result.get().getDate()).isEqualTo(date.plusDays(1));
+        assertThat(result.get().getTime()).isEqualTo(LocalTime.of(14, 0));
     }
 
     @Test
@@ -71,7 +88,9 @@ public class DAOTest {
 
     @Test
     void 육단계() {
-        jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "브라운", "2023-08-05", "15:40");
+        LocalDate tomorrow = LocalDate.now().plusDays(1);
+
+        jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "브라운", tomorrow.toString(), "15:40");
 
         List<Reservation> reservations = RestAssured.given().log().all()
                 .when().get("/reservations")

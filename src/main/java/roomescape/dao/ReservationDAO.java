@@ -26,7 +26,7 @@ public class ReservationDAO {
                 reservation.getDate().toString(),
                 reservation.getTime().toString());
 
-        final var fetchSql = "SELECT * FROM reservation ORDER BY id DESC LIMIT 1";
+        final var fetchSql = "SELECT * FROM reservation ORDER BY id DESC LIMIT 1"; //방금추가한 최근꺼 다시 반환해줌 -> 이걸로 테스트 확인
         return jdbcTemplate.queryForObject(fetchSql, reservationRowMapper);
     }
 
@@ -36,14 +36,23 @@ public class ReservationDAO {
         return results.stream().findFirst();
     }
 
+    public List<Reservation> findAll() {
+        final var query = "SELECT * FROM reservation";
+        return jdbcTemplate.query(query, reservationRowMapper);
+    }
+
     public void deleteReservation(final int id) {
         final var query = "DELETE FROM reservation WHERE id = ?";
         jdbcTemplate.update(query, id);
     }
 
-    public List<Reservation> findAll() {
-        final var query = "SELECT * FROM reservation";
-        return jdbcTemplate.query(query, reservationRowMapper);
+    public void updateReservation(final Reservation reservation) {
+        final var query = "UPDATE reservation SET name = ?, date = ?, time = ? WHERE id = ?";
+        jdbcTemplate.update(query,
+                reservation.getName(),
+                reservation.getDate().toString(),
+                reservation.getTime().toString(),
+                reservation.getId());
     }
 
     private final RowMapper<Reservation> reservationRowMapper = (resultSet, rowNum) -> new Reservation(
