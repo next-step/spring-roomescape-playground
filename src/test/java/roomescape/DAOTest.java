@@ -26,18 +26,23 @@ public class DAOTest {
 
     @Test
     void addReservation() {
-        Reservation reservation = new Reservation(1, "전서희", LocalDate.parse("2026-05-12"), LocalTime.parse("19:00"));
-        reservationDAO.addReservation(reservation);
-        assertThat(reservationDAO.findAll()).isNotEmpty();
+        Reservation reservation = new Reservation(null, "전서희", LocalDate.of(2026, 5, 12), LocalTime.of(19, 0));
+
+        Reservation saved = reservationDAO.addReservation(reservation);
+
+        assertThat(saved.getId()).isNotNull();
+        assertThat(saved.getName()).isEqualTo("전서희");
+        assertThat(saved.getDate()).isEqualTo(LocalDate.of(2026, 5, 12));
+        assertThat(saved.getTime()).isEqualTo(LocalTime.of(19, 0));
     }
 
     @Test
     void findReservation() {
-        Reservation reservation = new Reservation(1, "전서희", LocalDate.parse("2026-05-12"), LocalTime.parse("19:00"));
-        reservationDAO.addReservation(reservation);
+        Reservation saved = reservationDAO.addReservation(
+                new Reservation(null, "전서희", LocalDate.of(2026, 5, 12), LocalTime.of(19, 0)));
 
-        Reservation saved = reservationDAO.addReservation(reservation);
         Optional<Reservation> found = reservationDAO.findByID(saved.getId());
+
         assertThat(found).isPresent();
         assertThat(found.get()).isEqualTo(saved);
     }

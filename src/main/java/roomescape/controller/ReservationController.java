@@ -48,7 +48,7 @@ public class ReservationController {
     }
 
     @PutMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@PathVariable int id, @RequestBody Reservation reservation) {
         Reservation updated = new Reservation(id, reservation.getName(), reservation.getDate(), reservation.getTime());
         reservationService.update(updated);
