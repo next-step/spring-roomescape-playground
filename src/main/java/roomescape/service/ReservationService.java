@@ -1,6 +1,5 @@
 package roomescape.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.stereotype.Service;
@@ -13,7 +12,6 @@ import roomescape.exception.NotFoundReservationException;
 public class ReservationService {
 
     private final ReservationDAO reservationDAO;
-    private final AtomicLong index = new AtomicLong(1);
 
     public ReservationService(ReservationDAO reservationDAO) {
         this.reservationDAO = reservationDAO;
