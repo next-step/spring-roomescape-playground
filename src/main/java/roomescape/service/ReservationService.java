@@ -43,10 +43,6 @@ public class ReservationService {
     }
 
     public void update(Reservation reservation) {
-        boolean exists = reservationDAO.findByID(reservation.getId()).isPresent();
-        if (!exists) {
-            throw new NotFoundReservationException("해당 ID가 없습니다.");
-        }
         reservationDAO.updateReservation(reservation);
     }
 }
