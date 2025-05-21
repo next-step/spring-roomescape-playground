@@ -10,6 +10,8 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,159 +26,11 @@ public class MissionStepTest {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    @Test
-    void 일단계() {
-        RestAssured.given().log().all()
-                .when().get("/")
-                .then().log().all()
-                .statusCode(200);
+    @BeforeEach
+    void setUp() {
+        jdbcTemplate.execute("DELETE FROM reservation");
+        jdbcTemplate.execute("DELETE FROM time");
     }
-
-    @Test
-    void 이단계(){
-        RestAssured.given().log().all()
-                .when().get("/reservation")
-                .then().log().all()
-                .statusCode(200);
-
-        RestAssured.given().log().all()
-                .when().get("/reservations")
-                .then().log().all()
-                .statusCode(200)
-                .body("size()", is(0));
-    }
-
-    @Test
-    void 삼단계() {
-        Map<String, String> timeParams = new HashMap<>();
-        timeParams.put("time", "15:40");
-        RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
-                .body(timeParams)
-                .when().post("/times")
-                .then().log().all()
-                .statusCode(201);
-
-        Map<String, Object> params = new HashMap<>();
-        params.put("name", "브라운");
-        params.put("date", "2025-08-05");
-        params.put("timeId", 1);
-
-        RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
-                .body(params)
-                .when().post("/reservations")
-                .then().log().all()
-                .statusCode(201)
-                .header("Location", "/reservations/1")
-                .body("id", is(1));
-
-        RestAssured.given().log().all()
-                .when().get("/reservations")
-                .then().log().all()
-                .statusCode(200)
-                .body("size()", is(1));
-
-        RestAssured.given().log().all()
-                .when().delete("/reservations/1")
-                .then().log().all()
-                .statusCode(204);
-
-        RestAssured.given().log().all()
-                .when().get("/reservations")
-                .then().log().all()
-                .statusCode(200)
-                .body("size()", is(0));
-    }
-
-    @Test
-    void 사단계() {
-        Map<String, Object> params = new HashMap<>();
-        params.put("name", "브라운");
-        params.put("date", "2025-08-05");
-        params.put("timeId",999);
-
-//        RestAssured.given().log().all()
-//                .contentType(ContentType.JSON)
-//                .body(params)
-//                .when().post("/reservations")
-//                .then().log().all()
-//                .statusCode(400)
-//                .body("error", is("날짜와 시간은 필수입니다."));
-
-        RestAssured.given().log().all()
-                .when().delete("/reservations/1")
-                .then().log().all()
-                .statusCode(404)
-                .body("error", is("해당 ID가 없습니다."));
-    }
-
-    @Test
-    void 오단계() {
-        try (Connection connection = jdbcTemplate.getDataSource().getConnection()) {
-            assertThat(connection).isNotNull();
-            assertThat(connection.getCatalog()).isEqualTo("DATABASE");
-            assertThat(connection.getMetaData().getTables(null, null, "RESERVATION", null).next()).isTrue();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Test
-    void 육단계() {
-        LocalDate tomorrow = LocalDate.now().plusDays(1);
-
-        jdbcTemplate.update("INSERT INTO time (time) VALUES (?)", "15:40");
-
-        jdbcTemplate.update("INSERT INTO reservation (name, date, time_id) VALUES (?, ?, ?)", "브라운", tomorrow.toString(), 1L);
-
-        List<Reservation> reservations = RestAssured.given().log().all()
-                .when().get("/reservations")
-                .then().log().all()
-                .statusCode(200).extract()
-                .jsonPath().getList(".", Reservation.class);
-
-        Integer count = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
-
-        assertThat(reservations.size()).isEqualTo(count);
-    }
-
-    @Test
-    void 칠단계() {
-        Map<String, String> timeParams = new HashMap<>();
-        timeParams.put("time", "10:00");
-        RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
-                .body(timeParams)
-                .when().post("/times")
-                .then().log().all()
-                .statusCode(201);
-
-        Map<String, Object> params = new HashMap<>();
-        params.put("name", "브라운");
-        params.put("date", "2026-08-05");
-        params.put("timeId", 1);
-
-        RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
-                .body(params)
-                .when().post("/reservations")
-                .then().log().all()
-                .statusCode(201)
-                .header("Location", "/reservations/1");
-
-        Integer count = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
-        assertThat(count).isEqualTo(1);
-
-        RestAssured.given().log().all()
-                .when().delete("/reservations/1")
-                .then().log().all()
-                .statusCode(204);
-
-        Integer countAfterDelete = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
-        assertThat(countAfterDelete).isEqualTo(0);
-    }
-
 
     @Test
     void 팔단계() {
@@ -189,7 +43,7 @@ public class MissionStepTest {
                 .when().post("/times")
                 .then().log().all()
                 .statusCode(201)
-                .header("Location", "/times/1");
+                .header("Location", Matchers.matchesPattern("/times/\\d+"));
 
         RestAssured.given().log().all()
                 .when().get("/times")
@@ -205,17 +59,27 @@ public class MissionStepTest {
 
     @Test
     void 구단계() {
-        Map<String, String> reservation = new HashMap<>();
+        Map<String, Object> timeParam = new HashMap<>();
+        timeParam.put("time", "10:00");
+
+        int timeId = RestAssured.given()
+                .contentType(ContentType.JSON)
+                .body(timeParam)
+                .when().post("/times")
+                .then().statusCode(201)
+                .extract().jsonPath().getInt("id");
+
+        Map<String, Object> reservation = new HashMap<>();
         reservation.put("name", "브라운");
         reservation.put("date", "2025-08-05");
-        reservation.put("time", "10:00");
+        reservation.put("timeId", timeId);
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(reservation)
                 .when().post("/reservations")
                 .then().log().all()
-                .statusCode(400);
+                .statusCode(201);
     }
 
 

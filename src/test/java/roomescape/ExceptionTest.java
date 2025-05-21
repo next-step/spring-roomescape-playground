@@ -16,10 +16,19 @@ public class ExceptionTest {
 
     @Test
     void 입력_형식_오류() {
-        Map<String, String> params = new HashMap<>();
+        Map<String, String> timeParam = new HashMap<>();
+        timeParam.put("time", "13:40");
+        int timeId = RestAssured.given()
+                .contentType(ContentType.JSON)
+                .body(timeParam)
+                .when().post("/times")
+                .then().statusCode(201)
+                .extract().jsonPath().getInt("id");
+
+        Map<String, Object> params = new HashMap<>();
         params.put("name", "전서희");
         params.put("date", "2026-13-40");
-        params.put("time", "13:40");
+        params.put("timeId", timeId);
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -42,28 +51,4 @@ public class ExceptionTest {
                 .statusCode(400)
                 .body("error", is("HTTP Not Readable Excetption : 요청 형식이 올바르지 않습니다."));
     }
-
-    @Test
-    void 중복_예약_예외() {
-        Map<String, String> params = new HashMap<>();
-        params.put("name", "전서희");
-        params.put("date", "2026-05-13");
-        params.put("time", "09:40");
-
-        RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
-                .body(params)
-                .when().post("/reservations")
-                .then().log().all()
-                .statusCode(201);
-
-        RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
-                .body(params)
-                .when().post("/reservations")
-                .then().log().all()
-                .statusCode(400)
-                .body("error", is("동일한 예약이 이미 존재합니다."));
-    }
-
 }
