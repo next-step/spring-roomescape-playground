@@ -26,6 +26,10 @@ public class ReservationRequest {
         this.timeId = timeId;
     }
 
+    public LocalDate getParsedDate() {
+        return LocalDate.parse(date);
+    }
+
     public Reservation toEntity(Time time) {
         return new Reservation(null, name, LocalDate.parse(date), time);
     }
