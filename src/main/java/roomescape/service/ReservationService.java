@@ -18,7 +18,8 @@ public class ReservationService {
 
     public Reservation add(ReservationRequest request) {
         Time time = timeService.findById(request.getTimeId());
-        return request.toEntity(time);
+        Reservation reservation = request.toEntity(time);
+        return reservationDAO.add(reservation);
     }
 
     public List<ReservationResponse> findAll() {
