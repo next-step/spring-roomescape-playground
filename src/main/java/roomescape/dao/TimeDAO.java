@@ -2,6 +2,8 @@ package roomescape.dao;
 
 import java.sql.PreparedStatement;
 import java.util.List;
+import java.util.Optional;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -30,6 +32,16 @@ public class TimeDAO {
 
         Long id = keyHolder.getKey().longValue();
         return new Time(id, time.getTime());
+    }
+
+    public Optional<Time> findById(Long id) {
+        String query = "SELECT * FROM time WHERE id = ?";
+        try {
+            Time time = jdbcTemplate.queryForObject(query, timeRowMapper, id);
+            return Optional.of(time);
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     public List<Time> findAll() {

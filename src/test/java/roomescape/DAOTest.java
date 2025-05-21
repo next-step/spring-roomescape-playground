@@ -10,13 +10,18 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import roomescape.dao.ReservationDAO;
+import roomescape.dao.TimeDAO;
 import roomescape.domain.Reservation;
+import roomescape.domain.Time;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class DAOTest {
 
     @Autowired
     private ReservationDAO reservationDAO;
+
+    @Autowired
+    private TimeDAO timeDAO;
 
     @BeforeEach
     void setUp() {
@@ -26,7 +31,8 @@ public class DAOTest {
 
     @Test
     void addReservation() {
-        Reservation reservation = new Reservation(null, "전서희", LocalDate.of(2026, 5, 12), LocalTime.of(19, 0));
+        Time time = timeDAO.save(new Time(null, "19:00"));
+        Reservation reservation = new Reservation(null, "전서희", LocalDate.of(2026, 5, 12),time);
 
         Reservation saved = reservationDAO.addReservation(reservation);
 
@@ -38,8 +44,9 @@ public class DAOTest {
 
     @Test
     void findReservation() {
+        Time time = timeDAO.save(new Time(null, "19:00"));
         Reservation saved = reservationDAO.addReservation(
-                new Reservation(null, "전서희", LocalDate.of(2026, 5, 12), LocalTime.of(19, 0)));
+                new Reservation(null, "전서희", LocalDate.of(2026, 5, 12),time));
 
         Optional<Reservation> found = reservationDAO.findByID(saved.getId());
 
@@ -49,7 +56,8 @@ public class DAOTest {
 
     @Test
     void deleteReservation() {
-        Reservation reservation = new Reservation(1, "전서희", LocalDate.parse("2026-05-12"), LocalTime.parse("19:00"));
+        Time time = timeDAO.save(new Time(null, "19:00"));
+        Reservation reservation = new Reservation(1, "전서희", LocalDate.parse("2026-05-12"), time);
         reservationDAO.addReservation(reservation);
         reservationDAO.deleteReservation(1);
 
@@ -59,11 +67,12 @@ public class DAOTest {
 
     @Test
     void updateReservation() {
+        Time time = timeDAO.save(new Time(null, "19:00"));
         LocalDate date = LocalDate.now().plusDays(1);
-        Reservation original = new Reservation(null, "전서희", date, LocalTime.of(19, 0));
+        Reservation original = new Reservation(null, "전서희", date,time);
         Reservation saved = reservationDAO.addReservation(original);
 
-        Reservation updated = new Reservation(saved.getId(), "서희전", date.plusDays(1), LocalTime.of(14, 0));
+        Reservation updated = new Reservation(saved.getId(), "서희전", date.plusDays(1),time);
         reservationDAO.updateReservation(updated);
 
         Optional<Reservation> result = reservationDAO.findByID(saved.getId());

@@ -1,7 +1,6 @@
 package roomescape.dao;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
@@ -10,10 +9,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
+import roomescape.domain.Time;
 
 @Repository
 public class ReservationDAO {
@@ -27,56 +25,67 @@ public class ReservationDAO {
     }
 
     public Reservation addReservation(final Reservation reservation) {
-        final String query = "INSERT INTO reservation (name, date, time) VALUES (:name, :date, :time)";
-        KeyHolder keyHolder = new GeneratedKeyHolder();
+        final var sql = "INSERT INTO reservation (name, date, time_id) VALUES (?, ?, ?)";
+        jdbcTemplate.update(sql,
+                reservation.getName(),
+                reservation.getDate(),
+                reservation.getTime().getId());
 
-        MapSqlParameterSource params = new MapSqlParameterSource()
-                .addValue("name", reservation.getName())
-                .addValue("date", reservation.getDate().toString())
-                .addValue("time", reservation.getTime().toString());
+        final var fetchSql = """
+                    SELECT r.id AS reservation_id, r.name, r.date,
+                           t.id AS time_id, t.time AS time_value
+                    FROM reservation r
+                    INNER JOIN time t ON r.time_id = t.id
+                    ORDER BY r.id DESC LIMIT 1
+                """;
 
-        namedParameterJdbcTemplate.update(query, params, keyHolder);
-
-        int id = keyHolder.getKey().intValue();
-        return findByID(id).orElseThrow(() -> new RuntimeException("새로 추가한 예약 조회 실패했습니다."));
+        return jdbcTemplate.queryForObject(fetchSql, reservationRowMapper);
     }
 
     public Optional<Reservation> findByID(final int id) {
-        final var query = "SELECT * FROM reservation WHERE id = ?";
+        final var query = """
+                    SELECT r.id AS reservation_id, r.name, r.date,
+                           t.id AS time_id, t.time AS time_value
+                    FROM reservation r
+                    INNER JOIN time t ON r.time_id = t.id
+                    WHERE r.id = ?
+                """;
         try {
-            Reservation result = jdbcTemplate.queryForObject(query, reservationRowMapper, id);
-            return Optional.ofNullable(result);
+            return Optional.ofNullable(jdbcTemplate.queryForObject(query, reservationRowMapper, id));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
     }
 
     public List<Reservation> findAll() {
-        final var query = "SELECT * FROM reservation";
+        final var query = """
+                    SELECT r.id AS reservation_id, r.name, r.date,
+                           t.id AS time_id, t.time AS time_value
+                    FROM reservation r
+                    INNER JOIN time t ON r.time_id = t.id
+                    ORDER BY r.id
+                """;
         return jdbcTemplate.query(query, reservationRowMapper);
     }
 
     public void deleteReservation(final int id) {
-        final var query = "DELETE FROM reservation WHERE id = ?";
-        jdbcTemplate.update(query, id);
+        jdbcTemplate.update("DELETE FROM reservation WHERE id = ?", id);
     }
 
     public void updateReservation(final Reservation reservation) {
-        final var query = "UPDATE reservation SET name = :name, date = :date, time = :time WHERE id = :id";
-
+        final var query = "UPDATE reservation SET name = :name, date = :date, time_id = :timeId WHERE id = :id";
         MapSqlParameterSource params = new MapSqlParameterSource()
                 .addValue("name", reservation.getName())
                 .addValue("date", reservation.getDate().toString())
-                .addValue("time", reservation.getTime().toString())
+                .addValue("timeId", reservation.getTime().getId())
                 .addValue("id", reservation.getId());
-
         namedParameterJdbcTemplate.update(query, params);
     }
 
     private final RowMapper<Reservation> reservationRowMapper = (resultSet, rowNum) -> new Reservation(
-            resultSet.getInt("id"),
+            resultSet.getInt("reservation_id"),
             resultSet.getString("name"),
             LocalDate.parse(resultSet.getString("date"), DateTimeFormatter.ISO_DATE),
-            LocalTime.parse(resultSet.getString("time"), DateTimeFormatter.ISO_TIME)
+            new Time(resultSet.getLong("time_id"), resultSet.getString("time_value"))
     );
 }

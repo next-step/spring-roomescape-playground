@@ -10,9 +10,9 @@ public class Reservation {
     private final Integer id;
     private final String name;
     private final LocalDate date;
-    private final LocalTime time;
+    private final Time time;
 
-    public Reservation(Integer id, String name, LocalDate date, LocalTime time) {
+    public Reservation(Integer id, String name, LocalDate date, Time time) {
         validate(name, date, time);
         this.id = id;
         this.name = name;
@@ -27,7 +27,7 @@ public class Reservation {
         this.time = null;
     }
 
-    private void validate(String name, LocalDate date, LocalTime time) {
+    private void validate(String name, LocalDate date, Time time) {
         if (name == null || name.trim().isEmpty()) {
             throw new InvalidReservationException("이름은 필수입니다.");
         }
@@ -51,7 +51,7 @@ public class Reservation {
         return date;
     }
 
-    public LocalTime getTime() {
+    public Time getTime() {
         return time;
     }
 
