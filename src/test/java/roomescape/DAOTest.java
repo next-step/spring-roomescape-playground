@@ -3,7 +3,6 @@ package roomescape;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,7 +25,7 @@ public class DAOTest {
     @BeforeEach
     void setUp() {
         reservationDAO.findAll().forEach(reservation ->
-                reservationDAO.deleteReservation(reservation.getId()));
+                reservationDAO.delete(reservation.getId()));
     }
 
     @Test
@@ -34,7 +33,7 @@ public class DAOTest {
         Time time = timeDAO.save(new Time(null, "19:00"));
         Reservation reservation = new Reservation(null, "전서희", LocalDate.of(2026, 5, 12), time);
 
-        Reservation saved = reservationDAO.addReservation(reservation);
+        Reservation saved = reservationDAO.add(reservation);
 
         assertThat(saved.getId()).isNotNull();
         assertThat(saved.getName()).isEqualTo("전서희");
@@ -45,7 +44,7 @@ public class DAOTest {
     @Test
     void findReservation() {
         Time time = timeDAO.save(new Time(null, "19:00"));
-        Reservation saved = reservationDAO.addReservation(
+        Reservation saved = reservationDAO.add(
                 new Reservation(null, "전서희", LocalDate.of(2026, 5, 12), time));
 
         Optional<Reservation> found = reservationDAO.findByID(saved.getId());
@@ -57,10 +56,10 @@ public class DAOTest {
     @Test
     void deleteReservation() {
         Time time = timeDAO.save(new Time(null, "19:00"));
-        Reservation saved = reservationDAO.addReservation(
+        Reservation saved = reservationDAO.add(
                 new Reservation(null, "전서희", LocalDate.of(2026, 5, 12), time));
 
-        reservationDAO.deleteReservation(saved.getId());
+        reservationDAO.delete(saved.getId());
 
         Optional<Reservation> result = reservationDAO.findByID(saved.getId());
         assertThat(result).isEmpty();
@@ -69,12 +68,12 @@ public class DAOTest {
     @Test
     void updateReservation() {
         Time time = timeDAO.save(new Time(null, "14:00"));
-        Reservation saved = reservationDAO.addReservation(
+        Reservation saved = reservationDAO.add(
                 new Reservation(null, "전서희", LocalDate.of(2026, 5, 12), time));
 
         Time newTime = timeDAO.save(new Time(null, "17:00"));
         Reservation updated = new Reservation(saved.getId(), "서희전", LocalDate.of(2026, 5, 13), newTime);
-        reservationDAO.updateReservation(updated);
+        reservationDAO.update(updated);
 
         Optional<Reservation> result = reservationDAO.findByID(saved.getId());
         assertThat(result).isPresent();

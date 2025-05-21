@@ -26,7 +26,7 @@ public class ReservationService {
             throw new InvalidReservationException("동일한 예약이 이미 존재합니다.");
         }
 
-        return reservationDAO.addReservation(reservation);
+        return reservationDAO.add(reservation);
     }
 
     public List<Reservation> findAll() {
@@ -38,10 +38,10 @@ public class ReservationService {
         if (!exists) {
             throw new NotFoundReservationException("해당 ID가 없습니다.");
         }
-        reservationDAO.deleteReservation(id);
+        reservationDAO.delete(id);
     }
 
     public void update(Reservation reservation) {
-        reservationDAO.updateReservation(reservation);
+        reservationDAO.update(reservation);
     }
 }

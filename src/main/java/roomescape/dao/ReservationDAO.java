@@ -24,7 +24,7 @@ public class ReservationDAO {
         this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
     }
 
-    public Reservation addReservation(final Reservation reservation) {
+    public Reservation add(final Reservation reservation) {
         final var sql = "INSERT INTO reservation (name, date, time_id) VALUES (?, ?, ?)";
         jdbcTemplate.update(sql,
                 reservation.getName(),
@@ -68,11 +68,11 @@ public class ReservationDAO {
         return jdbcTemplate.query(query, reservationRowMapper);
     }
 
-    public void deleteReservation(final int id) {
+    public void delete(final int id) {
         jdbcTemplate.update("DELETE FROM reservation WHERE id = ?", id);
     }
 
-    public void updateReservation(final Reservation reservation) {
+    public void update(final Reservation reservation) {
         final var query = "UPDATE reservation SET name = :name, date = :date, time_id = :timeId WHERE id = :id";
         MapSqlParameterSource params = new MapSqlParameterSource()
                 .addValue("name", reservation.getName())
