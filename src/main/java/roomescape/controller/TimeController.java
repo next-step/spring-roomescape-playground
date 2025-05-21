@@ -1,5 +1,6 @@
 package roomescape.controller;
 
+import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import roomescape.domain.Time;
+import roomescape.dto.TimeRequest;
+import roomescape.dto.TimeResponse;
 import roomescape.service.TimeService;
 
 @RestController
@@ -25,15 +28,17 @@ public class TimeController {
     }
 
     @PostMapping
-    public ResponseEntity<Time> create(@RequestBody Map<String, String> request) {
-        Time saved = timeService.add(request.get("time"));
+    public ResponseEntity<TimeResponse> create(@RequestBody @Valid TimeRequest request) {
+        Time saved = timeService.add(request.toEntity());
         return ResponseEntity.created(URI.create("/times/" + saved.getId()))
-                .body(saved);
+                .body(new TimeResponse(saved));
     }
 
     @GetMapping
-    public List<Time> findAll() {
-        return timeService.findAll();
+    public List<TimeResponse> findAll() {
+        return timeService.findAll().stream()
+                .map(TimeResponse::new)
+                .toList();
     }
 
     @DeleteMapping("/{id}")

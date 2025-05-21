@@ -25,8 +25,8 @@ public class TimeService {
         }
     }
 
-    public Time add(String time) {
-        return timeDAO.save(new Time(null, time));
+    public Time add(Time time) {
+        return timeDAO.save(time);
     }
 
     public Time findById(Long id) {
