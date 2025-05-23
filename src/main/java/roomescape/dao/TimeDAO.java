@@ -15,6 +15,8 @@ import roomescape.domain.Time;
 public class TimeDAO {
 
     private final JdbcTemplate jdbcTemplate;
+    private final RowMapper<Time> timeRowMapper = (rs, rowNum) ->
+            new Time(rs.getLong("id"), rs.getString("time"));
 
     public TimeDAO(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -51,7 +53,4 @@ public class TimeDAO {
     public void deleteById(Long id) {
         jdbcTemplate.update("DELETE FROM time WHERE id = ?", id);
     }
-
-    private final RowMapper<Time> timeRowMapper = (rs, rowNum) ->
-            new Time(rs.getLong("id"), rs.getString("time"));
 }

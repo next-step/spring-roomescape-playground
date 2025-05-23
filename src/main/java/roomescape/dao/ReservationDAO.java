@@ -2,13 +2,16 @@ package roomescape.dao;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
 import roomescape.domain.Time;
@@ -25,21 +28,19 @@ public class ReservationDAO {
     }
 
     public Reservation add(final Reservation reservation) {
-        final var sql = "INSERT INTO reservation (name, date, time_id) VALUES (?, ?, ?)";
-        jdbcTemplate.update(sql,
-                reservation.getName(),
-                reservation.getDate(),
-                reservation.getTime().getId());
+        SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("reservation")
+                .usingGeneratedKeyColumns("id");
 
-        final var fetchSql = """
-                    SELECT r.id AS reservation_id, r.name, r.date,
-                           t.id AS time_id, t.time AS time_value
-                    FROM reservation r
-                    INNER JOIN time t ON r.time_id = t.id
-                    ORDER BY r.id DESC LIMIT 1
-                """;
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("name", reservation.getName());
+        parameters.put("date", reservation.getDate().toString());
+        parameters.put("time_id", reservation.getTime().getId());
 
-        return jdbcTemplate.queryForObject(fetchSql, reservationRowMapper);
+        Number generatedId = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
+
+        return findByID(generatedId.intValue())
+                .orElseThrow(() -> new IllegalStateException("예약 저장 후 조회에 실패했습니다."));
     }
 
     public Optional<Reservation> findByID(final int id) {
