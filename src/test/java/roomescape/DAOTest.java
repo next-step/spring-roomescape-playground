@@ -7,13 +7,15 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.context.annotation.Import;
 import roomescape.dao.ReservationDAO;
 import roomescape.dao.TimeDAO;
 import roomescape.domain.Reservation;
 import roomescape.domain.Time;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@JdbcTest
+@Import({ReservationDAO.class, TimeDAO.class})
 public class DAOTest {
 
     @Autowired
