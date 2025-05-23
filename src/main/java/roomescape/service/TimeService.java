@@ -16,15 +16,6 @@ public class TimeService {
         this.timeDAO = timeDAO;
     }
 
-    @PostConstruct
-    public void init() {
-        if (timeDAO.findAll().isEmpty()) {
-            timeDAO.save(new Time(null, "10:00"));
-            timeDAO.save(new Time(null, "13:00"));
-            timeDAO.save(new Time(null, "17:00"));
-        }
-    }
-
     public Time add(Time time) {
         return timeDAO.save(time);
     }
