@@ -32,9 +32,10 @@ public class ReservationService {
         reservationDAO.delete(id);
     }
 
-    public void update(Long id, ReservationRequest request) {
+    public Reservation update(Long id, ReservationRequest request) {
         Time time = timeService.findById(request.getTimeId());
         Reservation reservation = new Reservation(id.intValue(), request.getName(), request.getParsedDate(), time);
         reservationDAO.update(reservation);
+        return reservation;
     }
 }
