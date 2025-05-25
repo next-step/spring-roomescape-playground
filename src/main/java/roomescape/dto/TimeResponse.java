@@ -1,7 +1,9 @@
 package roomescape.dto;
 
+import lombok.Getter;
 import roomescape.domain.Time;
 
+@Getter
 public class TimeResponse {
 
     private final Long id;
@@ -11,7 +13,4 @@ public class TimeResponse {
         this.id = time.getId();
         this.time = time.getTime();
     }
-
-    public Long getId() { return id; }
-    public String getTime() { return time; }
 }

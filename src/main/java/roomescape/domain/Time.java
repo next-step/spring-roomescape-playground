@@ -1,5 +1,8 @@
 package roomescape.domain;
 
+import lombok.Getter;
+
+@Getter
 public class Time {
 
     private final Long id;
@@ -11,13 +14,5 @@ public class Time {
         }
         this.id = id;
         this.time = time;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getTime() {
-        return time;
     }
 }

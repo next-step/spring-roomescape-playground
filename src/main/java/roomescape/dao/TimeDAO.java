@@ -3,6 +3,7 @@ package roomescape.dao;
 import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.Optional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -12,15 +13,12 @@ import org.springframework.stereotype.Repository;
 import roomescape.domain.Time;
 
 @Repository
+@RequiredArgsConstructor
 public class TimeDAO {
 
     private final JdbcTemplate jdbcTemplate;
     private final RowMapper<Time> timeRowMapper = (rs, rowNum) ->
             new Time(rs.getLong("id"), rs.getString("time"));
-
-    public TimeDAO(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
 
     public Time save(Time time) {
         final var query = "INSERT INTO time (time) VALUES (?)";
