@@ -2,7 +2,6 @@ package roomescape.dao;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -21,21 +20,22 @@ public class ReservationDAO {
 
     private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private final SimpleJdbcInsert jdbcInsert;
 
     public ReservationDAO(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
+        this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("reservation")
+                .usingGeneratedKeyColumns("id");
     }
 
     public Reservation add(final Reservation reservation) {
-        SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
-                .withTableName("reservation")
-                .usingGeneratedKeyColumns("id");
-
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("name", reservation.getName());
-        parameters.put("date", reservation.getDate().toString());
-        parameters.put("time_id", reservation.getTime().getId());
+        Map<String, Object> parameters = Map.of(
+                "name", reservation.getName(),
+                "date", reservation.getDate().toString(),
+                "time_id", reservation.getTime().getId()
+        );
 
         Number generatedId = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
 
@@ -67,6 +67,12 @@ public class ReservationDAO {
                     ORDER BY r.id
                 """;
         return jdbcTemplate.query(query, reservationRowMapper);
+    }
+
+    public boolean findByTimeId(Long timeId) {
+        final var query = "SELECT COUNT(*) FROM reservation WHERE time_id = ?";
+        Integer count = jdbcTemplate.queryForObject(query, Integer.class, timeId);
+        return count != null && count > 0;
     }
 
     public void delete(final int id) {
