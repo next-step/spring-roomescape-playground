@@ -1,7 +1,7 @@
 package roomescape.domain;
 
 import org.springframework.stereotype.Repository;
-import roomescape.exception.ReservationNotFoundException;
+import roomescape.exception.ReservationException;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,7 +27,7 @@ public class InMemoryReservationRepository {
 
     public void deleteById(Long id) {
         Reservation reservation = findById(id)
-                .orElseThrow(() -> new ReservationNotFoundException("[ERROR] 예약을 찾을 수 없습니다."));
+                .orElseThrow(() -> new ReservationException("[ERROR] 예약을 찾을 수 없습니다."));
         reservations.remove(reservation);
     }
 

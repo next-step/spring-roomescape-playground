@@ -21,7 +21,7 @@ public class ReservationService {
     }
 
     public ReservationResponse create(ReservationRequest request) {
-        Reservation newReservation = Reservation.of(
+        Reservation newReservation = Reservation.create(
                 request.name(), request.parseDate(), request.parseTime()
         );
         Reservation storedReservation = reservationRepository.save(newReservation);

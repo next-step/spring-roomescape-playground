@@ -1,6 +1,6 @@
 package roomescape.dto;
 
-import roomescape.exception.InvalidReservationRequestException;
+import roomescape.exception.ReservationException;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -12,7 +12,7 @@ public record ReservationRequest(String date, String name, String time) {
         try {
             return LocalDate.parse(date);
         } catch (DateTimeParseException e) {
-            throw new InvalidReservationRequestException("[ERROR] 날짜 형식이 잘못되었습니다.");
+            throw new ReservationException("[ERROR] 날짜 형식이 잘못되었습니다.");
         }
     }
 
@@ -20,7 +20,7 @@ public record ReservationRequest(String date, String name, String time) {
         try {
             return LocalTime.parse(time);
         } catch (DateTimeParseException e) {
-            throw new InvalidReservationRequestException("[ERROR] 시간 형식이 잘못되었습니다.");
+            throw new ReservationException("[ERROR] 시간 형식이 잘못되었습니다.");
         }
     }
 }
