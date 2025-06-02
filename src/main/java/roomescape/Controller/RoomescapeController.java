@@ -1,9 +1,12 @@
 package roomescape.Controller;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import roomescape.domain.Reservation;
+
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -13,13 +16,15 @@ import java.util.concurrent.atomic.AtomicLong;
 public class RoomescapeController {
 
     private List<Reservation> reservations = new ArrayList<>();
-    private AtomicLong index = new AtomicLong(5);
+    private AtomicLong index ;
 
     public RoomescapeController() {
-        reservations.add(new Reservation(1L, "오찌", "2025-06-02", "14:00"));
-        reservations.add(new Reservation(2L, "희정", "2025-06-02", "16:00"));
-        reservations.add(new Reservation(3L, "장순", "2025-06-02", "18:00"));
-        reservations.add(new Reservation(4L, "예진", "2025-06-02", "20:00"));
+        long maxId = reservations.stream()
+                .mapToLong(Reservation::getId)
+                .max()
+                .orElse(0L);
+
+        index = new AtomicLong(maxId + 1);
     }
 
     @GetMapping("/")
@@ -40,8 +45,7 @@ public class RoomescapeController {
 
     // 예약 추가
     @PostMapping("/reservations")
-    @ResponseBody
-    public Reservation addReservation(@RequestBody Reservation newReservation) {
+    public ResponseEntity<Reservation> addReservation(@RequestBody Reservation newReservation) {
         Long newId = index.getAndIncrement();
         Reservation reservation = new Reservation(
                 newId,
@@ -50,23 +54,24 @@ public class RoomescapeController {
                 newReservation.getTime()
         );
         reservations.add(reservation);
-        return reservation;
+
+
+        URI location = URI.create("/reservations/" + newId);
+        return ResponseEntity.created(location).body(reservation);
     }
 
     // 예약 삭제
     @DeleteMapping("/reservations/{id}")
-    @ResponseBody
-    public String deleteReservation(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
         Optional<Reservation> reservation = reservations.stream()
                 .filter(r -> r.getId().equals(id))
                 .findFirst();
 
         if (reservation.isPresent()) {
             reservations.remove(reservation.get());
-            return "삭제 성공: id=" + id;
-        }
-        else {
-            return id + "번의 예약이 없습니다. 예약에 실패하였습니다.";
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.notFound().build();
         }
     }
 }
