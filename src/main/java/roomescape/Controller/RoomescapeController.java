@@ -10,8 +10,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import roomescape.domain.Reservation;
-
+import roomescape.dto.ReservationRequest;
+import roomescape.dto.ReservationResponse;
+import roomescape.exception.InvalidReservationException;
 import java.net.URI;
+import java.sql.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -24,12 +27,7 @@ public class RoomescapeController {
     private AtomicLong index ;
 
     public RoomescapeController() {
-        long maxId = reservations.stream()
-                .mapToLong(Reservation::getId)
-                .max()
-                .orElse(0L);
-
-        index = new AtomicLong(maxId + 1);
+        this.index = new AtomicLong(1);
     }
 
     @GetMapping("/")
@@ -44,30 +42,41 @@ public class RoomescapeController {
 
     @GetMapping("/reservations")
     @ResponseBody
-    public List<Reservation> reservations() {
-        return reservations;
+    public List<ReservationResponse> reservations() {
+        List<ReservationResponse> result = new ArrayList<>();
+        for (Reservation r : reservations) {
+            result.add(new ReservationResponse(r.getId(), r.getName(), r.getDate(), r.getTime()));
+        }
+        return result;
     }
 
     // 예약 추가
     @PostMapping("/reservations")
-    public ResponseEntity<Reservation> addReservation(@RequestBody Reservation newReservation) {
-        if (newReservation.getName() == null || newReservation.getName().trim().isEmpty() ||
-                newReservation.getDate() == null || newReservation.getDate().trim().isEmpty() ||
-                newReservation.getTime() == null || newReservation.getTime().trim().isEmpty()) {
-            return ResponseEntity.badRequest().build();
+    public ResponseEntity<ReservationResponse> addReservation(@RequestBody ReservationRequest request) {
+        if (request.getName() == null || request.getName().trim().isEmpty() ||
+                request.getDate() == null || request.getDate().trim().isEmpty() ||
+                request.getTime() == null || request.getTime().trim().isEmpty()) {
+            throw new InvalidReservationException("모든 필드는 필수로 작성해야합니다.");
         }
 
         Long newId = index.getAndIncrement();
         Reservation reservation = new Reservation(
                 newId,
-                newReservation.getName(),
-                newReservation.getDate(),
-                newReservation.getTime()
+                request.getName(),
+                request.getDate(),
+                request.getTime()
         );
         reservations.add(reservation);
 
         URI location = URI.create("/reservations/" + newId);
-        return ResponseEntity.created(location).body(reservation);
+        ReservationResponse response = new ReservationResponse(
+                reservation.getId(),
+                reservation.getName(),
+                reservation.getDate(),
+                reservation.getTime()
+        );
+
+        return ResponseEntity.created(location).body(response);
     }
 
     // 예약 삭제
@@ -81,7 +90,7 @@ public class RoomescapeController {
             reservations.remove(reservation.get());
             return ResponseEntity.noContent().build();
         } else {
-            return ResponseEntity.badRequest().build();
+            throw new InvalidReservationException("해당 ID의 예약이 존재하지 않습니다.");
         }
     }
 }
