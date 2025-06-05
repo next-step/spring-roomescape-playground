@@ -7,8 +7,10 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.exception.ReservationException;
 
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.sql.Time;
 import java.util.List;
 
 @Repository
@@ -38,8 +40,8 @@ public class JdbcTemplateReservationRepository {
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, reservation.getName());
-            ps.setDate(2, java.sql.Date.valueOf(reservation.getDate()));
-            ps.setTime(3, java.sql.Time.valueOf(reservation.getTime()));
+            ps.setDate(2, Date.valueOf(reservation.getDate()));
+            ps.setTime(3, Time.valueOf(reservation.getTime()));
             return ps;
         }, keyHolder);
 
