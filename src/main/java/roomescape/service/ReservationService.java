@@ -1,7 +1,6 @@
 package roomescape.service;
 
 import org.springframework.stereotype.Service;
-import roomescape.domain.InMemoryReservationRepository;
 import roomescape.domain.JdbcTemplateReservationRepository;
 import roomescape.domain.Reservation;
 import roomescape.dto.ReservationRequest;
@@ -13,7 +12,6 @@ import java.util.stream.Collectors;
 @Service
 public class ReservationService {
 
-    private final InMemoryReservationRepository reservationRepository = new InMemoryReservationRepository();
     private final JdbcTemplateReservationRepository jdbcRepository;
 
     public ReservationService(JdbcTemplateReservationRepository jdbcRepository) {
@@ -30,12 +28,12 @@ public class ReservationService {
         Reservation newReservation = Reservation.create(
                 request.name(), request.parseDate(), request.parseTime()
         );
-        Reservation storedReservation = reservationRepository.save(newReservation);
+        Reservation storedReservation = jdbcRepository.save(newReservation);
         return ReservationResponse.from(storedReservation);
     }
 
     public void delete(Long id) {
-        reservationRepository.deleteById(id);
+        jdbcRepository.deleteById(id);
     }
 }
 
