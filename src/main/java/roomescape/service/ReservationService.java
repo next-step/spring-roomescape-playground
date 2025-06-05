@@ -2,6 +2,7 @@ package roomescape.service;
 
 import org.springframework.stereotype.Service;
 import roomescape.domain.InMemoryReservationRepository;
+import roomescape.domain.JdbcTemplateReservationRepository;
 import roomescape.domain.Reservation;
 import roomescape.dto.ReservationRequest;
 import roomescape.dto.ReservationResponse;
@@ -13,9 +14,14 @@ import java.util.stream.Collectors;
 public class ReservationService {
 
     private final InMemoryReservationRepository reservationRepository = new InMemoryReservationRepository();
+    private final JdbcTemplateReservationRepository jdbcRepository;
+
+    public ReservationService(JdbcTemplateReservationRepository jdbcRepository) {
+        this.jdbcRepository = jdbcRepository;
+    }
 
     public List<ReservationResponse> findAll() {
-        return reservationRepository.findAll().stream()
+        return jdbcRepository.findAll().stream()
                 .map(ReservationResponse::from)
                 .collect(Collectors.toList());
     }
