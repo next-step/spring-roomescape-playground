@@ -1,4 +1,4 @@
-package roomescape.Controller;
+package roomescape.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -14,7 +14,6 @@ import roomescape.dto.ReservationRequest;
 import roomescape.dto.ReservationResponse;
 import roomescape.exception.InvalidReservationException;
 import java.net.URI;
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -24,7 +23,7 @@ import java.util.concurrent.atomic.AtomicLong;
 public class RoomescapeController {
 
     private List<Reservation> reservations = new ArrayList<>();
-    private AtomicLong index ;
+    private AtomicLong index;
 
     public RoomescapeController() {
         this.index = new AtomicLong(1);
@@ -50,7 +49,6 @@ public class RoomescapeController {
         return result;
     }
 
-    // 예약 추가
     @PostMapping("/reservations")
     public ResponseEntity<ReservationResponse> addReservation(@RequestBody ReservationRequest request) {
         if (request.getName() == null || request.getName().trim().isEmpty() ||
@@ -79,7 +77,6 @@ public class RoomescapeController {
         return ResponseEntity.created(location).body(response);
     }
 
-    // 예약 삭제
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
         Optional<Reservation> reservation = reservations.stream()

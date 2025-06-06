@@ -14,7 +14,7 @@ import java.util.Map;
 public class MissionStepTest {
 
     @Test
-    void 사단계() {
+    void return_error_400() {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
         params.put("date", "");
