@@ -1,23 +1,33 @@
 package roomescape.reservation.service;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import roomescape.reservation.dto.ReservationRequestDTO;
 import roomescape.reservation.dto.ReservationResponseDTO;
+import roomescape.reservation.entity.Reservation;
 
 @Service
 public class ReservationService {
-    public List<ReservationResponseDTO> getReservations() {
-        List<ReservationResponseDTO> reservations = new ArrayList<>();
-        reservations.add(new ReservationResponseDTO(1L, "브라운", LocalDate.of(2023, 1, 1),
-                LocalTime.of(10, 0)));
-        reservations.add(new ReservationResponseDTO(2L, "브라운", LocalDate.of(2023, 1, 2),
-                LocalTime.of(11, 0)));
-        reservations.add(new ReservationResponseDTO(3L, "브라운", LocalDate.of(2023, 1, 3),
-                LocalTime.of(12, 0)));
+    private final List<Reservation> reservations = new ArrayList<>();
+    private final AtomicLong index = new AtomicLong(0);
 
-        return reservations;
+    public List<ReservationResponseDTO> getReservations() {
+        return reservations.stream()
+                .map(Reservation::toResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    public ReservationResponseDTO addReservation(ReservationRequestDTO request) {
+        Long id = index.incrementAndGet();
+        Reservation newReservation = Reservation.from(request, id);
+        reservations.add(newReservation);
+        return newReservation.toResponseDTO();
+    }
+
+    public void deleteReservation(Long id) {
+        reservations.removeIf(reservation -> reservation.getId().equals(id));
     }
 }
