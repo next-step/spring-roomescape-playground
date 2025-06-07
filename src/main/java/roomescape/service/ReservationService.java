@@ -12,7 +12,11 @@ import java.util.stream.Collectors;
 @Service
 public class ReservationService {
 
-    private final InMemoryReservationRepository reservationRepository = new InMemoryReservationRepository();
+    private final InMemoryReservationRepository reservationRepository;
+
+    public ReservationService(InMemoryReservationRepository reservationRepository) {
+        this.reservationRepository = reservationRepository;
+    }
 
     public List<ReservationResponse> findAll() {
         return reservationRepository.findAll().stream()
@@ -32,4 +36,3 @@ public class ReservationService {
         reservationRepository.deleteById(id);
     }
 }
-

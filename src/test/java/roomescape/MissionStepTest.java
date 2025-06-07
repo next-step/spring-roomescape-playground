@@ -2,6 +2,7 @@ package roomescape;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
@@ -16,7 +17,8 @@ import static org.hamcrest.Matchers.is;
 public class MissionStepTest {
 
     @Test
-    void 일단계() {
+    @DisplayName("홈 페이지 접근 시 정상 응답을 반환한다")
+    void getHomePageReturnsOk() {
         RestAssured.given().log().all()
                 .when().get("/")
                 .then().log().all()
@@ -24,7 +26,8 @@ public class MissionStepTest {
     }
 
     @Test
-    void 이단계() {
+    @DisplayName("예약 조회 페이지와 API가 정상적으로 동작한다")
+    void getReservationPageAndList() {
         RestAssured.given().log().all()
                 .when().get("/reservation")
                 .then().log().all()
@@ -38,7 +41,8 @@ public class MissionStepTest {
     }
 
     @Test
-    void 삼단계() {
+    @DisplayName("예약을 생성하고 조회하고 삭제할 수 있다")
+    void createReadAndDeleteReservation() {
         Map<String, String> params = new HashMap<>();
         params.put("name", "오찌");
         params.put("date", "2025-06-02");
@@ -72,13 +76,13 @@ public class MissionStepTest {
     }
 
     @Test
-    void 사단계() {
+    @DisplayName("유효하지 않은 예약 생성 또는 삭제 시 에러를 반환한다")
+    void createOrDeleteReservationWithInvalidInputReturnsError() {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
         params.put("date", "");
         params.put("time", "");
 
-        // 필요한 인자가 없는 경우
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(params)
@@ -86,7 +90,6 @@ public class MissionStepTest {
                 .then().log().all()
                 .statusCode(400);
 
-        // 삭제할 예약이 없는 경우
         RestAssured.given().log().all()
                 .when().delete("/reservations/1")
                 .then().log().all()
