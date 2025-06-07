@@ -2,6 +2,7 @@ package roomescape;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,7 +28,8 @@ public class MissionStepTest {
 
 
     @Test
-    void 일단계() {
+    @DisplayName("홈 페이지에 접근하면 200 OK를 반환한다")
+    void homePageReturnsOk() {
         RestAssured.given().log().all()
                 .when().get("/")
                 .then().log().all()
@@ -35,7 +37,8 @@ public class MissionStepTest {
     }
 
     @Test
-    void 이단계() {
+    @DisplayName("예약 페이지와 예약 목록 조회가 정상 동작한다")
+    void reservationPageAndEmptyList() {
         RestAssured.given().log().all()
                 .when().get("/reservation")
                 .then().log().all()
@@ -49,12 +52,14 @@ public class MissionStepTest {
     }
 
     @Test
-    void 삼단계() {
+    @DisplayName("예약을 생성, 조회, 삭제하는 전체 흐름이 정상 동작한다")
+    void createReadDeleteReservationFlow() {
         Map<String, String> params = new HashMap<>();
         params.put("name", "오찌");
         params.put("date", "2025-06-02");
         params.put("time", "17:00");
 
+        // 예약 생성
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(params)
@@ -64,17 +69,20 @@ public class MissionStepTest {
                 .header("Location", "/reservations/1")
                 .body("id", is(1));
 
+        // 예약 조회
         RestAssured.given().log().all()
                 .when().get("/reservations")
                 .then().log().all()
                 .statusCode(200)
                 .body("size()", is(1));
 
+        // 예약 삭제
         RestAssured.given().log().all()
                 .when().delete("/reservations/1")
                 .then().log().all()
                 .statusCode(204);
 
+        // 삭제 후 조회
         RestAssured.given().log().all()
                 .when().get("/reservations")
                 .then().log().all()
@@ -83,13 +91,14 @@ public class MissionStepTest {
     }
 
     @Test
-    void 사단계() {
+    @DisplayName("유효하지 않은 입력 또는 삭제 요청 시 400 에러를 반환한다")
+    void invalidReservationInputOrDeletion() {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
         params.put("date", "");
         params.put("time", "");
 
-        // 필요한 인자가 없는 경우
+        // 입력값 누락
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(params)
@@ -97,7 +106,7 @@ public class MissionStepTest {
                 .then().log().all()
                 .statusCode(400);
 
-        // 삭제할 예약이 없는 경우
+        // 존재하지 않는 예약 삭제
         RestAssured.given().log().all()
                 .when().delete("/reservations/1")
                 .then().log().all()
@@ -105,7 +114,8 @@ public class MissionStepTest {
     }
 
     @Test
-    void 오단계() {
+    @DisplayName("DB 연결 및 reservation 테이블이 존재하는지 확인한다")
+    void validateDatabaseConnectionAndTableExists() {
         try (Connection connection = jdbcTemplate.getDataSource().getConnection()) {
             assertThat(connection).isNotNull();
             assertThat(connection.getCatalog()).isEqualTo("DATABASE");
@@ -116,13 +126,15 @@ public class MissionStepTest {
     }
 
     @Test
-    void 육단계() {
+    @DisplayName("DB에 직접 저장한 예약과 API로 조회한 예약 수가 일치한다")
+    void reservationCountMatchesBetweenDbAndApi() {
         jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "브라운", "2023-08-05", "15:40");
 
         List<Reservation> reservations = RestAssured.given().log().all()
                 .when().get("/reservations")
                 .then().log().all()
-                .statusCode(200).extract()
+                .statusCode(200)
+                .extract()
                 .jsonPath().getList(".", Reservation.class);
 
         Integer count = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
@@ -131,12 +143,14 @@ public class MissionStepTest {
     }
 
     @Test
-    void 칠단계() {
+    @DisplayName("예약 추가 후 삭제하면 DB에 반영된 예약 수가 0이 된다")
+    void createThenDeleteReservationAndVerifyDatabase() {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
         params.put("date", "2023-08-05");
         params.put("time", "10:00");
 
+        // 생성
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(params)
@@ -148,6 +162,7 @@ public class MissionStepTest {
         Integer count = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
         assertThat(count).isEqualTo(1);
 
+        // 삭제
         RestAssured.given().log().all()
                 .when().delete("/reservations/1")
                 .then().log().all()
