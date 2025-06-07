@@ -20,8 +20,8 @@ import roomescape.exception.NotFoundReservationException;
 @Controller
 public class ReservationController {
 
-    private List<Reservation> reservations = new ArrayList<>();
-    private AtomicLong index = new AtomicLong(0);
+    private final List<Reservation> reservations = new ArrayList<>();
+    private final AtomicLong index = new AtomicLong(0);
 
     @GetMapping("/reservation")
     public String reservation() {
@@ -30,19 +30,21 @@ public class ReservationController {
 
     @GetMapping("/reservations")
     @ResponseBody
-    public List<Reservation> reservations() {
+    public List<Reservation> getReservations() {
         return reservations;
     }
 
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> addReservation(@RequestBody Reservation reservation) {
-        if (reservation.getName() == null || reservation.getName().isEmpty() ||
-                reservation.getDate() == null || reservation.getDate().isEmpty() ||
-                reservation.getTime() == null || reservation.getTime().isEmpty()) {
-            throw new InvalidReservationException();
-        }
-        Reservation newReservation = Reservation.toEntity(index.incrementAndGet(), reservation);
+        Reservation newReservation = new Reservation(
+                index.incrementAndGet(),
+                reservation.getName(),
+                reservation.getDate(),
+                reservation.getTime()
+        );
+
         reservations.add(newReservation);
+
         return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId()))
                 .body(newReservation);
     }
