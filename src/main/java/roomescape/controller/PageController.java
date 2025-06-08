@@ -8,11 +8,11 @@ public class PageController {
 
     @GetMapping("/")
     public String homePage() {
-        return "home";  // templates/home.html 렌더링됨
+        return "home";
     }
 
     @GetMapping("/reservation")
     public String reservationPage() {
-        return "reservation";  // templates/reservation.html
+        return "reservation";
     }
 }
