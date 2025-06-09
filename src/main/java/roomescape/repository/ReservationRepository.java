@@ -13,7 +13,7 @@ public class ReservationRepository {
     private JdbcTemplate jdbcTemplate;
 
     public List<Reservation> findAll() {
-        String sql = "SELECT * FROM reservation";
+        String sql = "SELECT id, name, date, time FROM reservation";
         return jdbcTemplate.query(sql,
                 (rs, rowNum) -> new Reservation(
                         rs.getLong("id"),

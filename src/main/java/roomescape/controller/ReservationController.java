@@ -7,6 +7,7 @@ import roomescape.dto.ReservationRequest;
 import roomescape.dto.ReservationResponse;
 import roomescape.service.ReservationService;
 
+import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,8 +31,11 @@ public class ReservationController {
 
     @PostMapping
     public ResponseEntity<ReservationResponse> createReservation(@RequestBody ReservationRequest request) {
+        URI location = URI.create("/reservations/" + reservationService.createReservation(request).getId());
+
         return ResponseEntity
                 .status(HttpStatus.CREATED)
+                .location(location)
                 .body(ReservationResponse.from(reservationService.createReservation(request)));
     }
 
