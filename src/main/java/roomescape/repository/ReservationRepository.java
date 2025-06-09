@@ -1,33 +1,40 @@
 package roomescape.repository;
 
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
-
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Repository
 public class ReservationRepository {
-    private final List<Reservation> reservations = new ArrayList<>();
-    private Long nextId = 1L;
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     public List<Reservation> findAll() {
-        return Collections.unmodifiableList(reservations);
+        String sql = "SELECT * FROM reservation";
+        return jdbcTemplate.query(sql,
+                (rs, rowNum) -> new Reservation(
+                        rs.getLong("id"),
+                        rs.getString("name"),
+                        rs.getString("date"),
+                        rs.getString("time")
+                ));
     }
 
     public Reservation save(Reservation reservation) {
-        Reservation newReservation = new Reservation(nextId++, reservation.getName(), reservation.getDate(), reservation.getTime());
-        reservations.add(newReservation);
-        return newReservation;
+        String sql = "INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)";
+        jdbcTemplate.update(sql, reservation.getName(), reservation.getDate(), reservation.getTime());
+
+        Long id = jdbcTemplate.queryForObject("SELECT MAX(id) FROM reservation", Long.class);
+        return new Reservation(id, reservation.getName(), reservation.getDate(), reservation.getTime());
     }
 
     public boolean deleteById(Long id) {
-        return reservations.removeIf(reservation -> reservation.getId().equals(id));
-    }
-
-    public void clear() {
-        reservations.clear();
-        nextId = 1L;
+        String sql = "DELETE FROM reservation WHERE id = ?";
+        return jdbcTemplate.update(sql, id) > 0;
     }
 }
+
+
