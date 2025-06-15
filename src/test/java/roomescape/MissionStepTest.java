@@ -1,6 +1,6 @@
 package roomescape;
 
-import static org.hamcrest.core.Is.is;
+import static org.hamcrest.Matchers.is;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
