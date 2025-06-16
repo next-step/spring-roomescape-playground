@@ -5,6 +5,7 @@ import roomescape.domain.JdbcTemplateReservationRepository;
 import roomescape.domain.Reservation;
 import roomescape.dto.ReservationRequest;
 import roomescape.dto.ReservationResponse;
+import roomescape.exception.ReservationException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,7 +34,9 @@ public class ReservationService {
     }
 
     public void delete(Long id) {
-        jdbcRepository.deleteById(id);
+        int affectedRows = jdbcRepository.deleteById(id);
+        if (affectedRows == 0) {
+            throw new ReservationException("[ERROR] 삭제하려는 예약을 찾을 수 없습니다.");
+        }
     }
 }
-

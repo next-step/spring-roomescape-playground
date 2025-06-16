@@ -5,7 +5,6 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import roomescape.exception.ReservationException;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -49,12 +48,8 @@ public class JdbcTemplateReservationRepository {
         return Reservation.of(generatedId, reservation.getName(), reservation.getDate(), reservation.getTime());
     }
 
-    public void deleteById(Long id) {
+    public int deleteById(Long id) {
         String sql = "DELETE FROM reservation WHERE id = ?";
-        int affectedRows = jdbcTemplate.update(sql, id);
-        if (affectedRows == 0) {
-            throw new ReservationException("[ERROR] 예약을 찾을 수 없습니다.");
-        }
+        return jdbcTemplate.update(sql, id);
     }
 }
-
