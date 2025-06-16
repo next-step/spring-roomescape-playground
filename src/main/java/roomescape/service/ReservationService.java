@@ -13,14 +13,14 @@ import java.util.stream.Collectors;
 @Service
 public class ReservationService {
 
-    private final JdbcTemplateReservationRepository jdbcRepository;
+    private final JdbcTemplateReservationRepository reservationRepository;
 
-    public ReservationService(JdbcTemplateReservationRepository jdbcRepository) {
-        this.jdbcRepository = jdbcRepository;
+    public ReservationService(JdbcTemplateReservationRepository reservationRepository) {
+        this.reservationRepository = reservationRepository;
     }
 
     public List<ReservationResponse> findAll() {
-        return jdbcRepository.findAll().stream()
+        return reservationRepository.findAll().stream()
                 .map(ReservationResponse::from)
                 .collect(Collectors.toList());
     }
@@ -29,12 +29,12 @@ public class ReservationService {
         Reservation newReservation = Reservation.create(
                 request.name(), request.parseDate(), request.parseTime()
         );
-        Reservation storedReservation = jdbcRepository.save(newReservation);
+        Reservation storedReservation = reservationRepository.save(newReservation);
         return ReservationResponse.from(storedReservation);
     }
 
     public void delete(Long id) {
-        int affectedRows = jdbcRepository.deleteById(id);
+        int affectedRows = reservationRepository.deleteById(id);
         if (affectedRows == 0) {
             throw new ReservationException("[ERROR] 삭제하려는 예약을 찾을 수 없습니다.");
         }
