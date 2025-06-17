@@ -1,4 +1,4 @@
-package roomescape.admin.model;
+package roomescape.reservation.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDate;
