@@ -1,10 +1,11 @@
 package roomescape.service;
 
 import org.springframework.stereotype.Service;
-import roomescape.domain.InMemoryReservationRepository;
+import roomescape.domain.JdbcTemplateReservationRepository;
 import roomescape.domain.Reservation;
 import roomescape.dto.ReservationRequest;
 import roomescape.dto.ReservationResponse;
+import roomescape.exception.ReservationException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,9 +13,9 @@ import java.util.stream.Collectors;
 @Service
 public class ReservationService {
 
-    private final InMemoryReservationRepository reservationRepository;
+    private final JdbcTemplateReservationRepository reservationRepository;
 
-    public ReservationService(InMemoryReservationRepository reservationRepository) {
+    public ReservationService(JdbcTemplateReservationRepository reservationRepository) {
         this.reservationRepository = reservationRepository;
     }
 
@@ -33,6 +34,9 @@ public class ReservationService {
     }
 
     public void delete(Long id) {
-        reservationRepository.deleteById(id);
+        int affectedRows = reservationRepository.deleteById(id);
+        if (affectedRows == 0) {
+            throw new ReservationException("[ERROR] 삭제하려는 예약을 찾을 수 없습니다.");
+        }
     }
 }
