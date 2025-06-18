@@ -1,5 +1,6 @@
 package roomescape.controller;
 
+import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import roomescape.domain.Reservation;
 import roomescape.dto.ReservationRequest;
 import roomescape.dto.ReservationResponse;
+import roomescape.exception.status.ReservationNotFoundException;
 
 @RestController
 public class ReservationApiController {
@@ -21,7 +23,8 @@ public class ReservationApiController {
     private final AtomicLong index = new AtomicLong(1);
 
     @PostMapping("/reservations")
-    public ResponseEntity<ReservationResponse> createReservation(@RequestBody ReservationRequest reservationRequest) {
+    public ResponseEntity<ReservationResponse> createReservation(
+            @Valid @RequestBody ReservationRequest reservationRequest) {
         Reservation reservation = Reservation.of(
                 index.getAndIncrement(),
                 reservationRequest.getName(),
@@ -50,7 +53,10 @@ public class ReservationApiController {
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable long id) {
-        reservations.removeIf(r -> r.getId() == id);
+        boolean removed = reservations.removeIf(r -> r.getId() == id);
+        if (!removed) {
+            throw new ReservationNotFoundException(id);
+        }
         return ResponseEntity.noContent().build();
     }
 
