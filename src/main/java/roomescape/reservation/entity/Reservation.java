@@ -3,8 +3,6 @@ package roomescape.reservation.entity;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import lombok.Data;
-import roomescape.reservation.dto.ReservationRequest;
-import roomescape.reservation.dto.ReservationResponse;
 
 @Data
 public class Reservation {
@@ -13,16 +11,12 @@ public class Reservation {
     private LocalDate date;
     private LocalTime time;
 
-    private Reservation(Long id, String name, LocalDate date, LocalTime time) {
+    public Reservation(Long id, String name, LocalDate date, LocalTime time) {
         validate(name, date, time);
         this.id = id;
         this.name = name;
         this.date = date;
         this.time = time;
-    }
-
-    public static Reservation from(ReservationRequest dto, Long id) {
-        return new Reservation(id, dto.name(), dto.date(), dto.time());
     }
 
     private void validate(String name, LocalDate date, LocalTime time) {
@@ -38,9 +32,5 @@ public class Reservation {
         if (time == null) {
             throw new IllegalArgumentException("유효한 시간이 아닙니다.");
         }
-    }
-
-    public ReservationResponse toResponseDTO() {
-        return new ReservationResponse(id, name, date, time);
     }
 }

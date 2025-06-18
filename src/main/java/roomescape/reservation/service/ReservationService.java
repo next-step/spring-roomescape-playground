@@ -17,15 +17,15 @@ public class ReservationService {
 
     public List<ReservationResponse> getReservations() {
         return reservations.stream()
-                .map(Reservation::toResponseDTO)
+                .map(this::toResponseDTO)
                 .collect(Collectors.toList());
     }
 
     public ReservationResponse addReservation(ReservationRequest request) {
         Long id = index.getAndIncrement();
-        Reservation newReservation = Reservation.from(request, id);
+        Reservation newReservation = new Reservation(id, request.name(), request.date(), request.time());
         reservations.add(newReservation);
-        return newReservation.toResponseDTO();
+        return toResponseDTO(newReservation);
     }
 
     public void deleteReservation(Long id) {
@@ -35,5 +35,14 @@ public class ReservationService {
                 .orElseThrow(() -> new NotFoundReservationException("해당 ID의 예약이 존재하지 않습니다: "));
 
         reservations.remove(target);
+    }
+
+    private ReservationResponse toResponseDTO(Reservation reservation) {
+        return new ReservationResponse(
+                reservation.getId(),
+                reservation.getName(),
+                reservation.getDate(),
+                reservation.getTime()
+        );
     }
 }
