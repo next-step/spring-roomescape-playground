@@ -24,7 +24,7 @@ public class MissionStepTest {
 ### 요구사항
 - [x] `/reservation` 요청 시 아래 화면과 같이 예약 관리 페이지가 응답할 수 있도록 구현하세요.
 - [x] 어드민 메인 페이지는 `templates/reservation.html` 파일을 이용하세요.
-- [ ] 아래의 API 명세를 따라 예약 관리 페이지 로드 시 호출되는 예약 목록 조회 API도 함께 구현하세요.
+- [x] 아래의 API 명세를 따라 예약 관리 페이지 로드 시 호출되는 예약 목록 조회 API도 함께 구현하세요.
 
 ### 요구사항 테스트
 ```
@@ -77,8 +77,8 @@ Content-Type: application/json
 
 ## 3단계 - 예약 추가 / 취소
 ### 요구사항
-- [ ] API 명세를 따라 예약 추가 API 와 삭제 API를 구현하세요.
-- [ ] 아래 화면에서 예약 추가와 취소가 잘 동작해야합니다.
+- [x] API 명세를 따라 예약 추가 API 와 삭제 API를 구현하세요.
+- [x] 아래 화면에서 예약 추가와 취소가 잘 동작해야합니다.
 ### 요구사항 테스트
 ```
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)

@@ -10,16 +10,22 @@ public class Reservation {
     private final LocalTime time;
 
     public Reservation(Long id, String name, LocalDate date, LocalTime time) {
-        validate(name);
+        validate(name, date, time);
         this.id = id;
         this.name = name;
         this.date = date;
         this.time = time;
     }
 
-    private void validate(String name) {
+    private void validate(String name, LocalDate date, LocalTime time) {
         if (name == null || name.isBlank()) {
             throw new IllegalArgumentException("이름은 비어있을 수 없습니다.");
+        }
+        if (date == null) {
+            throw new IllegalArgumentException("날짜는 비어있을 수 없습니다.");
+        }
+        if (time == null) {
+            throw new IllegalArgumentException("시간은 비어있을 수 없습니다.");
         }
     }
 
