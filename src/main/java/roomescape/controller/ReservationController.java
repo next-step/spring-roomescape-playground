@@ -1,32 +1,41 @@
 package roomescape.controller;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.ArrayList;
+import java.net.URI;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import roomescape.controller.dto.RequestReservation;
+import roomescape.controller.dto.ResponseReservation;
 import roomescape.domain.Reservation;
+import roomescape.service.ReservationService;
 
-@Controller
+@RestController
+@RequestMapping("/reservations")
 public class ReservationController {
 
-    private final List<Reservation> reservations = new ArrayList<>();
-    private final AtomicLong index = new AtomicLong(1);
+    private final ReservationService reservationService;
 
-    @GetMapping("/reservation")
-    public String reservation() {
-        return "reservation";
+    public ReservationController(final ReservationService reservationService) {
+        this.reservationService = reservationService;
     }
 
-    @GetMapping("/reservations")
-    public ResponseEntity<List<Reservation>> allReservation() {
-         // 테스트를 위해 생성된 임시 객체입니다.
-        Reservation reservation1 = new Reservation(index.getAndIncrement(), "dd", LocalDate.now(), LocalTime.now());
-        reservations.add(reservation1);
+    @GetMapping
+    public ResponseEntity<List<ResponseReservation>> getAllReservation() {
+        List<ResponseReservation> responseReservations = reservationService.findAll().stream()
+                .map(ResponseReservation::from)
+                .toList();
+        return ResponseEntity.ok(responseReservations);
+    }
 
-        return ResponseEntity.ok(reservations);
+    @PostMapping
+    public ResponseEntity<ResponseReservation> createReservation(@RequestBody RequestReservation requestReservation) {
+        Reservation reservation = reservationService.create(requestReservation);
+        ResponseReservation responseReservation = ResponseReservation.from(reservation);
+        URI location = URI.create("/reservations/" + reservation.id());
+        return ResponseEntity.created(location).body(responseReservation);
     }
 }
