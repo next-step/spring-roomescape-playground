@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
-import roomescape.reservation.dto.ReservationRequestDTO;
-import roomescape.reservation.dto.ReservationResponseDTO;
+import roomescape.reservation.dto.ReservationRequest;
+import roomescape.reservation.dto.ReservationResponse;
 import roomescape.reservation.entity.Reservation;
 import roomescape.reservation.exception.NotFoundReservationException;
 
@@ -15,13 +15,13 @@ public class ReservationService {
     private final List<Reservation> reservations = new ArrayList<>();
     private final AtomicLong index = new AtomicLong(1);
 
-    public List<ReservationResponseDTO> getReservations() {
+    public List<ReservationResponse> getReservations() {
         return reservations.stream()
                 .map(Reservation::toResponseDTO)
                 .collect(Collectors.toList());
     }
 
-    public ReservationResponseDTO addReservation(ReservationRequestDTO request) {
+    public ReservationResponse addReservation(ReservationRequest request) {
         Long id = index.getAndIncrement();
         Reservation newReservation = Reservation.from(request, id);
         reservations.add(newReservation);

@@ -3,8 +3,8 @@ package roomescape.reservation.entity;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import lombok.Data;
-import roomescape.reservation.dto.ReservationRequestDTO;
-import roomescape.reservation.dto.ReservationResponseDTO;
+import roomescape.reservation.dto.ReservationRequest;
+import roomescape.reservation.dto.ReservationResponse;
 
 @Data
 public class Reservation {
@@ -21,7 +21,7 @@ public class Reservation {
         this.time = time;
     }
 
-    public static Reservation from(ReservationRequestDTO dto, Long id) {
+    public static Reservation from(ReservationRequest dto, Long id) {
         return new Reservation(id, dto.name(), dto.date(), dto.time());
     }
 
@@ -40,7 +40,7 @@ public class Reservation {
         }
     }
 
-    public ReservationResponseDTO toResponseDTO() {
-        return new ReservationResponseDTO(id, name, date, time);
+    public ReservationResponse toResponseDTO() {
+        return new ReservationResponse(id, name, date, time);
     }
 }
