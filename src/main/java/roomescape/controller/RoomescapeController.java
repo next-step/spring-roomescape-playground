@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import roomescape.dto.ReservationRequest;
 import roomescape.dto.ReservationResponse;
-import roomescape.dto.ReservationTimeRequest;
-import roomescape.dto.ReservationTimeResponse;
+import roomescape.dto.TimeRequest;
+import roomescape.dto.TimeResponse;
 import roomescape.service.ReservationService;
 
 import java.net.URI;
@@ -66,8 +66,8 @@ public class RoomescapeController {
 
     @PostMapping("/times")
     @ResponseBody
-    public ResponseEntity<ReservationTimeResponse> createTime(@RequestBody ReservationTimeRequest request) {
-        ReservationTimeResponse time = reservationService.createTime(request);
+    public ResponseEntity<TimeResponse> createTime(@RequestBody TimeRequest request) {
+        TimeResponse time = reservationService.createTime(request);
         return ResponseEntity
                 .created(URI.create("/times/" + time.id()))
                 .body(time);
@@ -75,8 +75,8 @@ public class RoomescapeController {
 
     @GetMapping("/times")
     @ResponseBody
-    public ResponseEntity<List<ReservationTimeResponse>> getTimes() {
-        List<ReservationTimeResponse> times = reservationService.findAllTimes();
+    public ResponseEntity<List<TimeResponse>> getTimes() {
+        List<TimeResponse> times = reservationService.findAllTimes();
         return ResponseEntity.ok(times);
     }
 

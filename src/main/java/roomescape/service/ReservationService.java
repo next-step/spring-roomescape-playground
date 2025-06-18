@@ -2,16 +2,18 @@ package roomescape.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import roomescape.domain.JdbcTemplateReservationRepository;
 import roomescape.domain.Reservation;
-import roomescape.domain.ReservationTime;
-import roomescape.domain.ReservationTimeRepository;
+import roomescape.domain.ReservationRepository;
+import roomescape.domain.Time;
+import roomescape.domain.TimeRepository;
 import roomescape.dto.ReservationRequest;
 import roomescape.dto.ReservationResponse;
-import roomescape.dto.ReservationTimeRequest;
-import roomescape.dto.ReservationTimeResponse;
+import roomescape.dto.TimeRequest;
+import roomescape.dto.TimeResponse;
 import roomescape.exception.ReservationException;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,20 +21,30 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class ReservationService {
 
-    private final JdbcTemplateReservationRepository reservationRepository;
-    private final ReservationTimeRepository reservationTimeRepository;
+    private final ReservationRepository reservationRepository;
+    private final TimeRepository timeRepository;
 
-    public ReservationService(JdbcTemplateReservationRepository reservationRepository,
-                              ReservationTimeRepository reservationTimeRepository) {
+    public ReservationService(ReservationRepository reservationRepository,
+                              TimeRepository timeRepository) {
         this.reservationRepository = reservationRepository;
-        this.reservationTimeRepository = reservationTimeRepository;
+        this.timeRepository = timeRepository;
     }
 
     @Transactional
     public ReservationResponse createReservation(ReservationRequest request) {
-        Reservation newReservation = Reservation.create(
-                request.name(), request.parseDate(), request.parseTime()
-        );
+        String validatedName = request.getValidatedName();
+        LocalDate parsedDate = request.getParsedDate();
+        LocalTime parsedTime = request.getParsedTime();
+
+        Time time = timeRepository.findByTimeValue(parsedTime)
+                .orElseThrow(() -> new ReservationException("[ERROR] 등록되지 않은 시간입니다."));
+
+        Reservation newReservation = Reservation.create(validatedName, parsedDate, time);
+
+        if (reservationRepository.existsByDateAndTimeId(newReservation.getDate(), newReservation.getTime().getId())) {
+            throw new ReservationException("[ERROR] 이미 예약된 시간입니다.");
+        }
+
         Reservation storedReservation = reservationRepository.save(newReservation);
         return ReservationResponse.from(storedReservation);
     }
@@ -45,30 +57,33 @@ public class ReservationService {
 
     @Transactional
     public void deleteReservation(Long id) {
-        int affectedRows = reservationRepository.deleteById(id);
-        if (affectedRows == 0) {
+        int deleteCount = reservationRepository.deleteById(id);
+        if (deleteCount == 0) {
             throw new ReservationException("[ERROR] 삭제하려는 예약을 찾을 수 없습니다.");
         }
     }
 
     @Transactional
-    public ReservationTimeResponse createTime(ReservationTimeRequest request) {
-        ReservationTime newReservationTime = ReservationTime.from(request.time());
-        ReservationTime savedReservationTime = reservationTimeRepository.save(newReservationTime);
-        return ReservationTimeResponse.from(savedReservationTime);
+    public TimeResponse createTime(TimeRequest request) {
+        LocalTime validatedTime = request.toLocalTime();
+
+        Time newTime = Time.create(validatedTime);
+
+        Time savedTime = timeRepository.save(newTime);
+        return TimeResponse.from(savedTime);
     }
 
-    public List<ReservationTimeResponse> findAllTimes() {
-        return reservationTimeRepository.findAll().stream()
-                .map(ReservationTimeResponse::from)
+    public List<TimeResponse> findAllTimes() {
+        return timeRepository.findAll().stream()
+                .map(TimeResponse::from)
                 .collect(Collectors.toList());
     }
 
     @Transactional
     public void deleteTime(Long id) {
-        int affectedRows = reservationTimeRepository.deleteById(id);
-        if (affectedRows == 0) {
-            throw new IllegalArgumentException("[ERROR] 삭제하려는 시간을 찾을 수 없습니다.");
+        int deleteCount = timeRepository.deleteById(id);
+        if (deleteCount == 0) {
+            throw new ReservationException("[ERROR] 삭제하려는 시간을 찾을 수 없습니다.");
         }
     }
 }

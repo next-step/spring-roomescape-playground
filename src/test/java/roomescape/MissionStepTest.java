@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,14 +45,23 @@ public class MissionStepTest {
     @Test
     @DisplayName("예약을 생성하고 조회하고 삭제할 수 있다")
     void createReadAndDeleteReservation() {
-        Map<String, String> params = new HashMap<>();
-        params.put("name", "오찌");
-        params.put("date", "2025-06-02");
-        params.put("time", "17:00");
+        Map<String, String> timeParams = new HashMap<>();
+        timeParams.put("time", "17:00");
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(timeParams)
+                .when().post("/times")
+                .then().log().all()
+                .statusCode(201);
+
+        Map<String, String> reservationParams = new HashMap<>();
+        reservationParams.put("name", "오찌");
+        reservationParams.put("date", LocalDate.now().plusDays(1).format(DateTimeFormatter.ISO_LOCAL_DATE));
+        reservationParams.put("time", "17:00");
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
-                .body(params)
+                .body(reservationParams)
                 .when().post("/reservations")
                 .then().log().all()
                 .statusCode(201)
@@ -126,5 +137,21 @@ public class MissionStepTest {
                 .then().log().all()
                 .statusCode(200)
                 .body("size()", is(0));
+    }
+
+    @Test
+    @DisplayName("등록되지 않은 시간으로 예약하면 실패한다 (기존 스펙)")
+    void 구단계() {
+        Map<String, String> reservation = new HashMap<>();
+        reservation.put("name", "브라운");
+        reservation.put("date", "2025-08-05");
+        reservation.put("time", "10:00");
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(reservation)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(400);
     }
 }
