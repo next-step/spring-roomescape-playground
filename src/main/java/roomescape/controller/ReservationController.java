@@ -6,8 +6,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
 public class ReservationController {
+    private static final String VIEW_RESERVATION = "reservation";
+
     @GetMapping("/reservation")
     public String reservation() {
-        return "reservation";
+        return VIEW_RESERVATION;
     }
 }
