@@ -22,6 +22,10 @@ public class ReservationService {
     }
 
     public ReservationResponse addReservation(ReservationRequest request) {
+        if (isDuplicate(request)) {
+            throw new IllegalArgumentException("이미 해당 날짜와 시간에 예약이 존재합니다.");
+        }
+
         Long id = index.getAndIncrement();
         Reservation newReservation = new Reservation(id, request.name(), request.date(), request.time());
         reservations.add(newReservation);
@@ -43,6 +47,13 @@ public class ReservationService {
                 reservation.getName(),
                 reservation.getDate(),
                 reservation.getTime()
+        );
+    }
+
+    private boolean isDuplicate(ReservationRequest request) {
+        return reservations.stream().anyMatch(reservation ->
+                reservation.getDate().equals(request.date()) &&
+                        reservation.getTime().equals(request.time())
         );
     }
 }
