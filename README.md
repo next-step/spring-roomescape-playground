@@ -2,8 +2,8 @@
 
 ## 1단계 - 홈 화면
 ### 요구사항
-- [ ] `localhost:8080` 요청 시 아래 화면과 같이 어드민 메인 페이지가 응답할 수 있도록 구현하세요.
-- [ ] 어드민 메인 페이지는 `templates/home.html` 파일을 이용하세요.
+- [x] `localhost:8080` 요청 시 아래 화면과 같이 어드민 메인 페이지가 응답할 수 있도록 구현하세요.
+- [x] 어드민 메인 페이지는 `templates/home.html` 파일을 이용하세요.
 
 ### 요구사항 테스트
 ```
@@ -22,8 +22,8 @@ public class MissionStepTest {
 
 ## 2단계 - 예약 조회
 ### 요구사항
-- [ ] `/reservation` 요청 시 아래 화면과 같이 예약 관리 페이지가 응답할 수 있도록 구현하세요.
-- [ ] 어드민 메인 페이지는 `templates/reservation.html` 파일을 이용하세요.
+- [x] `/reservation` 요청 시 아래 화면과 같이 예약 관리 페이지가 응답할 수 있도록 구현하세요.
+- [x] 어드민 메인 페이지는 `templates/reservation.html` 파일을 이용하세요.
 - [ ] 아래의 API 명세를 따라 예약 관리 페이지 로드 시 호출되는 예약 목록 조회 API도 함께 구현하세요.
 
 ### 요구사항 테스트
@@ -42,7 +42,7 @@ public class MissionStepTest {
                 .statusCode(200);
 
         RestAssured.given().log().all()
-                .when().get("/reservations")
+                .when().get("/reservationResponses")
                 .then().log().all()
                 .statusCode(200)
                 .body("size()", is(3)); // 아직 생성 요청이 없으니 Controller에서 임의로 넣어준 Reservation 갯수 만큼 검증하거나 0개임을 확인하세요.
@@ -52,7 +52,7 @@ public class MissionStepTest {
 ### API 명세
 #### Request
 ```
-GET /reservations HTTP/1.1
+GET /reservationResponses HTTP/1.1
 ```
 #### Response
 ```
@@ -97,25 +97,25 @@ public class StepTest {
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(params)
-                .when().post("/reservations")
+                .when().post("/reservationResponses")
                 .then().log().all()
                 .statusCode(201)
-                .header("Location", "/reservations/1")
+                .header("Location", "/reservationResponses/1")
                 .body("id", is(1));
 
         RestAssured.given().log().all()
-                .when().get("/reservations")
+                .when().get("/reservationResponses")
                 .then().log().all()
                 .statusCode(200)
                 .body("size()", is(1));
 
         RestAssured.given().log().all()
-                .when().delete("/reservations/1")
+                .when().delete("/reservationResponses/1")
                 .then().log().all()
                 .statusCode(204);
 
         RestAssured.given().log().all()
-                .when().get("/reservations")
+                .when().get("/reservationResponses")
                 .then().log().all()
                 .statusCode(200)
                 .body("size()", is(0));
@@ -126,7 +126,7 @@ public class StepTest {
 ### API 명세
 #### 예약 추가 Request
 ```
-POST /reservations HTTP/1.1
+POST /reservationResponses HTTP/1.1
 content-type: application/json
 
 {
@@ -138,7 +138,7 @@ content-type: application/json
 #### 예약 추가 Response
 ```
 HTTP/1.1 201 
-Location: /reservations/1
+Location: /reservationResponses/1
 Content-Type: application/json
 
 {
@@ -151,7 +151,7 @@ Content-Type: application/json
 
 #### 예약 취소 Request
 ```
-DELETE /reservations/1 HTTP/1.1
+DELETE /reservationResponses/1 HTTP/1.1
 ```
 #### 예약 취소 Response
 ```
@@ -176,13 +176,13 @@ void 사단계() {
     RestAssured.given().log().all()
             .contentType(ContentType.JSON)
             .body(params)
-            .when().post("/reservations")
+            .when().post("/reservationResponses")
             .then().log().all()
             .statusCode(400);
 
     // 삭제할 예약이 없는 경우
     RestAssured.given().log().all()
-            .when().delete("/reservations/1")
+            .when().delete("/reservationResponses/1")
             .then().log().all()
             .statusCode(400);
 }
