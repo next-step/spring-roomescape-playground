@@ -22,7 +22,7 @@ public class ReservationApiController {
 
     @PostMapping("/reservations")
     public ResponseEntity<ReservationResponse> createReservation(@RequestBody ReservationRequest reservationRequest) {
-        Reservation reservation = new Reservation(
+        Reservation reservation = Reservation.of(
                 index.getAndIncrement(),
                 reservationRequest.getName(),
                 reservationRequest.getDate(),

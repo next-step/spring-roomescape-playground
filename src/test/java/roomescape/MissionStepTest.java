@@ -68,5 +68,6 @@ public class MissionStepTest {
                 .then().log().all()
                 .statusCode(200)
                 .body("size()", is(0));
-}
+    }
+
 }
