@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import roomescape.domain.Reservation;
 import roomescape.dto.ReservationRequest;
 import roomescape.dto.ReservationResponse;
+import roomescape.exception.NotFoundException;
 
 @Controller
 public class ReservationController {
@@ -65,7 +66,7 @@ public class ReservationController {
         Reservation reservation = reservations.stream()
             .filter(it -> Objects.equals(it.getId(), id))
             .findFirst()
-            .orElseThrow(RuntimeException::new);
+            .orElseThrow(()-> new NotFoundException(id));
 
         reservations.remove(reservation);
 
