@@ -3,6 +3,7 @@ package roomescape.reservation.controller;
 import jakarta.annotation.PostConstruct;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import roomescape.exception.BadRequestException;
 import roomescape.reservation.Reservation;
 import roomescape.reservation.dto.ReservationResponse;
 
@@ -36,6 +37,8 @@ public class ReservationApiController {
 
     @PostMapping("/reservations")
     public ResponseEntity<ReservationResponse> create(@RequestBody Reservation reservation) {
+        reservation.validateRequiredFields();
+
         Reservation newReservation = Reservation.toEntity(reservation, index.getAndIncrement());
         reservations.add(newReservation);
 
@@ -50,7 +53,7 @@ public class ReservationApiController {
         Reservation reservation = reservations.stream()
                 .filter(reservationItem -> Objects.equals(reservationItem.id(), id))
                 .findFirst()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new BadRequestException("삭제할 예약이 존재하지 않습니다."));
         reservations.remove(reservation);
 
         return ResponseEntity.noContent().build();
