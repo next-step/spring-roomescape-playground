@@ -6,6 +6,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.stereotype.Service;
 import roomescape.controller.dto.RequestReservation;
 import roomescape.domain.Reservation;
+import roomescape.global.exception.NotFoundException;
 
 @Service
 public class ReservationService {
@@ -15,7 +16,9 @@ public class ReservationService {
 
     public Reservation create(final RequestReservation requestReservation) {
         Long id = index.getAndIncrement();
-        Reservation reservation = Reservation.of(id, requestReservation);
+        requestReservation.validatePasted();
+        Reservation reservation = Reservation.of(id, requestReservation.name(),
+                requestReservation.parseDate(), requestReservation.parseTime());
         reservations.add(reservation);
         return reservation;
     }
@@ -28,7 +31,7 @@ public class ReservationService {
         return reservations.stream()
                 .filter(reservation -> reservation.id().equals(id))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 예약이 없습니다."));
+                .orElseThrow(() -> new NotFoundException("예약 ID가 존재하지 않아요."));
     }
 
     public void delete(final Long id) {
