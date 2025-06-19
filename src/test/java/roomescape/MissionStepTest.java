@@ -74,4 +74,27 @@ public class MissionStepTest {
                 .statusCode(200)
                 .body("size()", is(3));
     }
+
+    @Test
+    @DisplayName("필수 입력값이 없거나 존재하지 않는 예약 삭제 시 400 상태 코드를 반환한다")
+    void returnBadRequestWhenRequestIsInvalidOrReservationDoesNotExist() {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", "브라운");
+        params.put("date", "");
+        params.put("time", "");
+
+        // 필요한 인자가 없는 경우
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(400);
+
+        // 삭제할 예약이 없는 경우
+        RestAssured.given().log().all()
+                .when().delete("/reservations/4")
+                .then().log().all()
+                .statusCode(400);
+    }
 }
