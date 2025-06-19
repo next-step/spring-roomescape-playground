@@ -23,4 +23,16 @@ public class ReservationService {
     public List<Reservation> findAll() {
         return reservations;
     }
+
+    public Reservation findById(final Long id) {
+        return reservations.stream()
+                .filter(reservation -> reservation.id().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 예약이 없습니다."));
+    }
+
+    public void delete(final Long id) {
+        Reservation reservation = findById(id);
+        reservations.remove(reservation);
+    }
 }
