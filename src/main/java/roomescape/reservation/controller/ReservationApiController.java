@@ -1,8 +1,10 @@
-package roomescape.reservation;
+package roomescape.reservation.controller;
 
 import jakarta.annotation.PostConstruct;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import roomescape.reservation.Reservation;
+import roomescape.reservation.dto.ReservationResponse;
 
 import java.net.URI;
 import java.time.LocalDate;
@@ -25,16 +27,22 @@ public class ReservationApiController {
     }
 
     @GetMapping("/reservations")
-    public ResponseEntity<List<Reservation>> read() {
-        return ResponseEntity.ok().body(reservations);
+    public ResponseEntity<List<ReservationResponse>> read() {
+        List<ReservationResponse> response = reservations.stream()
+                .map(ReservationResponse::from)
+                .toList();
+        return ResponseEntity.ok().body(response);
     }
 
     @PostMapping("/reservations")
-    public ResponseEntity<Void> create(@RequestBody Reservation reservation) {
+    public ResponseEntity<ReservationResponse> create(@RequestBody Reservation reservation) {
         Reservation newReservation = Reservation.toEntity(reservation, index.getAndIncrement());
         reservations.add(newReservation);
 
-        return ResponseEntity.created(URI.create("/reservations/" + newReservation.id())).build();
+        URI location = URI.create("/reservations/" + newReservation.id());
+        return ResponseEntity
+                .created(location)
+                .body(ReservationResponse.from(newReservation));
     }
 
     @DeleteMapping("/reservations/{id}")
