@@ -1,5 +1,6 @@
 package roomescape.reservation;
 
+import jakarta.annotation.PostConstruct;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,12 +17,15 @@ public class ReservationApiController {
     private final AtomicLong index = new AtomicLong(1);
     private final List<Reservation> reservations = new ArrayList<>();
 
+    @PostConstruct
+    void init() {
+        reservations.add(new Reservation(index.getAndIncrement(), "브라운", LocalDate.now(), LocalTime.now()));
+        reservations.add(new Reservation(index.getAndIncrement(), "브라운", LocalDate.now(), LocalTime.now()));
+        reservations.add(new Reservation(index.getAndIncrement(), "브라운", LocalDate.now(), LocalTime.now()));
+    }
+
     @GetMapping("/reservations")
     public ResponseEntity<List<Reservation>> read() {
-        reservations.add(new Reservation(index.getAndIncrement(), "브라운", LocalDate.now(), LocalTime.now()));
-        reservations.add(new Reservation(index.getAndIncrement(), "브라운",LocalDate.now(), LocalTime.now()));
-        reservations.add(new Reservation(index.getAndIncrement(), "브라운",LocalDate.now(), LocalTime.now()));
-
         return ResponseEntity.ok().body(reservations);
     }
 
