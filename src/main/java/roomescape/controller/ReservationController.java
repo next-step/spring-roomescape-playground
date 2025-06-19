@@ -1,9 +1,10 @@
 package roomescape.controller;
 
 import java.net.URI;
-import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -22,8 +23,8 @@ import roomescape.exception.NotFoundException;
 @Controller
 public class ReservationController {
 
-    private final List<Reservation> reservations = new ArrayList<>();
-    private AtomicLong index = new AtomicLong(1);
+    private final Map<Long, Reservation> reservations = new ConcurrentHashMap<>();
+    private final AtomicLong index = new AtomicLong(1);
 
     @GetMapping("/")
     public String home() {
@@ -32,14 +33,14 @@ public class ReservationController {
 
     @GetMapping("/reservation")
     public String reservationPage(Model model) {
-        model.addAttribute("reservations", reservations);
+        model.addAttribute("reservations", getSortedReservations());
         return "reservation";
     }
 
     @GetMapping("/reservations")
     @ResponseBody
     public List<ReservationResponse> getReservations() {
-        return reservations.stream()
+        return getSortedReservations().stream()
             .map(ReservationResponse::from)
             .toList();
     }
@@ -48,28 +49,28 @@ public class ReservationController {
     @ResponseBody
     public ResponseEntity<ReservationResponse> createReservation(
         @RequestBody ReservationRequest request) {
-        Reservation reservation = new Reservation(
-            index.getAndIncrement(),
-            request.name(),
-            request.date(),
-            request.time()
-        );
-        reservations.add(reservation);
+        long id = index.getAndIncrement();
+        Reservation reservation = new Reservation(id, request.name(), request.date(),
+            request.time());
+        reservations.put(id, reservation);
 
         return ResponseEntity
-            .created(URI.create("/reservations/" + reservation.getId()))
+            .created(URI.create("/reservations/" + id))
             .body(ReservationResponse.from(reservation));
     }
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
-        Reservation reservation = reservations.stream()
-            .filter(it -> Objects.equals(it.getId(), id))
-            .findFirst()
-            .orElseThrow(()-> new NotFoundException(id));
-
-        reservations.remove(reservation);
-
+        Reservation reservation = reservations.remove(id);
+        if (reservation == null) {
+            throw new NotFoundException(id);
+        }
         return ResponseEntity.noContent().build();
+    }
+
+    private List<Reservation> getSortedReservations() {
+        return reservations.values().stream()
+            .sorted(Comparator.comparing(Reservation::getId))
+            .toList();
     }
 }
