@@ -4,19 +4,27 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
+import roomescape.controller.ReservationController;
 
+import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.hamcrest.Matchers.is;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class MissionStepTest {
+
+    @Autowired
+    private ReservationController reservationController;
 
     @Test
     @DisplayName("홈 페이지 접근 시 정상 응답을 반환한다")
@@ -140,8 +148,8 @@ public class MissionStepTest {
     }
 
     @Test
-    @DisplayName("등록되지 않은 시간으로 예약하면 실패한다 (기존 스펙)")
-    void 구단계() {
+    @DisplayName("등록되지 않은 시간으로 예약을 시도하면 400 에러를 반환한다")
+    void createReservationWithUnregisteredTimeFails() {
         Map<String, String> reservation = new HashMap<>();
         reservation.put("name", "브라운");
         reservation.put("date", "2025-08-05");
@@ -153,5 +161,18 @@ public class MissionStepTest {
                 .when().post("/reservations")
                 .then().log().all()
                 .statusCode(400);
+    }
+
+    @Test
+    @DisplayName("컨트롤러는 JdbcTemplate에 직접 의존하지 않아야 한다")
+    void controllerShouldNotDependOnJdbcTemplate() {
+        boolean isJdbcTemplateInjected = false;
+        for (Field field : reservationController.getClass().getDeclaredFields()) {
+            if (field.getType().equals(JdbcTemplate.class)) {
+                isJdbcTemplateInjected = true;
+                break;
+            }
+        }
+        assertThat(isJdbcTemplateInjected).isFalse();
     }
 }
