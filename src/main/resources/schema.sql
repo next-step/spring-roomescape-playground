@@ -1,6 +1,6 @@
 CREATE TABLE reservation (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(255) NOT NULL,
-    date VARCHAR(255) NOT NULL,
-    time VARCHAR(255) NOT NULL
+    name VARCHAR(50) NOT NULL,
+    date CHAR(10) NOT NULL,
+    time CHAR(8) NOT NULL
 );

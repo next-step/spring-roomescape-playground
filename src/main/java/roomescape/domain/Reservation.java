@@ -29,9 +29,8 @@ public class Reservation {
     }
 
     private boolean isNullOrBlank(String value) {
-        return value == null || value.trim().isEmpty();
+        return value == null || value.isBlank();
     }
-
 
     public Long getId() { return id; }
     public String getName() { return name; }

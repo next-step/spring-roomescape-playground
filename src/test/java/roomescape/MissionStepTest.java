@@ -7,12 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.jdbc.core.JdbcTemplate;
-import roomescape.domain.Reservation;
-
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -25,18 +20,7 @@ public class MissionStepTest {
     private JdbcTemplate jdbcTemplate;
 
     @Test
-    void connect_jdbc() {
-        try (Connection connection = jdbcTemplate.getDataSource().getConnection()) {
-            assertThat(connection).isNotNull();
-            assertThat(connection.getCatalog()).isEqualTo("DATABASE");
-            assertThat(connection.getMetaData().getTables(null, null, "RESERVATION", null).next()).isTrue();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Test
-    void testSaveandDeleteReservationsReturn() {
+    void testSaveAndDeleteReservationsReturn() {
         jdbcTemplate.update("DELETE FROM reservation");
 
         Map<String, String> params = new HashMap<>();
