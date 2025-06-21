@@ -4,3 +4,8 @@ CREATE TABLE reservation (
     date CHAR(10) NOT NULL,
     time CHAR(8) NOT NULL
 );
+
+CREATE TABLE time (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    time CHAR(8) NOT NULL
+);
