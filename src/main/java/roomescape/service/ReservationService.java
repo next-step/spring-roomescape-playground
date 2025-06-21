@@ -37,9 +37,7 @@ public class ReservationService {
         return reservationRepository.save(reservation);
     }
 
-
     public boolean deleteReservation(Long id) {
         return reservationRepository.deleteById(id);
     }
-
 }

@@ -33,7 +33,6 @@ public class ReservationRepository {
         );
     };
 
-
     @Autowired
     public ReservationRepository(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
