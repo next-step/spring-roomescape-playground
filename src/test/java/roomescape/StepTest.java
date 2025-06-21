@@ -1,11 +1,13 @@
 package roomescape;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import java.util.HashMap;
 import java.util.Map;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
@@ -68,6 +70,22 @@ class StepTest {
             .when().delete("/reservations/1")
             .then().log().all()
             .statusCode(400);
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 예약 id를 입력 시 예외를 던진다")
+    void throw_exception_when_delete_doesnt_exits_reservation_id() {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", "브라운");
+        params.put("date", "");
+        params.put("time", "");
+
+        // 삭제할 예약이 없는 경우
+        RestAssured.given().log().all()
+            .when().delete("/reservations/7")
+            .then().log().all()
+            .statusCode(400)
+            .body(equalTo("존재하지 않는 예약입니다. id : 7"));
     }
 
 }
