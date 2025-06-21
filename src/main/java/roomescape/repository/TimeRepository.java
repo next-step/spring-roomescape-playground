@@ -11,10 +11,11 @@ import roomescape.domain.Time;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Repository
 public class TimeRepository {
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert simpleJdbcInsert;
 
     private final RowMapper<Time> timeRowMapper = (rs, rowNum) -> new Time(
@@ -33,6 +34,18 @@ public class TimeRepository {
     public List<Time> findAll() {
         String sql = "SELECT id, time FROM time";
         return jdbcTemplate.query(sql, timeRowMapper);
+    }
+
+    public Optional<Time> findByTime(String time) {
+        String sql = "SELECT id, time FROM time WHERE time = ?";
+        List<Time> result = jdbcTemplate.query(sql, timeRowMapper, time);
+        return result.stream().findFirst();
+    }
+
+    public Optional<Time> findById(Long id) {
+        String sql = "SELECT id, time FROM time WHERE id = ?";
+        List<Time> result = jdbcTemplate.query(sql, timeRowMapper, id);
+        return result.stream().findFirst();
     }
 
     public Time save(Time time) {

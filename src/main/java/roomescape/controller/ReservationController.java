@@ -1,11 +1,14 @@
 package roomescape.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import roomescape.domain.Reservation;
 import roomescape.dto.ReservationRequest;
 import roomescape.dto.ReservationResponse;
+import roomescape.repository.ReservationRepository;
+import roomescape.repository.TimeRepository;
 import roomescape.service.ReservationService;
 
 import java.net.URI;
@@ -16,9 +19,16 @@ import java.util.stream.Collectors;
 @RequestMapping("/reservations")
 public class ReservationController {
     private final ReservationService reservationService;
+    private final ReservationRepository reservationRepository;
+    private final TimeRepository timeRepository;
 
-    public ReservationController(ReservationService reservationService) {
+    @Autowired
+    public ReservationController(ReservationService reservationService,
+                                 ReservationRepository reservationRepository,
+                                 TimeRepository timeRepository) {
         this.reservationService = reservationService;
+        this.reservationRepository = reservationRepository;
+        this.timeRepository = timeRepository;
     }
 
     @GetMapping

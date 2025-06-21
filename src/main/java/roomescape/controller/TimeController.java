@@ -34,7 +34,6 @@ public class TimeController {
     public ResponseEntity<TimeResponse> createTime(@RequestBody TimeRequest request) {
         Time savedTime = timeService.createTime(request);
         URI location = URI.create("/times/" + savedTime.getId());
-
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .location(location)

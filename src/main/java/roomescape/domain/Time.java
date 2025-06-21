@@ -13,13 +13,9 @@ public class Time {
     }
 
     private void validate(String time) {
-        if (isNullOrBlank(time)) {
-            throw new InvalidTimeException("시간은 필수.");
+        if (time == null || time.isBlank()) {
+            throw new InvalidTimeException("시간은 필수입니다.");
         }
-    }
-
-    private boolean isNullOrBlank(String value) {
-        return value == null || value.isBlank();
     }
 
     public Long getId() {
@@ -28,5 +24,13 @@ public class Time {
 
     public String getTime() {
         return time;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
     }
 }
