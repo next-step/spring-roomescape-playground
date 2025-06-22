@@ -35,3 +35,25 @@
 - 존재하지 않는 예약에 대한 요청시 발생
 - 예약 취소시 해당 ID의 예약이 없는 경우
 
+# Spring JDBC
+
+## 기능 요구사항
+
+### 5. 데이터베이스 적용하기
+
+- [x] h2 데이터베이스를 활용하여 데이터를 저장하도록 수정
+- [x] build.gradle 파일을 이용하여 다음 두 의존성을 추가(spring-boot-stater-jdbc, h2)
+- [x] schema.sql 파일을 생성하고 테이블을 생성하는 쿼리를 작성
+- [x] h2 데이터베이스의 console 기능을 활성화
+- [x] datasource url을 다음과 같이 지정 (jdbc:h2:mem:database)
+
+### 6. 데이터 조회하기
+
+- [x] 예약 조회 API 처리 로직에서 저장된 예약을 조회할 때 데이터베이스를 활용하도록 수정
+- [x] JdbcTemplate 활용
+
+### 7. 데이터 추가/삭제하기
+
+- [x] 예약 추가/취소 API 처리 로직에서 데이터베이스를 활용하도록 수정
+- [x] List, AtomicLong 제거
+- [x] Simplejdbcinsert와 같은 새로운 객체를 활용
