@@ -4,7 +4,9 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import roomescape.reservation.exception.InvalidReservationRequestException;
 import roomescape.reservation.exception.ReservationNotFoundException;
+import roomescape.reservation.model.Customer;
 import roomescape.reservation.model.Reservation;
 import roomescape.reservation.request.ReservationRequest;
 import roomescape.reservation.response.ReservationResponse;
@@ -22,12 +25,27 @@ import roomescape.reservation.response.ReservationResponse;
 @RequestMapping("/reservations")
 public class ReservationRestController {
 
+    @Autowired
+    JdbcTemplate jdbcTemplate;
+
     private final AtomicLong index = new AtomicLong(1);
 
     private final List<Reservation> reservations = new ArrayList<>();
 
     @GetMapping
     public ResponseEntity<List<ReservationResponse>> get() {
+        List<Reservation> reservations = jdbcTemplate.query(
+            "select id, name, date, time from reservation",
+            (resultSet, rowNum) -> {
+                Reservation reservation = new Reservation(
+                    resultSet.getLong("id"),
+                    resultSet.getString("name"),
+                    resultSet.getDate("date").toLocalDate(),
+                    resultSet.getTime("time").toLocalTime()
+                );
+                return reservation;
+            });
+
         return ResponseEntity.ok(
             reservations.stream()
                 .map(ReservationResponse::new)
