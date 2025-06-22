@@ -17,49 +17,32 @@ import roomescape.domain.Reservation;
 import roomescape.dto.ReservationRequest;
 import roomescape.dto.ReservationResponse;
 import roomescape.exception.status.ReservationNotFoundException;
+import roomescape.service.ReservationService;
 
 @RestController
 @RequestMapping("/reservations")
 public class ReservationApiController {
-    private final List<Reservation> reservations = new ArrayList<>();
-    private final AtomicLong index = new AtomicLong(1);
 
-    @PostMapping()
-    public ResponseEntity<ReservationResponse> createReservation(
-            @Valid @RequestBody ReservationRequest reservationRequest) {
-        Reservation reservation = Reservation.of(
-                index.getAndIncrement(),
-                reservationRequest.getName(),
-                reservationRequest.getDate(),
-                reservationRequest.getTime()
-        );
-        reservations.add(reservation);
+    private final ReservationService reservationService;
 
-        ReservationResponse reservationResponse = new ReservationResponse(
-                reservation.getId(),
-                reservation.getName(),
-                reservation.getDate(),
-                reservation.getTime()
-        );
-
-        return ResponseEntity
-                .created(URI.create("/reservations/" + reservation.getId()))
-                .body(reservationResponse);
+    public ReservationApiController(ReservationService reservationService) {
+        this.reservationService = reservationService;
     }
 
-    @GetMapping()
+    @PostMapping
+    public ResponseEntity<ReservationResponse> createReservation(@Valid @RequestBody ReservationRequest request) {
+        ReservationResponse response = reservationService.create(request);
+        return ResponseEntity.created(URI.create("/reservations/" + response.getId())).body(response);
+    }
+
+    @GetMapping
     public List<ReservationResponse> getReservations() {
-        return reservations.stream().map(r -> new ReservationResponse(r.getId(), r.getName(), r.getDate(), r.getTime()))
-                .toList();
+        return reservationService.findAll();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteReservation(@PathVariable long id) {
-        boolean removed = reservations.removeIf(r -> r.getId() == id);
-        if (!removed) {
-            throw new ReservationNotFoundException(id);
-        }
+    public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
+        reservationService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
-
 }

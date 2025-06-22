@@ -22,12 +22,6 @@ public class ReservationRequest {
 
     protected ReservationRequest() {}
 
-    public ReservationRequest(String name, LocalDate date, LocalTime time) {
-        this.name = name;
-        this.date = date;
-        this.time = time;
-    }
-
     public String getName() {
         return name;
     }
