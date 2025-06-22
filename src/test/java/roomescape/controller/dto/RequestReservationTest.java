@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.time.LocalDate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import roomescape.global.exception.BadRequestException;
+import roomescape.global.exception.InvalidReservationException;
 
 class RequestReservationTest {
 
@@ -14,8 +14,8 @@ class RequestReservationTest {
     @DisplayName("입력된 예약 이름이 비어있을 경우 예외가 발생한다.")
     void shouldThrowException_whenEmptyReservationNameOfData() {
         // given // when
-        BadRequestException exception = assertThrows(
-                BadRequestException.class,
+        InvalidReservationException exception = assertThrows(
+                InvalidReservationException.class,
                 () -> new RequestReservation("2025-06-30", "", "12:00")
         );
 
@@ -30,8 +30,8 @@ class RequestReservationTest {
         String yesterday = String.valueOf(LocalDate.now().minusDays(1));
 
         // when
-        BadRequestException exception = assertThrows(
-                BadRequestException.class,
+        InvalidReservationException exception = assertThrows(
+                InvalidReservationException.class,
                 () -> new RequestReservation(yesterday, "지윤", "10:00").validatePasted()
         );
 
