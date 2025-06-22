@@ -1,26 +1,43 @@
 package roomescape.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
 
+import jakarta.validation.constraints.NotNull;
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 public class ReservationRequest {
-    @NotBlank(message = "이름은 필수입니다.")
+
+    @NotBlank
     private String name;
 
-    @NotBlank(message = "날짜는 필수입니다.")
-    private String date;
+    @NotNull
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate date;
 
-    @NotBlank(message = "시간은 필수입니다.")
-    private String time;
+    @NotNull
+    @JsonFormat(pattern = "HH:mm")
+    private LocalTime time;
+
+    protected ReservationRequest() {}
+
+    public ReservationRequest(String name, LocalDate date, LocalTime time) {
+        this.name = name;
+        this.date = date;
+        this.time = time;
+    }
 
     public String getName() {
         return name;
     }
 
-    public String getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public String getTime() {
+    public LocalTime getTime() {
         return time;
     }
 }
+
