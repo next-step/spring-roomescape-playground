@@ -3,7 +3,7 @@ package roomescape.reservation.request;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-public class ReservationRequestDto {
+public class ReservationRequest {
 
     public LocalDate date;
     public String name;

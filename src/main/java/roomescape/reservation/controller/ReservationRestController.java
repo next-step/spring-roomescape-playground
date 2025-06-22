@@ -15,7 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 import roomescape.reservation.exception.InvalidReservationRequestException;
 import roomescape.reservation.exception.ReservationNotFoundException;
 import roomescape.reservation.model.Reservation;
-import roomescape.reservation.request.ReservationRequestDto;
+import roomescape.reservation.request.ReservationRequest;
+import roomescape.reservation.response.ReservationResponse;
 
 @RestController
 @RequestMapping("/reservations")
@@ -26,14 +27,17 @@ public class ReservationRestController {
     private final List<Reservation> reservations = new ArrayList<>();
 
     @GetMapping
-    public ResponseEntity<List<Reservation>> get() {
-        // @ResponseBody가 자동으로 적용됨
-        return ResponseEntity.ok(reservations);
+    public ResponseEntity<List<ReservationResponse>> get() {
+        return ResponseEntity.ok(
+            reservations.stream()
+                .map(ReservationResponse::new)
+                .toList()
+        );
     }
 
     @PostMapping
-    public ResponseEntity<Reservation> post(
-        @RequestBody ReservationRequestDto request
+    public ResponseEntity<ReservationResponse> post(
+        @RequestBody ReservationRequest request
     ) {
         validateRequest(request);
         Reservation reservation = new Reservation(index.getAndIncrement(), request.getName(),
@@ -44,7 +48,7 @@ public class ReservationRestController {
         return ResponseEntity
             .created(URI.create(
                 "/reservations/" + reservation.getId()))  // created를 통해 201 상태 코드 + Location 설정
-            .body(reservation);
+            .body(new ReservationResponse(reservation));
     }
 
     @DeleteMapping("/{id}")
@@ -58,7 +62,7 @@ public class ReservationRestController {
         return ResponseEntity.noContent().build(); // 204 No Content
     }
 
-    private void validateRequest(ReservationRequestDto request) {
+    private void validateRequest(ReservationRequest request) {
         if (request.getName() == null || request.getName().isEmpty()) {
             throw new InvalidReservationRequestException("Name is required");
         }
