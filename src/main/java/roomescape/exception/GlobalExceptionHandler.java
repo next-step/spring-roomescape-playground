@@ -10,6 +10,6 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ReservationNotFoundException.class)
     public ResponseEntity<String> handleReservationNotFound(ReservationNotFoundException e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
+        return ResponseEntity.status(400).body(e.getMessage());
     }
 }
