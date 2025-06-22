@@ -1,6 +1,9 @@
 package roomescape.exception.validation;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -9,8 +12,11 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class MethodArgumentNotValidExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<String> handle(MethodArgumentNotValidException e) {
-        String message = e.getBindingResult().getAllErrors().get(0).getDefaultMessage();
-        return ResponseEntity.badRequest().body(message);
+    public ResponseEntity<List<String>> handle(MethodArgumentNotValidException e) {
+        List<String> messages = e.getBindingResult().getFieldErrors().stream()
+                .map(FieldError::getDefaultMessage)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.badRequest().body(messages);
     }
 }

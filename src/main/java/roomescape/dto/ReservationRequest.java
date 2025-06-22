@@ -20,7 +20,8 @@ public class ReservationRequest {
     @JsonFormat(pattern = "HH:mm")
     private LocalTime time;
 
-    protected ReservationRequest() {}
+    protected ReservationRequest() {
+    }
 
     public String getName() {
         return name;
