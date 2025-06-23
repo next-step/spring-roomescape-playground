@@ -34,9 +34,9 @@ public class ReservationService {
     public ReservationResponse createReservation(ReservationRequest request) {
         String validatedName = request.getValidatedName();
         LocalDate parsedDate = request.getParsedDate();
-        LocalTime parsedTime = request.getParsedTime();
+        Long timeId = request.timeId();
 
-        Time time = timeRepository.findByTimeValue(parsedTime)
+        Time time = timeRepository.findById(timeId)
                 .orElseThrow(() -> new ReservationException("[ERROR] 등록되지 않은 시간입니다."));
 
         Reservation newReservation = Reservation.create(validatedName, parsedDate, time);

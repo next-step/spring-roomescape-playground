@@ -62,10 +62,10 @@ public class MissionStepTest {
                 .then().log().all()
                 .statusCode(201);
 
-        Map<String, String> reservationParams = new HashMap<>();
+        Map<String, Object> reservationParams = new HashMap<>();
         reservationParams.put("name", "오찌");
         reservationParams.put("date", LocalDate.now().plusDays(1).format(DateTimeFormatter.ISO_LOCAL_DATE));
-        reservationParams.put("time", "17:00");
+        reservationParams.put("timeId", 1L);
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -97,10 +97,9 @@ public class MissionStepTest {
     @Test
     @DisplayName("유효하지 않은 예약 생성 또는 삭제 시 에러를 반환한다")
     void createOrDeleteReservationWithInvalidInputReturnsError() {
-        Map<String, String> params = new HashMap<>();
+        Map<String, Object> params = new HashMap<>();
         params.put("name", "브라운");
         params.put("date", "");
-        params.put("time", "");
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -150,10 +149,10 @@ public class MissionStepTest {
     @Test
     @DisplayName("등록되지 않은 시간으로 예약을 시도하면 400 에러를 반환한다")
     void createReservationWithUnregisteredTimeFails() {
-        Map<String, String> reservation = new HashMap<>();
+        Map<String, Object> reservation = new HashMap<>();
         reservation.put("name", "브라운");
         reservation.put("date", "2025-08-05");
-        reservation.put("time", "10:00");
+        reservation.put("timeId", 999L);
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)

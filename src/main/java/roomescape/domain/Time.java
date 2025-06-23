@@ -22,7 +22,7 @@ public class Time {
 
     private void validate(LocalTime time) {
         if (time == null) {
-            throw new IllegalArgumentException("Time의 time 필드는 null일 수 없습니다.");
+            throw new IllegalArgumentException("[ERROR] 시간 정보는 비어있을 수 없습니다.");
         }
     }
 
