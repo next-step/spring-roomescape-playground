@@ -1,12 +1,12 @@
 package roomescape.repository;
 
-import java.sql.PreparedStatement;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
 import roomescape.exception.ReservationNotFoundException;
@@ -15,9 +15,13 @@ import roomescape.exception.ReservationNotFoundException;
 public class ReservationRepository {
 
     private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert simpleJdbcInsert;
 
     public ReservationRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+        this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+            .withTableName("reservation")
+            .usingGeneratedKeyColumns("id");
     }
 
     public List<Reservation> findAll() {
@@ -32,22 +36,8 @@ public class ReservationRepository {
     }
 
     public Reservation save(Reservation reservation) {
-        String sql = "INSERT INTO reservation(name, date, time) VALUES (?, ?, ?)";
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-
-        jdbcTemplate.update(con -> {
-            PreparedStatement ps = con.prepareStatement(sql, new String[]{"id"});
-            ps.setString(1, reservation.getName());
-            ps.setString(2, reservation.getDate().toString());
-            ps.setString(3, reservation.getTime().toString());
-            return ps;
-        }, keyHolder);
-
-        Number key = keyHolder.getKey();
-        if (key == null) {
-            throw new IllegalStateException("생성된 ID가 없습니다. INSERT가 실패했을 수 있습니다.");
-        }
-
+        SqlParameterSource parameterSource = new BeanPropertySqlParameterSource(reservation);
+        Number key = simpleJdbcInsert.executeAndReturnKey(parameterSource);
         return new Reservation(key.longValue(), reservation.getName(), reservation.getDate(),
             reservation.getTime());
     }

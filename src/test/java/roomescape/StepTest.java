@@ -79,7 +79,7 @@ class StepTest {
         RestAssured.given().log().all()
             .when().delete("/reservations/1")
             .then().log().all()
-            .statusCode(400);
+            .statusCode(404);
     }
 
     @Test
@@ -94,7 +94,7 @@ class StepTest {
         RestAssured.given().log().all()
             .when().delete("/reservations/7")
             .then().log().all()
-            .statusCode(400)
+            .statusCode(404)
             .body(equalTo("존재하지 않는 예약입니다. id : 7"));
     }
 
