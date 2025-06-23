@@ -31,8 +31,6 @@ public class ReservationApiController {
 
     @PostMapping("/reservations")
     public ResponseEntity<ReservationResponse> create(@RequestBody ReservationRequest request) {
-        request.validateRequiredFields();
-
         Reservation newReservation = Reservation.of(request, index.getAndIncrement());
         reservations.add(newReservation);
 
