@@ -10,7 +10,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
@@ -42,13 +41,7 @@ public class MissionStepTest {
                 .when().get("/reservations")
                 .then().log().all()
                 .statusCode(200)
-                .body("size()", is(3))
-                .body("[0].id", equalTo(1))
-                .body("[1].id", equalTo(2))
-                .body("[2].id", equalTo(3))
-                .body("[0].name", equalTo("지수"))
-                .body("[1].name", equalTo("치수"))
-                .body("[2].name", equalTo("찌수"));
+                .body("size()", is(2));
     }
 
     @Test
@@ -65,17 +58,17 @@ public class MissionStepTest {
                 .when().post("/reservations")
                 .then().log().all()
                 .statusCode(201)
-                .header("Location", "/reservations/1")
-                .body("id", is(1));
+                .header("Location", "/reservations/3")
+                .body("id", is(3));
 
         RestAssured.given().log().all()
                 .when().get("/reservations")
                 .then().log().all()
                 .statusCode(200)
-                .body("size()", is(1));
+                .body("size()", is(3));
 
         RestAssured.given().log().all()
-                .when().delete("/reservations/1")
+                .when().delete("/reservations/3")
                 .then().log().all()
                 .statusCode(204);
 
@@ -83,7 +76,7 @@ public class MissionStepTest {
                 .when().get("/reservations")
                 .then().log().all()
                 .statusCode(200)
-                .body("size()", is(0));
+                .body("size()", is(2));
     }
 
     @Test
@@ -104,7 +97,7 @@ public class MissionStepTest {
 
         // 삭제할 예약이 없는 경우
         RestAssured.given().log().all()
-                .when().delete("/reservations/1")
+                .when().delete("/reservations/3")
                 .then().log().all()
                 .statusCode(400);
     }

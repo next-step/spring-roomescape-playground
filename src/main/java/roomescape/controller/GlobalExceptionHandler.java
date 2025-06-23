@@ -2,12 +2,13 @@ package roomescape.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import roomescape.exception.BadRequestException;
 
 @ControllerAdvice
-public class ExceptionHandler {
+public class GlobalExceptionHandler {
 
-    @org.springframework.web.bind.annotation.ExceptionHandler(BadRequestException.class)
+    @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<Void> handleBadRequestException(BadRequestException e) {
         return ResponseEntity.badRequest().build();
     }
