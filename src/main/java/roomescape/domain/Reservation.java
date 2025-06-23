@@ -23,7 +23,7 @@ public class Reservation {
             throw new InvalidRequestException("이름은 비어있을 수 없습니다.");
         }
         if (date == null) {
-            throw new InvalidRequestException("날짜는 비어있을 수 없습니다.");
+            throw new InvalidRequestException("날짜는 비어 있거나 존재하지 않는 날짜일 수 없습니다. 올바른 날짜를 선택해주세요.");
         }
         if (time == null) {
             throw new InvalidRequestException("시간은 비어있을 수 없습니다.");
