@@ -33,19 +33,19 @@ public class Reservation {
 
     private void validateRequiredFields(String name, LocalDate date, Time time) {
         if (name == null || name.isBlank()) {
-            throw new ReservationException("[ERROR] name 필드는 비어있을 수 없습니다.");
+            throw new ReservationException("[ERROR] 예약자 이름을 입력해주세요.");
         }
         if (date == null) {
-            throw new ReservationException("[ERROR] date 필드는 null일 수 없습니다.");
+            throw new ReservationException("[ERROR] 예약 날짜를 선택해주세요.");
         }
         if (time == null) {
-            throw new ReservationException("[ERROR] time 필드는 null일 수 없습니다.");
+            throw new ReservationException("[ERROR] 예약 시간을 선택해주세요.");
         }
     }
 
     private void validateBusinessRules(LocalDate date) {
         if (date.isBefore(LocalDate.now())) {
-            throw new ReservationException("[ERROR] 예약 날짜는 과거일 수 없습니다.");
+            throw new ReservationException("[ERROR] 지난 날짜로는 예약할 수 없습니다. 오늘 혹은 이후 날짜를 선택해주세요.");
         }
     }
 

@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,16 +30,6 @@ public class TimeRepository {
         String sql = "SELECT id, time FROM time WHERE id = ?";
         try {
             Time time = jdbcTemplate.queryForObject(sql, timeRowMapper, id);
-            return Optional.ofNullable(time);
-        } catch (EmptyResultDataAccessException e) {
-            return Optional.empty();
-        }
-    }
-
-    public Optional<Time> findByTimeValue(LocalTime timeValue) {
-        String sql = "SELECT id, time FROM time WHERE time = ?";
-        try {
-            Time time = jdbcTemplate.queryForObject(sql, timeRowMapper, timeValue);
             return Optional.ofNullable(time);
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();

@@ -27,5 +27,6 @@ public class Time {
     }
 
     public Long getId() { return id; }
+
     public LocalTime getTime() { return time; }
 }
