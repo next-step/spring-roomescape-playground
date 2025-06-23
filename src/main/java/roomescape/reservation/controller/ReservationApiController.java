@@ -21,13 +21,6 @@ public class ReservationApiController {
     private final AtomicLong index = new AtomicLong(1);
     private final List<Reservation> reservations = new ArrayList<>();
 
-    @PostConstruct
-    void init() {
-        reservations.add(new Reservation(index.getAndIncrement(), "브라운", LocalDate.now(), LocalTime.now()));
-        reservations.add(new Reservation(index.getAndIncrement(), "브라운", LocalDate.now(), LocalTime.now()));
-        reservations.add(new Reservation(index.getAndIncrement(), "브라운", LocalDate.now(), LocalTime.now()));
-    }
-
     @GetMapping("/reservations")
     public ResponseEntity<List<ReservationResponse>> read() {
         List<ReservationResponse> response = reservations.stream()
