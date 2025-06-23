@@ -39,7 +39,7 @@ public class ReservationApiController {
     public ResponseEntity<ReservationResponse> create(@RequestBody Reservation reservation) {
         reservation.validateRequiredFields();
 
-        Reservation newReservation = Reservation.toEntity(reservation, index.getAndIncrement());
+        Reservation newReservation = Reservation.of(reservation, index.getAndIncrement());
         reservations.add(newReservation);
 
         URI location = URI.create("/reservations/" + newReservation.id());
