@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import roomescape.exception.BadRequestException;
 import roomescape.reservation.Reservation;
+import roomescape.reservation.dto.ReservationRequest;
 import roomescape.reservation.dto.ReservationResponse;
 
 import java.net.URI;
@@ -36,10 +37,10 @@ public class ReservationApiController {
     }
 
     @PostMapping("/reservations")
-    public ResponseEntity<ReservationResponse> create(@RequestBody Reservation reservation) {
-        reservation.validateRequiredFields();
+    public ResponseEntity<ReservationResponse> create(@RequestBody ReservationRequest request) {
+        request.validateRequiredFields();
 
-        Reservation newReservation = Reservation.of(reservation, index.getAndIncrement());
+        Reservation newReservation = Reservation.of(request, index.getAndIncrement());
         reservations.add(newReservation);
 
         URI location = URI.create("/reservations/" + newReservation.id());
