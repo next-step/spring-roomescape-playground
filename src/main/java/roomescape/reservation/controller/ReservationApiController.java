@@ -2,25 +2,25 @@ package roomescape.reservation.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import roomescape.exception.BadRequestException;
 import roomescape.reservation.domain.Reservation;
 import roomescape.reservation.dto.ReservationRequest;
 import roomescape.reservation.dto.ReservationResponse;
+import roomescape.reservation.service.ReservationService;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicLong;
 
 @RestController
 public class ReservationApiController {
-    private final AtomicLong index = new AtomicLong(1);
-    private final List<Reservation> reservations = new ArrayList<>();
+    private final ReservationService reservationService;
+
+    public ReservationApiController(ReservationService reservationService) {
+        this.reservationService = reservationService;
+    }
 
     @GetMapping("/reservations")
     public ResponseEntity<List<ReservationResponse>> read() {
-        List<ReservationResponse> response = reservations.stream()
+        List<ReservationResponse> response = reservationService.findAll().stream()
                 .map(ReservationResponse::from)
                 .toList();
         return ResponseEntity.ok().body(response);
@@ -28,8 +28,7 @@ public class ReservationApiController {
 
     @PostMapping("/reservations")
     public ResponseEntity<ReservationResponse> create(@RequestBody ReservationRequest request) {
-        Reservation newReservation = Reservation.of(request, index.getAndIncrement());
-        reservations.add(newReservation);
+        Reservation newReservation = reservationService.save(Reservation.of(request));
 
         URI location = URI.create("/reservations/" + newReservation.id());
         return ResponseEntity
@@ -39,11 +38,7 @@ public class ReservationApiController {
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        Reservation reservation = reservations.stream()
-                .filter(reservationItem -> Objects.equals(reservationItem.id(), id))
-                .findFirst()
-                .orElseThrow(() -> new BadRequestException("삭제할 예약이 존재하지 않습니다."));
-        reservations.remove(reservation);
+        reservationService.deleteById(id);
 
         return ResponseEntity.noContent().build();
     }
