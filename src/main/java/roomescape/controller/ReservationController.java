@@ -7,12 +7,10 @@ import roomescape.model.Reservation;
 import roomescape.service.ReservationService;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
 public class ReservationController {
-    private final List<Reservation> reservations = new ArrayList<>();
     private final ReservationService reservationService;
 
     public ReservationController(ReservationService reservationService) {

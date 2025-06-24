@@ -1,42 +1,35 @@
 package roomescape.service;
 
-import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Service;
 import roomescape.exception.BadRequestException;
 import roomescape.model.Reservation;
+import roomescape.repository.ReservationRepository;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class ReservationService {
-    private final List<Reservation> reservations = new ArrayList<>();
-    private final AtomicInteger reservationId = new AtomicInteger(1);
 
-    @PostConstruct
-    public void init() {
-        addReservation(new Reservation(1, "브라운", "2024-06-23", "16:00"));
-        addReservation(new Reservation(2, "브라운", "2024-06-23", "16:00"));
+    private final ReservationRepository reservationRepository;
+
+    public ReservationService(ReservationRepository reservationRepository) {
+        this.reservationRepository = reservationRepository;
     }
 
     public void removeReservation(int id) {
-        boolean removed = reservations.removeIf(reservation -> reservation.id() == id);
+        boolean removed = reservationRepository.delete(id);
         if (!removed) {
             throw new BadRequestException("요청한 id에 해당하는 예약이 존재하지 않습니다");
         }
     }
 
-    public List<Reservation> getReservations() {
-        return reservations;
-    }
-
     public Reservation addReservation(Reservation reservation) {
         verification(reservation);
-        Reservation reservation1 = new Reservation
-                (reservationId.getAndIncrement(), reservation.name(), reservation.date(), reservation.time());
-        reservations.add(reservation1);
-        return reservation1;
+        return reservationRepository.save(reservation);
+    }
+
+    public List<Reservation> getReservations() {
+        return reservationRepository.findAll();
     }
 
     // 검증 메서드 분리
