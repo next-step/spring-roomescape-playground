@@ -4,7 +4,6 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -25,24 +24,23 @@ import roomescape.reservation.response.ReservationResponse;
 @RequestMapping("/reservations")
 public class ReservationRestController {
 
-    @Autowired
-    JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
-    @Autowired
-    SimpleJdbcInsert simpleJdbcInsert;
+    public ReservationRestController(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     @GetMapping
-    public ResponseEntity<List<ReservationResponse>> get() {
+    public ResponseEntity<List<ReservationResponse>> getReservations() {
         List<Reservation> reservations = jdbcTemplate.query(
             "select id, name, date, time from reservation",
             (resultSet, rowNum) -> {
-                Reservation reservation = new Reservation(
+                return new Reservation(
                     resultSet.getLong("id"),
                     resultSet.getString("name"),
                     resultSet.getDate("date").toLocalDate(),
                     resultSet.getTime("time").toLocalTime()
                 );
-                return reservation;
             });
 
         return ResponseEntity.ok(
@@ -53,17 +51,21 @@ public class ReservationRestController {
     }
 
     @PostMapping
-    public ResponseEntity<ReservationResponse> post(
+    public ResponseEntity<ReservationResponse> postReservation(
         @RequestBody ReservationRequest request
     ) {
         validateRequest(request);
+
+        SimpleJdbcInsert insert = new SimpleJdbcInsert(jdbcTemplate)
+            .withTableName("reservation")
+            .usingGeneratedKeyColumns("id");
 
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("name", request.getName());
         parameters.put("date", request.getDate());
         parameters.put("time", request.getTime());
 
-        Long id = (Long) simpleJdbcInsert.executeAndReturnKey(parameters);
+        Long id = (Long) insert.executeAndReturnKey(parameters);
 
         Reservation reservation = new Reservation(
             id,
@@ -80,7 +82,7 @@ public class ReservationRestController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(
+    public ResponseEntity<Void> deleteReservation(
         @PathVariable Long id
     ) {
         boolean removed = jdbcTemplate.update(
