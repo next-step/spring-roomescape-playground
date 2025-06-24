@@ -8,12 +8,11 @@ import java.time.LocalTime;
 public record ReservationRequest(String name, LocalDate date, LocalTime time) {
 
     public ReservationRequest {
-        validateRequiredFields();
+        validateRequiredFields(name, date, time);
     }
 
-    private void validateRequiredFields() {
-        if (this.name() == null || this.name().isBlank() ||
-                this.date() == null || this.time() == null) {
+    private void validateRequiredFields(String name, LocalDate date, LocalTime time) {
+        if (name == null || name.isBlank() || date == null || time == null) {
             throw new BadRequestException("예약 요청에 누락된 값이 있습니다.");
         }
     }
