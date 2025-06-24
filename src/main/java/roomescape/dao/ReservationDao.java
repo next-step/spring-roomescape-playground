@@ -17,6 +17,12 @@ public class ReservationDao {
 
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
+    private final RowMapper<Reservation> rowMapper = (resultSet, rowNum) -> new Reservation(
+            resultSet.getLong("id"),
+            resultSet.getString("name"),
+            resultSet.getDate("date").toLocalDate(),
+            resultSet.getTime("time").toLocalTime()
+    );
 
     public ReservationDao(final DataSource dataSource) {
         this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
@@ -24,13 +30,6 @@ public class ReservationDao {
                 .withTableName("reservation")
                 .usingGeneratedKeyColumns("id");
     }
-
-    public final RowMapper<Reservation> rowMapper = (resultSet, rowNum) -> new Reservation(
-            resultSet.getLong("id"),
-            resultSet.getString("name"),
-            resultSet.getDate("date").toLocalDate(),
-            resultSet.getTime("time").toLocalTime()
-    );
 
     public Reservation save(final RequestReservation requestReservation) {
         Map<String, Object> parameters = new HashMap<>();
