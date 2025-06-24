@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.stereotype.Service;
 import roomescape.controller.dto.RequestReservation;
+import roomescape.dao.ReservationDao;
 import roomescape.domain.Reservation;
 import roomescape.global.exception.NotFoundException;
 
@@ -13,6 +14,11 @@ public class ReservationService {
 
     private final AtomicLong index = new AtomicLong(1);
     private final List<Reservation> reservations = new ArrayList<>();
+    private final ReservationDao reservationDao;
+
+    public ReservationService(final ReservationDao reservationDao) {
+        this.reservationDao = reservationDao;
+    }
 
     public Reservation create(final RequestReservation requestReservation) {
         Long id = index.getAndIncrement();
@@ -24,7 +30,7 @@ public class ReservationService {
     }
 
     public List<Reservation> findAll() {
-        return reservations;
+        return reservationDao.findAllReservation();
     }
 
     public Reservation findById(final Long id) {

@@ -11,6 +11,7 @@ import io.restassured.http.ContentType;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import org.junit.jupiter.api.DisplayName;
@@ -19,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
+import roomescape.domain.Reservation;
 
 @SpringBootTest(webEnvironment = DEFINED_PORT)
 @DirtiesContext(classMode = BEFORE_EACH_TEST_METHOD)
@@ -65,8 +67,8 @@ public class MissionStepTest {
         RestAssured.given().log().all()
                 .when().get("/reservations")
                 .then().log().all()
-                .statusCode(200)
-                .body("size()", is(1));
+                .statusCode(200).extract()
+                .jsonPath().getList(".", Reservation.class);
     }
 
     @Test
@@ -150,5 +152,24 @@ public class MissionStepTest {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Test
+    @DisplayName("예약 테이블에 예약을 추가한 후 정상적으로 조회가 된다.")
+    void shouldReturnCountRow_whenAddReservation() {
+        String sql = "INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)";
+        jdbcTemplate.update(sql, "브라운", "2023-08-05", "15:40");
+
+        List<Reservation> reservations = RestAssured
+                .given().log().all()
+                .when().get("/reservations")
+                .then().log().all()
+                .statusCode(200).extract()
+                .jsonPath().getList(".", Reservation.class);
+
+        String countSql = "SELECT count(1) from reservation";
+        Integer count = jdbcTemplate.queryForObject(countSql, Integer.class);
+
+        assertThat(reservations.size()).isEqualTo(count);
     }
 }
