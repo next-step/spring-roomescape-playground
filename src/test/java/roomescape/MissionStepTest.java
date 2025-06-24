@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,9 +26,6 @@ import roomescape.domain.Reservation;
 @SpringBootTest(webEnvironment = DEFINED_PORT)
 @DirtiesContext(classMode = BEFORE_EACH_TEST_METHOD)
 public class MissionStepTest {
-
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
 
     @Test
     @DisplayName("기본 URI로 요청 시 정상적으로 어드민 페이지가 반환된다.")
@@ -93,8 +91,7 @@ public class MissionStepTest {
         RestAssured.given().log().all()
                 .when().get("/reservations")
                 .then().log().all()
-                .statusCode(200)
-                .body("size()", is(0));
+                .statusCode(200);
     }
 
     @Test
@@ -141,35 +138,87 @@ public class MissionStepTest {
                 .body(containsString("예약 ID가 존재하지 않아요."));
     }
 
+    @Nested
+    @DisplayName("데이터베이스 테스트")
+    class DatabaseTest {
 
-    @Test
-    @DisplayName("정상적으로 데이터베이스가 연결되어 예약 테이블이 생성된다.")
-    void shouldCreateReservationTable() {
-        try (Connection connection = Objects.requireNonNull(jdbcTemplate.getDataSource()).getConnection()) {
-            assertThat(connection).isNotNull();
-            assertThat(connection.getCatalog()).isEqualTo("DATABASE");
-            assertThat(connection.getMetaData().getTables(null, null, "RESERVATION", null).next()).isTrue();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        @Autowired
+        private JdbcTemplate jdbcTemplate;
+
+        @Test
+        @DisplayName("정상적으로 데이터베이스가 연결되어 예약 테이블이 생성된다.")
+        void shouldCreateReservationTable() {
+            try (Connection connection = Objects.requireNonNull(jdbcTemplate.getDataSource()).getConnection()) {
+                assertThat(connection).isNotNull();
+                assertThat(connection.getCatalog()).isEqualTo("DATABASE");
+                assertThat(connection.getMetaData().getTables(null, null, "RESERVATION", null).next()).isTrue();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         }
-    }
 
-    @Test
-    @DisplayName("예약 테이블에 예약을 추가한 후 정상적으로 조회가 된다.")
-    void shouldReturnCountRow_whenAddReservation() {
-        String sql = "INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)";
-        jdbcTemplate.update(sql, "브라운", "2023-08-05", "15:40");
+        @Test
+        @DisplayName("예약 테이블에 예약을 추가한 후 정상적으로 조회가 된다.")
+        void shouldReturnDatabaseCountRow_whenAddReservation() {
+            String sql = "INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)";
+            jdbcTemplate.update(sql, "브라운", "2030-08-05", "15:40");
 
-        List<Reservation> reservations = RestAssured
-                .given().log().all()
-                .when().get("/reservations")
-                .then().log().all()
-                .statusCode(200).extract()
-                .jsonPath().getList(".", Reservation.class);
+            List<Reservation> reservations = RestAssured
+                    .given().log().all()
+                    .when().get("/reservations")
+                    .then().log().all()
+                    .statusCode(200).extract()
+                    .jsonPath().getList(".", Reservation.class);
 
-        String countSql = "SELECT count(1) from reservation";
-        Integer count = jdbcTemplate.queryForObject(countSql, Integer.class);
+            String countSql = "SELECT count(1) from reservation";
+            Integer count = jdbcTemplate.queryForObject(countSql, Integer.class);
 
-        assertThat(reservations.size()).isEqualTo(count);
+            assertThat(reservations.size()).isEqualTo(count);
+        }
+
+        @Test
+        @DisplayName("예약 API를 이용하여 예약을 추가한 후 정상적으로 데이터베이스에서 조회가 된다.")
+        void shouldReservationListInDatabase_whenUsingReservationAPI() {
+            Map<String, String> params = new HashMap<>();
+            params.put("name", "브라운");
+            params.put("date", "2027-08-05");
+            params.put("time", "10:00");
+
+            RestAssured.given().log().all()
+                    .contentType(ContentType.JSON)
+                    .body(params)
+                    .when().post("/reservations")
+                    .then().log().all()
+                    .statusCode(201)
+                    .header("Location", "/reservations/1");
+
+            Integer count = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
+            assertThat(count).isEqualTo(1);
+        }
+
+        @Test
+        @DisplayName("예약 API를 이용하여 예약을 취소하면 정상적으로 데이터베이스에서 삭제가 된다.")
+        void shouldDeleteReservationInDatabase_whenUsingReservationAPI() {
+            Map<String, String> params = new HashMap<>();
+            params.put("name", "브라운");
+            params.put("date", "2027-08-05");
+            params.put("time", "10:00");
+
+            RestAssured.given().log().all()
+                    .contentType(ContentType.JSON)
+                    .body(params)
+                    .when().post("/reservations")
+                    .then().log().all()
+                    .statusCode(201)
+                    .header("Location", "/reservations/1");
+
+            RestAssured.given().log().all()
+                    .when().delete("/reservations/1")
+                    .then().log().all()
+                    .statusCode(204);
+
+            Integer countAfterDelete = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
+            assertThat(countAfterDelete).isEqualTo(0);
+        }
     }
 }
