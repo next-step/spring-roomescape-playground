@@ -1,6 +1,5 @@
-package roomescape.reservation;
+package roomescape.reservation.domain;
 
-import roomescape.exception.BadRequestException;
 import roomescape.reservation.dto.ReservationRequest;
 
 import java.time.LocalDate;
