@@ -27,25 +27,29 @@ public class Reservation {
     }
 
     private void validate(String name, LocalDate date, Time time) {
-        validateRequiredFields(name, date, time);
-        validateBusinessRules(date);
+        validateName(name);
+        validateDate(date);
+        validateTime(time);
     }
 
-    private void validateRequiredFields(String name, LocalDate date, Time time) {
+    private void validateName(String name) {
         if (name == null || name.isBlank()) {
             throw new ReservationException("[ERROR] 예약자 이름을 입력해주세요.");
         }
+    }
+
+    private void validateDate(LocalDate date) {
         if (date == null) {
             throw new ReservationException("[ERROR] 예약 날짜를 선택해주세요.");
         }
-        if (time == null) {
-            throw new ReservationException("[ERROR] 예약 시간을 선택해주세요.");
+        if (date.isBefore(LocalDate.now())) {
+            throw new ReservationException("[ERROR] 지난 날짜로는 예약할 수 없습니다. 오늘 혹은 이후 날짜를 선택해주세요.");
         }
     }
 
-    private void validateBusinessRules(LocalDate date) {
-        if (date.isBefore(LocalDate.now())) {
-            throw new ReservationException("[ERROR] 지난 날짜로는 예약할 수 없습니다. 오늘 혹은 이후 날짜를 선택해주세요.");
+    private void validateTime(Time time) {
+        if (time == null) {
+            throw new ReservationException("[ERROR] 예약 시간을 선택해주세요.");
         }
     }
 

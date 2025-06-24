@@ -30,7 +30,7 @@ public class TimeRepository {
         String sql = "SELECT id, time FROM time WHERE id = ?";
         try {
             Time time = jdbcTemplate.queryForObject(sql, timeRowMapper, id);
-            return Optional.ofNullable(time);
+            return Optional.of(time);
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
