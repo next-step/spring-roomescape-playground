@@ -7,8 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import roomescape.domain.Reservation;
 import roomescape.dto.ReservationRequest;
 import roomescape.dto.ReservationResponse;
-import roomescape.repository.ReservationRepository;
-import roomescape.repository.TimeRepository;
 import roomescape.service.ReservationService;
 
 import java.net.URI;
@@ -19,16 +17,9 @@ import java.util.stream.Collectors;
 @RequestMapping("/reservations")
 public class ReservationController {
     private final ReservationService reservationService;
-    private final ReservationRepository reservationRepository;
-    private final TimeRepository timeRepository;
 
-    @Autowired
-    public ReservationController(ReservationService reservationService,
-                                 ReservationRepository reservationRepository,
-                                 TimeRepository timeRepository) {
+    public ReservationController(ReservationService reservationService) {
         this.reservationService = reservationService;
-        this.reservationRepository = reservationRepository;
-        this.timeRepository = timeRepository;
     }
 
     @GetMapping
@@ -46,8 +37,7 @@ public class ReservationController {
         URI location = URI.create("/reservations/" + savedReservation.getId());
 
         return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .location(location)
+                .created(location)
                 .body(ReservationResponse.from(savedReservation));
     }
 

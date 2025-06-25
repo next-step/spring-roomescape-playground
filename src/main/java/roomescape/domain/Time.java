@@ -2,18 +2,20 @@ package roomescape.domain;
 
 import roomescape.exception.InvalidTimeException;
 
-public class Time {
-    private Long id;
-    private String time;
+import java.time.LocalTime;
 
-    public Time(Long id, String time) {
+public class Time {
+    private final Long id;
+    private final LocalTime time;
+
+    public Time(Long id, LocalTime time) {
         validate(time);
         this.id = id;
         this.time = time;
     }
 
-    private void validate(String time) {
-        if (time == null || time.isBlank()) {
+    private void validate(LocalTime time) {
+        if (time == null) {
             throw new InvalidTimeException("시간은 필수입니다.");
         }
     }
@@ -22,15 +24,7 @@ public class Time {
         return id;
     }
 
-    public String getTime() {
+    public LocalTime getTime() {
         return time;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
     }
 }

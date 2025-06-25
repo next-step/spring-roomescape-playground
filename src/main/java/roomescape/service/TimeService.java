@@ -1,8 +1,10 @@
 package roomescape.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 import roomescape.domain.Time;
 import roomescape.dto.TimeRequest;
+import roomescape.exception.InvalidTimeException;
 import roomescape.repository.TimeRepository;
 
 import java.util.List;
@@ -25,6 +27,9 @@ public class TimeService {
     }
 
     public boolean deleteTime(Long id) {
+        if(!timeRepository.deleteById(id)) {
+            throw new InvalidTimeException("없는 시간입니다." + id);
+        }
         return timeRepository.deleteById(id);
     }
 }

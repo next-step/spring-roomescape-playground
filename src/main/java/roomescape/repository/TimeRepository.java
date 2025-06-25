@@ -20,7 +20,7 @@ public class TimeRepository {
 
     private final RowMapper<Time> timeRowMapper = (rs, rowNum) -> new Time(
             rs.getLong("id"),
-            rs.getString("time")
+            rs.getTime("time").toLocalTime()
     );
 
     @Autowired
@@ -34,12 +34,6 @@ public class TimeRepository {
     public List<Time> findAll() {
         String sql = "SELECT id, time FROM time";
         return jdbcTemplate.query(sql, timeRowMapper);
-    }
-
-    public Optional<Time> findByTime(String time) {
-        String sql = "SELECT id, time FROM time WHERE time = ?";
-        List<Time> result = jdbcTemplate.query(sql, timeRowMapper, time);
-        return result.stream().findFirst();
     }
 
     public Optional<Time> findById(Long id) {

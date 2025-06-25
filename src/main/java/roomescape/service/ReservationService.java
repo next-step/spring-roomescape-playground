@@ -25,10 +25,16 @@ public class ReservationService {
 
     public Reservation createReservation(ReservationRequest request) {
         Long timeId;
+        String date = request.date();
+
         try {
             timeId = Long.parseLong(request.time());
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("잘못된 시간 ID 형식입니다.");
+            throw new IllegalArgumentException("잘못된 시간 형식입니다.");
+        }
+
+        if (reservationRepository.existsByDateAndTime(date, timeId)) {
+            throw new IllegalArgumentException("해당 날짜와 시간에는 이미 예약이 존재합니다.");
         }
 
         Time time = timeRepository.findById(timeId)
