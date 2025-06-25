@@ -1,7 +1,6 @@
 package roomescape.repository;
 
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -22,7 +21,7 @@ public class ReservationRepository {
     private final RowMapper<Reservation> reservationRowMapper = (rs, rowNum) -> {
         Time time = new Time(
                 rs.getLong("time_id"),
-                rs.getString("time_value")
+                rs.getTime("time_value").toLocalTime()
         );
 
         return new Reservation(
@@ -33,7 +32,6 @@ public class ReservationRepository {
         );
     };
 
-    @Autowired
     public ReservationRepository(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
         this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource)
@@ -87,5 +85,11 @@ public class ReservationRepository {
     public boolean deleteById(Long id) {
         String sql = "DELETE FROM reservation WHERE id = ?";
         return jdbcTemplate.update(sql, id) > 0;
+    }
+
+    public boolean existsByDateAndTime(String date, Long timeId) {
+        String sql = "SELECT COUNT(*) FROM reservation WHERE date = ? AND time_id = ?";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, date, timeId);
+        return count != null && count > 0;
     }
 }
