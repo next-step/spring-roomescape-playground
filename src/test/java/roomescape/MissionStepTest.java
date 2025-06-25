@@ -104,6 +104,7 @@ public class MissionStepTest {
     }
 
     @Test
+    @DisplayName("예약 요청 날짜가 비어 있을 경우 예외가 발생한다")
     void shouldThrowExceptionWhenEmptyReservationRequestDate() {
         // given // when // then
         assertThrows(
