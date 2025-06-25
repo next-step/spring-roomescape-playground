@@ -1,23 +1,27 @@
 package roomescape.service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Service;
 import roomescape.domain.Reservation;
 import roomescape.dto.ReservationRequest;
 import roomescape.dto.ReservationResponse;
-import roomescape.exception.status.ReservationNotFoundException;
 
 @Service
 public class ReservationService {
     private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert jdbcInsert;
 
     public ReservationService(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+        this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("reservation")
+                .usingGeneratedKeyColumns("id");
     }
 
     public List<ReservationResponse> findAll() {
@@ -37,15 +41,14 @@ public class ReservationService {
     }
 
     public ReservationResponse create(ReservationRequest request) {
-        jdbcTemplate.update(
-                "INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)",
-                request.getName(),
-                request.getDate(),
-                request.getTime()
-        );
+        Map<String, Object> params = new HashMap<>();
+        params.put("name", request.getName());
+        params.put("date", request.getDate());
+        params.put("time", request.getTime());
 
-        Long id = jdbcTemplate.queryForObject("SELECT MAX(id) FROM reservation", Long.class);
-        Reservation saved = Reservation.of(id, request.getName(), request.getDate(), request.getTime());
+        Number generatedId = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(params));
+        Reservation saved = Reservation.of(generatedId.longValue(), request.getName(), request.getDate(),
+                request.getTime());
 
         return new ReservationResponse(saved);
     }
