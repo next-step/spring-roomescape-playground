@@ -6,7 +6,7 @@
 - [x] 어드민 메인 페이지는 `templates/home.html` 파일을 이용하세요.
 
 ### 요구사항 테스트
-```
+```java
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class MissionStepTest {
@@ -27,12 +27,12 @@ public class MissionStepTest {
 - [x] 아래의 API 명세를 따라 예약 관리 페이지 로드 시 호출되는 예약 목록 조회 API도 함께 구현하세요.
 
 ### 요구사항 테스트
-```
+```java
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class MissionStepTest {
     
-    ...
+    //...
     
     @Test
     void 이단계() {
@@ -80,12 +80,12 @@ Content-Type: application/json
 - [x] API 명세를 따라 예약 추가 API 와 삭제 API를 구현하세요.
 - [x] 아래 화면에서 예약 추가와 취소가 잘 동작해야합니다.
 ### 요구사항 테스트
-```
+```java
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class StepTest {
 
-    ...
+    //...
    
     @Test
     void 삼단계() {
@@ -164,7 +164,7 @@ HTTP/1.1 204 No Content
 -[x] 예를 들면 `예약 추가 시 필요한 인자값이 비어있는 경우` 혹은 `삭제 할 예약의 식별자로 저장된 예약을 찾을 수 없는 경우`가 있습니다.
 
 ### 요구사항 테스트
-```
+```java
 @Test
 void 사단계() {
     Map<String, String> params = new HashMap<>();
@@ -211,7 +211,7 @@ void 사단계() {
 - [x] Connection 객체를 이용하여 데이터베이스 이름 검증
 - [x] Connection 객체를 이용하여 테이블 이름 검증
 
-```
+```java
 @Autowired
 private JdbcTemplate jdbcTemplate;
 
@@ -235,7 +235,7 @@ void 오단계() {
 
 ### 요구사항 테스트
 - [x] 데이터베이스에 예약 하나 추가 후 예약 조회 API를 통해 조회한 예약 수와 데이터베이스 쿼리를 통해 조회한 예약 수가 같은지 비교하는 테스트
-```
+```java
 @Test
 void 육단계() {
     jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "브라운", "2023-08-05", "15:40");
@@ -263,7 +263,7 @@ void 육단계() {
 - [x] 조회 쿼리를 이용하여 데이터가 저장되었는지 확인
 - [x] 예약 취소 API를 활용하여 테이블에 예약 정보 삭제
 - [x] 조회 쿼리를 이용하여 데이터가 삭제되었는지 확인
-```
+```java
 @Test
 void 칠단계() {
     Map<String, String> params = new HashMap<>();
