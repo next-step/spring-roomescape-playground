@@ -48,7 +48,7 @@ public class MissionStepTest {
                 .when().get("/reservations")
                 .then().log().all()
                 .statusCode(200)
-                .body("size()", is(2));
+                .body("size()", is(0));
     }
 
     @Test
@@ -65,17 +65,17 @@ public class MissionStepTest {
                 .when().post("/reservations")
                 .then().log().all()
                 .statusCode(201)
-                .header("Location", "/reservations/3")
-                .body("id", is(3));
+                .header("Location", "/reservations/1")
+                .body("id", is(1));
 
         RestAssured.given().log().all()
                 .when().get("/reservations")
                 .then().log().all()
                 .statusCode(200)
-                .body("size()", is(3));
+                .body("size()", is(1));
 
         RestAssured.given().log().all()
-                .when().delete("/reservations/3")
+                .when().delete("/reservations/1")
                 .then().log().all()
                 .statusCode(204);
 
@@ -83,7 +83,7 @@ public class MissionStepTest {
                 .when().get("/reservations")
                 .then().log().all()
                 .statusCode(200)
-                .body("size()", is(2));
+                .body("size()", is(0));
     }
 
     @Test
@@ -113,7 +113,7 @@ public class MissionStepTest {
     private JdbcTemplate jdbcTemplate;
 
     @Test
-    @DisplayName("데이터베이스 연결 확인")
+    @DisplayName("데이터베이스 연결 확인 및 reservation 테이블 확인")
     void 오단계() {
         try (Connection connection = jdbcTemplate.getDataSource().getConnection()) {
             assertThat(connection).isNotNull();
