@@ -2,10 +2,12 @@ package roomescape.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import roomescape.domain.Reservation;
 import roomescape.domain.ReservationRepository;
 import roomescape.domain.Time;
 import roomescape.domain.TimeRepository;
+import roomescape.dto.LoginMember;
 import roomescape.dto.ReservationRequest;
 import roomescape.dto.ReservationResponse;
 import roomescape.dto.TimeRequest;
@@ -31,15 +33,22 @@ public class ReservationService {
     }
 
     @Transactional
-    public ReservationResponse createReservation(ReservationRequest request) {
-        String validatedName = request.getValidatedName();
+    public ReservationResponse createReservation(ReservationRequest request, LoginMember loginMember) {
+        String reservationName = request.name();
+        if (!StringUtils.hasText(reservationName)) {
+            if (loginMember == null) {
+                throw new ReservationException("[ERROR] 예약자 이름을 입력해주세요 (비로그인 상태).");
+            }
+            reservationName = loginMember.name();
+        }
+
         LocalDate parsedDate = request.getParsedDate();
         Long timeId = request.timeId();
 
         Time time = timeRepository.findById(timeId)
                 .orElseThrow(() -> new ReservationException("[ERROR] 등록되지 않은 시간입니다."));
 
-        Reservation newReservation = Reservation.create(validatedName, parsedDate, time);
+        Reservation newReservation = Reservation.create(reservationName, parsedDate, time);
 
         if (reservationRepository.existsByDateAndTimeId(newReservation.getDate(), newReservation.getTime().getId())) {
             throw new ReservationException("[ERROR] 이미 예약된 시간입니다.");

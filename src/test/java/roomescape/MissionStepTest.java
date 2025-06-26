@@ -29,37 +29,85 @@ public class MissionStepTest {
     private ReservationController reservationController;
 
     @Test
-    @DisplayName("로그인에 성공하고, 발급된 토큰으로 사용자 정보를 정상적으로 조회한다")
-    void loginAndCheckUserStatus() {
-        // given: 로그인에 필요한 정보를 준비
-        Map<String, String> params = new HashMap<>();
-        params.put("email", "admin@email.com");
-        params.put("password", "password");
-
-        // when: 로그인을 요청
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
+    @DisplayName("로그인한 사용자가 이름 없이 예약을 생성하면 자신의 이름으로 예약된다")
+    void createReservationWithLoggedInUserName() {
+        // given: 예약을 위한 시간 생성 및 로그인 토큰 발급
+        Map<String, String> timeParams = new HashMap<>();
+        timeParams.put("time", "11:00");
+        RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
-                .body(params)
-                .when().post("/login")
+                .body(timeParams)
+                .when().post("/times")
                 .then().log().all()
-                .statusCode(200)
+                .statusCode(201);
+
+        String token = createToken("admin@email.com", "password");
+
+        // when: 로그인 상태에서 'name' 없이 예약을 요청
+        Map<String, Object> paramsWithoutName = new HashMap<>();
+        paramsWithoutName.put("date", "2025-08-05");
+        paramsWithoutName.put("timeId", 1L);
+
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .body(paramsWithoutName)
+                .cookie("token", token)
+                .contentType(ContentType.JSON)
+                .when().post("/reservations")
+                .then().log().all()
                 .extract();
 
-        // then: 응답 쿠키에서 토큰을 성공적으로 추출
-        String token = response.headers().get("Set-Cookie").getValue().split(";")[0].split("=")[1];
+        // then: 로그인한 사용자('어드민')의 이름으로 예약이 생성됨
+        assertThat(response.statusCode()).isEqualTo(201);
+        assertThat(response.jsonPath().getString("name")).isEqualTo("어드민");
+    }
+
+    @Test
+    @DisplayName("로그인한 사용자가 이름을 직접 입력하면 해당 이름으로 예약된다")
+    void createReservationWithSpecifiedNameWhileLoggedIn() {
+        // given: 예약을 위한 시간 생성 및 로그인 토큰 발급
+        Map<String, String> timeParams = new HashMap<>();
+        timeParams.put("time", "11:00");
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(timeParams)
+                .when().post("/times")
+                .then().log().all()
+                .statusCode(201);
+
+        String token = createToken("admin@email.com", "password");
+
+        // when: 로그인 상태에서 'name'을 직접 입력하여 예약을 요청
+        Map<String, Object> paramsWithName = new HashMap<>();
+        paramsWithName.put("name", "브라운");
+        paramsWithName.put("date", "2025-08-06");
+        paramsWithName.put("timeId", 1L);
+
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .body(paramsWithName)
+                .cookie("token", token)
+                .contentType(ContentType.JSON)
+                .when().post("/reservations")
+                .then().log().all()
+                .extract();
+
+        // then: 직접 입력한 이름('브라운')으로 예약이 생성됨
+        assertThat(response.statusCode()).isEqualTo(201);
+        assertThat(response.jsonPath().getString("name")).isEqualTo("브라운");
+    }
+
+    @Test
+    @DisplayName("로그인에 성공하고, 발급된 토큰으로 사용자 정보를 정상적으로 조회한다")
+    void loginAndCheckUserStatus() {
+        String token = createToken("admin@email.com", "password");
         assertThat(token).isNotBlank();
 
-        // when: 추출한 토큰으로 사용자 정보 조회를 요청
-        ExtractableResponse<Response> checkResponse = RestAssured.given().log().all()
+        RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .cookie("token", token)
                 .when().get("/login/check")
                 .then().log().all()
                 .statusCode(200)
-                .extract();
-
-        // then: 조회된 사용자 이름이 예상과 일치
-        assertThat(checkResponse.body().jsonPath().getString("name")).isEqualTo("어드민");
+                .body("name", is("어드민"));
     }
 
     @Test
@@ -209,5 +257,20 @@ public class MissionStepTest {
             }
         }
         assertThat(isJdbcTemplateInjected).isFalse();
+    }
+
+    private String createToken(String email, String password) {
+        Map<String, String> loginParams = new HashMap<>();
+        loginParams.put("email", email);
+        loginParams.put("password", password);
+
+        return RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(loginParams)
+                .when().post("/login")
+                .then().log().all()
+                .statusCode(200)
+                .extract()
+                .cookie("token");
     }
 }

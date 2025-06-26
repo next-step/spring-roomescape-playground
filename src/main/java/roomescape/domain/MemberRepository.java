@@ -4,6 +4,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+
 import java.util.Optional;
 
 @Repository
@@ -25,8 +26,16 @@ public class MemberRepository {
     public Optional<Member> findByEmail(String email) {
         String sql = "SELECT id, email, password, name, role FROM member WHERE email = ?";
         try {
-            Member member = jdbcTemplate.queryForObject(sql, memberRowMapper, email);
-            return Optional.ofNullable(member);
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, memberRowMapper, email));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
+    }
+
+    public Optional<Member> findById(Long id) {
+        String sql = "SELECT id, email, password, name, role FROM member WHERE id = ?";
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, memberRowMapper, id));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }

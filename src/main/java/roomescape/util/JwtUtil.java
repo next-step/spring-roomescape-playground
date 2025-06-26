@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
 import roomescape.domain.Member;
+
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 
@@ -26,8 +27,8 @@ public class JwtUtil {
                 .compact();
     }
 
-    public String getNameFromToken(String token) {
-        return parseClaims(token).get("name", String.class);
+    public Long getMemberIdFromToken(String token) {
+        return Long.valueOf(parseClaims(token).getSubject());
     }
 
     private Claims parseClaims(String token) {
