@@ -293,3 +293,189 @@ void 칠단계() {
 
 ```
 
+## 8단계 - 시간 관리 기능
+### 요구사항
+- [ ] 방탈출 시간표가 정해져 있는데 직접 입력하기 번거로워서 선택하는 방식으로 수정하려합니다.
+- [ ] API 명세를 따라 시간 관리 API를 구현하세요.
+- [ ] 아래 화면에서 시간 관리 기능이 잘 동작해야합니다.
+
+> 예약 테이블의 정보에서 시간 부분을 대체하지는 않습니다. 예약과 시간을 연동하는 요구사항은 9단계에서 진행합니다.
+
+### 요구사항 테스트
+```java
+@Test
+void 팔단계() {
+    Map<String, String> params = new HashMap<>();
+    params.put("time", "10:00");
+
+    RestAssured.given().log().all()
+            .contentType(ContentType.JSON)
+            .body(params)
+            .when().post("/times")
+            .then().log().all()
+            .statusCode(201)
+            .header("Location", "/times/1");
+
+    RestAssured.given().log().all()
+            .when().get("/times")
+            .then().log().all()
+            .statusCode(200)
+            .body("size()", is(1));
+
+    RestAssured.given().log().all()
+            .when().delete("/times/1")
+            .then().log().all()
+            .statusCode(204);
+}
+```
+### API 명세
+#### 시간 추가 API
+```
+POST /times HTTP/1.1
+content-type: application/json
+
+{
+    "time": "10:00"
+}
+```
+
+```
+HTTP/1.1 201 Created
+Content-Type: application/json
+Location: /times/1
+
+{
+    "id": 1,
+    "time": "10:00"
+}
+```
+
+#### 시간 조회 API
+```
+GET /times HTTP/1.1
+```
+
+```
+HTTP/1.1 200 
+Content-Type: application/json
+
+[
+   {
+    "id": 1,
+    "time": "10:00"
+    }
+]
+```
+
+#### 시간 조회 API
+```
+DELETE /times/1 HTTP/1.1
+```
+
+```
+HTTP/1.1 204 No Content
+```
+
+### 데이터베이스 스키마 - 시간
+```sql
+CREATE TABLE time
+(
+    id   BIGINT       NOT NULL AUTO_INCREMENT,
+    time VARCHAR(255) NOT NULL,
+    PRIMARY KEY (id)
+);
+```
+## 9단계 - 기존 코드 수정
+### 요구사항
+- [ ] 기존에 구현한 예약 기능에서 시간을 시간 테이블에 저장된 값만 선택할 수 있도록 수정하세요.
+### 세부 요구사항
+#### 예약 페이지 파일 수정
+- [ ] `templates/reservation.html` 대신 `templates/new-reservation.html` 파일을 활용하세요.
+#### 테이블 스키마 재정의
+- [ ] 외래키 지정을 통해 reservation 테이블과 time 테이블의 관계를 설정해주세요.
+```sql
+CREATE TABLE time
+(
+    id   BIGINT       NOT NULL AUTO_INCREMENT,
+    time VARCHAR(255) NOT NULL,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE reservation
+(
+    id   BIGINT       NOT NULL AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL,
+    date VARCHAR(255) NOT NULL,
+    time_id BIGINT,                           // TODO: 수정
+    PRIMARY KEY (id),
+    FOREIGN KEY (time_id) REFERENCES time(id) // TODO: 추가
+);
+```
+#### 예약 클래스 수정
+- [ ] 시간 타입을 String에서 Time 객체로 수정하세요.
+```java
+public class Reservation {
+    private Long id;
+    private String name;
+    private String date;
+    private Time time;
+    //...
+}
+```
+#### 예약 쿼리 수정
+- [ ] 예약 추가 시 시간을 문자열(ex. "10:00") 형태로 입력하던 부분을 Time의 식별자(ex. 1)로 수정해주세요.
+- [ ] 조회 시 Time 정보도 함께 조회하기 위해 아래와 같이 쿼리를 수정해주세요.
+```sql
+SELECT
+  r.id as reservation_id,
+  r.name,
+  r.date,
+  t.id as time_id,
+  t.time as time_value
+FROM reservation as r inner join time as t on r.time_id = t.id
+```
+
+### 요구사항 테스트
+- [ ] 기존 예약 추가 API 스펙에 맞춰서 요청을 보낼 경우 에러가 발생하는 것을 검증하는 테스트 입니다.
+```java
+@Test
+void 구단계() {
+    Map<String, String> reservation = new HashMap<>();
+    reservation.put("name", "브라운");
+    reservation.put("date", "2023-08-05");
+    reservation.put("time", "10:00");
+
+    RestAssured.given().log().all()
+            .contentType(ContentType.JSON)
+            .body(reservation)
+            .when().post("/reservations")
+            .then().log().all()
+            .statusCode(400);
+}
+```
+## 10단계 - 계층화 리팩터링
+### 요구사항
+- [ ] 레이어드 아키텍처를 적용하여 레이어별 책임과 역할에 따라 클래스 분리를 해보세요.
+- [ ] 분리한 클래스는 매번 새로 생성하지 않고 스프링 빈으로 등록해서 사용해보세요.
+
+### 요구사항 테스트
+- [ ] `ReservationController` 에 있던 데이터베이스 관련 로직을 다른 클래스로 분리한 것을 확인하기 위한 테스트 입니다.
+- [ ] `ReservationController`에 `JdbcTemplate` 필드가 사라진 것을 확인하여 로직 분리를 확인할 수 있습니다.
+```java
+@Autowired
+private ReservationController reservationController;
+
+@Test
+void 십단계() {
+    boolean isJdbcTemplateInjected = false;
+
+    for (Field field : reservationController.getClass().getDeclaredFields()) {
+        if (field.getType().equals(JdbcTemplate.class)) {
+            isJdbcTemplateInjected = true;
+            break;
+        }
+    }
+
+    assertThat(isJdbcTemplateInjected).isFalse();
+}
+```
