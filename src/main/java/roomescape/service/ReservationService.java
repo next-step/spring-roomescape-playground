@@ -27,7 +27,7 @@ public class ReservationService {
 
     public Reservation findById(final Long id) {
         return reservationDao.findById(id)
-                .orElseThrow(() -> new NotFoundException("예약 ID가 존재하지 않아요."));
+                .orElseThrow(() -> new NotFoundException("존재하지 않는 예약이에요."));
     }
 
     public void delete(final Long id) {
