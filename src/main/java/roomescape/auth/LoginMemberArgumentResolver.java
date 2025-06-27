@@ -1,4 +1,4 @@
-package roomescape.util;
+package roomescape.auth;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,6 +10,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import roomescape.domain.Member;
 import roomescape.domain.MemberRepository;
 import roomescape.dto.LoginMember;
+import roomescape.util.JwtUtil;
 
 import java.util.Arrays;
 import java.util.Optional;

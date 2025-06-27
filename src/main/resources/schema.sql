@@ -23,3 +23,4 @@ CREATE TABLE member (
 );
 
 INSERT INTO member (email, password, name, role) VALUES ('admin@email.com', 'password', '어드민', 'ADMIN');
+INSERT INTO member (email, password, name, role) VALUES ('brown@email.com', 'password', '브라운', 'USER');

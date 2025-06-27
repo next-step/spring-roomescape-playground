@@ -20,4 +20,14 @@ public class PageController {
     public String timePage() {
         return "time";
     }
+
+    @GetMapping("/login")
+    public String loginPage() {
+        return "login";
+    }
+
+    @GetMapping("/admin")
+    public String adminPage() {
+        return "admin";
+    }
 }
