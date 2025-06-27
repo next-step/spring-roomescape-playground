@@ -4,28 +4,32 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import roomescape.domain.Reservation;
 import roomescape.dto.ReservationRequest;
-import roomescape.repository.ReservationRepository;
+import roomescape.dto.ReservationResponse;
+import roomescape.dao.ReservationDao;
 
 @Service
 public class ReservationService {
 
-    private final ReservationRepository reservationRepository;
+    private final ReservationDao reservationDao;
 
-    public ReservationService(ReservationRepository reservationRepository) {
-        this.reservationRepository = reservationRepository;
+    public ReservationService(ReservationDao reservationDao) {
+        this.reservationDao = reservationDao;
     }
 
-    public List<Reservation> getAllReservations() {
-        return reservationRepository.findAll();
+    public List<ReservationResponse> getAllReservations() {
+        return reservationDao.findAll().stream()
+            .map(ReservationResponse::from)
+            .toList();
     }
 
-    public Reservation createReservation(ReservationRequest request) {
+    public ReservationResponse createReservation(ReservationRequest request) {
         Reservation reservation = new Reservation(null, request.name(), request.date(),
             request.time());
-        return reservationRepository.save(reservation);
+        Reservation saved = reservationDao.save(reservation);
+        return ReservationResponse.from(saved);
     }
 
     public void deleteReservation(long id) {
-        reservationRepository.deleteById(id);
+        reservationDao.deleteById(id);
     }
 }

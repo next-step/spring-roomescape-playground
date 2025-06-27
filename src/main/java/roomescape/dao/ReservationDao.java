@@ -1,4 +1,4 @@
-package roomescape.repository;
+package roomescape.dao;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -12,12 +12,12 @@ import roomescape.domain.Reservation;
 import roomescape.exception.ReservationNotFoundException;
 
 @Repository
-public class ReservationRepository {
+public class ReservationDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert simpleJdbcInsert;
 
-    public ReservationRepository(JdbcTemplate jdbcTemplate) {
+    public ReservationDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
             .withTableName("reservation")
