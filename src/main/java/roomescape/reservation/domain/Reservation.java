@@ -1,18 +1,18 @@
 package roomescape.reservation.domain;
 
 import roomescape.reservation.dto.ReservationRequest;
+import roomescape.time.domain.Time;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 
-public record Reservation(Long id, String name, LocalDate date, LocalTime time) {
+public record Reservation(Long id, String name, LocalDate date, Time time) {
     //memory 용
     public static Reservation of(ReservationRequest request, Long id) {
-        return new Reservation (id, request.name(), request.date(), request.time());
+        return new Reservation (id, request.name(), request.date(), new Time(null, null));
     }
 
     //DB 용
-    public static Reservation of(ReservationRequest request) {
-        return new Reservation(null, request.name(), request.date(), request.time());
+    public static Reservation of(String name, LocalDate date, Time time) {
+        return new Reservation(null, name, date, time);
     }
 }
