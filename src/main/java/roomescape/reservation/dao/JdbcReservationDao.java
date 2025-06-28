@@ -10,7 +10,7 @@ import java.time.LocalTime;
 import java.util.List;
 
 @Repository
-public class JdbcReservationDao implements ReservationRepository {
+public class JdbcReservationDao implements ReservationDao {
     private final JdbcTemplate jdbcTemplate;
 
     public JdbcReservationDao(JdbcTemplate jdbcTemplate) {
