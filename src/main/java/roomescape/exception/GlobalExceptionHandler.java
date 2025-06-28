@@ -23,4 +23,10 @@ public class GlobalExceptionHandler {
         log.info("ReservationNotFoundException 발생 : {}", e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
+
+    @ExceptionHandler(TimeNotFoundException.class)
+    public ResponseEntity<String> TimeNotFoundException(TimeNotFoundException e) {
+        log.info("TimeNotFoundException 발생 : {}", e.getMessage(), e);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
 }
