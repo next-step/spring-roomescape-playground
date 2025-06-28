@@ -1,4 +1,4 @@
-package roomescape.reservation.repository;
+package roomescape.reservation.dao;
 
 import roomescape.exception.BadRequestException;
 import roomescape.reservation.domain.Reservation;
@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class MemoryReservationRepository implements ReservationRepository{
+public class MemoryReservationDao implements ReservationRepository{
     private final AtomicLong index = new AtomicLong(1);
     private final List<Reservation> reservations = new ArrayList<>();
 

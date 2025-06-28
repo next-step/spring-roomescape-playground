@@ -1,4 +1,4 @@
-package roomescape.reservation.repository;
+package roomescape.reservation.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -10,10 +10,10 @@ import java.time.LocalTime;
 import java.util.List;
 
 @Repository
-public class JdbcReservationRepository implements ReservationRepository {
+public class JdbcReservationDao implements ReservationRepository {
     private final JdbcTemplate jdbcTemplate;
 
-    public JdbcReservationRepository(JdbcTemplate jdbcTemplate) {
+    public JdbcReservationDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
