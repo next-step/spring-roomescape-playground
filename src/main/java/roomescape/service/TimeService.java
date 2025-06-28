@@ -24,7 +24,7 @@ public class TimeService {
         return timeDao.findAll();
     }
 
-    public Time findById(final Long id) {
+    private Time findById(final Long id) {
         return timeDao.findById(id)
                 .orElseThrow(() -> new NotFoundException("존재하지 않는 시간이에요."));
     }

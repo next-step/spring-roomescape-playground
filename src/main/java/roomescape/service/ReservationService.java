@@ -25,7 +25,7 @@ public class ReservationService {
         return reservationDao.findAll();
     }
 
-    public Reservation findById(final Long id) {
+    private Reservation findById(final Long id) {
         return reservationDao.findById(id)
                 .orElseThrow(() -> new NotFoundException("존재하지 않는 예약이에요."));
     }
