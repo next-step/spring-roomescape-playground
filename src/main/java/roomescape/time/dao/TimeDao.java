@@ -11,6 +11,7 @@ import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Repository
 public class TimeDao {
@@ -49,6 +50,14 @@ public class TimeDao {
         if (result == 0) {
             throw new BadRequestException("삭제할 시간이 존재하지 않습니다.");
         }
+    }
 
+    public Optional<Time> findById(Long id) {
+        String sql = "SELECT id, time FROM time WHERE id = ?";
+        return jdbcTemplate.query(
+                sql,
+                (rs, rowNum) -> new Time(rs.getLong("id"), LocalTime.parse(rs.getString("time"))),
+                id
+        ).stream().findFirst();
     }
 }
