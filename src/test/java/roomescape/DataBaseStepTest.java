@@ -8,8 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
+import roomescape.reservation.controller.ReservationRestController;
 import roomescape.reservation.domain.Reservation;
 
+import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -24,6 +26,9 @@ import static org.hamcrest.Matchers.is;
 public class DataBaseStepTest {
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private ReservationRestController reservationRestController;
 
     @Test
     @DisplayName("H2 메모리 데이터베이스에 RESERVATION 테이블이 정상적으로 생성되었는지 확인")
@@ -105,5 +110,36 @@ public class DataBaseStepTest {
                 .when().delete("/times/1")
                 .then().log().all()
                 .statusCode(204);
+    }
+
+    @Test
+    @DisplayName("기존 예약 추가 API 스펙에 맞춰서 요청을 보낼 경우 에러가 발생")
+    void shouldReturn400WhenRequestMatchesLegacyReservationApiSpec() {
+        Map<String, String> reservation = new HashMap<>();
+        reservation.put("name", "브라운");
+        reservation.put("date", "2023-08-05");
+        reservation.put("time", "10:00");
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(reservation)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(400);
+    }
+
+    @Test
+    @DisplayName("데이터베이스 관련 로직을 다른 클래스로 분리")
+    void shouldNotInjectJdbcTemplateInReservationRestController() {
+        boolean isJdbcTemplateInjected = false;
+
+        for (Field field : reservationRestController.getClass().getDeclaredFields()) {
+            if (field.getType().equals(JdbcTemplate.class)) {
+                isJdbcTemplateInjected = true;
+                break;
+            }
+        }
+
+        assertThat(isJdbcTemplateInjected).isFalse();
     }
 }
