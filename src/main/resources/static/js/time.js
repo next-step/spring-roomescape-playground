@@ -64,7 +64,10 @@ function saveRow(event) {
 
   requestCreate(time)
       .then(data => updateRowWithTimeData(row, data))
-      .catch(error => console.error('Error:', error));
+      .catch(error => {
+        alert(error.message)
+        console.error('Error:', error)
+      });
 
   isEditing = false;  // isEditing 값을 false로 설정
 }
@@ -95,13 +98,19 @@ function deleteRow(event) {
 
   requestDelete(id)
       .then(() => row.remove())
-      .catch(error => console.error('Error:', error));
+      .catch(error => {
+        alert(error.message)
+        console.error('Error:', error)
+      });
 }
 
 function fetchTimes() {
   requestRead()
       .then(renderTimes)
-      .catch(error => console.error('Error fetching times:', error));
+      .catch(error => {
+        alert(error.message)
+        console.error('Error fetching times:', error)
+      });
 }
 
 function renderTimes(data) {
@@ -131,17 +140,19 @@ function requestCreate(time) {
   };
 
   return fetch(TIME_API_ENDPOINT, requestOptions)
-      .then(response => {
+      .then(async response => {
         if (response.status === 201) return response.json();
-        throw new Error('Create failed');
+        const errorText = await response.text();
+        throw new Error(errorText);
       });
 }
 
 function requestRead() {
   return fetch(TIME_API_ENDPOINT)
-      .then(response => {
+      .then(async response => {
         if (response.status === 200) return response.json();
-        throw new Error('Read failed');
+        const errorText = await response.text();
+        throw new Error(errorText);
       });
 }
 
@@ -151,7 +162,10 @@ function requestDelete(id) {
   };
 
   return fetch(`${TIME_API_ENDPOINT}/${id}`, requestOptions)
-      .then(response => {
-        if (response.status !== 204) throw new Error('Delete failed');
+      .then(async response => {
+        if (response.status !== 204) {
+          const errorText = await response.text();
+          throw new Error(errorText);
+        }
       });
 }

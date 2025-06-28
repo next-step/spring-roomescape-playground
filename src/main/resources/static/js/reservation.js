@@ -9,7 +9,10 @@ document.addEventListener('DOMContentLoaded', () => {
 function fetchReservations() {
   requestRead()
       .then(renderReservations)
-      .catch(error => console.error('Error fetching reservations:', error));
+      .catch(error => {
+        alert(error.message)
+        console.error('Error fetching reservations:', error)
+      });
 }
 
 function renderReservations(data) {
@@ -91,7 +94,10 @@ function saveRow(event) {
 
   requestCreate(reservation)
       .then(data => updateRowWithReservationData(row, data))
-      .catch(error => console.error('Error:', error));
+      .catch(error => {
+        alert(error.message)
+        console.error('Error:', error)
+      });
 
   isEditing = false;  // isEditing 값을 false로 설정
 }
@@ -124,7 +130,10 @@ function deleteRow(event) {
 
   requestDelete(reservationId)
       .then(() => row.remove())
-      .catch(error => console.error('Error:', error));
+      .catch(error => {
+        alert(error.message)
+        console.error('Error:', error)
+      });
 }
 
 function requestCreate(reservation) {
@@ -135,17 +144,19 @@ function requestCreate(reservation) {
   };
 
   return fetch(RESERVATION_API_ENDPOINT, requestOptions)
-      .then(response => {
+      .then(async response => {
         if (response.status === 201) return response.json();
-        throw new Error('Create failed');
+        const errorText = await response.text();
+        throw new Error(errorText);
       });
 }
 
 function requestRead() {
   return fetch(RESERVATION_API_ENDPOINT)
-      .then(response => {
+      .then(async response => {
         if (response.status === 200) return response.json();
-        throw new Error('Read failed');
+        const errorText = await response.text();
+        throw new Error(errorText);
       });
 }
 
@@ -155,7 +166,10 @@ function requestDelete(id) {
   };
 
   return fetch(`${RESERVATION_API_ENDPOINT}/${id}`, requestOptions)
-      .then(response => {
-        if (response.status !== 204) throw new Error('Delete failed');
+      .then(async response => {
+        if (response.status !== 204) {
+          const errorText = await response.text();
+          throw new Error(errorText);
+        }
       });
 }
