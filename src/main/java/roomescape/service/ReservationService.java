@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import roomescape.domain.Reservation;
 import roomescape.dto.ReservationRequest;
 import roomescape.dto.ReservationResponse;
+import roomescape.exception.status.ReservationNotFoundException;
 
 @Service
 public class ReservationService {
@@ -54,7 +55,10 @@ public class ReservationService {
     }
 
     public void deleteById(Long id) {
-        jdbcTemplate.update("DELETE FROM reservation WHERE id = ?", id);
+        int affected = jdbcTemplate.update("DELETE FROM reservation WHERE id = ?", id);
+        if (affected == 0) {
+            throw new ReservationNotFoundException(id);
+        }
     }
 }
 
