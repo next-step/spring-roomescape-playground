@@ -4,9 +4,11 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +21,7 @@ import roomescape.reservation.exception.ReservationNotFoundException;
 import roomescape.reservation.model.Reservation;
 import roomescape.reservation.request.ReservationRequest;
 import roomescape.reservation.response.ReservationResponse;
+import roomescape.time.model.Time;
 
 @RestController
 @RequestMapping("/reservations")
@@ -32,14 +35,25 @@ public class ReservationRestController {
 
     @GetMapping
     public ResponseEntity<List<ReservationResponse>> getReservations() {
+        String sql =
+            "select "
+                + "r.id as reservation_id, "
+                + "r.name, "
+                + "r.date, "
+                + "t.id as time_id, "
+                + "t.time as time_value "
+                + "from reservation as r "
+                + "inner join time as t on r.time_id = t.id";
+
         List<Reservation> reservations = jdbcTemplate.query(
-            "select id, name, date, time from reservation",
+            sql,
             (resultSet, rowNum) -> {
                 return new Reservation(
-                    resultSet.getLong("id"),
+                    resultSet.getLong("reservation_id"),
                     resultSet.getString("name"),
                     resultSet.getDate("date").toLocalDate(),
-                    resultSet.getTime("time").toLocalTime()
+                    resultSet.getLong("time_id"),
+                    resultSet.getTime("time_value").toLocalTime()
                 );
             });
 
@@ -52,9 +66,29 @@ public class ReservationRestController {
 
     @PostMapping
     public ResponseEntity<ReservationResponse> postReservation(
-        @RequestBody ReservationRequest request
+        @RequestBody @Validated ReservationRequest request
     ) {
         validateRequest(request);
+
+        Time time;
+        try {
+            time = jdbcTemplate.queryForObject(
+                "select id, time from time where id = ?",
+                (resultSet, rowNum) -> new Time(
+                    resultSet.getLong("id"),
+                    resultSet.getTime("time").toLocalTime()
+                ),
+                request.getTimeId()
+            );
+
+            if (time == null) {
+                throw new InvalidReservationRequestException(
+                    "Invalid time ID: " + request.getTimeId());
+            }
+        } catch (NumberFormatException | DataAccessException e) {
+            throw new InvalidReservationRequestException(
+                "Invalid time ID: " + request.getTimeId());
+        }
 
         SimpleJdbcInsert insert = new SimpleJdbcInsert(jdbcTemplate)
             .withTableName("reservation")
@@ -63,7 +97,8 @@ public class ReservationRestController {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("name", request.getName());
         parameters.put("date", request.getDate());
-        parameters.put("time", request.getTime());
+        parameters.put("timeId", time.getId());
+        parameters.put("timeValue", time.getTime());
 
         Long id = (Long) insert.executeAndReturnKey(parameters);
 
@@ -71,7 +106,8 @@ public class ReservationRestController {
             id,
             request.getName(),
             request.getDate(),
-            request.getTime()
+            time.getId(),
+            time.getTime()
         );
 
         // Location 헤더에 생성된 리소스의 URI 추가
@@ -102,7 +138,7 @@ public class ReservationRestController {
         if (request.getDate() == null) {
             throw new InvalidReservationRequestException("Date is required");
         }
-        if (request.getTime() == null) {
+        if (request.getTimeId() == null) {
             throw new InvalidReservationRequestException("Time is required");
         }
     }

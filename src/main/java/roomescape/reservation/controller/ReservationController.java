@@ -13,6 +13,6 @@ public class ReservationController {
 
     @RequestMapping("/reservation")
     public String reservationPage() {
-        return "reservation";
+        return "new-reservation";
     }
 }

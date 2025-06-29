@@ -8,13 +8,15 @@ public class Reservation {
     private final Long id;
     private final String name;
     private final LocalDate date;
-    private final LocalTime time;
+    private final Long timeId;
+    private final LocalTime timeValue;
 
-    public Reservation(Long id, String name, LocalDate date, LocalTime time) {
+    public Reservation(Long id, String name, LocalDate date, Long timeId, LocalTime timeValue) {
         this.id = id;
         this.name = name;
         this.date = date;
-        this.time = time;
+        this.timeId = timeId;
+        this.timeValue = timeValue;
     }
 
     public Long getId() {
@@ -29,7 +31,11 @@ public class Reservation {
         return date;
     }
 
-    public LocalTime getTime() {
-        return time;
+    public Long getTimeId() {
+        return timeId;
+    }
+
+    public LocalTime getTimeValue() {
+        return timeValue;
     }
 }
