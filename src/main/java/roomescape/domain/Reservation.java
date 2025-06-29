@@ -1,16 +1,15 @@
 package roomescape.domain;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 public record Reservation(
         Long id,
         String name,
         LocalDate date,
-        LocalTime time
+        Time time
 ) {
 
-    public static Reservation of(final Long id, final String name, final LocalDate date, final LocalTime time) {
+    public static Reservation of(final Long id, final String name, final LocalDate date, final Time time) {
         return new Reservation(id, name, date, time);
     }
 }
