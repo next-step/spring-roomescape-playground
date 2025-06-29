@@ -23,7 +23,7 @@ public class ReservationDao {
             resultSet.getString("name"),
             resultSet.getDate("date").toLocalDate(),
             new Time(resultSet.getLong("time_id"),
-                    resultSet.getString("time"))
+                    resultSet.getTime("time").toLocalTime())
     );
 
     public ReservationDao(final DataSource dataSource) {

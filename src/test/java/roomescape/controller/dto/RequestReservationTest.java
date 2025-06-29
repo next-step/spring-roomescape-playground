@@ -9,11 +9,20 @@ import roomescape.global.exception.InvalidValueException;
 class RequestReservationTest {
 
     @Test
-    @DisplayName("입력된 예약 이름이 비어있을 경우 예외가 발생한다.")
+    @DisplayName("예약에 필요한 데이터가 비어있을 경우 예외가 발생한다.")
     void shouldThrowException_whenEmptyReservationNameOfData() {
         // given // when // then
         assertThatThrownBy(() -> new RequestReservation("2025-06-30", "", 1L))
                 .isInstanceOf(InvalidValueException.class)
                 .hasMessage("예약하기 위한 데이터(이름, 날짜, 시간)를 모두 입력해 주세요.");
+    }
+
+    @Test
+    @DisplayName("올바르지 않은 날짜 형식의 경우 예외가 발생한다.")
+    void shouldThrowException_whenInvalidDateFormat() {
+        // given // when // then
+        assertThatThrownBy(() -> new RequestReservation("2030-13-99", "dd", 1L).parseDate())
+                .isInstanceOf(InvalidValueException.class)
+                .hasMessage("날짜(년도-월-일)형식에 맞게 입력해 주세요. ex) 2020-12-31");
     }
 }

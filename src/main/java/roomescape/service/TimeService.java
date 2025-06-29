@@ -1,5 +1,6 @@
 package roomescape.service;
 
+import java.time.LocalTime;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import roomescape.controller.dto.RequestTime;
@@ -17,7 +18,8 @@ public class TimeService {
     }
 
     public Time create(final RequestTime requestTime) {
-        return timeDao.save(requestTime);
+        LocalTime time = requestTime.parseTime();
+        return timeDao.save(time);
     }
 
     public List<Time> findAll() {

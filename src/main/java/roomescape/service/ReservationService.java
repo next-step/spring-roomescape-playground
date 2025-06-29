@@ -2,7 +2,6 @@ package roomescape.service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import roomescape.controller.dto.RequestReservation;
@@ -49,7 +48,7 @@ public class ReservationService {
     }
 
     private void validatePasted(final LocalDate date, final Time time) {
-        if (LocalDateTime.of(date, LocalTime.parse(time.time())).isBefore(LocalDateTime.now())) {
+        if (LocalDateTime.of(date, time.time()).isBefore(LocalDateTime.now())) {
             throw new InvalidValueException("이미 지난 날짜 및 시간은 예약할 수 없어요.");
         }
     }

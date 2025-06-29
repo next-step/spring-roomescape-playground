@@ -127,40 +127,6 @@ public class MissionStepTest {
         }
 
         @Test
-        @DisplayName("예약하기 위한 데이터가 정상적으로 입력되지 않았을 경우 예외가 발생한다.")
-        void shouldThrowException_whenInvalidReservationInputData() {
-            Map<String, String> params = new HashMap<>();
-            params.put("name", "브라운");
-            params.put("date", "");
-            params.put("time", "");
-
-            RestAssured.given().log().all()
-                    .contentType(ContentType.JSON)
-                    .body(params)
-                    .when().post("/reservations")
-                    .then().log().all()
-                    .statusCode(400)
-                    .body(containsString("예약하기 위한 데이터(이름, 날짜, 시간)를 모두 입력해 주세요."));
-        }
-
-        @Test
-        @DisplayName("예약 날짜의 형식이 올바르지 않을 경우 예외가 발생한다.")
-        void shouldThrowException_whenInvalidFormatReservationDateAndTime() {
-            Map<String, String> params = new HashMap<>();
-            params.put("name", "브라운");
-            params.put("date", "2025-13-33");
-            params.put("timeId", "1");
-
-            RestAssured.given().log().all()
-                    .contentType(ContentType.JSON)
-                    .body(params)
-                    .when().post("/reservations")
-                    .then()
-                    .statusCode(400)
-                    .body(containsString("날짜(년도-월-일)형식에 맞게 입력해 주세요. ex) 2020-12-31"));
-        }
-
-        @Test
         @DisplayName("삭제할 예약이 없는 경우 예외가 발생한다.")
         void shouldThrowException_whenNotFoundReservation() {
             RestAssured.given().log().all()

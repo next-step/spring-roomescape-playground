@@ -1,19 +1,27 @@
 package roomescape.controller.dto;
 
+import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
 import roomescape.global.exception.InvalidValueException;
 
 public record RequestTime(
         String time
 ) {
 
-    private static final String TIME_FORMAT_REGEX = "^([01]\\d|2[0-3]):[0-5]\\d$";
-
     public RequestTime {
-        validateFormat(time);
+        validateEmpty(time);
     }
 
-    private void validateFormat(final String time) {
-        if (time == null || !time.matches(TIME_FORMAT_REGEX)) {
+    private void validateEmpty(final String time) {
+        if (time == null || time.isBlank()) {
+            throw new InvalidValueException("시간을 입력해 주세요.");
+        }
+    }
+
+    public LocalTime parseTime() {
+        try {
+            return LocalTime.parse(time);
+        } catch (DateTimeParseException e) {
             throw new InvalidValueException("시간(시:분)형식에 맞게 입력해 주세요. ex) 15:30");
         }
     }
