@@ -12,50 +12,32 @@ import roomescape.domain.Reservation;
 import roomescape.dto.ReservationRequest;
 import roomescape.dto.ReservationResponse;
 import roomescape.exception.status.ReservationNotFoundException;
+import roomescape.repository.ReservationRepository;
 
 @Service
 public class ReservationService {
-    private final JdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsert jdbcInsert;
+    private final ReservationRepository reservationRepository;
 
-    public ReservationService(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-        this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
-                .withTableName("reservation")
-                .usingGeneratedKeyColumns("id");
+    public ReservationService(ReservationRepository reservationRepository) {
+        this.reservationRepository = reservationRepository;
     }
 
     public List<ReservationResponse> findAll() {
-        List<Reservation> reservations = jdbcTemplate.query(
-                "SELECT * FROM reservation",
-                (rs, rowNum) -> Reservation.of(
-                        rs.getLong("id"),
-                        rs.getString("name"),
-                        rs.getDate("date").toLocalDate(),
-                        rs.getTime("time").toLocalTime()
-                )
-        );
-
-        return reservations.stream()
-                .map(ReservationResponse::new)
-                .toList();
+        return reservationRepository.findAll();
     }
 
     public ReservationResponse create(ReservationRequest request) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("name", request.getName());
-        params.put("date", request.getDate());
-        params.put("time", request.getTime());
-
-        Number generatedId = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(params));
-        Reservation saved = Reservation.of(generatedId.longValue(), request.getName(), request.getDate(),
-                request.getTime());
-
-        return new ReservationResponse(saved);
+        Reservation reservation = Reservation.of(
+                null,
+                request.getName(),
+                request.getDate(),
+                request.getTime()
+        );
+        return reservationRepository.save(reservation);
     }
 
     public void deleteById(Long id) {
-        int affected = jdbcTemplate.update("DELETE FROM reservation WHERE id = ?", id);
+        int affected = reservationRepository.deleteById(id);
         if (affected == 0) {
             throw new ReservationNotFoundException(id);
         }

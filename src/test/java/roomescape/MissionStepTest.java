@@ -20,6 +20,8 @@ import static org.hamcrest.Matchers.is;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class MissionStepTest {
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @Test
     void 일단계() {
@@ -99,9 +101,6 @@ public class MissionStepTest {
                 .statusCode(404);
     }
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
-
     @Test
     void 오단계() {
         try (Connection connection = jdbcTemplate.getDataSource().getConnection()) {
@@ -115,7 +114,8 @@ public class MissionStepTest {
 
     @Test
     void 육단계() {
-        jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "브라운", "2023-08-05", "15:40");
+        jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "브라운", "2023-08-05",
+                "15:40");
 
         List<Reservation> reservations = RestAssured.given().log().all()
                 .when().get("/reservations")
@@ -154,7 +154,6 @@ public class MissionStepTest {
         Integer countAfterDelete = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
         assertThat(countAfterDelete).isEqualTo(0);
     }
-
 
 
 }
