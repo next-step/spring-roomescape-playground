@@ -19,8 +19,6 @@
 #### 응답 예시
 
 ```json
-Location: "/reservations/1"
-
 {
 "id": 1,
 "name": "브라운",
@@ -65,8 +63,6 @@ Location: "/reservations/1"
 #### 응답 예시
 
 ```json
-Location: /times/1
-
 {
 "id": 1,
 "time": "15:00"
