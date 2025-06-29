@@ -1,5 +1,6 @@
 package roomescape.dao;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,8 +10,8 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import roomescape.controller.dto.RequestReservation;
 import roomescape.domain.Reservation;
+import roomescape.domain.Time;
 
 @Repository
 public class ReservationDao {
@@ -21,7 +22,8 @@ public class ReservationDao {
             resultSet.getLong("id"),
             resultSet.getString("name"),
             resultSet.getDate("date").toLocalDate(),
-            resultSet.getTime("time").toLocalTime()
+            new Time(resultSet.getLong("time_id"),
+                    resultSet.getString("time"))
     );
 
     public ReservationDao(final DataSource dataSource) {
@@ -31,29 +33,47 @@ public class ReservationDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public Reservation save(final RequestReservation requestReservation) {
+    public Reservation save(final String name, final LocalDate date, final Time time) {
         Map<String, Object> parameters = new HashMap<>();
-        parameters.put("name", requestReservation.name());
-        parameters.put("date", requestReservation.parseDate());
-        parameters.put("time", requestReservation.parseTime());
+        parameters.put("name", name);
+        parameters.put("date", date);
+        parameters.put("time_id", time.id());
 
-        Number newId = jdbcInsert.executeAndReturnKey(parameters);
+        Number newId = jdbcInsert
+                .usingColumns("name", "date", "time_id")
+                .executeAndReturnKey(parameters);
 
-        return new Reservation(
-                newId.longValue(),
-                requestReservation.name(),
-                requestReservation.parseDate(),
-                requestReservation.parseTime()
-        );
+        return Reservation.of(newId.longValue(), name, date, time);
     }
 
     public List<Reservation> findAll() {
-        String sql = "SELECT id, name, date, time FROM reservation";
+        String sql = """
+                SELECT 
+                    r.id as reservation_id,
+                    r.name,
+                    r.date,
+                    t.id as time_id,
+                    t.time as time_value
+                FROM reservation as r
+                INNER JOIN time as t ON r.time_id = t.id
+                """;
+
         return namedParameterJdbcTemplate.query(sql, rowMapper);
     }
 
     public Optional<Reservation> findById(final long id) {
-        String sql = "SELECT id, name, date, time FROM reservation WHERE id = :id";
+        String sql = """
+                SELECT 
+                    r.id as reservation_id,
+                    r.name,
+                    r.date,
+                    t.id as time_id,
+                    t.time as time_value
+                FROM reservation r
+                INNER JOIN time t ON r.time_id = t.id
+                WHERE r.id = :id
+                """;
+
         Map<String, Object> params = Map.of("id", id);
         List<Reservation> results = namedParameterJdbcTemplate.query(sql, params, rowMapper);
         return results.stream().findFirst();

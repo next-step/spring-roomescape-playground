@@ -21,7 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
-import roomescape.domain.Reservation;
+import roomescape.controller.dto.ResponseReservation;
 
 @SpringBootTest(webEnvironment = DEFINED_PORT)
 @DirtiesContext(classMode = BEFORE_EACH_TEST_METHOD)
@@ -30,6 +30,7 @@ public class MissionStepTest {
     @Nested
     @DisplayName("예약 API 응답 테스트")
     class ApiResponseTest {
+
         @Test
         @DisplayName("기본 URI로 요청 시 정상적으로 어드민 페이지가 반환된다.")
         void shouldReturnAdminPage_whenDefaultURI() {
@@ -49,52 +50,78 @@ public class MissionStepTest {
         }
 
         @Test
-        @DisplayName("예약 추가가 정상적으로 이루어진다.")
-        void shouldCreateReservation() {
-            Map<String, String> params = new HashMap<>();
-            params.put("name", "브라운");
-            params.put("date", "2030-08-05");
-            params.put("time", "15:40");
+        @DisplayName("예약 시 저장된 시간으로 입력했을 경우 정상적으로 추가된다.")
+        void shouldReserve_whenValidTime() {
+            Map<String, String> time = new HashMap<>();
+            time.put("time", "10:00");
 
             RestAssured.given().log().all()
                     .contentType(ContentType.JSON)
-                    .body(params)
+                    .body(time)
+                    .when().post("/times")
+                    .then().log().all()
+                    .statusCode(201);
+
+            Map<String, String> reservation = new HashMap<>();
+            reservation.put("name", "브라운");
+            reservation.put("date", "2030-08-05");
+            reservation.put("timeId", "1");
+
+            RestAssured.given().log().all()
+                    .contentType(ContentType.JSON)
+                    .body(reservation)
                     .when().post("/reservations")
                     .then().log().all()
                     .statusCode(201)
-                    .header("Location", "/reservations/1")
-                    .body("id", is(1));
-
-            RestAssured.given().log().all()
-                    .when().get("/reservations")
-                    .then().log().all()
-                    .statusCode(200).extract()
-                    .jsonPath().getList(".", Reservation.class);
+                    .header("Location", "/reservations/1");
         }
 
         @Test
-        @DisplayName("기존 예약을 정상적으로 취소한다.")
-        void shouldCancelReservation() {
-            Map<String, String> params = new HashMap<>();
-            params.put("name", "브라운");
-            params.put("date", "2030-08-05");
-            params.put("time", "15:40");
+        @DisplayName("예약 추가할 때 저장된 시간이 아닌 경우 예외가 발생한다.")
+        void shouldThrowException_whenInvalidTime() {
+            Map<String, String> reservation = new HashMap<>();
+            reservation.put("name", "브라운");
+            reservation.put("date", "2030-08-05");
+            reservation.put("timeId", "1");
 
             RestAssured.given().log().all()
                     .contentType(ContentType.JSON)
-                    .body(params)
+                    .body(reservation)
                     .when().post("/reservations")
-                    .then().log().all();
+                    .then().log().all()
+                    .statusCode(400)
+                    .body(containsString("존재하지 않는 시간이에요."));
+        }
+
+        @Test
+        @DisplayName("예약 삭제가 정상적으로 이루어진다.")
+        void shouldDeleteReservation() {
+            Map<String, String> time = new HashMap<>();
+            time.put("time", "10:00");
+
+            RestAssured.given().log().all()
+                    .contentType(ContentType.JSON)
+                    .body(time)
+                    .when().post("/times")
+                    .then().log().all()
+                    .statusCode(201);
+
+            Map<String, String> reservation = new HashMap<>();
+            reservation.put("name", "브라운");
+            reservation.put("date", "2030-08-05");
+            reservation.put("timeId", "1");
+
+            RestAssured.given().log().all()
+                    .contentType(ContentType.JSON)
+                    .body(reservation)
+                    .when().post("/reservations")
+                    .then().log().all()
+                    .statusCode(201);
 
             RestAssured.given().log().all()
                     .when().delete("/reservations/1")
                     .then().log().all()
                     .statusCode(204);
-
-            RestAssured.given().log().all()
-                    .when().get("/reservations")
-                    .then().log().all()
-                    .statusCode(200);
         }
 
         @Test
@@ -120,7 +147,7 @@ public class MissionStepTest {
             Map<String, String> params = new HashMap<>();
             params.put("name", "브라운");
             params.put("date", "2025-13-33");
-            params.put("time", "13:00");
+            params.put("timeId", "1");
 
             RestAssured.given().log().all()
                     .contentType(ContentType.JSON)
@@ -164,15 +191,17 @@ public class MissionStepTest {
         @Test
         @DisplayName("예약 테이블에 예약을 추가한 후 정상적으로 조회가 된다.")
         void shouldReturnDatabaseCountRow_whenAddReservation() {
-            String sql = "INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)";
-            jdbcTemplate.update(sql, "브라운", "2030-08-05", "15:40");
+            String timeSql = "INSERT INTO time (time) VALUES (?)";
+            String sql = "INSERT INTO reservation (name, date, time_id) VALUES (?, ?, ?)";
+            jdbcTemplate.update(timeSql, "10:00");
+            jdbcTemplate.update(sql, "브라운", "2030-08-05", "1");
 
-            List<Reservation> reservations = RestAssured
+            List<ResponseReservation> reservations = RestAssured
                     .given().log().all()
                     .when().get("/reservations")
                     .then().log().all()
                     .statusCode(200).extract()
-                    .jsonPath().getList(".", Reservation.class);
+                    .jsonPath().getList(".", ResponseReservation.class);
 
             String countSql = "SELECT count(1) from reservation";
             Integer count = jdbcTemplate.queryForObject(countSql, Integer.class);
@@ -183,10 +212,20 @@ public class MissionStepTest {
         @Test
         @DisplayName("예약 API를 이용하여 예약을 추가한 후 정상적으로 데이터베이스에서 조회가 된다.")
         void shouldReservationListInDatabase_whenUsingReservationAPI() {
+            Map<String, String> time = new HashMap<>();
+            time.put("time", "10:00");
+
+            RestAssured.given().log().all()
+                    .contentType(ContentType.JSON)
+                    .body(time)
+                    .when().post("/times")
+                    .then().log().all()
+                    .statusCode(201);
+
             Map<String, String> params = new HashMap<>();
             params.put("name", "브라운");
             params.put("date", "2027-08-05");
-            params.put("time", "10:00");
+            params.put("timeId", "1");
 
             RestAssured.given().log().all()
                     .contentType(ContentType.JSON)
@@ -203,10 +242,20 @@ public class MissionStepTest {
         @Test
         @DisplayName("예약 API를 이용하여 예약을 취소하면 정상적으로 데이터베이스에서 삭제가 된다.")
         void shouldDeleteReservationInDatabase_whenUsingReservationAPI() {
+            Map<String, String> time = new HashMap<>();
+            time.put("time", "10:00");
+
+            RestAssured.given().log().all()
+                    .contentType(ContentType.JSON)
+                    .body(time)
+                    .when().post("/times")
+                    .then().log().all()
+                    .statusCode(201);
+
             Map<String, String> params = new HashMap<>();
             params.put("name", "브라운");
             params.put("date", "2027-08-05");
-            params.put("time", "10:00");
+            params.put("timeId", "1");
 
             RestAssured.given().log().all()
                     .contentType(ContentType.JSON)
