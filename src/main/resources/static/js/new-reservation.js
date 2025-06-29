@@ -26,7 +26,8 @@ function createFormControl(timeData) {
   select.id = 'time-select';
 
   const defaultOption = document.createElement('option');
-  defaultOption.textContent = "시간 선택";
+    defaultOption.value = "";
+    defaultOption.textContent = "시간 선택";
   select.appendChild(defaultOption);
 
   timeData.forEach(time => {
@@ -67,7 +68,7 @@ function insertReservationRow(row, reservation) {
     row.insertCell(index).textContent = reservation[field];
   });
 
-  row.insertCell(3).textContent = reservation.time.time;
+  row.insertCell(3).textContent = reservation.time;
 
   const actionCell = row.insertCell(4);
   actionCell.appendChild(createActionButton('삭제', 'btn-danger', deleteRow));
@@ -132,10 +133,16 @@ function saveRow(event) {
   const dateInput = row.querySelector('input[type="date"]');
   const timeSelect = row.querySelector('select');
 
+    const timeId = timeSelect.value;
+    if (!timeId) {
+        alert("시간을 선택해 주세요.");
+        return;
+    }
+
   const reservation = {
     name: nameInput.value,
     date: dateInput.value,
-    time: timeSelect.value
+    timeId: Number(timeId)
   };
 
   requestCreate(reservation)
@@ -153,7 +160,7 @@ function updateRowWithReservationData(row, data) {
   cells[0].textContent = data.id;
   cells[1].textContent = data.name;
   cells[2].textContent = data.date;
-  cells[3].textContent = data.time.time;
+  cells[3].textContent = data.time;
 
   // 버튼 변경: 삭제 버튼으로 변경
   cells[4].innerHTML = '';
