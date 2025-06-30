@@ -455,12 +455,12 @@ void 구단계() {
 ```
 ## 10단계 - 계층화 리팩터링
 ### 요구사항
-- [ ] 레이어드 아키텍처를 적용하여 레이어별 책임과 역할에 따라 클래스 분리를 해보세요.
-- [ ] 분리한 클래스는 매번 새로 생성하지 않고 스프링 빈으로 등록해서 사용해보세요.
+- [x] 레이어드 아키텍처를 적용하여 레이어별 책임과 역할에 따라 클래스 분리를 해보세요.
+- [x] 분리한 클래스는 매번 새로 생성하지 않고 스프링 빈으로 등록해서 사용해보세요.
 
 ### 요구사항 테스트
-- [ ] `ReservationController` 에 있던 데이터베이스 관련 로직을 다른 클래스로 분리한 것을 확인하기 위한 테스트 입니다.
-- [ ] `ReservationController`에 `JdbcTemplate` 필드가 사라진 것을 확인하여 로직 분리를 확인할 수 있습니다.
+- [x] `ReservationController` 에 있던 데이터베이스 관련 로직을 다른 클래스로 분리한 것을 확인하기 위한 테스트 입니다.
+- [x] `ReservationController`에 `JdbcTemplate` 필드가 사라진 것을 확인하여 로직 분리를 확인할 수 있습니다.
 ```java
 @Autowired
 private ReservationController reservationController;
