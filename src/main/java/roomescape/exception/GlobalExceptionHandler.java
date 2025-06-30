@@ -25,8 +25,14 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(TimeNotFoundException.class)
-    public ResponseEntity<String> TimeNotFoundException(TimeNotFoundException e) {
+    public ResponseEntity<String> timeNotFoundException(TimeNotFoundException e) {
         log.info("TimeNotFoundException 발생 : {}", e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+
+    @ExceptionHandler(DuplicateTimeException.class)
+    public ResponseEntity<String> duplicateTimeException(DuplicateTimeException e) {
+        log.info("DuplicateTimeException 발생 : {}", e.getMessage(), e);
+        return ResponseEntity.badRequest().body(e.getMessage());
     }
 }

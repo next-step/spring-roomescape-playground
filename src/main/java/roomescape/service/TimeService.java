@@ -6,6 +6,7 @@ import roomescape.dao.TimeDao;
 import roomescape.domain.Time;
 import roomescape.dto.TimeRequest;
 import roomescape.dto.TimeResponse;
+import roomescape.exception.DuplicateTimeException;
 
 @Service
 public class TimeService {
@@ -23,8 +24,15 @@ public class TimeService {
 
     public TimeResponse createTime(TimeRequest request) {
         Time time = new Time(null, request.time());
-        Time saved = timeDao.save(time);
+        Time saved = save(time);
         return TimeResponse.from(saved);
+    }
+
+    public Time save(Time time) {
+        if (timeDao.existsByTime(time.getTime())) {
+            throw new DuplicateTimeException(time.getTime());
+        }
+        return timeDao.save(time);
     }
 
     public void deleteTime(long id) {
