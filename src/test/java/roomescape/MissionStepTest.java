@@ -96,6 +96,33 @@ public class MissionStepTest {
         }
 
         @Test
+        @DisplayName("예약 추가할 때 이미 지난 날짜이거나 시간일 경우 예외가 발생한다.")
+        void shouldThrowException_whenPastedDateOrTime() {
+            Map<String, String> time = new HashMap<>();
+            time.put("time", "10:00");
+
+            RestAssured.given().log().all()
+                    .contentType(ContentType.JSON)
+                    .body(time)
+                    .when().post("/times")
+                    .then().log().all()
+                    .statusCode(201);
+
+            Map<String, String> reservation = new HashMap<>();
+            reservation.put("name", "브라운");
+            reservation.put("date", "2025-06-30");
+            reservation.put("timeId", "1");
+
+            RestAssured.given().log().all()
+                    .contentType(ContentType.JSON)
+                    .body(reservation)
+                    .when().post("/reservations")
+                    .then().log().all()
+                    .statusCode(400)
+                    .body(containsString("이미 지난 날짜 및 시간은 예약할 수 없어요."));
+        }
+
+        @Test
         @DisplayName("예약 삭제가 정상적으로 이루어진다.")
         void shouldDeleteReservation() {
             Map<String, String> time = new HashMap<>();

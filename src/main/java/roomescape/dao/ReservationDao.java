@@ -22,7 +22,7 @@ public class ReservationDao {
             resultSet.getLong("id"),
             resultSet.getString("name"),
             resultSet.getDate("date").toLocalDate(),
-            new Time(resultSet.getLong("time_id"),
+            Time.of(resultSet.getLong("time_id"),
                     resultSet.getTime("time").toLocalTime())
     );
 

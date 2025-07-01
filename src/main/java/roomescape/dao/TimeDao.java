@@ -17,7 +17,7 @@ public class TimeDao {
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
-    private final RowMapper<Time> rowMapper = (resultSet, rowNum) -> new Time(
+    private final RowMapper<Time> rowMapper = (resultSet, rowNum) -> Time.of(
             resultSet.getLong("id"),
             resultSet.getTime("time").toLocalTime()
     );
@@ -35,7 +35,7 @@ public class TimeDao {
 
         Number newId = jdbcInsert.executeAndReturnKey(parameters);
 
-        return new Time(newId.longValue(), time);
+        return Time.of(newId.longValue(), time);
     }
 
     public List<Time> findAll() {
