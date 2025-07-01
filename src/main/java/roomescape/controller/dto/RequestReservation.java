@@ -4,14 +4,16 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import roomescape.global.exception.InvalidValueException;
 
-public record RequestReservation(
-        String date,
-        String name,
-        Long timeId
-) {
+public class RequestReservation {
+    private final LocalDate date;
+    private final String name;
+    private final Long timeId;
 
-    public RequestReservation {
+    public RequestReservation(final String date, final String name, final Long timeId) {
         validateEmpty(date, name, timeId);
+        this.date = parseDate(date);
+        this.name = name;
+        this.timeId = timeId;
     }
 
     private void validateEmpty(final String date, final String name, final Long timeId) {
@@ -20,11 +22,23 @@ public record RequestReservation(
         }
     }
 
-    public LocalDate parseDate() {
+    private LocalDate parseDate(final String date) {
         try {
             return LocalDate.parse(date);
         } catch (DateTimeParseException e) {
             throw new InvalidValueException("날짜(년도-월-일)형식에 맞게 입력해 주세요. ex) 2020-12-31");
         }
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Long getTimeId() {
+        return timeId;
     }
 }

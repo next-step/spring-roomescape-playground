@@ -18,8 +18,7 @@ public class TimeService {
     }
 
     public Time create(final RequestTime requestTime) {
-        LocalTime time = requestTime.parseTime();
-        return timeDao.save(time);
+        return timeDao.save(requestTime.getTime());
     }
 
     public List<Time> findAll() {

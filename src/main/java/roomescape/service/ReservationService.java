@@ -24,13 +24,11 @@ public class ReservationService {
     }
 
     public Reservation create(final RequestReservation requestReservation) {
-        LocalDate date = requestReservation.parseDate();
-
-        Time time = timeDao.findById(requestReservation.timeId())
+        Time time = timeDao.findById(requestReservation.getTimeId())
                 .orElseThrow(() -> new NotFoundException("존재하지 않는 시간이에요."));
 
-        validatePasted(date, time);
-        return reservationDao.save(requestReservation.name(), date, time);
+        validatePasted(requestReservation.getDate(), time);
+        return reservationDao.save(requestReservation.getName(), requestReservation.getDate(), time);
     }
 
     public List<Reservation> findAll() {
