@@ -24,11 +24,14 @@ import static org.hamcrest.Matchers.is;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class DataBaseStepTest {
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
+    private final ReservationRestController reservationRestController;
 
     @Autowired
-    private ReservationRestController reservationRestController;
+    public DataBaseStepTest(JdbcTemplate jdbcTemplate, ReservationRestController reservationRestController) {
+        this.jdbcTemplate = jdbcTemplate;
+        this.reservationRestController = reservationRestController;
+    }
 
     @Test
     @DisplayName("H2 메모리 데이터베이스에 RESERVATION 테이블이 정상적으로 생성되었는지 확인")
