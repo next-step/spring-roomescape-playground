@@ -1,28 +1,18 @@
 package roomescape.time.response;
 
-import java.time.format.DateTimeFormatter;
 import roomescape.time.model.Time;
+import roomescape.util.DateTimeUtil;
 
-public class TimeResponse {
-
-    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
-
-    private final Long id;
-    private final String time;
+public record TimeResponse(
+    Long id,
+    String time
+) {
 
     public TimeResponse(Time time) {
-        this.id = time.getId();
-        this.time = time.getTime().format(TIME_FORMATTER);
+        this(time.getId(), DateTimeUtil.format(time.getTime()));
     }
 
-    public Long getId() {
-        return id;
+    public static TimeResponse of(final Time time) {
+        return new TimeResponse(time);
     }
-
-    public String getTime() {
-        return time;
-    }
-
-
 }
-

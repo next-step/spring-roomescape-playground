@@ -1,41 +1,25 @@
 package roomescape.reservation.response;
 
-import java.time.format.DateTimeFormatter;
 import roomescape.reservation.model.Reservation;
+import roomescape.time.response.TimeResponse;
+import roomescape.util.DateTimeUtil;
 
-public class ReservationResponse {
-
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(
-        "yyyy-MM-dd");
-    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
-
-    private final Long id;
-    private final String name;
-    private final String date;
-    private final String time;
-
+public record ReservationResponse(
+    Long id,
+    String name,
+    String date,
+    TimeResponse time
+) {
     public ReservationResponse(Reservation reservation) {
-        this.id = reservation.getId();
-        this.name = reservation.getName();
-        this.date = reservation.getDate().format(DATE_FORMATTER);
-        this.time = reservation.getTimeValue().format(TIME_FORMATTER);
+        this(
+            reservation.getId(),
+            reservation.getName(),
+            DateTimeUtil.format(reservation.getDate()),
+            new TimeResponse(reservation.getTime())
+        );
     }
 
-    public Long getId() {
-        return id;
+    public static ReservationResponse of(Reservation reservation) {
+        return new ReservationResponse(reservation);
     }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public String getTime() {
-        return time;
-    }
-
 }
-
