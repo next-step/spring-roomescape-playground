@@ -9,7 +9,6 @@ import roomescape.dao.ReservationDao;
 import roomescape.dao.TimeDao;
 import roomescape.domain.Reservation;
 import roomescape.domain.Time;
-import roomescape.global.exception.InvalidValueException;
 import roomescape.global.exception.NotFoundException;
 
 @Service
@@ -47,7 +46,7 @@ public class ReservationService {
 
     private void validatePasted(final LocalDate date, final Time time) {
         if (LocalDateTime.of(date, time.time()).isBefore(LocalDateTime.now())) {
-            throw new InvalidValueException("이미 지난 날짜 및 시간은 예약할 수 없어요.");
+            throw new IllegalArgumentException("이미 지난 날짜 및 시간은 예약할 수 없어요.");
         }
     }
 }

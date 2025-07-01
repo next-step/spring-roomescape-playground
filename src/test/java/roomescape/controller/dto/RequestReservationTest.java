@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import roomescape.global.exception.InvalidValueException;
 
 class RequestReservationTest {
 
@@ -13,7 +12,7 @@ class RequestReservationTest {
     void shouldThrowException_whenEmptyReservationNameOfData() {
         // given // when // then
         assertThatThrownBy(() -> new RequestReservation("2025-06-30", "", 1L))
-                .isInstanceOf(InvalidValueException.class)
+                .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("예약하기 위한 데이터(이름, 날짜, 시간)를 모두 입력해 주세요.");
     }
 
@@ -22,7 +21,7 @@ class RequestReservationTest {
     void shouldThrowException_whenInvalidDateFormat() {
         // given // when // then
         assertThatThrownBy(() -> new RequestReservation("2030-13-99", "dd", 1L))
-                .isInstanceOf(InvalidValueException.class)
+                .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("날짜(년도-월-일)형식에 맞게 입력해 주세요. ex) 2020-12-31");
     }
 }

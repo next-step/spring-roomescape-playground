@@ -2,7 +2,6 @@ package roomescape.controller.dto;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
-import roomescape.global.exception.InvalidValueException;
 
 public class RequestReservation {
     private final LocalDate date;
@@ -18,7 +17,7 @@ public class RequestReservation {
 
     private void validateEmpty(final String date, final String name, final Long timeId) {
         if (date == null || date.isBlank() || name == null || name.isBlank() || timeId == null) {
-            throw new InvalidValueException("예약하기 위한 데이터(이름, 날짜, 시간)를 모두 입력해 주세요.");
+            throw new IllegalArgumentException("예약하기 위한 데이터(이름, 날짜, 시간)를 모두 입력해 주세요.");
         }
     }
 
@@ -26,7 +25,7 @@ public class RequestReservation {
         try {
             return LocalDate.parse(date);
         } catch (DateTimeParseException e) {
-            throw new InvalidValueException("날짜(년도-월-일)형식에 맞게 입력해 주세요. ex) 2020-12-31");
+            throw new IllegalArgumentException("날짜(년도-월-일)형식에 맞게 입력해 주세요. ex) 2020-12-31");
         }
     }
 

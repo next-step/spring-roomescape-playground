@@ -1,6 +1,5 @@
 package roomescape.service;
 
-import java.time.LocalTime;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import roomescape.controller.dto.RequestTime;

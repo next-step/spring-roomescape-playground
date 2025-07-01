@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import roomescape.global.exception.InvalidValueException;
 
 class RequestTimeTest {
 
@@ -13,7 +12,7 @@ class RequestTimeTest {
     void shouldThrowException_whenEmptyTime() {
         // given // when // then
         assertThatThrownBy(() -> new RequestTime(""))
-                .isInstanceOf(InvalidValueException.class)
+                .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("시간을 입력해 주세요.");
     }
 
@@ -22,7 +21,7 @@ class RequestTimeTest {
     void shouldThrowException_whenInvalidTimeFormat() {
         // given // when // then
         assertThatThrownBy(() -> new RequestTime("33:99"))
-                .isInstanceOf(InvalidValueException.class)
+                .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("시간(시:분)형식에 맞게 입력해 주세요. ex) 15:30");
     }
 }
