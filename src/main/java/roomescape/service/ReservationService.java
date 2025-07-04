@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import roomescape.controller.dto.RequestReservation;
 import roomescape.dao.ReservationDao;
 import roomescape.dao.TimeDao;
@@ -22,6 +23,7 @@ public class ReservationService {
         this.timeDao = timeDao;
     }
 
+    @Transactional
     public Reservation create(final RequestReservation requestReservation) {
         Time time = timeDao.findById(requestReservation.getTimeId())
                 .orElseThrow(() -> new NotFoundException("존재하지 않는 시간이에요."));
@@ -30,6 +32,7 @@ public class ReservationService {
         return reservationDao.save(requestReservation.getName(), requestReservation.getDate(), time);
     }
 
+    @Transactional(readOnly = true)
     public List<Reservation> findAll() {
         return reservationDao.findAll();
     }
@@ -39,6 +42,7 @@ public class ReservationService {
                 .orElseThrow(() -> new NotFoundException("존재하지 않는 예약이에요."));
     }
 
+    @Transactional
     public void delete(final Long id) {
         Reservation reservation = findById(id);
         reservationDao.deleteById(reservation.id());
