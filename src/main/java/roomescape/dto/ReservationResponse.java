@@ -14,13 +14,13 @@ public class ReservationResponse {
     private LocalDate date;
 
     @JsonFormat(pattern = "HH:mm")
-    private LocalTime time;
+    private TimeResponse time;
 
     public ReservationResponse(Reservation reservation) {
         this.id = reservation.getId();
         this.name = reservation.getName();
         this.date = reservation.getDate();
-        this.time = reservation.getTime();
+        this.time = new TimeResponse(reservation.getTime());
     }
 
     public Long getId() {
@@ -35,7 +35,7 @@ public class ReservationResponse {
         return date;
     }
 
-    public LocalTime getTime() {
+    public TimeResponse getTime() {
         return time;
     }
 }

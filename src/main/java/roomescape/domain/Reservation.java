@@ -10,9 +10,9 @@ public class Reservation {
     private final Long id;
     private final String name;
     private final LocalDate date;
-    private final LocalTime time;
+    private final Time time;
 
-    private Reservation(Long id, String name, LocalDate date, LocalTime time) {
+    private Reservation(Long id, String name, LocalDate date, Time time) {
         validate(name, date, time);
         this.id = id;
         this.name = name;
@@ -20,11 +20,11 @@ public class Reservation {
         this.time = time;
     }
 
-    public static Reservation of(Long id, String name, LocalDate date, LocalTime time) {
+    public static Reservation of(Long id, String name, LocalDate date, Time time) {
         return new Reservation(id, name, date, time);
     }
 
-    private void validate(String name, LocalDate date, LocalTime time) {
+    private void validate(String name, LocalDate date, Time time) {
         List<String> errors = new ArrayList<>();
 
         if (name == null || name.isBlank()) {
@@ -54,7 +54,7 @@ public class Reservation {
         return date;
     }
 
-    public LocalTime getTime() {
+    public Time getTime() {
         return time;
     }
 }

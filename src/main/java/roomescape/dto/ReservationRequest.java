@@ -16,9 +16,7 @@ public class ReservationRequest {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
 
-    @NotNull
-    @JsonFormat(pattern = "HH:mm")
-    private LocalTime time;
+    private Long timeId;
 
     protected ReservationRequest() {
     }
@@ -31,8 +29,7 @@ public class ReservationRequest {
         return date;
     }
 
-    public LocalTime getTime() {
-        return time;
+    public Long getTimeId() {
+        return timeId;
     }
 }
-

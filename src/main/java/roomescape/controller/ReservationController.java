@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class ReservationController {
-    private static final String VIEW_RESERVATION = "reservation";
+    private static final String VIEW_RESERVATION = "new-reservation";
 
     @GetMapping("/reservation")
     public String reservation() {
