@@ -2,6 +2,7 @@ package roomescape.repository;
 
 import java.sql.PreparedStatement;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -44,5 +45,10 @@ public class JdbcTimeRepository implements TimeRepository {
         jdbcTemplate.update("DELETE FROM time WHERE id = ?", id);
     }
 
+    @Override
+    public Optional<Time> findById(Long id) {
+        List<Time> times = jdbcTemplate.query("SELECT * FROM time WHERE id = ?", rowMapper, id);
+        return times.stream().findFirst();
+    }
 }
 

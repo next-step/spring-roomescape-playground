@@ -11,4 +11,6 @@ public interface TimeRepository {
 
     void deleteById(Long id);
 
+    Optional<Time> findById(Long id);
+
 }
