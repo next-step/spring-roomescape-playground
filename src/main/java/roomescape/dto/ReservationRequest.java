@@ -1,17 +1,19 @@
 package roomescape.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 public record ReservationRequest(
-    @NotBlank(message = "이름은 비어있을 수 없습니다.")
+    @NotBlank(message = "{reservation.name.notBlank}")
     String name,
 
-    @NotNull(message = "날짜는 비어있을 수 없습니다.")
+    @NotNull(message = "{reservation.date.notNull}")
     LocalDate date,
 
-    @NotNull(message = "시간은 비어있을 수 없습니다.")
-    Long time
+    @JsonProperty("time")
+    @NotNull(message = "{reservation.timeId.notNull}")
+    Long timeId
 ) {
 }

@@ -1,9 +1,12 @@
 CREATE TABLE time
 (
-    id   BIGINT       NOT NULL AUTO_INCREMENT,
-    time VARCHAR(255) NOT NULL,
+    id         BIGINT       NOT NULL AUTO_INCREMENT,
+    time       VARCHAR(255) NOT NULL,
+    is_deleted BOOLEAN DEFAULT FALSE,
     PRIMARY KEY (id)
 );
+
+CREATE UNIQUE INDEX unique_time_active_only ON time(time, is_deleted);
 
 CREATE TABLE reservation
 (

@@ -1,7 +1,10 @@
 package roomescape.exception;
 
-public class TimeNotFoundException extends RuntimeException {
+import org.springframework.http.HttpStatus;
+
+public class TimeNotFoundException extends BusinessException {
     public TimeNotFoundException(Long id) {
-        super("존재하지 않는 시간입니다. id : " + id);
+        super("time.notFound", "존재하지 않는 시간입니다. id : " + id, HttpStatus.NOT_FOUND);
+        addArgument("id", id);
     }
 }

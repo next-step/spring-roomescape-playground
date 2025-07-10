@@ -111,7 +111,9 @@ class StepTest {
             .when().delete("/reservations/7")
             .then().log().all()
             .statusCode(404)
-            .body(equalTo("존재하지 않는 예약입니다. id : 7"));
+            .body("code", equalTo("reservation.notFound"))
+            .body("message", equalTo("존재하지 않는 예약입니다. id : 7"))
+            .body("arguments.id", equalTo(7));
     }
 
     @Test

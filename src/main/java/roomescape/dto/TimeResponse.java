@@ -1,18 +1,19 @@
 package roomescape.dto;
 
-import java.time.format.DateTimeFormatter;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import java.time.LocalTime;
 import roomescape.domain.Time;
 
 public record TimeResponse(
     Long id,
-    String time
+    @JsonFormat(pattern = "HH:mm")
+    LocalTime time
 ) {
-    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
     public static TimeResponse from(Time time) {
         return new TimeResponse(
             time.getId(),
-            time.getTime().format(TIME_FORMATTER)
+            time.getTime()
         );
     }
 }

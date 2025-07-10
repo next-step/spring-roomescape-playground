@@ -27,14 +27,14 @@ public class ReservationService {
     }
 
     public ReservationResponse createReservation(ReservationRequest request) {
-        Time time = timeDao.findById(request.time());
+        Time time = timeDao.findById(request.timeId());
         Reservation reservation = new Reservation(null, request.name(), request.date(),
             time);
         Reservation saved = reservationDao.save(reservation);
         return ReservationResponse.from(saved);
     }
 
-    public void deleteReservation(long id) {
+    public void deleteReservation(Long id) {
         reservationDao.deleteById(id);
     }
 }
