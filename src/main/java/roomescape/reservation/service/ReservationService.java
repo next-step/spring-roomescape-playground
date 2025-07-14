@@ -14,34 +14,33 @@ import roomescape.time.service.TimeService;
 public class ReservationService {
 
     private final TimeService timeService;
-    private final ReservationManager reservationManager;
     private final ReservationDao reservationDao;
 
-    public ReservationService(TimeService timeService, ReservationDao reservationDao,
-        ReservationManager reservationManager) {
+    public ReservationService(TimeService timeService, ReservationDao reservationDao) {
         this.timeService = timeService;
         this.reservationDao = reservationDao;
-        this.reservationManager = reservationManager;
     }
 
     public List<ReservationResponse> getAllReservation() {
         return reservationDao.findAll().stream()
-            .map(ReservationResponse::new)
+            .map(ReservationResponse::of)
             .toList();
     }
 
-    public ReservationResponse create(final ReservationRequest request) {
-        final Time time = timeService.getTime(request.time());
-        final Reservation savedReservation = reservationManager.create(time, request.name(),
-            request.date());
+    public ReservationResponse create(ReservationRequest request) {
+        Time time = timeService.getTime(request.time());
+        Reservation savedReservation = reservationDao.insert(
+            time,
+            request.name(),
+            request.date()
+        );
 
         return ReservationResponse.of(savedReservation);
     }
 
-    public void delete(final Long id) {
+    public void delete(Long id) {
         if (!reservationDao.delete(id)) {
             throw new ReservationNotFoundException("Reservation not found with id: " + id);
         }
     }
-
 }

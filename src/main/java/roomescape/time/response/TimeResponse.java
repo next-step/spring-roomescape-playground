@@ -12,7 +12,7 @@ public record TimeResponse(
         this(time.getId(), DateTimeUtil.format(time.getTime()));
     }
 
-    public static TimeResponse of(final Time time) {
+    public static TimeResponse of(Time time) {
         return new TimeResponse(time);
     }
 }

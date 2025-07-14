@@ -24,17 +24,17 @@ public class TimeService {
             .toList();
     }
 
-    public Time getTime(final Long id) {
+    public Time getTime(Long id) {
         return timeDao.findById(id)
             .orElseThrow(() -> new InvalidReservationRequestException("Invalid time ID: " + id));
     }
 
-    public TimeResponse create(final LocalTime time) {
-        final Time savedTime = timeDao.insert(time);
+    public TimeResponse create(LocalTime time) {
+        Time savedTime = timeDao.insert(time);
         return TimeResponse.of(savedTime);
     }
 
-    public void delete(final Long id) {
+    public void delete(Long id) {
         if (!timeDao.delete(id)) {
             throw new TimeNotFoundException("Time not found with id: " + id);
         }

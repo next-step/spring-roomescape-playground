@@ -1,5 +1,6 @@
 package roomescape.time.controller;
 
+import jakarta.annotation.Nonnull;
 import java.net.URI;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +32,7 @@ public class TimeRestController {
 
     @PostMapping
     public ResponseEntity<TimeResponse> create(
-        @RequestBody final TimeRequest request
+        @RequestBody TimeRequest request
     ) {
         TimeResponse response = timeService.create(request.time());
 
@@ -42,7 +43,7 @@ public class TimeRestController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(
-        @PathVariable final Long id
+        @PathVariable Long id
     ) {
         timeService.delete(id);
         return ResponseEntity.noContent().build();

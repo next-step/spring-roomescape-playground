@@ -24,15 +24,19 @@ public class ReservationDao {
     }
 
     public List<Reservation> findAll() {
+        String sql = """
+             select 
+                 r.id as reservation_id, 
+                 r.name, 
+                 r.date, 
+                 t.id as time_id, 
+                 t.time as time_value 
+            from reservation as r 
+            inner join time as t on r.time_id = t.id
+            """;
+
         return jdbcTemplate.query(
-            "select "
-                + "r.id as reservation_id, "
-                + "r.name, "
-                + "r.date, "
-                + "t.id as time_id, "
-                + "t.time as time_value "
-                + "from reservation as r "
-                + "inner join time as t on r.time_id = t.id",
+            sql,
             (resultSet, rowNum) -> {
                 Time time = new Time(
                     resultSet.getLong("time_id"),
@@ -50,14 +54,14 @@ public class ReservationDao {
         );
     }
 
-    public Reservation insert(final Time time,
-        final String name, final LocalDate date) {
+    public Reservation insert(Time time,
+        String name, LocalDate date) {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("name", name);
         parameters.put("date", date);
         parameters.put("time_id", time.getId());
 
-        final Long id = (Long) insert.executeAndReturnKey(parameters);
+        Long id = (Long) insert.executeAndReturnKey(parameters);
 
         return new Reservation(
             id,
@@ -67,7 +71,7 @@ public class ReservationDao {
         );
     }
 
-    public boolean delete(final Long id) {
+    public boolean delete(Long id) {
         return jdbcTemplate.update("DELETE FROM reservation WHERE id = ?", id) > 0;
     }
 }

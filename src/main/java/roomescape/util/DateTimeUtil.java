@@ -1,5 +1,7 @@
 package roomescape.util;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 public class DateTimeUtil {
@@ -8,11 +10,11 @@ public class DateTimeUtil {
         "yyyy-MM-dd");
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
-    public static String format(final java.time.LocalDate date) {
+    public static String format(LocalDate date) {
         return date.format(DATE_FORMATTER);
     }
 
-    public static String format(final java.time.LocalTime time) {
+    public static String format(LocalTime time) {
         return time.format(TIME_FORMATTER);
     }
 }

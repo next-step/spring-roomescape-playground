@@ -10,16 +10,13 @@ public record ReservationResponse(
     String date,
     TimeResponse time
 ) {
-    public ReservationResponse(Reservation reservation) {
-        this(
-            reservation.getId(),
-            reservation.getName(),
-            DateTimeUtil.format(reservation.getDate()),
-            new TimeResponse(reservation.getTime())
-        );
-    }
 
     public static ReservationResponse of(Reservation reservation) {
-        return new ReservationResponse(reservation);
+        return new ReservationResponse(
+            reservation.id(),
+            reservation.name(),
+            DateTimeUtil.format(reservation.date()),
+            new TimeResponse(reservation.time())
+        );
     }
 }
