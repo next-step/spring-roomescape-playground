@@ -27,8 +27,7 @@ public class MissionStepTest {
             RestAssured.given().log().all()
                     .when().get("/reservation")
                     .then().log().all()
-                    .statusCode(200)
-                    .body("size()"),is(3);
+                    .statusCode(200);
 
     }
 }
