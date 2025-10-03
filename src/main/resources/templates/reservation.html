@@ -56,6 +56,12 @@
         </tr>
         </thead>
         <tbody id="reservation-table-body">
+            <tr th:each="res : ${reservations}">
+                <td th:text="${res.id}"></td>
+                <td th:text="${res.name}"></td>
+                <td th:text="${res.date}"></td>
+                <td th:text="${res.time}"></td>
+            </tr>
         </tbody>
       </table>
     </div>
