@@ -3,6 +3,7 @@ package roomescape.controller;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import roomescape.model.Reservation;
@@ -18,7 +19,7 @@ public class ReservationController {
 
   @GetMapping("/reservations")
   @ResponseBody
-  public List<Reservation> getReservation() {
+  public String getReservation(Model model) {
     reservations.add(new Reservation(
       1L, 
       "브라운", 
@@ -33,6 +34,8 @@ public class ReservationController {
       "11:00"
     ));
 
-    return reservations;
+    model.addAttribute("reservations", reservations);
+
+    return "reservation";
   }
 }
