@@ -7,8 +7,7 @@ public class Reservations {
         private String time;
 
 
-        public Reservations(String id, String name, String date, String time) {
-                this.id = Long.parseLong(id);
+        public Reservations(String name, String date, String time) {
                 this.name = name;
                 this.date = date;
                 this.time = time;

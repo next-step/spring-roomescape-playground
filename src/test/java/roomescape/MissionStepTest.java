@@ -28,6 +28,5 @@ public class MissionStepTest {
                     .when().get("/reservation")
                     .then().log().all()
                     .statusCode(200);
-
     }
 }
