@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import roomescape.model.Reservation;
+import roomescape.exception.BadRequestReservationException;
 
 @RestController // RestController로 변경
 @RequestMapping("/reservations")
@@ -35,6 +36,13 @@ public class ReservationController {
 
     @PostMapping
     public ResponseEntity<Reservation> addReservation(@RequestBody Reservation newReservation) {
+        // 예외 조건 추가
+        if (newReservation.getName() == null || newReservation.getName().isBlank() ||
+            newReservation.getDate() == null || newReservation.getDate().isBlank() ||
+            newReservation.getTime() == null || newReservation.getTime().isBlank()) {
+            throw new BadRequestReservationException("Required fields are missing.");
+        }
+      
         long id = index.incrementAndGet();
         Reservation reservation = new Reservation(
                 id,
@@ -51,6 +59,10 @@ public class ReservationController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
         boolean removed = reservations.removeIf(r -> r.getId().equals(id));
-        return removed ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
+        if (removed) {
+          return ResponseEntity.noContent().build();
+        } else {
+          throw new BadRequestReservationException("Reservation not found.");
+        }
     }
 }
