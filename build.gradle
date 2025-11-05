@@ -8,12 +8,26 @@ group = 'nextstep'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '17'
 
+// build.gradle 파일
+
+// ... (plugins, group, version 등 상단 정보) ...
+
 repositories {
     mavenCentral()
 }
 
+// 이 'dependencies' 블록 안에 모든 의존성을 관리하세요.
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter'
+    // [필수 1] 웹 서버 엔진
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // [필수 2] 웹 페이지 조립 엔진 (타임리프)
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+
+    // (참고) 'web' 스타터가 'starter'를 이미 포함하고 있으므로,
+    // 'spring-boot-starter'는 생략해도 괜찮습니다.
+
+    // 테스트에 필요한 의존성
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'io.rest-assured:rest-assured:5.3.1'
 }
