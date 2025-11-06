@@ -30,6 +30,6 @@ public class MissionStepTest {
                    .when().get("/reservations")
                    .then().log().all()
                    .statusCode(200)
-                   .body("size()", is(3)); // Controller에서 임의로 넣어준 Reservation 3개 검증
+                   .body("size()", is(3));
     }
 }
