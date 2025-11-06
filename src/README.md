@@ -13,6 +13,27 @@
 
 ---
 
+## 프로젝트 구조
+
+### Reservation
+
+- 예약 조회 테스트를 위한 샘플 예약 데이터 객체
+
+### ReservationController
+
+- /reservation 요청 시 reservation.html 응답
+- /reservations 요청 시 예약 모록 조회 API 응다(JSON)
+
+### RoomescapeApplication
+
+- Entry Point
+
+### RoomescapeController
+
+- / 요청 시 home.html 응답
+
+---
+
 ## 프로그램 실행 과정
 
 1. 사용자가 localhost:8080/ 접근 → RoomescapeController → home.html 렌더링
