@@ -15,7 +15,7 @@ public class ReservationController {
     public ReservationController() {
         reservations.add(new Reservation(1L, "브라운", "2023-01-01", "10:00"));
         reservations.add(new Reservation(2L, "브라운", "2023-01-02", "11:00"));
-        reservations.add(new Reservation(3L, "코니", "2023-01-03", "12:00"));
+        reservations.add(new Reservation(3L, "브라운", "2023-01-03", "12:00"));
     }
 
     @GetMapping("/reservation")
