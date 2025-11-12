@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import roomescape.domain.Reservation;
 import roomescape.dto.ReservationRequest;
+import roomescape.exception.InvalidReservationException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +43,8 @@ public class ReservationController {
     @PostMapping("/reservations")
     @ResponseBody
     public ResponseEntity<Reservation> createReservation(@RequestBody ReservationRequest request) {
+        validateReservationRequest(request);
+
         Reservation reservation = new Reservation(
                 index.incrementAndGet(),
                 request.getName(),
@@ -58,7 +61,24 @@ public class ReservationController {
     @DeleteMapping("/reservations/{id}")
     @ResponseBody
     public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
-        reservations.removeIf(reservation -> reservation.getId().equals(id));
+        boolean removed = reservations.removeIf(reservation -> reservation.getId().equals(id));
+
+        if (!removed) {
+            throw new InvalidReservationException("존재하지 않는 예약입니다.");
+        }
+
         return ResponseEntity.noContent().build();
+    }
+
+    private void validateReservationRequest(ReservationRequest request) {
+        if (request.getName() == null || request.getName().trim().isEmpty()) {
+            throw new IllegalArgumentException("예약자 이름은 필수입니다.");
+        }
+        if (request.getDate() == null || request.getDate().trim().isEmpty()) {
+            throw new IllegalArgumentException("예약 날짜는 필수입니다.");
+        }
+        if (request.getTime() == null || request.getTime().trim().isEmpty()) {
+            throw new IllegalArgumentException("예약 시간은 필수입니다.");
+        }
     }
 }
