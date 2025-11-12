@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import roomescape.domain.Reservation;
 import roomescape.dto.ReservationRequest;
 import roomescape.exception.InvalidReservationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +24,7 @@ public class ReservationController {
 
     private final AtomicLong index = new AtomicLong(0);
     private final List<Reservation> reservations = new ArrayList<>();
+    private static final Logger logger = LoggerFactory.getLogger(ReservationController.class);
 
     public ReservationController() {
         reservations.add(new Reservation(index.incrementAndGet(), "브라운", "2023-01-01", "10:00"));
@@ -71,14 +74,19 @@ public class ReservationController {
     }
 
     private void validateReservationRequest(ReservationRequest request) {
-        if (request.getName() == null || request.getName().trim().isEmpty()) {
-            throw new IllegalArgumentException("예약자 이름은 필수입니다.");
-        }
-        if (request.getDate() == null || request.getDate().trim().isEmpty()) {
-            throw new IllegalArgumentException("예약 날짜는 필수입니다.");
-        }
-        if (request.getTime() == null || request.getTime().trim().isEmpty()) {
-            throw new IllegalArgumentException("예약 시간은 필수입니다.");
+        try {
+            if (request.getName() == null || request.getName().trim().isEmpty()) {
+                throw new IllegalArgumentException("예약자 이름은 필수입니다.");
+            }
+            if (request.getDate() == null || request.getDate().trim().isEmpty()) {
+                throw new IllegalArgumentException("예약 날짜는 필수입니다.");
+            }
+            if (request.getTime() == null || request.getTime().trim().isEmpty()) {
+                throw new IllegalArgumentException("예약 시간은 필수입니다.");
+            }
+        } catch (IllegalArgumentException e) {
+            logger.error("예약 검증 실패: {}", e.getMessage(), e);
+            throw e;
         }
     }
 }

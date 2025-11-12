@@ -9,12 +9,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<Void> handleIllegalArgumentException(IllegalArgumentException e) {
-        return ResponseEntity.badRequest().build();
+    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
     }
 
     @ExceptionHandler(InvalidReservationException.class)
-    public ResponseEntity<Void> handleNotFoundReservationException(InvalidReservationException e) {
-        return ResponseEntity.badRequest().build();
+    public ResponseEntity<String> handleInvalidReservationException(InvalidReservationException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
     }
 }
