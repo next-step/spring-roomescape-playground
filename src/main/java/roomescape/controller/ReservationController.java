@@ -1,8 +1,8 @@
 package roomescape.controller;
 
 import org.springframework.web.bind.annotation.*;
+import roomescape.dto.ReservationResponse;
 import roomescape.model.Reservation;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,8 +16,13 @@ public class ReservationController {
         reservations.add(new Reservation("코니", "2025-01-02", "11:00"));
     }
 
+    @ResponseBody
     @GetMapping
-    public List<Reservation> getAllReservations() {
-        return reservations;
+    public List<ReservationResponse> getAllReservations() {
+        return reservations.stream()
+                .map((ReservationResponse::from))
+                .toList();
     }
+
+
 }
