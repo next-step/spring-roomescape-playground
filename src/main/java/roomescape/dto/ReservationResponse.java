@@ -2,6 +2,7 @@ package roomescape.dto;
 
 import roomescape.model.Reservation;
 public record ReservationResponse(
+            long id,
             String name,
             String date,
             String time
@@ -9,9 +10,10 @@ public record ReservationResponse(
     {
         public static ReservationResponse from(Reservation reservation) {
             return new ReservationResponse(
-                    reservation.name(),
-                    reservation.date(),
-                    reservation.time()
+                    reservation.getId(),
+                    reservation.getName(),
+                    reservation.getDate(),
+                    reservation.getTime()
             );
         }
     }
