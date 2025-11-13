@@ -3,6 +3,7 @@ package roomescape.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.springframework.util.StringUtils;
 import roomescape.dto.ReservationCreateRequest;
 import roomescape.exception.ReservationNotFoundException;
 import roomescape.exception.ReservationValidationException;
@@ -24,13 +25,13 @@ public class ReservationService {
     }
 
     public Reservation createReservation(ReservationCreateRequest request) {
-        if (request.name() == null || request.name().isBlank()) {
+        if (StringUtils.hasText(request.name())) {
             throw new ReservationValidationException("이름은 공백일 수 없습니다.");
         }
-        if (request.date() == null || request.date().isBlank()) {
+        if (StringUtils.hasText(request.date())) {
             throw new ReservationValidationException("날짜는 공백일 수 없습니다.");
         }
-        if (request.time() == null || request.time().isBlank()) {
+        if (StringUtils.hasText(request.time())) {
             throw new ReservationValidationException("시간은 공백일 수 없습니다.");
         }
 
