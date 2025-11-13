@@ -1,5 +1,7 @@
 package roomescape.service;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -31,10 +33,10 @@ public class ReservationService {
         if (!StringUtils.hasText(request.name())) {
             throw new ReservationValidationException("이름은 공백일 수 없습니다.");
         }
-        if (!StringUtils.hasText(request.date())) {
+        if (request.date() == null) {
             throw new ReservationValidationException("날짜는 공백일 수 없습니다.");
         }
-        if (!StringUtils.hasText(request.time())) {
+        if (request.time() == null) {
             throw new ReservationValidationException("시간은 공백일 수 없습니다.");
         }
 
@@ -55,9 +57,9 @@ public class ReservationService {
     private void populateDefaults() {
         reservations.addAll(
                 List.of(
-                        new Reservation(id.incrementAndGet(), "브라운", "2025-01-01", "10:00"),
-                        new Reservation(id.incrementAndGet(), "브라운", "2025-01-02", "11:00"),
-                        new Reservation(id.incrementAndGet(), "브라운", "2025-01-03", "12:00")
+                        new Reservation(id.incrementAndGet(), "브라운", LocalDate.parse("2025-01-01"), LocalTime.parse("10:00")),
+                        new Reservation(id.incrementAndGet(), "브라운", LocalDate.parse("2025-01-02"), LocalTime.parse("11:00")),
+                        new Reservation(id.incrementAndGet(), "브라운", LocalDate.parse("2025-01-03"), LocalTime.parse("12:00"))
                 )
         );
     }

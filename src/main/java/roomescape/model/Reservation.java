@@ -1,3 +1,6 @@
 package roomescape.model;
 
-public record Reservation(int id, String name, String date, String time) { }
+import java.time.LocalDate;
+import java.time.LocalTime;
+
+public record Reservation(int id, String name, LocalDate date, LocalTime time) { }
