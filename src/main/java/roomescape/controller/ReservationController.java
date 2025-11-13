@@ -19,7 +19,11 @@ import roomescape.service.ReservationService;
 
 @Controller
 public class ReservationController {
-    private final ReservationService reservationService = new ReservationService();
+    private final ReservationService reservationService;
+
+    public ReservationController(ReservationService reservationService) {
+        this.reservationService = reservationService;
+    }
 
     /*
      * View Mapping
