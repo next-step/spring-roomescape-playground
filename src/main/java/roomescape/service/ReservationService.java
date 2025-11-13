@@ -25,13 +25,13 @@ public class ReservationService {
     }
 
     public Reservation createReservation(ReservationCreateRequest request) {
-        if (StringUtils.hasText(request.name())) {
+        if (!StringUtils.hasText(request.name())) {
             throw new ReservationValidationException("이름은 공백일 수 없습니다.");
         }
-        if (StringUtils.hasText(request.date())) {
+        if (!StringUtils.hasText(request.date())) {
             throw new ReservationValidationException("날짜는 공백일 수 없습니다.");
         }
-        if (StringUtils.hasText(request.time())) {
+        if (!StringUtils.hasText(request.time())) {
             throw new ReservationValidationException("시간은 공백일 수 없습니다.");
         }
 
