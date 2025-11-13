@@ -1,6 +1,7 @@
 package roomescape.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.springframework.util.StringUtils;
@@ -15,7 +16,7 @@ public class ReservationService {
 
     public ReservationService() {
         this.id = new AtomicInteger(0);
-        this.reservations = new ArrayList<>();
+        this.reservations = Collections.synchronizedList(new ArrayList<>());
 
 //        populateDefaults();
     }
