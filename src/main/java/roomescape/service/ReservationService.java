@@ -47,11 +47,7 @@ public class ReservationService {
     }
 
     public void deleteReservation(int id) {
-       boolean removed = reservations.removeIf((reservation -> reservation.id() == id));
-
-       if (!removed) {
-           throw new ReservationNotFoundException("예약을 찾을 수 없습니다.");
-       }
+       reservations.removeIf((reservation -> reservation.id() == id));
     }
 
     private void populateDefaults() {
