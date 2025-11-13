@@ -27,6 +27,9 @@ dependencies {
     // (참고) 'web' 스타터가 'starter'를 이미 포함하고 있으므로,
     // 'spring-boot-starter'는 생략해도 괜찮습니다.
 
+
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
     // 테스트에 필요한 의존성
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'io.rest-assured:rest-assured:5.3.1'
