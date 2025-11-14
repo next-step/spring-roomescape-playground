@@ -1,20 +1,43 @@
 package roomescape;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
 
 
 @RestController
+@RequestMapping("/reservations")
 public class ReservationAPIController {
-    @GetMapping("/reservations")
+    private final List<Reservation> reservations=new ArrayList<>();
+    private final AtomicLong idCounter=new AtomicLong(1);
+
+    @GetMapping
     public List<Reservation> getReservations() {
-        return Arrays.asList(
-            new Reservation(1L,"브라운", "2023-10-15","10:00"),
-            new Reservation(2L,"브라운","2025-11-01","19:00")
+        return reservations;
+    }
+    @PostMapping
+    public ResponseEntity<Reservation> addReservation(@RequestBody Map<String, String> params) {
+        Reservation reservation = new Reservation(
+            idCounter.getAndIncrement(),
+            params.get("name"),
+            params.get("date"),
+            params.get("time")
         );
+        reservations.add(reservation);
+        return ResponseEntity.status(HttpStatus.CREATED)
+            .header("Location", "/reservations/" + reservation.getId())
+            .body(reservation);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
+        reservations.removeIf(r -> r.getId().equals(id));
+        return ResponseEntity.noContent().build();
     }
 }
