@@ -3,7 +3,6 @@ package roomescape.controller;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,20 +18,16 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import roomescape.model.Reservation;
 import roomescape.exception.BadRequestReservationException;
 
+import javax.sql.DataSource;
+import java.util.*;
+
 @RestController // RestController로 변경
 @RequestMapping("/reservations")
 public class ReservationController {
-    private List<Reservation> reservations = new ArrayList<>();
-    private AtomicLong index = new AtomicLong(0);
     private JdbcTemplate jdbcTemplate;
 
-    public ReservationController(JdbcTemplate jdbcTemplate) {
+    public ReservationController(DataSource dataSource, JdbcTemplate jdbcTemplate) {
       this.jdbcTemplate = jdbcTemplate;
-    }
-
-    public void reset() {
-        reservations.clear();
-        index.set(0);
     }
 
     @GetMapping
@@ -60,24 +55,37 @@ public class ReservationController {
             newReservation.getTime() == null || newReservation.getTime().isBlank()) {
             throw new BadRequestReservationException("Required fields are missing.");
         }
-      
-        long id = index.incrementAndGet();
-        Reservation reservation = new Reservation(
-                id,
-                newReservation.getName(),
-                newReservation.getDate(),
-                newReservation.getTime()
+
+        String sql = "INSERT INTO reservation(name, date, time) VALUES (?, ?, ?)";
+
+        int insertCount = jdbcTemplate.update(
+          sql,
+          newReservation.getName(),
+          newReservation.getDate(),
+          newReservation.getTime()
         );
-        reservations.add(reservation);
+
+        if (insertCount <= 0) {
+          throw new RuntimeException("Failed to insert reservation");
+        }
+
+        Long generatedId = jdbcTemplate.queryForObject("SELECT MAX(id) FROM reservation", Long.class);
+
+        Reservation reservation = new Reservation(
+          generatedId,
+          newReservation.getName(),
+          newReservation.getDate(),
+          newReservation.getTime()
+        );
+
         return ResponseEntity.status(HttpStatus.CREATED)
-                .header("Location", "/reservations/" + id)
-                .body(reservation);
+          .header("Location", "/reservations/" + reservation.getId())
+          .body(reservation);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
-        boolean removed = reservations.removeIf(r -> r.getId().equals(id));
-        if (removed) {
+      int deletedCount = jdbcTemplate.update("DELETE FROM reservation WHERE id = ?", id);        if (deletedCount > 0) {
           return ResponseEntity.noContent().build();
         } else {
           throw new BadRequestReservationException("Reservation not found.");
