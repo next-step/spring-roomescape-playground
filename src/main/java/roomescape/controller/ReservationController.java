@@ -1,7 +1,8 @@
-package roomescape;
+package roomescape.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import roomescape.model.Reservation;
 
 import java.util.ArrayList;
 import java.util.List;
