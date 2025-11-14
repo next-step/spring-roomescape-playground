@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import roomescape.model.Reservation;
 import roomescape.exception.BadRequestReservationException;
@@ -23,6 +24,11 @@ import roomescape.exception.BadRequestReservationException;
 public class ReservationController {
     private List<Reservation> reservations = new ArrayList<>();
     private AtomicLong index = new AtomicLong(0);
+    private JdbcTemplate jdbcTemplate;
+
+    public ReservationController(JdbcTemplate jdbcTemplate) {
+      this.jdbcTemplate = jdbcTemplate;
+    }
 
     public void reset() {
         reservations.clear();
@@ -31,6 +37,18 @@ public class ReservationController {
 
     @GetMapping
     public List<Reservation> getReservation() {
+        String sql = "select id, name, date, time from reservation";
+        List<Reservation> reservations = jdbcTemplate.query(
+          sql, (resultSet, rowNum) -> {
+            Reservation reservation = new Reservation(
+              resultSet.getLong("id"),
+              resultSet.getString("name"),
+              resultSet.getString("date"),
+              resultSet.getString("time")
+            );
+            return reservation;
+          }
+        );
         return reservations;
     }
 
