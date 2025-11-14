@@ -29,6 +29,13 @@ public class ReservationAPIController {
             params.get("date"),
             params.get("time")
         );
+        String name=params.get("name");
+        String date=params.get("date");
+        String time=params.get("time");
+
+        if (name == null || name.isBlank() || date == null || date.isBlank() || time == null || time.isBlank()) {
+            throw new InvalidReservationException("name, date, time 모두 필요합니다.");
+        }
         reservations.add(reservation);
         return ResponseEntity.status(HttpStatus.CREATED)
             .header("Location", "/reservations/" + reservation.getId())
@@ -37,7 +44,10 @@ public class ReservationAPIController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
-        reservations.removeIf(r -> r.getId().equals(id));
+        boolean removed= reservations.removeIf(r -> r.getId().equals(id));
+        if (!removed) {
+            throw new InvalidReservationException("삭제할 예약이 없습니다.");
+        }
         return ResponseEntity.noContent().build();
     }
 }
