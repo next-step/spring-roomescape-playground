@@ -1,6 +1,8 @@
 package roomescape;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,17 +20,33 @@ public class ReservationController {
     private final List<Reservation> reservations = new ArrayList<>();
     private final AtomicLong index =new AtomicLong(1);
 
+    private JdbcTemplate jdbcTemplate;
+    public ReservationController(JdbcTemplate jdbcTemplate){
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
     // render
     @GetMapping("/reservation")
     public String reservationPage() {
         return "reservation";
     }
 
+    // RowMapper
+    private final RowMapper<Reservation> rowMapper = (resultSet, rowNum) ->
+        new Reservation(
+                resultSet.getLong("id"),
+                resultSet.getString("name"),
+                resultSet.getString("date"),
+                resultSet.getString("time")
+        );
+
+
     // Read
     @GetMapping("/reservations")
     @ResponseBody
-    public ResponseEntity<List<Reservation>> list() {
-        return ResponseEntity.ok().body(reservations);
+    public List<Reservation> findAllReservations() {
+        String sql = "select id,name,date,time from reservation";
+        return jdbcTemplate.query(sql,rowMapper);
     }
 
     // Create
