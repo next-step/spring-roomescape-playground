@@ -42,13 +42,13 @@ public class ReservationList {
             );
         }
 
-        long newId = index.incrementAndGet();
+        Long newId = index.incrementAndGet();
         Reservation reservation = new Reservation(newId, request.name(), request.date(), request.time());
         idToReservation.put(newId, reservation);
         return toResponse(reservation);
     }
 
-    public void delete(long id) {
+    public void delete(Long id) {
         if (!idToReservation.containsKey(id)) {
             throw new NotFoundReservationException("해당 분실물을 찾을 수 없습니다: " + id);
         }
