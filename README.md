@@ -1,4 +1,3 @@
-
 ### 컨트롤러 (Controller)
 -   `AdminController`: `@Controller`를 사용하여 웹 페이지를 반환합니다. 사용자가 특정 경로로 접속했을 때, 해당하는 HTML 파일을 렌더링하여 보여줍니다.
     -   `/`: `home.html` (홈 페이지)

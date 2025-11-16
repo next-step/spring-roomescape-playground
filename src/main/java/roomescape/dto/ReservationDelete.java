@@ -6,6 +6,4 @@ public record ReservationDelete (
         String date,
         String time
 ){
-
-
 }
