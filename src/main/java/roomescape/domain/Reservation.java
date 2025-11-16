@@ -2,32 +2,36 @@ package roomescape.domain;
 
 import roomescape.exception.InvalidReservationArgumentException;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 public class Reservation {
     private final Long id;
     private final String name;
-    private final String date;
-    private final String time;
+    private final LocalDate date;
+    private final LocalTime time;
 
-    private Reservation(Long id, String name, String date, String time) {
+    private Reservation(Long id, String name, LocalDate date, LocalTime time) {
         this.id = id;
         this.name = name;
         this.date = date;
         this.time = time;
     }
 
-    public static Reservation create(Long id, String name, String date, String time) {
-        validate(name, "이름은 비어있을 수 없습니다.");
-        validate(date, "날짜는 비어있을 수 없습니다.");
-        validate(time, "시간은 비어있을 수 없습니다.");
+    public static Reservation createReservation(Long id, String name, String stringDate, String stringTime) {
+        LocalDate date = LocalDate.parse(stringDate);
+        LocalTime time = LocalTime.parse(stringTime);
 
+        if (date.isBefore(LocalDate.now())) {
+            throw new InvalidReservationArgumentException("예약 날짜는 오늘 이후여야 합니다.");
+        }
+
+        if (date.isEqual(LocalDate.now()) && time.isBefore(LocalTime.now())) {
+            throw new InvalidReservationArgumentException("예약 시간은 현재 시간 이후여야 합니다.");
+        }
         return new Reservation(id, name, date, time);
     }
 
-    private static void validate(String value, String message) {
-        if (value == null || value.isBlank()) {
-            throw new InvalidReservationArgumentException(message);
-        }
-    }
 
     public Long getId() {
         return id;
@@ -37,11 +41,11 @@ public class Reservation {
         return name;
     }
 
-    public String getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public String getTime() {
+    public LocalTime getTime() {
         return time;
     }
 }
