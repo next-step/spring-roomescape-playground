@@ -40,7 +40,14 @@ public class ReservationController {
     public ResponseEntity<ReservationResponse> createReservation(
             @Valid @RequestBody ReservationCreateRequest requestDto
     ) {
-        Reservation savedReservation = service.addReservation(requestDto);
+
+        Reservation reservationToCreate = new Reservation(
+                requestDto.name(),
+                requestDto.date(),
+                requestDto.time()
+        );
+
+        Reservation savedReservation = service.addReservation(reservationToCreate);
 
         ReservationResponse responseDto = ReservationResponse.from(savedReservation);
         URI location = URI.create("/reservations/" + savedReservation.getId());
