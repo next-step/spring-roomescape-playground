@@ -2,10 +2,6 @@ package roomescape.repository; // (새 패키지)
 
 import org.springframework.stereotype.Repository;
 import roomescape.model.Reservation;
-import roomescape.dto.ReservationCreateRequest;
-
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
@@ -48,4 +44,5 @@ public class ReservationRepository {
     public void clear() {
         reservations.clear();
         counter.set(0L);
-    }}
+    }
+}

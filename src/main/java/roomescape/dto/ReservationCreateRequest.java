@@ -2,10 +2,6 @@ package roomescape.dto;
 
 import jakarta.validation.constraints.NotBlank;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-
-
 public record ReservationCreateRequest(
 
         @NotBlank(message = "이름은 필수 항목입니다.")

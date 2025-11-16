@@ -1,4 +1,4 @@
-package roomescape.controller; // (또는 roomescape.exception)
+package roomescape.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -19,8 +19,8 @@ public class GlobalExceptionHandler {
         ex.getBindingResult()
                 .getFieldErrors()
                 .forEach(error ->
-                errors.put(error.getField(), error.getDefaultMessage())
-        );
+                        errors.put(error.getField(), error.getDefaultMessage())
+                );
         return ResponseEntity.badRequest().body(errors);
     }
 

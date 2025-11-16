@@ -12,8 +12,7 @@ public class AdminController {
     }
 
     @GetMapping("/reservation")
-    public String reservation()
-    {
+    public String reservation() {
         return "reservation";
     }
 }
