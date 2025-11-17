@@ -43,15 +43,18 @@ public class ReservationService {
                     time
             );
 
-        reservationList.add(newReservation);
-        return ReservationResponse.from(newReservation);
+            reservationList.add(newReservation);
+            return ReservationResponse.from(newReservation);
+        }
+        catch (DateTimeParseException e) {
+            throw new BadRequestReservationException(ErrorMessage.INVALID_DATE_TIME_FORMAT.getMessage());        }
     }
 
     public void deleteReservation(Long id) {
         boolean removed = reservationList.removeIf(reservation -> reservation.getId().equals(id));
 
         if (!removed) {
-            throw new NotFoundReservationException("예약을 찾을 수 없습니다");
+            throw new NotFoundReservationException(ErrorMessage.NOT_FOUND_RESERVATION.getMessage());
         }
     }
 }
