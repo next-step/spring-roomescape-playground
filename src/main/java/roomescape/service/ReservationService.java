@@ -20,6 +20,10 @@ public class ReservationService {
     }
 
     public Reservation addReservation(Reservation newReservation) {
+        if(reservationRepository.existsByDateAndTime(newReservation.getDate(),newReservation.getTime()))
+        {
+            throw new IllegalArgumentException("이미 예약된 시간입니다!");
+        }
         return reservationRepository.save(newReservation);
     }
 

@@ -38,7 +38,7 @@ public class ReservationRepository {
     public Reservation save(Reservation reservation) {
         String sql = "INSERT INTO reservation (name, date, time) VALUES (?,?,?)";
 
-        KeyHolder keyHolder = new GeneratedKeyHolder();// DB에서 생성해준 auto-increment를 받아서 와준다.
+        KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection ->{
             PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
@@ -66,16 +66,18 @@ public class ReservationRepository {
     }
 
     public void deleteById(Long id) {
-        String sql = "DELETE FROM reservation WHERE id =?";
-        jdbcTemplate.update(sql, id);
+        String deleteSql = "DELETE FROM reservation WHERE id = ?";
+        jdbcTemplate.update(deleteSql, id);
     }
 
     public void clear() {
-        // DELETE FROM reservations; -> 데이터를 모두 지웁니다. (느림)
-        //String sql = "DELETE FROM reservations";
-        // TRUNCATE TABLE reservations; -> 테이블을 통째로 비웁니다. (빠름)
-        // 테스트용 clear는 TRUNCATE가 ID 카운터(auto_increment)까지 1로 초기화해줘서 더 좋습니다.
         String sql = "TRUNCATE TABLE reservation";
         jdbcTemplate.update(sql);
+    }
+
+    public boolean existsByDateAndTime(String date, String time) {
+        String sql = "SELECT count(*) FROM reservations WHERE date = ? AND time = ?";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, date, time);
+        return count != null && count > 0;
     }
 }
