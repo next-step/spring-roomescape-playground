@@ -30,7 +30,10 @@ public class ReservationService {
     }
 
     public Reservation createReservation(ReservationCreateRequest request) {
-        Reservation reservation = new Reservation(id.incrementAndGet(), request.name(), request.date(), request.time());
+        LocalDate date = LocalDate.parse(request.date());
+        LocalTime time = LocalTime.parse(request.time());
+
+        Reservation reservation = new Reservation(id.incrementAndGet(), request.name(), date, time);
         reservations.add(reservation);
 
         return reservation;

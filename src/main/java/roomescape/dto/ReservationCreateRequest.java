@@ -4,14 +4,16 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import roomescape.validation.ValidDate;
+import roomescape.validation.ValidTime;
 
 public record ReservationCreateRequest(
         @NotBlank(message = "이름은 공백일 수 없습니다.")
         String name,
 
-        @NotNull(message = "날짜는 반드시 입력해야 합니다.")
-        LocalDate date,
+        @ValidDate(message = "날짜 형식이 올바르지 않습니다. 예: yyyy-MM-dd")
+        String date,
 
-        @NotNull(message = "시간은 반드시 입력해야 합니다.")
-        LocalTime time
+        @ValidTime(message = "시간 형식이 올바르지 않습니다. 예: HH:mm")
+        String time
 ) { }
