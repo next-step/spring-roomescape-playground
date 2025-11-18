@@ -14,7 +14,8 @@ public record ReservationCreateRequest(
 
         @NotBlank(message = "시간은 필수 항목입니다.")
         String time
-) { public Reservation toEntity() {
-        return  Reservation.create(name, date, time);
-}
+) {
+    public Reservation toEntity() {
+        return Reservation.create(name, date, time);
+    }
 }

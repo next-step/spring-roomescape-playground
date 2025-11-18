@@ -1,4 +1,4 @@
-package roomescape.repository; // 패키지는 그대로 둡니다.
+package roomescape.repository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -6,10 +6,11 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import roomescape.model.Reservation; // Reservation 모델 import
+import roomescape.model.Reservation;
 
 import java.sql.PreparedStatement;
 import java.util.List;
+
 @Repository
 public class ReservationRepository {
 
@@ -17,11 +18,11 @@ public class ReservationRepository {
 
     @Autowired
     public ReservationRepository(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate=jdbcTemplate;
+        this.jdbcTemplate = jdbcTemplate;
     }
 
-    private final RowMapper<Reservation> reservationRowMapper = (rs,rowNum)->{
-        return  Reservation.of(
+    private final RowMapper<Reservation> reservationRowMapper = (rs, rowNum) -> {
+        return Reservation.of(
                 rs.getLong("id"),
                 rs.getString("name"),
                 rs.getString("date"),
@@ -29,10 +30,9 @@ public class ReservationRepository {
         );
     };
 
-    public List<Reservation> findAll()
-    {
+    public List<Reservation> findAll() {
         String sql = "SELECT id, name, date, time FROM reservation";
-        return jdbcTemplate.query(sql,reservationRowMapper);
+        return jdbcTemplate.query(sql, reservationRowMapper);
     }
 
     public Reservation save(Reservation reservation) {
@@ -40,17 +40,17 @@ public class ReservationRepository {
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
-        jdbcTemplate.update(connection ->{
+        jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
             ps.setString(1, reservation.getName());
-            ps.setString(2,reservation.getDate());
-            ps.setString(3,reservation.getTime());
+            ps.setString(2, reservation.getDate());
+            ps.setString(3, reservation.getTime());
             return ps;
         }, keyHolder);
 
         Long id = keyHolder.getKey().longValue();
 
-        return  Reservation.of(
+        return Reservation.of(
                 id,
                 reservation.getName(),
                 reservation.getDate(),
@@ -61,8 +61,8 @@ public class ReservationRepository {
     public boolean existsById(Long id) {
         String sql = "SELECT COUNT(*) FROM reservation WHERE id = ?";
 
-        Integer count = jdbcTemplate.queryForObject(sql,Integer.class, id);
-        return count>0;
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, id);
+        return count > 0;
     }
 
     public void deleteById(Long id) {

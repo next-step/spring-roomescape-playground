@@ -2,6 +2,7 @@ package roomescape.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import roomescape.model.Reservation;
 import roomescape.repository.IdempotencyRepository;
 import roomescape.repository.ReservationRepository;
@@ -24,6 +25,15 @@ public class ReservationService {
         return reservationRepository.findAll();
     }
 
+    public Reservation addReservation(Reservation newReservation) {
+        if (reservationRepository.existsByDateAndTime(newReservation.getDate(), newReservation.getTime())) {
+            throw new IllegalArgumentException("이미 예약된 시간입니다!");
+        }
+
+        return reservationRepository.save(newReservation);
+    }
+
+    @Transactional
     public Reservation addReservation(Reservation newReservation, String idempotencyKey) {
 
         if (idempotencyRepository.exists(idempotencyKey)) {
@@ -31,8 +41,7 @@ public class ReservationService {
         }
         idempotencyRepository.save(idempotencyKey);
 
-        if(reservationRepository.existsByDateAndTime(newReservation.getDate(),newReservation.getTime()))
-        {
+        if (reservationRepository.existsByDateAndTime(newReservation.getDate(), newReservation.getTime())) {
             throw new IllegalArgumentException("이미 예약된 시간입니다!");
         }
 

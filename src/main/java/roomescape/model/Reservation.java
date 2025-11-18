@@ -1,7 +1,6 @@
 package roomescape.model;
 
-public class Reservation
-{
+public class Reservation {
     Long id;
     String name;
     String date;
@@ -24,11 +23,11 @@ public class Reservation
         return time;
     }
 
-    private  Reservation(Long id, String name, String date, String time) {
+    private Reservation(Long id, String name, String date, String time) {
         this.id = id;
         this.date = date;
         this.time = time;
-        this.name=name;
+        this.name = name;
     }
 
     public static Reservation create(String name, String date, String time) {
