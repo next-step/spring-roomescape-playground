@@ -21,7 +21,7 @@ public class ReservationRepository {
     }
 
     private final RowMapper<Reservation> reservationRowMapper = (rs,rowNum)->{
-        return new Reservation(
+        return  Reservation.of(
                 rs.getLong("id"),
                 rs.getString("name"),
                 rs.getString("date"),
@@ -50,7 +50,7 @@ public class ReservationRepository {
 
         Long id = keyHolder.getKey().longValue();
 
-        return new Reservation(
+        return  Reservation.of(
                 id,
                 reservation.getName(),
                 reservation.getDate(),
