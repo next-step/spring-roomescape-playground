@@ -38,16 +38,10 @@ public class ReservationController {
 
     @PostMapping
     public ResponseEntity<ReservationResponse> createReservation(
-            @Valid @RequestBody ReservationCreateRequest requestDto
+            @Valid @RequestBody ReservationCreateRequest requestDto,
+            @RequestHeader("Idempotency-Key") String idempotencyKey
     ) {
-
-        Reservation reservationToCreate = new Reservation(
-                requestDto.name(),
-                requestDto.date(),
-                requestDto.time()
-        );
-
-        Reservation savedReservation = service.addReservation(reservationToCreate);
+        Reservation savedReservation = service.addReservation(requestDto.toEntity(), idempotencyKey);
 
         ReservationResponse responseDto = ReservationResponse.from(savedReservation);
         URI location = URI.create("/reservations/" + savedReservation.getId());
