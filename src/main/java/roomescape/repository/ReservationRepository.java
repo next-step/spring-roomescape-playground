@@ -1,49 +1,81 @@
-package roomescape.repository; // (새 패키지)
+package roomescape.repository; // 패키지는 그대로 둡니다.
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import roomescape.model.Reservation;
+import roomescape.model.Reservation; // Reservation 모델 import
 
-import java.util.ArrayList;
+import java.sql.PreparedStatement;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
-
 @Repository
 public class ReservationRepository {
 
-    private final List<Reservation> reservations = new ArrayList<>();
-    private final AtomicLong counter = new AtomicLong();
+    private final JdbcTemplate jdbcTemplate;
 
-    public ReservationRepository() {
-        this.save(new Reservation(null, "브라운", "2025-01-01", "12:0"));
-        this.save(new Reservation(null, "코니", "2025-01-02", "11:00"));
+    @Autowired
+    public ReservationRepository(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate=jdbcTemplate;
     }
 
-    public List<Reservation> findAll() {
-        return new ArrayList<>(reservations);
+    private final RowMapper<Reservation> reservationRowMapper = (rs,rowNum)->{
+        return new Reservation(
+                rs.getLong("id"),
+                rs.getString("name"),
+                rs.getString("date"),
+                rs.getString("time")
+        );
+    };
+
+    public List<Reservation> findAll()
+    {
+        String sql = "SELECT id, name, date, time FROM reservation";
+        return jdbcTemplate.query(sql,reservationRowMapper);
     }
 
     public Reservation save(Reservation reservation) {
-        Reservation savedReservation = new Reservation(
-                counter.incrementAndGet(),
+        String sql = "INSERT INTO reservation (name, date, time) VALUES (?,?,?)";
+
+        KeyHolder keyHolder = new GeneratedKeyHolder();// DB에서 생성해준 auto-increment를 받아서 와준다.
+
+        jdbcTemplate.update(connection ->{
+            PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
+            ps.setString(1, reservation.getName());
+            ps.setString(2,reservation.getDate());
+            ps.setString(3,reservation.getName());
+            return ps;
+        }, keyHolder);
+
+        Long id = keyHolder.getKey().longValue();
+
+        return new Reservation(
+                id,
                 reservation.getName(),
                 reservation.getDate(),
                 reservation.getTime()
         );
-        reservations.add(savedReservation);
-        return savedReservation;
     }
 
     public boolean existsById(Long id) {
-        return reservations.stream()
-                .anyMatch(reservation -> reservation.getId().equals(id));
+        String sql = "SELECT COUNT(*) FROM reservation WHERE id = ?";
+
+        Integer count = jdbcTemplate.queryForObject(sql,Integer.class, id);
+        return count>0;
     }
 
     public void deleteById(Long id) {
-        reservations.removeIf(reservation -> reservation.getId().equals(id));
+        String sql = "DELETE FROM reservation WHERE id =?";
+        jdbcTemplate.update(sql, id);
     }
 
     public void clear() {
-        reservations.clear();
-        counter.set(0L);
+        // DELETE FROM reservations; -> 데이터를 모두 지웁니다. (느림)
+        //String sql = "DELETE FROM reservations";
+        // TRUNCATE TABLE reservations; -> 테이블을 통째로 비웁니다. (빠름)
+        // 테스트용 clear는 TRUNCATE가 ID 카운터(auto_increment)까지 1로 초기화해줘서 더 좋습니다.
+        String sql = "TRUNCATE TABLE reservation";
+        jdbcTemplate.update(sql);
     }
 }
