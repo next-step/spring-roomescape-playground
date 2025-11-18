@@ -13,23 +13,19 @@ import roomescape.dto.ReservationRequest;
 import roomescape.exception.InvalidReservationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import roomescape.repository.ReservationRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.net.URI;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Controller
 public class ReservationController {
 
-    private final AtomicLong index = new AtomicLong(0);
-    private final List<Reservation> reservations = new ArrayList<>();
+    private final ReservationRepository repository;
     private static final Logger logger = LoggerFactory.getLogger(ReservationController.class);
 
-    public ReservationController() {
-        reservations.add(new Reservation(index.incrementAndGet(), "브라운", "2023-01-01", "10:00"));
-        reservations.add(new Reservation(index.incrementAndGet(), "브라운", "2023-01-02", "11:00"));
-        reservations.add(new Reservation(index.incrementAndGet(), "브라운", "2023-01-03", "12:00"));
+    public ReservationController(ReservationRepository repository) {
+        this.repository = repository;
     }
 
     @GetMapping("/reservation")
@@ -40,7 +36,7 @@ public class ReservationController {
     @GetMapping("/reservations")
     @ResponseBody
     public List<Reservation> getReservations() {
-        return reservations;
+        return repository.findAll();
     }
 
     @PostMapping("/reservations")
@@ -48,13 +44,7 @@ public class ReservationController {
     public ResponseEntity<Reservation> createReservation(@RequestBody ReservationRequest request) {
         validateReservationRequest(request);
 
-        Reservation reservation = new Reservation(
-                index.incrementAndGet(),
-                request.getName(),
-                request.getDate(),
-                request.getTime()
-        );
-        reservations.add(reservation);
+        Reservation reservation = repository.save(request);
 
         return ResponseEntity
                 .created(URI.create("/reservations/" + reservation.getId()))
@@ -64,7 +54,7 @@ public class ReservationController {
     @DeleteMapping("/reservations/{id}")
     @ResponseBody
     public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
-        boolean removed = reservations.removeIf(reservation -> reservation.getId().equals(id));
+        boolean removed = repository.deleteById(id);
 
         if (!removed) {
             throw new InvalidReservationException("존재하지 않는 예약입니다.");
