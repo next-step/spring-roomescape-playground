@@ -22,10 +22,9 @@ public record ReservationCreateRequest(
         @JsonFormat(pattern = "HH:mm")
         LocalTime time
 ) {
-        public Reservation toEntity()
-        {
-                return new Reservation(name,date,time);
-        }
+    public Reservation toEntity() {
+        return new Reservation(name, date, time);
+    }
 }
 
 

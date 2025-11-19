@@ -41,11 +41,7 @@ public class ReservationController {
             @Valid @RequestBody ReservationCreateRequest requestDto
     ) {
 
-        Reservation reservationToCreate = new Reservation(
-                requestDto.name(),
-                requestDto.date(),
-                requestDto.time()
-        );
+        Reservation reservationToCreate = requestDto.toEntity();
 
         Reservation savedReservation = service.addReservation(reservationToCreate);
 
