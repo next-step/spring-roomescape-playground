@@ -52,7 +52,7 @@ public class ReservationRepository {
     }
 
     public void deleteById(Long id) {
-       reservations.removeIf(reservation -> reservation.getId().equals(id));
+        reservations.removeIf(reservation -> reservation.getId().equals(id));
     }
 
     public void clear() {
