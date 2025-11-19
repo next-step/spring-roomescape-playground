@@ -1,37 +1,28 @@
 package roomescape.model;
 
-public class Reservation
-{
-    Long id;
-    String name;
-    String date;
-    String time;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
+public class Reservation {
+    private Long id;
+    private String name;
+    private LocalDate date;
+    private LocalTime time;
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public String getTime() {
-        return time;
-    }
-
-    public Reservation(String name, String date, String time) {
+    // 생성자
+    public Reservation(Long id, String name, LocalDate date, LocalTime time) {
+        this.id = id;
         this.name = name;
         this.date = date;
         this.time = time;
     }
 
-    public Reservation(Long id, String name, String date, String time) {
-        this(name, date, time);
-        this.id = id;
+    public Reservation(String name, LocalDate date, LocalTime time) {
+        this(null, name, date, time);
     }
+
+    public Long getId() { return id; }
+    public String getName() { return name; }
+    public LocalDate getDate() { return date; }
+    public LocalTime getTime() { return time; }
 }

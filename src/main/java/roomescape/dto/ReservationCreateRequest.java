@@ -1,6 +1,11 @@
 package roomescape.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
+import roomescape.model.Reservation;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 
 public record ReservationCreateRequest(
@@ -9,10 +14,17 @@ public record ReservationCreateRequest(
         String name,
 
         @NotBlank(message = "날짜는 필수 항목입니다.")
-        String date,
+        @JsonFormat(pattern = "yyyy-MM-dd")
+        LocalDate date,
 
         @NotBlank(message = "시간은 필수 항목입니다.")
-        String time
+        @JsonFormat(pattern = "HH:mm")
+        LocalTime time
 ) {
-
+        public Reservation toEntity()
+        {
+                return new Reservation(name,date,time);
+        }
 }
+
+
