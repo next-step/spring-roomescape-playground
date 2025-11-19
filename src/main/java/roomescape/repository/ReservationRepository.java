@@ -1,4 +1,4 @@
-package roomescape.repository; // (새 패키지)
+package roomescape.repository;
 
 import org.springframework.stereotype.Repository;
 import roomescape.model.Reservation;
@@ -38,8 +38,8 @@ public class ReservationRepository {
                 .anyMatch(reservation -> reservation.getId().equals(id));
     }
 
-    public void deleteById(Long id) {
-        reservations.removeIf(reservation -> reservation.getId().equals(id));
+    public Boolean deleteById(Long id) {
+       return reservations.removeIf(reservation -> reservation.getId().equals(id));
     }
 
     public void clear() {
