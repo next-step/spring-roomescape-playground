@@ -46,7 +46,7 @@ public class ReservationRepository {
         }, keyHolder);
 
         Number key = keyHolder.getKey();
-        long id = (key != null) ? key.longValue() : -1L;
+        long id = (key != null) ? key.longValue() : null;
         return new Reservation(id, req.getName(), req.getDate(), req.getTime());
     }
 

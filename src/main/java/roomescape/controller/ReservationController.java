@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
+import roomescape.dao.ReservationDao;
 import roomescape.domain.Reservation;
 import roomescape.dto.ReservationRequest;
 import roomescape.exception.InvalidReservationException;
@@ -23,10 +24,13 @@ public class ReservationController {
 
     private final ReservationRepository repository;
     private static final Logger logger = LoggerFactory.getLogger(ReservationController.class);
+    private final ReservationDao reservationDao;
 
-    public ReservationController(ReservationRepository repository) {
+    public ReservationController(ReservationRepository repository, ReservationDao reservationDao) {
         this.repository = repository;
+        this.reservationDao = reservationDao;
     }
+
 
     @GetMapping("/reservation")
     public String reservationPage() {
@@ -36,7 +40,7 @@ public class ReservationController {
     @GetMapping("/reservations")
     @ResponseBody
     public List<Reservation> getReservations() {
-        return repository.findAll();
+        return reservationDao.findAll();  // 변경된 부분
     }
 
     @PostMapping("/reservations")
