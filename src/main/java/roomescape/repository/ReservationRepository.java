@@ -9,6 +9,8 @@ import org.springframework.stereotype.Repository;
 import roomescape.model.Reservation;
 
 import java.sql.PreparedStatement;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 @Repository
@@ -25,8 +27,8 @@ public class ReservationRepository {
         return Reservation.of(
                 rs.getLong("id"),
                 rs.getString("name"),
-                rs.getString("date"),
-                rs.getString("time")
+                rs.getObject("date", LocalDate.class),
+                rs.getObject("time", LocalTime.class)
         );
     };
 
@@ -43,8 +45,8 @@ public class ReservationRepository {
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
             ps.setString(1, reservation.getName());
-            ps.setString(2, reservation.getDate());
-            ps.setString(3, reservation.getTime());
+            ps.setObject(2, reservation.getDate());
+            ps.setObject(3, reservation.getTime());
             return ps;
         }, keyHolder);
 
@@ -75,7 +77,7 @@ public class ReservationRepository {
         jdbcTemplate.update(sql);
     }
 
-    public boolean existsByDateAndTime(String date, String time) {
+    public boolean existsByDateAndTime(LocalDate date, LocalTime time) {
         String sql = "SELECT count(*) FROM reservation WHERE date = ? AND time = ?";
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class, date, time);
         return count != null && count > 0;
