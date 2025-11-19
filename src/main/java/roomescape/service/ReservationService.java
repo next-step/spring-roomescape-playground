@@ -9,21 +9,18 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.springframework.stereotype.Service;
 import roomescape.dto.ReservationCreateRequest;
 import roomescape.model.Reservation;
+import roomescape.repository.ReservationRepository;
 
 @Service
 public class ReservationService {
-    private final AtomicInteger id;
-    private final List<Reservation> reservations;
+    private final ReservationRepository reservationRepository;
 
-    public ReservationService() {
-        this.id = new AtomicInteger(0);
-        this.reservations = Collections.synchronizedList(new ArrayList<>());
-
-//        populateDefaults();
+    public ReservationService(ReservationRepository reservationRepository) {
+        this.reservationRepository = reservationRepository;
     }
 
     public List<Reservation> getReservations() {
-        return reservations;
+        return reservationRepository.findAll();
     }
 
     public Reservation createReservation(ReservationCreateRequest request) {
@@ -38,15 +35,5 @@ public class ReservationService {
 
     public void deleteReservation(int id) {
        reservations.removeIf((reservation -> reservation.id() == id));
-    }
-
-    private void populateDefaults() {
-        reservations.addAll(
-                List.of(
-                        new Reservation(id.incrementAndGet(), "브라운", LocalDate.parse("2025-01-01"), LocalTime.parse("10:00")),
-                        new Reservation(id.incrementAndGet(), "브라운", LocalDate.parse("2025-01-02"), LocalTime.parse("11:00")),
-                        new Reservation(id.incrementAndGet(), "브라운", LocalDate.parse("2025-01-03"), LocalTime.parse("12:00"))
-                )
-        );
     }
 }
