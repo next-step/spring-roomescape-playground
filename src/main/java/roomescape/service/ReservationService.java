@@ -1,30 +1,30 @@
 package roomescape.service;
 
 import org.springframework.stereotype.Service;
-import roomescape.exception.BadRequestReservationException;
-import roomescape.exception.ErrorMessage;
-import roomescape.exception.NotFoundReservationException;
 import roomescape.domain.Reservation;
 import roomescape.dto.ReservationRequest;
 import roomescape.dto.ReservationResponse;
+import roomescape.exception.BadRequestReservationException;
+import roomescape.exception.ErrorMessage;
+import roomescape.exception.NotFoundReservationException;
+import roomescape.repository.ReservationRepository;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 @Service
 public class ReservationService {
+    private ReservationRepository reservationRepository;
 
-    private final List<Reservation> reservationList = Collections.synchronizedList(new ArrayList<>());
-    private final AtomicLong index = new AtomicLong(0);
+    public ReservationService(ReservationRepository reservationRepository) {
+        this.reservationRepository = reservationRepository;
+    }
 
     public List<ReservationResponse> getAllReservations() {
-        return reservationList.stream()
+        return reservationRepository.findAll().stream()
                 .map(ReservationResponse::from)
                 .collect(Collectors.toList());
     }
@@ -34,26 +34,25 @@ public class ReservationService {
             LocalDate date = LocalDate.parse(request.date());
             LocalTime time = LocalTime.parse(request.time());
 
-            Long newId = index.incrementAndGet();
-
-            Reservation newReservation = new Reservation(
-                    newId,
+            Reservation reservation = new Reservation(
+                    null,
                     request.name(),
                     date,
                     time
             );
 
-            reservationList.add(newReservation);
-            return ReservationResponse.from(newReservation);
+            Reservation savedReservation = reservationRepository.save(reservation);
+            return ReservationResponse.from(savedReservation);
+
+        } catch (DateTimeParseException e) {
+            throw new BadRequestReservationException(ErrorMessage.INVALID_DATE_TIME_FORMAT.getMessage());
         }
-        catch (DateTimeParseException e) {
-            throw new BadRequestReservationException(ErrorMessage.INVALID_DATE_TIME_FORMAT.getMessage());        }
     }
 
     public void deleteReservation(Long id) {
-        boolean removed = reservationList.removeIf(reservation -> reservation.getId().equals(id));
+        int deletedCount = reservationRepository.deleteById(id);
 
-        if (!removed) {
+        if (deletedCount == 0) {
             throw new NotFoundReservationException(ErrorMessage.NOT_FOUND_RESERVATION.getMessage());
         }
     }
