@@ -1,0 +1,71 @@
+[33mcommit db4464b2ee2776fc1a7e2c33ac06db51dca35c96[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mroomescape-taewoo[m[33m, [m[1;31morigin/roomescape-taewoo[m[33m)[m
+Author: 김태우 <162796810+tae-wooo@users.noreply.github.com>
+Date:   Sun Nov 9 04:45:22 2025 +0900
+
+    Reservation 클래스 record 타입으로 전환
+
+[33mcommit 5e335e0b40bec777c2c887a4361dd6d0be5d1f0d[m
+Author: 김태우 <162796810+tae-wooo@users.noreply.github.com>
+Date:   Sun Nov 9 04:29:07 2025 +0900
+
+     dependencies scope 별 그룹 정리
+
+[33mcommit e81315342c391df2ce1b226f975f500dca48c502[m
+Author: taewoo <dnxorla03@naver.com>
+Date:   Thu Nov 6 16:17:56 2025 +0900
+
+    README 프로젝트 구조 추가
+
+[33mcommit 65a2b867e22ee4e1c972ae64fb560d3069e2d329[m
+Author: taewoo <dnxorla03@naver.com>
+Date:   Thu Nov 6 15:54:16 2025 +0900
+
+    README파일 추가
+
+[33mcommit db298e1d1f6dc6fbaa4eb3e5644e8671a1b76e1a[m
+Author: taewoo <dnxorla03@naver.com>
+Date:   Thu Nov 6 06:35:18 2025 +0900
+
+    1,2단계 테스트 코드
+
+[33mcommit 6cc4f11270dbd5587e645d58012541d95b7e8e3a[m
+Author: taewoo <dnxorla03@naver.com>
+Date:   Thu Nov 6 06:34:50 2025 +0900
+
+    예약 페이지 응답 및 예약 목록 조회 기능 구현
+
+[33mcommit 0599c6420f34983907795296d8e5bc82db75ea61[m
+Author: taewoo <dnxorla03@naver.com>
+Date:   Thu Nov 6 06:33:49 2025 +0900
+
+    예약 조회 기능 테스트를 위한 기본 Reservation 데이터 정의
+
+[33mcommit 84a59b597b453e7c1b9768671b8f552aa0820eb2[m
+Author: taewoo <dnxorla03@naver.com>
+Date:   Thu Nov 6 04:11:06 2025 +0900
+
+    index.html 파일명 규칙 대신 / 매핑을 통해 home.html 을 초기화면으로 반환하도록 구현
+
+[33mcommit 4ee151079690731ed3b64b3d94a513ed8580dc8c[m
+Author: taewoo <dnxorla03@naver.com>
+Date:   Thu Nov 6 04:09:41 2025 +0900
+
+    web 기능 및 thymeleaf 템플릿 엔진 의존성 추가
+
+[33mcommit 13c25ffbfd35945a01ec7efd07f0e56638ca0082[m[33m ([m[1;31morigin/zinyan[m[33m, [m[1;31morigin/wzrabbit[m[33m, [m[1;31morigin/wfs0502[m[33m, [m[1;31morigin/wateralsie[m[33m, [m[1;31morigin/uoehisx[m[33m, [m[1;31morigin/taeyeonroyce[m[33m, [m[1;31morigin/tae-wooo[m[33m, [m[1;31morigin/stonecau[m[33m, [m[1;31morigin/sseung3424[m[33m, [m[1;31morigin/sohvun[m[33m, [m[1;31morigin/shin-mallang[m[33m, [m[1;31morigin/programming-alpaca[m[33m, [m[1;31morigin/nyeroni[m[33m, [m[1;31morigin/nova0128[m[33m, [m[1;31morigin/nonactress[m[33m, [m[1;31morigin/newvh[m[33m, [m[1;31morigin/mintcoke123[m[33m, [m[1;31morigin/marriedsenior[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/leeyoonjoo[m[33m, [m[1;31morigin/leegwichan[m[33m, [m[1;31morigin/kyy00n[m[33m, [m[1;31morigin/kyuwon-choi[m[33m, [m[1;31morigin/kwakminu[m[33m, [m[1;31morigin/kokodak[m[33m, [m[1;31morigin/kimsky247-coder[m[33m, [m[1;31morigin/ke-62[m[33m, [m[1;31morigin/kang1221[m[33m, [m[1;31morigin/jxxxxxn[m[33m, [m[1;31morigin/jihyeonanan[m[33m, [m[1;31morigin/jelee2555[m[33m, [m[1;31morigin/idle2534[m[33m, [m[1;31morigin/idealhyun[m[33m, [m[1;31morigin/hong-sile[m[33m, [m[1;31morigin/gy102912[m[33m, [m[1;31morigin/fanngineer[m[33m, [m[1;31morigin/corjqnrl[m[33m, [m[1;31morigin/chemistryx[m[33m, [m[1;31morigin/breadquokka[m[33m, [m[1;31morigin/boyekim[m[33m, [m[1;31morigin/bingle625[m[33m, [m[1;31morigin/bbggr1209[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;31morigin/8parks[m[33m, [m[1;32mmain[m[33m)[m
+Author: boorownie <probitanima11@gmail.com>
+Date:   Tue Aug 15 01:12:26 2023 +0900
+
+    default
+
+[33mcommit 94aebe2cc437605d73f15fc851e9504a976c3c37[m
+Author: boorownie <probitanima11@gmail.com>
+Date:   Tue Aug 15 01:12:02 2023 +0900
+
+    init
+
+[33mcommit ef8a7256668457b8b9be3685163a937c2b1e6070[m
+Author: 류성현 <4353846+boorownie@users.noreply.github.com>
+Date:   Tue Aug 15 01:16:06 2023 +0900
+
+    Initial commit
