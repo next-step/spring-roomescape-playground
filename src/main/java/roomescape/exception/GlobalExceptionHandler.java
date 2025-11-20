@@ -1,6 +1,7 @@
 package roomescape.exception;
 
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -40,4 +41,11 @@ public class GlobalExceptionHandler {
                 .badRequest()
                 .body(new ErrorResponse("날짜 또는 시간이 기본형식이 아닙니다. ex) 2025-11-16, 18:23"));
     }
+
+    @ExceptionHandler(DataAccessException.class)
+    public ResponseEntity<ErrorResponse> handleDBException(DataAccessException e) {
+        return ResponseEntity.internalServerError()
+                .body(new ErrorResponse("DB 처리 중 기술적 예외가 발생했습니다."));
+    }
+
 }
