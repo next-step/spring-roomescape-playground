@@ -12,6 +12,7 @@ public class Reservation {
     private final String time;
 
     private Reservation(Long id, String name, String date, String time) {
+
         this.id = id;
         this.name = name;
         this.date = date;
@@ -33,7 +34,9 @@ public class Reservation {
         if (date.isEqual(LocalDate.now()) && time.isBefore(LocalTime.now())) {
             throw new InvalidReservationArgumentException("예약 시간은 현재 시간 이후여야 합니다.");
         }
+
         return new Reservation(id, name, stringDate, stringTime);
+
     }
 
 
@@ -50,6 +53,7 @@ public class Reservation {
     }
 
     public String getTime() {
+
         return time;
     }
 }

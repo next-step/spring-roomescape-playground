@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import roomescape.domain.Reservation;
 import roomescape.dto.ReservationRequest;
 import roomescape.dto.ReservationResponse;
+
 import roomescape.service.ReservationService;
 
 import java.net.URI;
@@ -29,6 +30,7 @@ public class ReservationController {
     @PostMapping("/reservations")
     public ResponseEntity<ReservationResponse> createReservations(@Valid @RequestBody ReservationRequest request) {
         Reservation newReservation = reservationService.registerReservation(request.name(), request.date(), request.time());
+
         return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).
                 body(ReservationResponse.from(newReservation));
     }

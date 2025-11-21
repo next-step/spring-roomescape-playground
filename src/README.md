@@ -52,6 +52,7 @@
 - /reservations POST 요청에서 예약 추가
 - /reservations/{id} DELETE 요청에서 예약 삭제
 
+
 ### RoomescapeApplication
 
 - Entry Point
@@ -60,6 +61,7 @@
 
 - / 요청 시 home.html 응답
 - /reservation 요청시 reservation.html 응답
+
 
 ### Reservation Service
 
@@ -80,6 +82,7 @@
 ### ReservationResponse
 
 - Reservation 도메인을 응답 형태로 변환하는 DTO
+
 
 ### GlobalExceptionHandler
 

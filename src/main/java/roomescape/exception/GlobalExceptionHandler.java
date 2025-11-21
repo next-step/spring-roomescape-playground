@@ -1,6 +1,7 @@
 package roomescape.exception;
 
 
+
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -47,5 +48,4 @@ public class GlobalExceptionHandler {
         return ResponseEntity.internalServerError()
                 .body(new ErrorResponse("DB 처리 중 기술적 예외가 발생했습니다."));
     }
-
 }
