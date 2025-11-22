@@ -38,13 +38,14 @@ public class ReservationRepository {
         String sql = "INSERT INTO reservation(name, date, time) VALUES (?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
-        jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
-            ps.setString(1, reservation.getName());
-            ps.setObject(2, reservation.getDate());
-            ps.setObject(3, reservation.getTime());
-            return ps;
-        }, keyHolder);
+        jdbcTemplate.update(
+                connection -> {
+                    PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
+                    ps.setString(1, reservation.getName());
+                    ps.setObject(2, reservation.getDate());
+                    ps.setObject(3, reservation.getTime());
+                    return ps;
+                }, keyHolder);
 
         long id = Objects.requireNonNull(keyHolder.getKey()).longValue();
         return new Reservation(id, reservation.getName(), reservation.getDate(), reservation.getTime());
