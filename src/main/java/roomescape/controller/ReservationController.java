@@ -1,5 +1,6 @@
 package roomescape.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,8 +12,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import roomescape.domain.Reservation;
 import roomescape.dto.ReservationRequest;
 import roomescape.exception.InvalidReservationException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import roomescape.repository.ReservationRepository;
 
 import java.util.List;
@@ -22,31 +21,33 @@ import java.net.URI;
 public class ReservationController {
 
     private final ReservationRepository repository;
-    private static final Logger logger = LoggerFactory.getLogger(ReservationController.class);
 
     public ReservationController(ReservationRepository repository) {
         this.repository = repository;
     }
 
     @GetMapping("/reservation")
+    public String reservationPage() {
+        return "reservation";
+    }
+
+    @GetMapping("/reservations")
     @ResponseBody
     public List<Reservation> getReservations() {
         return repository.findAll();
     }
 
-    @PostMapping("/reservation")
+    @PostMapping("/reservations")
     @ResponseBody
-    public ResponseEntity<Reservation> createReservation(@RequestBody ReservationRequest request) {
-        validateReservationRequest(request);
-
+    public ResponseEntity<Reservation> createReservation(@Valid @RequestBody ReservationRequest request) {
         Reservation reservation = repository.save(request);
 
         return ResponseEntity
-                .created(URI.create("/reservation/" + reservation.getId()))
+                .created(URI.create("/reservations/" + reservation.getId()))
                 .body(reservation);
     }
 
-    @DeleteMapping("/reservation/{id}")
+    @DeleteMapping("/reservations/{id}")
     @ResponseBody
     public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
         boolean removed = repository.deleteById(id);
@@ -56,17 +57,5 @@ public class ReservationController {
         }
 
         return ResponseEntity.noContent().build();
-    }
-
-    private void validateReservationRequest(ReservationRequest request) {
-        if (request.name() == null || request.name().isBlank()) {
-            throw new IllegalArgumentException("예약자 이름은 필수입니다.");
-        }
-        if (request.date() == null) {
-            throw new IllegalArgumentException("예약 날짜는 필수입니다.");
-        }
-        if (request.time() == null) {
-            throw new IllegalArgumentException("예약 시간은 필수입니다.");
-        }
     }
 }
