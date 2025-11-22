@@ -1,6 +1,5 @@
 package roomescape.exception;
 
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -8,8 +7,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException e) {
+    @ExceptionHandler(InvalidDataException.class)
+    public ResponseEntity<String> handleInvalidReservationDataException(InvalidDataException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
+    @ExceptionHandler(NotFoundDataException.class)
+    public ResponseEntity<String> handleNotFoundReservationException(NotFoundDataException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 
