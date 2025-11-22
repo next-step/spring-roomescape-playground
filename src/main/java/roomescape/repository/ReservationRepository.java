@@ -42,23 +42,20 @@ public class ReservationRepository {
     public Reservation save(ReservationRequest req) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
-        LocalDate localDate = req.date();
-        LocalTime localTime = req.time();
-
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(
                     "INSERT INTO reservation(name, date, time) VALUES (?, ?, ?)",
                     Statement.RETURN_GENERATED_KEYS
             );
             ps.setString(1, req.name());
-            ps.setDate(2, Date.valueOf(localDate));
-            ps.setTime(3, Time.valueOf(localTime));
+            ps.setDate(2, Date.valueOf(req.date()));
+            ps.setTime(3, Time.valueOf(req.time()));
             return ps;
         }, keyHolder);
 
         Number key = keyHolder.getKey();
         Long id = (key != null) ? key.longValue() : null;
-        return new Reservation(id, req.name(), localDate, localTime);
+        return new Reservation(id, req.name(), req.date(), req.time());
     }
 
     public boolean deleteById(Long id) {
