@@ -29,17 +29,12 @@ public class ReservationController {
     }
 
     @GetMapping("/reservation")
-    public String reservationPage() {
-        return "reservation";
-    }
-
-    @GetMapping("/reservations")
     @ResponseBody
     public List<Reservation> getReservations() {
         return repository.findAll();
     }
 
-    @PostMapping("/reservations")
+    @PostMapping("/reservation")
     @ResponseBody
     public ResponseEntity<Reservation> createReservation(@RequestBody ReservationRequest request) {
         validateReservationRequest(request);
@@ -47,11 +42,11 @@ public class ReservationController {
         Reservation reservation = repository.save(request);
 
         return ResponseEntity
-                .created(URI.create("/reservations/" + reservation.getId()))
+                .created(URI.create("/reservation/" + reservation.getId()))
                 .body(reservation);
     }
 
-    @DeleteMapping("/reservations/{id}")
+    @DeleteMapping("/reservation/{id}")
     @ResponseBody
     public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
         boolean removed = repository.deleteById(id);
@@ -64,19 +59,14 @@ public class ReservationController {
     }
 
     private void validateReservationRequest(ReservationRequest request) {
-        try {
-            if (request.getName() == null || request.getName().trim().isEmpty()) {
-                throw new IllegalArgumentException("예약자 이름은 필수입니다.");
-            }
-            if (request.getDate() == null || request.getDate().trim().isEmpty()) {
-                throw new IllegalArgumentException("예약 날짜는 필수입니다.");
-            }
-            if (request.getTime() == null || request.getTime().trim().isEmpty()) {
-                throw new IllegalArgumentException("예약 시간은 필수입니다.");
-            }
-        } catch (IllegalArgumentException e) {
-            logger.error("예약 검증 실패: {}", e.getMessage(), e);
-            throw e;
+        if (request.name() == null || request.name().isBlank()) {
+            throw new IllegalArgumentException("예약자 이름은 필수입니다.");
+        }
+        if (request.date() == null) {
+            throw new IllegalArgumentException("예약 날짜는 필수입니다.");
+        }
+        if (request.time() == null) {
+            throw new IllegalArgumentException("예약 시간은 필수입니다.");
         }
     }
 }
