@@ -46,7 +46,6 @@ public class ReservationRepository {
             return ps;
         }, keyHolder);
 
-        // ID를 가져와서 바로 객체에 세팅하거나 새로운 객체를 만들어 반환
         long id = Objects.requireNonNull(keyHolder.getKey()).longValue();
         return new Reservation(id, reservation.getName(), reservation.getDate(), reservation.getTime());
     }
