@@ -1,14 +1,19 @@
 package roomescape.repository;
 
 import java.util.List;
+import java.util.Map;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import roomescape.model.Reservation;
 
 @Repository
 public class ReservationRepository {
+    private static final String TABLE_NAME = "reservation";
+
     private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert simpleJdbcInsert;
     private final RowMapper<Reservation> reservationMapper = (rs, rowNum) -> {
         return new Reservation(
                 rs.getInt("id"),
@@ -20,27 +25,31 @@ public class ReservationRepository {
 
     public ReservationRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+        this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName(TABLE_NAME)
+                .usingGeneratedKeyColumns("id");
     }
 
     public List<Reservation> findAll() {
-        String query = "SELECT id, name, date, time FROM reservation";
+        String query = "SELECT id, name, date, time FROM " + TABLE_NAME;
 
         return jdbcTemplate.query(query, reservationMapper);
     }
 
     public Reservation save(Reservation reservation) {
-        String query = "INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)";
+        Map<String, Object> params = Map.of(
+                "name", reservation.name(),
+                "date", reservation.date(),
+                "time", reservation.time()
+        );
 
-        jdbcTemplate.update(query, reservation.name(), reservation.date(), reservation.time());
+        Number id = simpleJdbcInsert.executeAndReturnKey(params);
 
-        // get inserted row id
-        int id = jdbcTemplate.queryForObject("SELECT MAX(id) FROM reservation", Integer.class);
-
-        return new Reservation(id, reservation.name(), reservation.date(), reservation.time());
+        return new Reservation(id.intValue(), reservation.name(), reservation.date(), reservation.time());
     }
 
     public void deleteById(int id) {
-        String query = "DELETE FROM reservation WHERE id = ?";
+        String query = "DELETE FROM " + TABLE_NAME + " WHERE id = ?";
 
         jdbcTemplate.update(query, id);
     }
