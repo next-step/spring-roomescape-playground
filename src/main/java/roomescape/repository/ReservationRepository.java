@@ -1,19 +1,17 @@
 package roomescape.repository;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
-import roomescape.dto.ReservationRequest;
 
-import java.sql.Date;
 import java.sql.PreparedStatement;
-import java.sql.Statement;
-import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Objects;
 
 @Repository
 public class ReservationRepository {
@@ -24,42 +22,38 @@ public class ReservationRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    private final RowMapper<Reservation> reservationRowMapper = (rs, rowNum) -> new Reservation(
+            rs.getLong("id"),
+            rs.getString("name"),
+            rs.getObject("date", LocalDate.class),
+            rs.getObject("time", LocalTime.class)
+    );
+
     public List<Reservation> findAll() {
-        return jdbcTemplate.query(
-                "SELECT id, name, date, time FROM reservation",
-                (rs, rowNum) -> {
-                    Long id = rs.getLong("id");
-                    String name = rs.getString("name");
-                    Date sqlDate = rs.getDate("date");
-                    Time sqlTime = rs.getTime("time");
-                    LocalDate localDate = (sqlDate != null) ? sqlDate.toLocalDate() : null;
-                    LocalTime localTime = (sqlTime != null) ? sqlTime.toLocalTime() : null;
-                    return new Reservation(id, name, localDate, localTime);
-                }
-        );
+        String sql = "SELECT id, name, date, time FROM reservation";
+        return jdbcTemplate.query(sql, reservationRowMapper);
     }
 
-    public Reservation save(ReservationRequest req) {
+    public Reservation save(Reservation reservation) {
+        String sql = "INSERT INTO reservation(name, date, time) VALUES (?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(
-                    "INSERT INTO reservation(name, date, time) VALUES (?, ?, ?)",
-                    Statement.RETURN_GENERATED_KEYS
-            );
-            ps.setString(1, req.name());
-            ps.setDate(2, Date.valueOf(req.date()));
-            ps.setTime(3, Time.valueOf(req.time()));
+            PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
+            ps.setString(1, reservation.getName());
+            ps.setObject(2, reservation.getDate());
+            ps.setObject(3, reservation.getTime());
             return ps;
         }, keyHolder);
 
-        Number key = keyHolder.getKey();
-        Long id = (key != null) ? key.longValue() : null;
-        return new Reservation(id, req.name(), req.date(), req.time());
+        // ID를 가져와서 바로 객체에 세팅하거나 새로운 객체를 만들어 반환
+        long id = Objects.requireNonNull(keyHolder.getKey()).longValue();
+        return new Reservation(id, reservation.getName(), reservation.getDate(), reservation.getTime());
     }
 
     public boolean deleteById(Long id) {
-        int updated = jdbcTemplate.update("DELETE FROM reservation WHERE id = ?", id);
-        return updated > 0;
+        String sql = "DELETE FROM reservation WHERE id = ?";
+        int count = jdbcTemplate.update(sql, id);
+        return count > 0;
     }
 }
