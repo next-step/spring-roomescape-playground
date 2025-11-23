@@ -3,6 +3,7 @@ package roomescape.service;
 import org.springframework.stereotype.Service;
 import roomescape.dao.ReservationDao;
 import roomescape.domain.Reservation;
+import roomescape.exception.FailMessage;
 import roomescape.exception.NotFoundReservationException;
 
 import java.util.List;
@@ -18,12 +19,12 @@ public class ReservationService {
 
     public Reservation registerReservation(String name, String date, String time) {
         Reservation reservation = Reservation.createReservation(null, name, date, time);
-        Long id = reservationDao.insertWhithKeyHolder(reservation);
+        Long id = reservationDao.insert(reservation);
         return Reservation.newReservationFromDb(id, name, date, time);
     }
 
     public List<Reservation> getReservations() {
-        return reservationDao.findAllReservation();
+        return reservationDao.findAll();
     }
 
 
@@ -31,7 +32,7 @@ public class ReservationService {
         int result = reservationDao.delete(id);
 
         if (result == 0) {
-            throw new NotFoundReservationException("삭제할 예약이 없습니다.");
+            throw new NotFoundReservationException(FailMessage.BAD_REQUEST);
         }
     }
 }

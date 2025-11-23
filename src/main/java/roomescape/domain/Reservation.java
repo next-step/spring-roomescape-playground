@@ -1,5 +1,6 @@
 package roomescape.domain;
 
+import roomescape.exception.FailMessage;
 import roomescape.exception.InvalidReservationArgumentException;
 
 import java.time.LocalDate;
@@ -28,11 +29,11 @@ public class Reservation {
         LocalTime time = LocalTime.parse(stringTime);
 
         if (date.isBefore(LocalDate.now())) {
-            throw new InvalidReservationArgumentException("예약 날짜는 오늘 이후여야 합니다.");
+            throw new InvalidReservationArgumentException(FailMessage.BAD_REQUEST);
         }
 
         if (date.isEqual(LocalDate.now()) && time.isBefore(LocalTime.now())) {
-            throw new InvalidReservationArgumentException("예약 시간은 현재 시간 이후여야 합니다.");
+            throw new InvalidReservationArgumentException(FailMessage.BAD_REQUEST);
         }
 
         return new Reservation(id, name, stringDate, stringTime);
