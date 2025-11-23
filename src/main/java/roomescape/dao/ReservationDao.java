@@ -1,13 +1,12 @@
 package roomescape.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
 
-import java.sql.PreparedStatement;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class ReservationDao {
@@ -18,24 +17,20 @@ public class ReservationDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public Long insertWhithKeyHolder(Reservation reservation) {
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        String sql = "insert into reservation (name, date, time) values (?,?,?)";
-        jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(sql,
-                    new String[]{"id"}
-            );
-            ps.setString(1, reservation.getName());
-            ps.setString(2, reservation.getDate());
-            ps.setString(3, reservation.getTime());
-            return ps;
-        }, keyHolder);
-
-        Long id = keyHolder.getKey().longValue();
-        return id;
+    public Long insert(Reservation reservation) {
+        SimpleJdbcInsert insertActor = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("reservation")
+                .usingGeneratedKeyColumns("id");
+        Map<String, Object> parameters = Map.of(
+                "name", reservation.getName(),
+                "date", reservation.getDate(),
+                "time", reservation.getTime()
+        );
+        Number id = insertActor.executeAndReturnKey(parameters);
+        return id.longValue();
     }
 
-    public List<Reservation> findAllReservation() {
+    public List<Reservation> findAll() {
         String sql = "select id,name,date,time from reservation";
         return jdbcTemplate.query(sql,
                 (resultSet, rowNum) -> {
@@ -52,7 +47,6 @@ public class ReservationDao {
 
 
     public int delete(Long id) {
-        return jdbcTemplate.update("delete from reservation where id = ?",
-                Long.valueOf(id));
+        return jdbcTemplate.update("delete from reservation where id = ?", id);
     }
 }
