@@ -82,4 +82,10 @@ public class ReservationRepository {
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class, date, time);
         return count != null && count > 0;
     }
+
+    public Reservation get (String name,LocalDate date, LocalTime time)
+    {
+        String sql = "SELECT id, name, date, time FROM reservation WHERE name = ? AND date = ? AND time = ?";
+        return jdbcTemplate.queryForObject(sql, reservationRowMapper, name, date, time);
+    }
 }
