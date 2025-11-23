@@ -89,4 +89,22 @@ public class MissionStepTest {
                 .then()
                 .statusCode(400);
     }
+
+    @Test
+    void 칠단계_성공_테스트() {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", "브라운");
+        params.put("time", "10:00");
+        params.put("date", "2023-08-05");
+
+        RestAssured.given().contentType(ContentType.JSON).body(params)
+                .when().post("/reservations")
+                .then().statusCode(201);
+
+        String savedTime = jdbcTemplate.queryForObject(
+                "SELECT time FROM reservation WHERE name = '브라운'", String.class
+        );
+
+        assertThat(savedTime).isEqualTo("10:00");
+    }
 }
