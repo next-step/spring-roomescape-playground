@@ -15,21 +15,21 @@ import java.time.format.DateTimeParseException;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(InvalidReservationArgumentException.class)
-    public ResponseEntity<ErrorResponse> handlerInvalidReservationArgumentException(InvalidReservationArgumentException e) {
+    public ResponseEntity<ErrorResponse> handleInvalidReservationArgumentException(InvalidReservationArgumentException e) {
         return ResponseEntity
                 .badRequest()
                 .body(new ErrorResponse(e.getMessage()));
     }
 
     @ExceptionHandler(NotFoundReservationException.class)
-    public ResponseEntity<ErrorResponse> handlerNotFoundReservationException(NotFoundReservationException e) {
+    public ResponseEntity<ErrorResponse> handleNotFoundReservationException(NotFoundReservationException e) {
         return ResponseEntity
                 .badRequest()
                 .body(new ErrorResponse(e.getMessage()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handlerMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+    public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         String message = e.getBindingResult().getAllErrors().get(0).getDefaultMessage();
         return ResponseEntity
                 .badRequest()
