@@ -21,7 +21,6 @@ public class ReservationService {
         return reservationRepository.findAll();
     }
 
-    // 핵심: 여기서 DTO를 받아서 Entity로 변환합니다!
     public Reservation save(ReservationRequest request) {
         Reservation newReservation = new Reservation(null, request.name(), request.date(), request.time());
         return reservationRepository.save(newReservation);
