@@ -32,23 +32,20 @@ public class ReservationService {
 
     @Transactional
     public ReservationResponse createReservation(ReservationRequest request) {
+        LocalDate date;
+        LocalTime time;
+
         try {
-            LocalDate date = LocalDate.parse(request.date());
-            LocalTime time = LocalTime.parse(request.time());
-
-            Reservation reservation = new Reservation(
-                    null,
-                    request.name(),
-                    date,
-                    time
-            );
-
-            Reservation savedReservation = reservationRepository.save(reservation);
-            return ReservationResponse.from(savedReservation);
-
+            date = LocalDate.parse(request.date());
+            time = LocalTime.parse(request.time());
         } catch (DateTimeParseException e) {
             throw new BadRequestReservationException(ErrorMessage.INVALID_DATE_TIME_FORMAT.getMessage());
         }
+
+        Reservation reservation = new Reservation(null, request.name(), date, time);
+        Reservation savedReservation = reservationRepository.save(reservation);
+
+        return ReservationResponse.from(savedReservation);
     }
 
     @Transactional
