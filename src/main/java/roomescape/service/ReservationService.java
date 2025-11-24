@@ -51,9 +51,5 @@ public class ReservationService {
     @Transactional
     public void deleteReservation(Long id) {
         int deletedCount = reservationRepository.deleteById(id);
-
-        if (deletedCount == 0) {
-            throw new NotFoundReservationException(ErrorMessage.NOT_FOUND_RESERVATION.getMessage());
-        }
     }
 }
