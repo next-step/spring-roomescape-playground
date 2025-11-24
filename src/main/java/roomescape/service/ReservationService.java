@@ -1,6 +1,7 @@
 package roomescape.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import roomescape.domain.Reservation;
 import roomescape.dto.ReservationRequest;
 import roomescape.dto.ReservationResponse;
@@ -29,6 +30,7 @@ public class ReservationService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public ReservationResponse createReservation(ReservationRequest request) {
         try {
             LocalDate date = LocalDate.parse(request.date());
@@ -49,6 +51,7 @@ public class ReservationService {
         }
     }
 
+    @Transactional
     public void deleteReservation(Long id) {
         int deletedCount = reservationRepository.deleteById(id);
 
