@@ -24,7 +24,7 @@ public class ReservationService {
         LocalDate date = LocalDate.parse(request.date());
         LocalTime time = LocalTime.parse(request.time());
 
-        Reservation reservation = new Reservation(null, request.name(), date, time);
+        Reservation reservation = Reservation.create(request.name(), date, time);
 
         return reservationRepository.save(reservation);
     }

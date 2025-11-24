@@ -15,7 +15,7 @@ public class ReservationRepository {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert simpleJdbcInsert;
     private final RowMapper<Reservation> reservationMapper = (rs, rowNum) -> {
-        return new Reservation(
+        return Reservation.of(
                 rs.getInt("id"),
                 rs.getString("name"),
                 rs.getDate("date").toLocalDate(),
@@ -45,7 +45,7 @@ public class ReservationRepository {
 
         Number id = simpleJdbcInsert.executeAndReturnKey(params);
 
-        return new Reservation(id.intValue(), reservation.name(), reservation.date(), reservation.time());
+        return Reservation.of(id.intValue(), reservation.name(), reservation.date(), reservation.time());
     }
 
     public void deleteById(int id) {
