@@ -1,6 +1,5 @@
 package roomescape.service;
 
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import roomescape.dao.ReservationDao;
 import roomescape.dto.ReservationResponse;
@@ -11,11 +10,13 @@ import roomescape.domain.Reservation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 @Service
 public class ReservationList {
 
     private final ReservationDao reservationDao;
+    private static final Logger logger = Logger.getLogger(ReservationList.class.getName());
 
     public ReservationList(ReservationDao reservationDao) {
         this.reservationDao = reservationDao;
@@ -34,16 +35,13 @@ public class ReservationList {
         if (request.name() == null || request.name().isBlank()
                 || request.date() == null || request.date().isBlank()
                 || request.time() == null || request.time().isBlank()) {
-            throw new InvalidReservationRequestException(
-                    "잘못된 예약 요청입니다. " +
-                            "name=" + request.name() +
-                            ", date=" + request.date() +
-                            ", time=" + request.time()
-            );
+            logger.warning("Invalid request: " + request);
+            throw new InvalidReservationRequestException("잘못된 예약 요청입니다.");
         }
 
         long id = reservationDao.insert(request.name(), request.date(), request.time());
-        return new ReservationResponse(id, request.name(), request.date(), request.time());
+        Reservation saved = reservationDao.findById(id);
+        return toResponse(saved);
     }
 
     public void delete(long id) {

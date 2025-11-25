@@ -48,6 +48,14 @@ public class ReservationDao {
         return key.longValue();
     }
 
+     public Reservation findById(long id) {
+         return jdbcTemplate.queryForObject(
+                 "SELECT id, name, date, time FROM reservation WHERE id = ?",
+                 rowMapper,
+                 id
+         );
+     }
+ 
     public int deleteById(long id) {
         return jdbcTemplate.update("DELETE FROM reservation WHERE id = ?", id);
     }
