@@ -12,3 +12,11 @@ CREATE TABLE idempotency_keys (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id)
 );
+
+CREATE TABLE time
+(
+    id   BIGINT       NOT NULL AUTO_INCREMENT,
+    time VARCHAR(255) NOT NULL,
+    PRIMARY KEY (id)
+);
+

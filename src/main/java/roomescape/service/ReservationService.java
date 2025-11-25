@@ -53,11 +53,6 @@ public class ReservationService {
         return idempotencyRepository.exists(idempotencyKey);
     }
 
-    public Reservation get(String name, LocalDate date, LocalTime time)
-    {
-        return reservationRepository.get(name, date, time);
-    }
-
     public Reservation get(ReservationCreateRequest request)
     {
         return reservationRepository.get(request.name(), request.date(),request.time());
