@@ -97,7 +97,7 @@ public class MissionStepTest {
         RestAssured.given().log().all()
                    .when().delete("/reservations/4")
                    .then().log().all()
-                   .statusCode(400);
+                   .statusCode(409);
     }
 
     @Autowired

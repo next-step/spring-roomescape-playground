@@ -1,5 +1,6 @@
 package roomescape.exception;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -20,11 +21,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NotFoundDataException.class)
     public ResponseEntity<String> handleNotFoundReservationException(NotFoundDataException e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 
     @ExceptionHandler(InvalidReservationException.class)
     public ResponseEntity<String> handleInvalidReservationException(InvalidReservationException e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
     }
 }
