@@ -2,21 +2,25 @@ package roomescape.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
 
-import java.sql.PreparedStatement;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class ReservationDao {
 
     private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert simpleInsert;
 
     public ReservationDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+        this.simpleInsert = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("reservation")
+                .usingGeneratedKeyColumns("id");
     }
 
     private final RowMapper<Reservation> rowMapper = (resultSet, rowNum) ->
@@ -35,23 +39,16 @@ public class ReservationDao {
     }
 
     public long insert(String name, String date, String time) {
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcTemplate.update(con -> {
-            PreparedStatement ps = con.prepareStatement(
-                    "INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)",
-                    new String[]{"id"}
-            );
-            ps.setString(1, name);
-            ps.setString(2, date);
-            ps.setString(3, time);
-            return ps;
-        }, keyHolder);
-        return keyHolder.getKey().longValue();
+        Map<String, Object> params = new HashMap<>();
+        params.put("name", name);
+        params.put("date", date);
+        params.put("time", time);
+
+        Number key = simpleInsert.executeAndReturnKey(params);
+        return key.longValue();
     }
 
     public int deleteById(long id) {
         return jdbcTemplate.update("DELETE FROM reservation WHERE id = ?", id);
     }
 }
-
-
