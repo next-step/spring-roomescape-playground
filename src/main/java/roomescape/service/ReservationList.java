@@ -1,6 +1,7 @@
 package roomescape.service;
 
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import roomescape.dao.ReservationDao;
 import roomescape.dto.ReservationResponse;
 import roomescape.dto.ReservationRequest;
@@ -11,7 +12,7 @@ import roomescape.domain.Reservation;
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
+@Service
 public class ReservationList {
 
     private final ReservationDao reservationDao;
