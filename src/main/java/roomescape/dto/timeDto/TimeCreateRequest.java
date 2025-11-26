@@ -2,6 +2,7 @@ package roomescape.dto.timeDto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import roomescape.model.Time;
 
 import java.time.LocalTime;

@@ -49,7 +49,7 @@ public class ReservationController {
             return ResponseEntity.ok(responseDto);
         }
         Reservation savedReservation = service.addReservation(requestDto.toEntity(), idempotencyKey);*/
-        Reservation savedReservation = service.addReservation(requestDto.toEntity());
+        Reservation savedReservation = service.addReservation(requestDto);
 
         ReservationResponse responseDto = ReservationResponse.from(savedReservation);
         URI location = URI.create("/reservations/" + savedReservation.getId());

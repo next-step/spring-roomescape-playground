@@ -6,8 +6,10 @@ import org.springframework.transaction.annotation.Transactional;
 import roomescape.advice.IdempotencyKeyMismatchException;
 import roomescape.dto.reservationDto.ReservationCreateRequest;
 import roomescape.model.Reservation;
+import roomescape.model.Time;
 import roomescape.repository.IdempotencyRepository;
 import roomescape.repository.ReservationRepository;
+import roomescape.repository.TimeRepository;
 
 import java.util.List;
 
@@ -15,20 +17,23 @@ import java.util.List;
 public class ReservationService {
     private final ReservationRepository reservationRepository;
     private final IdempotencyRepository idempotencyRepository;
+    private final TimeRepository timeRepository;
 
     @Autowired
     public ReservationService(ReservationRepository reservationRepository,
-                              IdempotencyRepository idempotencyRepository
+                              IdempotencyRepository idempotencyRepository,
+                              TimeRepository timeRepository
     ) {
         this.reservationRepository = reservationRepository;
         this.idempotencyRepository = idempotencyRepository;
+        this.timeRepository = timeRepository;
     }
 
     public List<Reservation> getAllReservations() {
         return reservationRepository.findAll();
     }
 
-    @Transactional
+    /*@Transactional
     public Reservation addReservation(Reservation newReservation, String idempotencyKey) {
 
         if (idempotencyRepository.exists(idempotencyKey)) {
@@ -52,19 +57,22 @@ public class ReservationService {
         idempotencyRepository.save(idempotencyKey, savedReservation.getId());
 
         return savedReservation;
-    }
+    }*/
 
-    public Reservation addReservation(Reservation newReservation)
+
+    public Reservation addReservation(ReservationCreateRequest request)
     {
-        if (reservationRepository.existsByDateAndTime(newReservation.getDate(), newReservation.getTime())) {
+        Time time = timeRepository.findById(request.timeId());
+
+        if (reservationRepository.existsByDateAndTime(request.date(), time.getId())) {
             throw new IllegalArgumentException("이미 예약된 시간입니다!");
         }
-
-        Reservation savedReservation = reservationRepository.save(newReservation);
-
-        //idempotencyRepository.save("12345", savedReservation.getId());
-
-        return savedReservation;
+        Reservation newReservation = Reservation.create(
+                request.name(),
+                request.date(),
+                time
+        );
+        return reservationRepository.save(newReservation);
     }
 
     private boolean isSameReservation(Reservation r1, Reservation r2) {
@@ -81,7 +89,8 @@ public class ReservationService {
         return idempotencyRepository.exists(idempotencyKey);
     }
 
-    public Reservation get(ReservationCreateRequest request) {
-        return reservationRepository.get(request.name(), request.date(), request.time());
-    }
+
+    /*public Reservation toEntity() {
+        return Reservation.create(name, date, time);
+    }*/
 }
