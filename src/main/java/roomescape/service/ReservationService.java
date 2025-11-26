@@ -3,6 +3,7 @@ package roomescape.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import roomescape.advice.IdempotencyKeyMismatchException;
 import roomescape.dto.ReservationCreateRequest;
 import roomescape.model.Reservation;
 import roomescape.repository.IdempotencyRepository;
@@ -33,15 +34,32 @@ public class ReservationService {
     public Reservation addReservation(Reservation newReservation, String idempotencyKey) {
 
         if (idempotencyRepository.exists(idempotencyKey)) {
-            throw new IllegalArgumentException("중복 요청입니다.");
+            Long existingReservationId = idempotencyRepository.getReservationId(idempotencyKey);
+
+            Reservation existingReservation = reservationRepository.findById(existingReservationId);
+
+            if (!isSameReservation(existingReservation, newReservation)) {
+                throw new IdempotencyKeyMismatchException();
+            }
+
+            return existingReservation;
         }
-        idempotencyRepository.save(idempotencyKey);
 
         if (reservationRepository.existsByDateAndTime(newReservation.getDate(), newReservation.getTime())) {
             throw new IllegalArgumentException("이미 예약된 시간입니다!");
         }
 
-        return reservationRepository.save(newReservation);
+        Reservation savedReservation = reservationRepository.save(newReservation);
+
+        idempotencyRepository.save(idempotencyKey, savedReservation.getId());
+
+        return savedReservation;
+    }
+
+    private boolean isSameReservation(Reservation r1, Reservation r2) {
+        return r1.getName().equals(r2.getName()) &&
+                r1.getDate().equals(r2.getDate()) &&
+                r1.getTime().equals(r2.getTime());
     }
 
     public void deleteReservation(Long id) {
