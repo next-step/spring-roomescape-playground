@@ -7,7 +7,6 @@ public class ErrorResponse {
     private final String code;
     private final String message;
 
-    // 핵심: ErrorCode Enum만 던져주면 알아서 ResponseEntity를 만들어줌!
     public static ResponseEntity<ErrorResponse> toResponseEntity(ErrorCode errorCode) {
         return ResponseEntity
                 .status(errorCode.getHttpStatus())

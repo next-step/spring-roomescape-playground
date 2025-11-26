@@ -1,4 +1,4 @@
-package roomescape.dto;
+package roomescape.dto.reservationDto;
 
 import roomescape.model.Reservation;
 

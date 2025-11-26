@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
-import roomescape.dto.ReservationCreateRequest;
-import roomescape.dto.ReservationResponse;
+import roomescape.dto.reservationDto.ReservationCreateRequest;
+import roomescape.dto.reservationDto.ReservationResponse;
 import roomescape.model.Reservation;
 import roomescape.service.ReservationService;
 
@@ -25,8 +25,9 @@ public class ReservationController {
 
     @GetMapping
     public List<ReservationResponse> getAllReservations() {
-        return service.getAllReservations().stream()
-                .map(ReservationResponse::from) // (::from은 ReservationResponse::from과 동일)
+        return service.getAllReservations()
+                .stream()
+                .map(ReservationResponse::from)
                 .toList();
     }
 
@@ -38,16 +39,17 @@ public class ReservationController {
 
     @PostMapping
     public ResponseEntity<ReservationResponse> createReservation(
-            @Valid @RequestBody ReservationCreateRequest requestDto,
-            @RequestHeader(value = "Idempotency-Key", required = true) String idempotencyKey
+            @Valid @RequestBody ReservationCreateRequest requestDto
+            //@RequestHeader(value = "Idempotency-Key", required = true) String idempotencyKey
     ) {
-        if(service.exitsKey(idempotencyKey)) {
+        /*if(service.exitsKey(idempotencyKey)) {
             Reservation existingReservation = service.get(requestDto);
             ReservationResponse responseDto = ReservationResponse.from(existingReservation);
 
             return ResponseEntity.ok(responseDto);
         }
-        Reservation savedReservation = service.addReservation(requestDto.toEntity(), idempotencyKey);
+        Reservation savedReservation = service.addReservation(requestDto.toEntity(), idempotencyKey);*/
+        Reservation savedReservation = service.addReservation(requestDto.toEntity());
 
         ReservationResponse responseDto = ReservationResponse.from(savedReservation);
         URI location = URI.create("/reservations/" + savedReservation.getId());

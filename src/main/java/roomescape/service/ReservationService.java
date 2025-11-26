@@ -4,13 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import roomescape.advice.IdempotencyKeyMismatchException;
-import roomescape.dto.ReservationCreateRequest;
+import roomescape.dto.reservationDto.ReservationCreateRequest;
 import roomescape.model.Reservation;
 import roomescape.repository.IdempotencyRepository;
 import roomescape.repository.ReservationRepository;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -52,6 +50,19 @@ public class ReservationService {
         Reservation savedReservation = reservationRepository.save(newReservation);
 
         idempotencyRepository.save(idempotencyKey, savedReservation.getId());
+
+        return savedReservation;
+    }
+
+    public Reservation addReservation(Reservation newReservation)
+    {
+        if (reservationRepository.existsByDateAndTime(newReservation.getDate(), newReservation.getTime())) {
+            throw new IllegalArgumentException("이미 예약된 시간입니다!");
+        }
+
+        Reservation savedReservation = reservationRepository.save(newReservation);
+
+        //idempotencyRepository.save("12345", savedReservation.getId());
 
         return savedReservation;
     }
