@@ -1,4 +1,4 @@
-package roomescape.advice;
+package roomescape.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
