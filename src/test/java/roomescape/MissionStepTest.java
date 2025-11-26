@@ -59,6 +59,7 @@ public class MissionStepTest {
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(params)
+                .header("Idempotency-Key", "UUID-ANY-STRING-1234")
                 .when().post("/reservations")
                 .then().log().all()
                 .statusCode(201)
@@ -98,6 +99,7 @@ public class MissionStepTest {
         params.put("date", "2023-08-05");
 
         RestAssured.given().contentType(ContentType.JSON).body(params)
+                .header("Idempotency-Key", "UUID-ANY-STRING-1234")
                 .when().post("/reservations")
                 .then().statusCode(201);
 
