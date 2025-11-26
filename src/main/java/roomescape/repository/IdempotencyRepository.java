@@ -38,4 +38,5 @@ public class IdempotencyRepository {
         String sql = "INSERT INTO idempotency_keys (id, reservation_id) VALUES (?, ?)";
         jdbcTemplate.update(sql, key, reservationId);
     }
+
 }

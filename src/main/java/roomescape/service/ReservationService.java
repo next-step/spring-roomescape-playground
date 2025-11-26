@@ -56,6 +56,16 @@ public class ReservationService {
         return savedReservation;
     }
 
+    public Reservation addReservation(Reservation newReservation) {
+
+
+        Reservation savedReservation = reservationRepository.save(newReservation);
+
+        idempotencyRepository.save(savedReservation.getId());
+
+        return savedReservation;
+    }
+
     private boolean isSameReservation(Reservation r1, Reservation r2) {
         return r1.getName().equals(r2.getName()) &&
                 r1.getDate().equals(r2.getDate()) &&

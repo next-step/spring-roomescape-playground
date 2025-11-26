@@ -38,17 +38,22 @@ public class ReservationController {
 
     @PostMapping
     public ResponseEntity<ReservationResponse> createReservation(
-            @Valid @RequestBody ReservationCreateRequest requestDto,
-            @RequestHeader(value = "Idempotency-Key", required = true) String idempotencyKey
+            @Valid @RequestBody ReservationCreateRequest requestDto
+            //@RequestHeader(value = "Idempotency-Key", required = true) String idempotencyKey
     ) {
-        if(service.exitsKey(idempotencyKey)) {
+        /*if(service.exitsKey(idempotencyKey)) {
             Reservation existingReservation = service.get(requestDto);
             ReservationResponse responseDto = ReservationResponse.from(existingReservation);
 
-            return ResponseEntity.ok(responseDto);
-        }
-        Reservation savedReservation = service.addReservation(requestDto.toEntity(), idempotencyKey);
+        Reservation reservationToCreate = new Reservation(
+                requestDto.name(),
+                requestDto.date(),
+                requestDto.time()
+        );*/
 
+        //Reservation savedReservation = service.addReservation(reservationToCreate);
+
+        Reservation savedReservation = service.addReservation(requestDto.toEntity());
         ReservationResponse responseDto = ReservationResponse.from(savedReservation);
         URI location = URI.create("/reservations/" + savedReservation.getId());
 

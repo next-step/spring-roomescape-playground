@@ -32,7 +32,7 @@ public class ReservationRepository {
                 rs.getLong("id"),
                 rs.getString("name"),
                 rs.getObject("date", LocalDate.class),
-                rs.getObject("time", Time.class)
+                rs.getObject("time", LocalTime.class)
         );
     };
 
