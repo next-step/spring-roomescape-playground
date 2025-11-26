@@ -23,8 +23,6 @@ public record ReservationCreateRequest(
         LocalTime time
 ) {
     public Reservation toEntity() {
-        return new Reservation(name, date, time);
+        return Reservation.create(name, date, time);
     }
 }
-
-

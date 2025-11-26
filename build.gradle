@@ -18,6 +18,12 @@ repositories {
 
 // 이 'dependencies' 블록 안에 모든 의존성을 관리하세요.
 dependencies {
+    // [필수 1] JdbcTemplate을 포함한 스프링 JDBC 스타터
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+
+    // [필수 2] H2 데이터베이스 드라이버
+    runtimeOnly 'com.h2database:h2'
+
     // [필수 1] 웹 서버 엔진
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
@@ -33,6 +39,10 @@ dependencies {
     // 테스트에 필요한 의존성
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'io.rest-assured:rest-assured:5.3.1'
+
+
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    runtimeOnly 'com.h2database:h2'
 }
 
 test {

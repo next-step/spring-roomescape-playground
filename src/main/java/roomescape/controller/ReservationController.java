@@ -25,7 +25,7 @@ public class ReservationController {
 
     @GetMapping
     public List<ReservationResponse> getAllReservations() {
-        return service.getAllReservations().stream()
+        return  service.getAllReservations().stream()
                 .map(ReservationResponse::from) // (::from은 ReservationResponse::from과 동일)
                 .toList();
     }
@@ -39,12 +39,21 @@ public class ReservationController {
     @PostMapping
     public ResponseEntity<ReservationResponse> createReservation(
             @Valid @RequestBody ReservationCreateRequest requestDto
+            //@RequestHeader(value = "Idempotency-Key", required = true) String idempotencyKey
     ) {
+        /*if(service.exitsKey(idempotencyKey)) {
+            Reservation existingReservation = service.get(requestDto);
+            ReservationResponse responseDto = ReservationResponse.from(existingReservation);
 
-        Reservation reservationToCreate = requestDto.toEntity();
+        Reservation reservationToCreate = new Reservation(
+                requestDto.name(),
+                requestDto.date(),
+                requestDto.time()
+        );*/
 
-        Reservation savedReservation = service.addReservation(reservationToCreate);
+        //Reservation savedReservation = service.addReservation(reservationToCreate);
 
+        Reservation savedReservation = service.addReservation(requestDto.toEntity());
         ReservationResponse responseDto = ReservationResponse.from(savedReservation);
         URI location = URI.create("/reservations/" + savedReservation.getId());
 

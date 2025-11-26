@@ -7,10 +7,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
+import roomescape.model.Reservation;
 import roomescape.service.ReservationService;
-
+import static org.assertj.core.api.Assertions.assertThat;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
@@ -42,67 +47,66 @@ public class MissionStepTest {
 
 
     @Autowired
-    private ReservationService reservationService;
+    private JdbcTemplate jdbcTemplate;
 
-    @BeforeEach
-    void setUp() {
-        reservationService.clear();
-    }
     @Test
-    void 삼단계() {
+    void 칠단계() {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
         params.put("date", "2023-08-05");
-        params.put("time", "15:40");
+        params.put("time", "10:00");
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(params)
+                .header("Idempotency-Key", "UUID-ANY-STRING-1234")
                 .when().post("/reservations")
                 .then().log().all()
                 .statusCode(201)
-                .header("Location", "/reservations/1")
-                .body("id", is(1));
+                .header("Location", "/reservations/1");
 
-        RestAssured.given().log().all()
-                .when().get("/reservations")
-                .then().log().all()
-                .statusCode(200)
-                .body("size()", is(1));
+        Integer count = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
+        assertThat(count).isEqualTo(1);
 
         RestAssured.given().log().all()
                 .when().delete("/reservations/1")
                 .then().log().all()
                 .statusCode(204);
 
-        RestAssured.given().log().all()
-                .when().get("/reservations")
-                .then().log().all()
-                .statusCode(200)
-                .body("size()", is(0));
+        Integer countAfterDelete = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
+        assertThat(countAfterDelete).isEqualTo(0);
     }
 
 
     @Test
-    void 사단계() {
+    void 칠단계_실패_테스트_이름누락() {
+
         Map<String, String> params = new HashMap<>();
-        params.put("name", "브라운");
-        params.put("date", "");
-        params.put("time", "");
+        params.put("date", "2023-08-05");
+        params.put("time", "10:00");
 
-        // 필요한 인자가 없는 경우
-        RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
-                .body(params)
+        RestAssured.given().contentType(ContentType.JSON).body(params)
                 .when().post("/reservations")
-                .then().log().all()
-                .statusCode(400);
-
-        // 삭제할 예약이 없는 경우
-        RestAssured.given().log().all()
-                .when().delete("/reservations/1")
-                .then().log().all()
+                .then()
                 .statusCode(400);
     }
 
+    @Test
+    void 칠단계_성공_테스트() {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", "브라운");
+        params.put("time", "10:00");
+        params.put("date", "2023-08-05");
+
+        RestAssured.given().contentType(ContentType.JSON).body(params)
+                .header("Idempotency-Key", "UUID-ANY-STRING-1234")
+                .when().post("/reservations")
+                .then().statusCode(201);
+
+        String savedTime = jdbcTemplate.queryForObject(
+                "SELECT time FROM reservation WHERE name = '브라운'", String.class
+        );
+
+        assertThat(savedTime).isEqualTo("10:00");
+    }
 }

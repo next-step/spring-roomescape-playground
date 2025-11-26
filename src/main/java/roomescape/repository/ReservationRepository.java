@@ -1,62 +1,89 @@
 package roomescape.repository;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import roomescape.model.Reservation;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.Map;
 
 @Repository
 public class ReservationRepository {
 
-    private final List<Reservation> reservations = new ArrayList<>();
-    private final AtomicLong counter = new AtomicLong();
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert simpleJdbcInsert;
 
-    public ReservationRepository() {
-        this.save(new Reservation(
-                null,
-                "브라운",
-                LocalDate.of(2025, 1, 1),
-                LocalTime.of(12, 0)
-        ));
-
-        this.save(new Reservation(
-                null,
-                "코니",
-                LocalDate.of(2025, 1, 2),
-                LocalTime.of(11, 0)
-        ));
+    @Autowired
+    public ReservationRepository(JdbcTemplate jdbcTemplate) {
+        this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("reservation")
+                .usingGeneratedKeyColumns("id");
+        this.jdbcTemplate = jdbcTemplate;
     }
 
+    private final RowMapper<Reservation> reservationRowMapper = (rs, rowNum) -> {
+        return Reservation.of(
+                rs.getLong("id"),
+                rs.getString("name"),
+                rs.getObject("date", LocalDate.class),
+                rs.getObject("time", LocalTime.class)
+        );
+    };
+
     public List<Reservation> findAll() {
-        return new ArrayList<>(reservations);
+        String sql = "SELECT id, name, date, time FROM reservation";
+        return jdbcTemplate.query(sql, reservationRowMapper);
     }
 
     public Reservation save(Reservation reservation) {
-        Reservation savedReservation = new Reservation(
-                counter.incrementAndGet(),
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("name", reservation.getName());
+        parameters.put("date", reservation.getDate());
+        parameters.put("time", reservation.getTime());
+
+        Number key = simpleJdbcInsert.executeAndReturnKey(parameters);
+
+        return Reservation.of(
+                key.longValue(),
                 reservation.getName(),
                 reservation.getDate(),
                 reservation.getTime()
         );
-        reservations.add(savedReservation);
-        return savedReservation;
     }
 
-    public boolean existsById(Long id) {
-        return reservations.stream()
-                .anyMatch(reservation -> reservation.getId().equals(id));
+    public Reservation findById(Long id) {
+        try {
+            String sql = "SELECT id, name, date, time FROM reservation WHERE id = ?";
+            return jdbcTemplate.queryForObject(sql, reservationRowMapper, id);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 
     public void deleteById(Long id) {
-        reservations.removeIf(reservation -> reservation.getId().equals(id));
+        String deleteSql = "DELETE FROM reservation WHERE id = ?";
+        jdbcTemplate.update(deleteSql, id);
     }
 
     public void clear() {
-        reservations.clear();
-        counter.set(0L);
+        String sql = "TRUNCATE TABLE reservation";
+        jdbcTemplate.update(sql);
+    }
+
+    public boolean existsByDateAndTime(LocalDate date, LocalTime time) {
+        String sql = "SELECT count(*) FROM reservation WHERE date = ? AND time = ?";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, date, time);
+        return count != null && count > 0;
+    }
+
+    public Reservation get(String name, LocalDate date, LocalTime time) {
+        String sql = "SELECT id, name, date, time FROM reservation WHERE name = ? AND date = ? AND time = ?";
+        return jdbcTemplate.queryForObject(sql, reservationRowMapper, name, date, time);
     }
 }
