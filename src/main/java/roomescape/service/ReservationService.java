@@ -48,13 +48,11 @@ public class ReservationService {
         reservationRepository.deleteById(id);
     }
 
-    public boolean exitsKey(String idempotencyKey)
-    {
+    public boolean exitsKey(String idempotencyKey) {
         return idempotencyRepository.exists(idempotencyKey);
     }
 
-    public Reservation get(ReservationCreateRequest request)
-    {
-        return reservationRepository.get(request.name(), request.date(),request.time());
+    public Reservation get(ReservationCreateRequest request) {
+        return reservationRepository.get(request.name(), request.date(), request.time());
     }
 }
