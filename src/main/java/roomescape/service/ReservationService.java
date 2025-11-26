@@ -61,7 +61,7 @@ public class ReservationService {
 
         Reservation savedReservation = reservationRepository.save(newReservation);
 
-        idempotencyRepository.save(savedReservation.getId());
+        //idempotencyRepository.save(savedReservation.getId());
 
         return savedReservation;
     }

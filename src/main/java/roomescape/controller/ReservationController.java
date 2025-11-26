@@ -25,7 +25,7 @@ public class ReservationController {
 
     @GetMapping
     public List<ReservationResponse> getAllReservations() {
-        return service.getAllReservations().stream()
+        return  service.getAllReservations().stream()
                 .map(ReservationResponse::from) // (::from은 ReservationResponse::from과 동일)
                 .toList();
     }

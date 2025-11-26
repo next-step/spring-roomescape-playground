@@ -1,4 +1,4 @@
-package roomescape.advice;
+package roomescape.controller; // (또는 roomescape.exception)
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
