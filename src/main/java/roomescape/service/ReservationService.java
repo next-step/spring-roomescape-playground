@@ -60,8 +60,7 @@ public class ReservationService {
     }*/
 
 
-    public Reservation addReservation(ReservationCreateRequest request)
-    {
+    public Reservation addReservation(ReservationCreateRequest request) {
         Time time = timeRepository.findById(request.timeId());
 
         if (reservationRepository.existsByDateAndTime(request.date(), time.getId())) {
@@ -88,9 +87,4 @@ public class ReservationService {
     public boolean exitsKey(String idempotencyKey) {
         return idempotencyRepository.exists(idempotencyKey);
     }
-
-
-    /*public Reservation toEntity() {
-        return Reservation.create(name, date, time);
-    }*/
 }

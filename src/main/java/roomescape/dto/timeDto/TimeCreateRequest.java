@@ -12,8 +12,7 @@ public record TimeCreateRequest(
         @JsonFormat(pattern = "HH:mm")
         LocalTime time
 ) {
-    public Time toEntity()
-    {
+    public Time toEntity() {
         return Time.from(this.time);
     }
 }

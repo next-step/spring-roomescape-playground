@@ -4,7 +4,6 @@ import roomescape.model.Reservation;
 import roomescape.model.Time;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 public record ReservationResponse(
         long id,

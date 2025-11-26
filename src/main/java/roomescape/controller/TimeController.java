@@ -38,7 +38,7 @@ public class TimeController {
     }
 
     @PostMapping
-    public ResponseEntity<TimeResponse> createReservation(@Valid @RequestBody TimeCreateRequest request){
+    public ResponseEntity<TimeResponse> createReservation(@Valid @RequestBody TimeCreateRequest request) {
         Time savedTime = service.addTime(request.toEntity());
 
         TimeResponse timeResponse = TimeResponse.from(savedTime);

@@ -17,16 +17,16 @@ public class TimeService {
         this.repository = repository;
     }
 
-    public List<Time> getAllTime(){
+    public List<Time> getAllTime() {
         return repository.findAll();
     }
 
-    public Time addTime(Time time){
+    public Time addTime(Time time) {
         Time savedTime = repository.save(time);
         return savedTime;
     }
 
-    public void deleteTime(Long id){
+    public void deleteTime(Long id) {
         repository.deleteById(id);
     }
 }

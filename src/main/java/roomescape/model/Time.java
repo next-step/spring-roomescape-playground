@@ -11,13 +11,12 @@ public class Time {
         this.time = time;
     }
 
-    public static Time from (LocalTime time)
-    {
-        return new Time(null,time);
+    public static Time from(LocalTime time) {
+        return new Time(null, time);
     }
 
-    public static Time of (Long id, LocalTime time){
-        return new Time(id,time);
+    public static Time of(Long id, LocalTime time) {
+        return new Time(id, time);
     }
 
     public Long getId() {

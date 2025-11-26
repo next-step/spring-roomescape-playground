@@ -21,27 +21,27 @@ public class TimeRepository {
     public TimeRepository(
             JdbcTemplate jdbcTemplate
     ) {
-        this.simpleJdbcInsert= new SimpleJdbcInsert(jdbcTemplate)
+        this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("time")
                 .usingGeneratedKeyColumns("id");
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    private final RowMapper<Time> timeRowMapper = (rs,rowNum)->{
+    private final RowMapper<Time> timeRowMapper = (rs, rowNum) -> {
         return Time.of(
                 rs.getLong("id"),
                 rs.getObject("time", LocalTime.class)
         );
     };
 
-    public List<Time> findAll(){
-        String sql ="SELECT id,time FROM time";
-        return jdbcTemplate.query(sql,timeRowMapper);
+    public List<Time> findAll() {
+        String sql = "SELECT id,time FROM time";
+        return jdbcTemplate.query(sql, timeRowMapper);
     }
 
-    public Time save(Time time){
+    public Time save(Time time) {
         Map<String, Object> parameters = new HashMap<>();
-        parameters.put("time",time.getTime());
+        parameters.put("time", time.getTime());
 
         Number key = simpleJdbcInsert.executeAndReturnKey(parameters);
 
@@ -53,10 +53,10 @@ public class TimeRepository {
 
     public Time findById(Long id) {
         String sql = "SELECT id,time FROM time WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql,timeRowMapper,id);
+        return jdbcTemplate.queryForObject(sql, timeRowMapper, id);
     }
 
-    public void deleteById(Long id){
+    public void deleteById(Long id) {
         String deleteSql = "DELETE FROM time WHERE id = ? ";
         jdbcTemplate.update(deleteSql, id);
     }

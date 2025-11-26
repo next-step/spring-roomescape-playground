@@ -10,7 +10,7 @@ public class ErrorResponse {
     public static ResponseEntity<ErrorResponse> toResponseEntity(ErrorCode errorCode) {
         return ResponseEntity
                 .status(errorCode.getHttpStatus())
-                .body(new ErrorResponse(errorCode.getCode(),errorCode.getMessage()));
+                .body(new ErrorResponse(errorCode.getCode(), errorCode.getMessage()));
     }
 
     public ErrorResponse(String code, String message) {

@@ -17,5 +17,7 @@ public class AdminController {
     }
 
     @GetMapping("/time")
-    public String time(){return "time";}
+    public String time() {
+        return "time";
+    }
 }
