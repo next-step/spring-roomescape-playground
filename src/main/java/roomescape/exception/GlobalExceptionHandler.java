@@ -23,6 +23,11 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(e.getFailMessage());
     }
 
+    @ExceptionHandler(NotFoundTimeException.class)
+    public ResponseEntity<ErrorResponse> handleNotFoundTimeException(NotFoundTimeException e) {
+        return buildErrorResponse(e.getFailMessage());
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         FailMessage fail = FailMessage.BAD_REQUEST;
