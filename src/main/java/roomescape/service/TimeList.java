@@ -5,8 +5,8 @@ import roomescape.dao.TimeDao;
 import roomescape.domain.Time;
 import roomescape.dto.TimeRequest;
 import roomescape.dto.TimeResponse;
-import roomescape.exception.InvalidReservationRequestException;
-import roomescape.exception.NotFoundReservationException;
+import roomescape.exception.InvalidTimeRequestException;
+import roomescape.exception.NotFoundTimeException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +31,7 @@ public class TimeList {
 
     public TimeResponse create(TimeRequest request) {
         if (request.time() == null || request.time().isBlank()) {
-            throw new InvalidReservationRequestException("잘못된 시간 요청입니다.");
+            throw new InvalidTimeRequestException("잘못된 시간 요청입니다.");
         }
         long id = timeDao.insert(request.time());
         Time saved = timeDao.findById(id);
@@ -41,7 +41,7 @@ public class TimeList {
     public void delete(long id) {
         int updated = timeDao.deleteById(id);
         if (updated == 0) {
-            throw new NotFoundReservationException("해당 시간을 찾을 수 없습니다: " + id);
+            throw new NotFoundTimeException("해당 시간을 찾을 수 없습니다: " + id);
         }
     }
 }

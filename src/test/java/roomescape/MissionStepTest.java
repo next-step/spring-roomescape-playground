@@ -9,6 +9,7 @@ import static org.hamcrest.Matchers.is;
 
 import io.restassured.http.ContentType;
 
+import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -22,6 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
+import roomescape.controller.ReservationController;
 import roomescape.domain.Reservation;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
@@ -206,8 +208,8 @@ public class MissionStepTest {
                 .statusCode(400);
         }
 
-        @Autowired
-private ReservationController reservationController;
+    @Autowired
+    private ReservationController reservationController;
 
 @Test
 void 십단계() {

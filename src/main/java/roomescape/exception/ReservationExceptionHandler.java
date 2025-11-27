@@ -28,8 +28,8 @@ public class ReservationExceptionHandler {
         return ResponseEntity.badRequest().build();
     }
 
-    @ExceptionHandler(NotFoundReservationException.class)
-    public ResponseEntity<Void> handleNotFound(NotFoundReservationException e) {
+    @ExceptionHandler({NotFoundReservationException.class, NotFoundTimeException.class})
+    public ResponseEntity<Void> handleNotFound(RuntimeException e) {
         String stackTrace = Arrays.stream(e.getStackTrace())
                 .map(StackTraceElement::toString)
                 .collect(Collectors.joining("\n"));
