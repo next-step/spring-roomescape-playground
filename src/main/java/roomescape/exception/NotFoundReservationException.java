@@ -1,7 +1,14 @@
 package roomescape.exception;
 
 public class NotFoundReservationException extends RuntimeException {
-    public NotFoundReservationException(String message) {
-        super(message);
+    private final FailMessage failMessage;
+
+    public NotFoundReservationException(FailMessage failMessage) {
+        super(failMessage.getMessage());
+        this.failMessage = failMessage;
+    }
+
+    public FailMessage getFailMessage() {
+        return failMessage;
     }
 }

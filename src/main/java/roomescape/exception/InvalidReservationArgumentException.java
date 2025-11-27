@@ -1,7 +1,14 @@
 package roomescape.exception;
 
 public class InvalidReservationArgumentException extends RuntimeException {
-    public InvalidReservationArgumentException(String message) {
-        super(message);
+    private final FailMessage failMessage;
+
+    public InvalidReservationArgumentException(FailMessage failMessage) {
+        super(failMessage.getMessage());
+        this.failMessage = failMessage;
+    }
+
+    public FailMessage getFailMessage() {
+        return failMessage;
     }
 }

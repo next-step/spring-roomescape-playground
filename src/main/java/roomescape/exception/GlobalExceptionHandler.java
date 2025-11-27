@@ -1,6 +1,7 @@
 package roomescape.exception;
 
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -13,31 +14,36 @@ import java.time.format.DateTimeParseException;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(InvalidReservationArgumentException.class)
-    public ResponseEntity<ErrorResponse> handlerInvalidReservationArgumentException(InvalidReservationArgumentException e) {
-        return ResponseEntity
-                .badRequest()
-                .body(new ErrorResponse(e.getMessage()));
+    public ResponseEntity<ErrorResponse> handleInvalidReservationArgumentException(InvalidReservationArgumentException e) {
+        return buildErrorResponse(e.getFailMessage());
     }
 
     @ExceptionHandler(NotFoundReservationException.class)
-    public ResponseEntity<ErrorResponse> handlerNotFoundReservationException(NotFoundReservationException e) {
-        return ResponseEntity
-                .badRequest()
-                .body(new ErrorResponse(e.getMessage()));
+    public ResponseEntity<ErrorResponse> handleNotFoundReservationException(NotFoundReservationException e) {
+        return buildErrorResponse(e.getFailMessage());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handlerMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        String message = e.getBindingResult().getAllErrors().get(0).getDefaultMessage();
-        return ResponseEntity
-                .badRequest()
-                .body(new ErrorResponse(message));
+    public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+        FailMessage fail = FailMessage.BAD_REQUEST;
+        return buildErrorResponse(fail);
     }
 
     @ExceptionHandler(DateTimeParseException.class)
     public ResponseEntity<ErrorResponse> handleDateTimeParseException(DateTimeParseException e) {
-        return ResponseEntity
-                .badRequest()
-                .body(new ErrorResponse("날짜 또는 시간이 기본형식이 아닙니다. ex) 2025-11-16, 18:23"));
+        FailMessage fail = FailMessage.BAD_REQUEST;
+        return buildErrorResponse(fail);
+    }
+
+    @ExceptionHandler(DataAccessException.class)
+    public ResponseEntity<ErrorResponse> handleDBException(DataAccessException e) {
+        FailMessage fail = FailMessage.DATABASE_ERROR;
+        return buildErrorResponse(fail);
+    }
+
+
+    private ResponseEntity<ErrorResponse> buildErrorResponse(FailMessage failMessage) {
+        return ResponseEntity.status(failMessage.getHttpStatus())
+                .body(new ErrorResponse(failMessage.getCode(), failMessage.getMessage()));
     }
 }
