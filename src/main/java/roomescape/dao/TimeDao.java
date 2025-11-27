@@ -23,10 +23,10 @@ public class TimeDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    private final RowMapper<Time> rowMapper = (rs, rowNum) ->
+    private final RowMapper<Time> rowMapper = (resultSet, rowNum) ->
             new Time(
-                    rs.getLong("id"),
-                    rs.getString("time")
+                    resultSet.getLong("id"),
+                    resultSet.getString("time")
             );
 
     public List<Time> findAll() {

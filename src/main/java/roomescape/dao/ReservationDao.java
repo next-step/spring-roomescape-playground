@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
+import roomescape.domain.Time;
 
 import java.util.HashMap;
 import java.util.List;
@@ -25,24 +26,30 @@ public class ReservationDao {
 
     private final RowMapper<Reservation> rowMapper = (resultSet, rowNum) ->
             new Reservation(
-                    resultSet.getLong("id"),
+                    resultSet.getLong("reservation_id"),
                     resultSet.getString("name"),
                     resultSet.getString("date"),
-                    resultSet.getString("time")
+                    new Time(resultSet.getLong("time_id"), resultSet.getString("time_value"))
             );
 
     public List<Reservation> findAll() {
-        return jdbcTemplate.query(
-                "SELECT id, name, date, time FROM reservation",
-                rowMapper
-        );
+        String sql = """
+                SELECT 
+                    r.id as reservation_id, 
+                    r.name, 
+                    r.date, 
+                    t.id as time_id, 
+                    t.time as time_value 
+                FROM reservation as r inner join time as t on r.time_id = t.id
+                """;
+        return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public long insert(String name, String date, String time) {
+    public long insert(String name, String date, long timeId) {
         Map<String, Object> params = new HashMap<>();
         params.put("name", name);
         params.put("date", date);
-        params.put("time", time);
+        params.put("time_id", timeId);
 
         Number key = simpleInsert.executeAndReturnKey(params);
         return key.longValue();
@@ -50,7 +57,8 @@ public class ReservationDao {
 
      public Reservation findById(long id) {
          return jdbcTemplate.queryForObject(
-                 "SELECT id, name, date, time FROM reservation WHERE id = ?",
+                 "SELECT r.id as reservation_id, r.name, r.date, t.id as time_id, t.time as time_value " +
+                         "FROM reservation r INNER JOIN time t ON r.time_id = t.id WHERE r.id = ?",
                  rowMapper,
                  id
          );

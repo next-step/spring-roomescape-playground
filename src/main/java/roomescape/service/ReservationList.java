@@ -34,12 +34,12 @@ public class ReservationList {
     public ReservationResponse create(ReservationRequest request) {
         if (request.name() == null || request.name().isBlank()
                 || request.date() == null || request.date().isBlank()
-                || request.time() == null || request.time().isBlank()) {
+                || request.timeId() == null) {
             logger.warning("Invalid request: " + request);
             throw new InvalidReservationRequestException("잘못된 예약 요청입니다.");
         }
 
-        long id = reservationDao.insert(request.name(), request.date(), request.time());
+        long id = reservationDao.insert(request.name(), request.date(), request.timeId());
         Reservation saved = reservationDao.findById(id);
         return toResponse(saved);
     }
@@ -56,7 +56,7 @@ public class ReservationList {
                 reservation.getId(),
                 reservation.getName(),
                 reservation.getDate(),
-                reservation.getTime()
+                reservation.getTime().getTime()
         );
     }
 }
