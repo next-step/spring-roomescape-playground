@@ -1,5 +1,6 @@
 package roomescape.advice;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -31,6 +32,17 @@ public class GlobalExceptionHandler {
 
         Map<String, String> error = new HashMap<>();
         error.put("message", ex.getMessage());
+
+        return ResponseEntity.badRequest().body(error);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Map<String, String>> handleIDataIntegrityViolationException(
+            DataIntegrityViolationException e
+    )
+    {
+        Map<String, String> error = new HashMap<>();
+        error.put("message", "이미 예약이 존재하는 시간은 삭제할 수 없습니다.");
 
         return ResponseEntity.badRequest().body(error);
     }

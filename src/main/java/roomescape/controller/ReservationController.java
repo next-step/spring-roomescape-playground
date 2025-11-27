@@ -46,9 +46,12 @@ public class ReservationController {
             Reservation existingReservation = service.get(requestDto);
             ReservationResponse responseDto = ReservationResponse.from(existingReservation);
 
-            return ResponseEntity.ok(responseDto);
-        }
-        Reservation savedReservation = service.addReservation(requestDto.toEntity(), idempotencyKey);*/
+        Reservation reservationToCreate = new Reservation(
+                requestDto.name(),
+                requestDto.date(),
+                requestDto.time()
+        );*/
+
         Reservation savedReservation = service.addReservation(requestDto);
 
         ReservationResponse responseDto = ReservationResponse.from(savedReservation);

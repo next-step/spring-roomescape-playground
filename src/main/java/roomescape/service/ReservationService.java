@@ -81,7 +81,13 @@ public class ReservationService {
     }
 
     public void deleteReservation(Long id) {
-        reservationRepository.deleteById(id);
+        if (timeRepository.exitsById(id)) {
+            throw new IllegalArgumentException("삭제할 시간이 존재하지 않습니다.");
+        }
+        int count = reservationRepository.deleteById(id);
+        if (count==0){
+            throw new IllegalArgumentException("삭제할 시간이 존재하지 않습니다.");
+        }
     }
 
     public boolean exitsKey(String idempotencyKey) {

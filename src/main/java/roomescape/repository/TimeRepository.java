@@ -60,4 +60,12 @@ public class TimeRepository {
         String deleteSql = "DELETE FROM time WHERE id = ? ";
         jdbcTemplate.update(deleteSql, id);
     }
+
+    public boolean exitsById(Long id)
+    {
+        String sql= "SELECT count(*) FROM time WHERE id = ?)";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, id);
+        return count != null && count > 0;
+    }
+
 }
