@@ -10,11 +10,13 @@ import roomescape.exception.NotFoundTimeException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 @Service
 public class TimeService {
 
     private final TimeDao timeDao;
+    private static final Logger logger = Logger.getLogger(TimeService.class.getName());
 
     public TimeService(TimeDao timeDao) {
         this.timeDao = timeDao;
@@ -31,6 +33,7 @@ public class TimeService {
 
     public TimeResponse create(TimeRequest request) {
         if (request.time() == null || request.time().isBlank()) {
+            logger.warning("Invalid time request: " + request);
             throw new InvalidTimeRequestException("잘못된 시간 요청입니다.");
         }
         long id = timeDao.insert(request.time());
