@@ -63,7 +63,7 @@ public class TimeRepository {
 
     public boolean exitsById(Long id)
     {
-        String sql= "SELECT count(*) FROM time WHERE id = ?)";
+        String sql= "SELECT count(*) FROM time WHERE id = ?";
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class, id);
         return count != null && count > 0;
     }

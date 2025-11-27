@@ -15,8 +15,9 @@ CREATE TABLE reservation
     FOREIGN KEY (time_id) REFERENCES time(id)
 );
 
-CREATE TABLE idempotency_keys (
-    id VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+CREATE TABLE idempotency_keys
+(
+    id             VARCHAR(255) NOT NULL,
+    reservation_id BIGINT,
     PRIMARY KEY (id)
 );

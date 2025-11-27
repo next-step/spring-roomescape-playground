@@ -33,64 +33,56 @@ public class ReservationService {
         return reservationRepository.findAll();
     }
 
-    /*@Transactional
-    public Reservation addReservation(Reservation newReservation, String idempotencyKey) {
-
+    @Transactional
+    public Reservation addReservation(ReservationCreateRequest request, String idempotencyKey) {
         if (idempotencyRepository.exists(idempotencyKey)) {
-            Long existingReservationId = idempotencyRepository.getReservationId(idempotencyKey);
-
-            Reservation existingReservation = reservationRepository.findById(existingReservationId);
-
-            if (!isSameReservation(existingReservation, newReservation)) {
-                throw new IdempotencyKeyMismatchException();
-            }
-
-            return existingReservation;
+            return validateAndGetExistingReservation(request, idempotencyKey);
         }
 
-        if (reservationRepository.existsByDateAndTime(newReservation.getDate(), newReservation.getTime())) {
-            throw new IllegalArgumentException("이미 예약된 시간입니다!");
-        }
-
-        Reservation savedReservation = reservationRepository.save(newReservation);
-
-        idempotencyRepository.save(idempotencyKey, savedReservation.getId());
-
-        return savedReservation;
-    }*/
-
-
-    public Reservation addReservation(ReservationCreateRequest request) {
         Time time = timeRepository.findById(request.timeId());
 
         if (reservationRepository.existsByDateAndTime(request.date(), time.getId())) {
             throw new IllegalArgumentException("이미 예약된 시간입니다!");
         }
+
         Reservation newReservation = Reservation.create(
                 request.name(),
                 request.date(),
                 time
         );
-        return reservationRepository.save(newReservation);
+
+        Reservation savedReservation = reservationRepository.save(newReservation);
+        idempotencyRepository.save(idempotencyKey, savedReservation.getId());
+
+        return savedReservation;
     }
 
-    private boolean isSameReservation(Reservation r1, Reservation r2) {
-        return r1.getName().equals(r2.getName()) &&
-                r1.getDate().equals(r2.getDate()) &&
-                r1.getTime().equals(r2.getTime());
+    private Reservation validateAndGetExistingReservation(ReservationCreateRequest request, String idempotencyKey) {
+        Long existingReservationId = idempotencyRepository.getReservationId(idempotencyKey);
+
+        Reservation existingReservation = reservationRepository.findById(existingReservationId); // 없을 경우 예외 처리 필요
+
+        if (!matches(existingReservation, request)) {
+            throw new IdempotencyKeyMismatchException();
+        }
+
+        return existingReservation;
     }
 
+    private boolean matches(Reservation reservation, ReservationCreateRequest request) {
+        return reservation.getName().equals(request.name()) &&
+                reservation.getDate().equals(request.date()) &&
+                reservation.getTime().getId().equals(request.timeId());
+    }
+
+
+    @Transactional
     public void deleteReservation(Long id) {
-        if (timeRepository.exitsById(id)) {
-            throw new IllegalArgumentException("삭제할 시간이 존재하지 않습니다.");
-        }
-        int count = reservationRepository.deleteById(id);
-        if (count==0){
-            throw new IllegalArgumentException("삭제할 시간이 존재하지 않습니다.");
-        }
-    }
 
-    public boolean exitsKey(String idempotencyKey) {
-        return idempotencyRepository.exists(idempotencyKey);
+        int count = reservationRepository.deleteById(id);
+
+        if (count == 0) {
+            throw new IllegalArgumentException("삭제할 예약을 찾을 수 없습니다.");
+        }
     }
 }

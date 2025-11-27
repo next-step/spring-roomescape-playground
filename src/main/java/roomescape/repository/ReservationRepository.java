@@ -86,8 +86,7 @@ public class ReservationRepository {
 
     public int deleteById(Long id) {
         String deleteSql = "DELETE FROM reservation WHERE id = ?";
-        int deletedCount = jdbcTemplate.update(deleteSql, id);
-
+        return jdbcTemplate.update(deleteSql, id);
     }
 
     public boolean existsByDateAndTime(LocalDate date, Long timeId) {
