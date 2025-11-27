@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 @Service
-public class ReservationList {
+public class ReservationList    {
 
     private final ReservationDao reservationDao;
     private static final Logger logger = Logger.getLogger(ReservationList.class.getName());

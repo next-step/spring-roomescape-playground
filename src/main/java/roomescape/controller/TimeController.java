@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import roomescape.dto.TimeRequest;
 import roomescape.dto.TimeResponse;
-import roomescape.service.TimeList;
+import roomescape.service.TimeService;
 
 import java.net.URI;
 import java.util.List;
@@ -17,26 +17,26 @@ import java.util.List;
 @RestController
 public class TimeController {
 
-    private final TimeList times;
+    private final TimeService timeService;
 
-    public TimeController(TimeList times) {
-        this.times = times;
+    public TimeController(TimeService timeService) {
+        this.timeService = timeService;
     }
 
     @GetMapping("/times")
     public List<TimeResponse> findAll() {
-        return times.findAll();
+        return timeService.findAll();
     }
 
     @PostMapping("/times")
     public ResponseEntity<TimeResponse> create(@RequestBody TimeRequest request) {
-        TimeResponse created = times.create(request);
+        TimeResponse created = timeService.create(request);
         return ResponseEntity.created(URI.create("/times/" + created.id())).body(created);
     }
 
     @DeleteMapping("/times/{id}")
     public ResponseEntity<Void> delete(@PathVariable long id) {
-        times.delete(id);
+        timeService.delete(id);
         return ResponseEntity.noContent().build();
     }
 }

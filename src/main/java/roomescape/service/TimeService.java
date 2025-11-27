@@ -12,11 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class TimeList {
+public class TimeService {
 
     private final TimeDao timeDao;
 
-    public TimeList(TimeDao timeDao) {
+    public TimeService(TimeDao timeDao) {
         this.timeDao = timeDao;
     }
 
