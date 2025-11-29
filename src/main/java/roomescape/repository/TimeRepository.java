@@ -34,12 +34,12 @@ public class TimeRepository {
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
-            ps.setObject(1, time.getTime());
+            ps.setObject(1, time.getStartTime());
             return ps;
         }, keyHolder);
 
         long id = Objects.requireNonNull(keyHolder.getKey()).longValue();
-        return new Time(id, time.getTime());
+        return Time.of(id, time.getStartTime(), true);
     }
 
     public int deleteById(Long id) {
@@ -48,7 +48,7 @@ public class TimeRepository {
     }
 
     public Optional<Time> findById(Long id) {
-        String sql = "SELECT id, time FROM time WHERE id = ?";
+        String sql = "SELECT id, time, available FROM time WHERE id = ?";
         try {
             Time time = jdbcTemplate.queryForObject(sql, (rs, rowNum) -> new Time(
                     rs.getLong("id"),

@@ -28,7 +28,8 @@ public class ReservationRepository {
                     r.name,
                     r.date,
                     t.id as time_id,
-                    t.time as time_value
+                    t.time as time_value,
+                    t.available as time_available,
                 FROM reservation as r
                 INNER JOIN time as t ON r.time_id = t.id
                 """;
@@ -37,9 +38,10 @@ public class ReservationRepository {
                 rs.getLong("id"),
                 rs.getString("name"),
                 rs.getObject("date", LocalDate.class),
-                new Time(
+                Time.of(
                         rs.getLong("time_id"),
-                        rs.getObject("time_value", LocalTime.class)
+                        rs.getObject("time_value", LocalTime.class),
+                        rs.getBoolean("time_available")
                 )
         ));
     }
@@ -48,7 +50,7 @@ public class ReservationRepository {
         String sql = "INSERT INTO reservation (name, date, time_id) VALUES (?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
-        jdbcTemplate.update(connection->{
+        jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
             ps.setString(1, reservation.getName());
             ps.setObject(2, reservation.getDate());
