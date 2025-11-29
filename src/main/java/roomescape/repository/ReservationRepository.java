@@ -34,8 +34,8 @@ public class ReservationRepository {
                 INNER JOIN time as t ON r.time_id = t.id
                 """;
 
-        return jdbcTemplate.query(sql, (rs, rowNum)->new Reservation(
-                rs.getLong("id"),
+        return jdbcTemplate.query(sql, (rs, rowNum) -> new Reservation(
+                rs.getLong("reservation_id"),
                 rs.getString("name"),
                 rs.getObject("date", LocalDate.class),
                 Time.of(
