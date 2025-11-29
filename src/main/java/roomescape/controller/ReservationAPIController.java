@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import roomescape.InvalidReservationException;
 import roomescape.model.Reservation;
+import roomescape.model.Time;
 import roomescape.repository.ReservationRepository;
 
 import java.net.URI;
@@ -28,11 +29,19 @@ public class ReservationAPIController {
     public ResponseEntity<Reservation> addReservation(@RequestBody Map<String, String> params) {
         String name=params.get("name");
         String date=params.get("date");
-        String time=params.get("time");
+        String timeIdStr=params.get("time_id");
 
-        if (name == null || name.isBlank() || date == null || date.isBlank() || time == null || time.isBlank()) {
+        if (timeIdStr==null) {
+            throw new InvalidReservationException("timeid 값 오류");
+        }
+
+        if (name == null || name.isBlank() || date == null || date.isBlank()) {
             throw new InvalidReservationException("name, date, time 모두 필요합니다.");
         }
+
+        Long timeId = Long.valueOf(timeIdStr);
+        Time time = new Time();
+        time.setId(timeId);
 
         Reservation reservation = new Reservation(null, name, date, time);
         Reservation saved= reservationRepository.save(reservation);

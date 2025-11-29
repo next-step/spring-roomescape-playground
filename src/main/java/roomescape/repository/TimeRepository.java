@@ -24,9 +24,9 @@ public class TimeRepository {
 
     public List<Time> findAll() {
         String sql = "SELECT id, time FROM time";
-        return jdbcTemplate.query(sql, (rs, rowNum) -> new Time(
-            rs.getLong("id"),
-            rs.getString("time")
+        return jdbcTemplate.query(sql, (t, rowNum) -> new Time(
+            t.getLong("id"),
+            t.getString("time")
         ));
     }
 
