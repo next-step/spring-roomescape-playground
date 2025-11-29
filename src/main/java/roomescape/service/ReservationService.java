@@ -44,10 +44,7 @@ public class ReservationService    {
     }
 
     public void delete(long id) {
-        int updated = reservationDao.deleteById(id);
-        if (updated == 0) {
-            throw new NotFoundReservationException("해당 예약을 찾을 수 없습니다: " + id);
-        }
+        reservationDao.deleteById(id);
     }
 
     private ReservationResponse toResponse(Reservation reservation) {
