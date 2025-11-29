@@ -1,6 +1,7 @@
 package roomescape.repository;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
@@ -20,12 +21,15 @@ public class TimeRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    private final RowMapper<Time> timeRowMapper = (rs, rowNum) -> Time.of(
+            rs.getLong("id"),
+            rs.getObject("time", LocalTime.class),
+            rs.getBoolean("available")
+    );
+
     public List<Time> findAll() {
-        String sql = "SELECT id, time FROM time";
-        return jdbcTemplate.query(sql, (rs, rowNum) -> new Time(
-                rs.getLong("id"),
-                rs.getObject("time", LocalTime.class)
-        ));
+        String sql = "SELECT id, time, available FROM time";
+        return jdbcTemplate.query(sql, timeRowMapper);
     }
 
     public Time save(Time time) {
@@ -50,10 +54,7 @@ public class TimeRepository {
     public Optional<Time> findById(Long id) {
         String sql = "SELECT id, time, available FROM time WHERE id = ?";
         try {
-            Time time = jdbcTemplate.queryForObject(sql, (rs, rowNum) -> new Time(
-                    rs.getLong("id"),
-                    rs.getObject("time", LocalTime.class)
-            ), id);
+            Time time = jdbcTemplate.queryForObject(sql, timeRowMapper, id);
             return Optional.ofNullable(time);
         } catch (Exception e) {
             return Optional.empty();
