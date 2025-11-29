@@ -34,15 +34,13 @@ public class ReservationController {
 
 
     @GetMapping("/reservations")
-    public ResponseEntity<List<ReservationResponse>> readReservations() {
+    public List<ReservationResponse> readReservations() {
         List<Reservation> reservations = reservationService.getReservations();
 
         List<ReservationResponse> responses = reservations.stream().
                 map(ReservationResponse::from).toList();
 
-        return ResponseEntity
-                .ok()
-                .body(responses);
+        return responses;
     }
 
     @DeleteMapping("/reservations/{id}")

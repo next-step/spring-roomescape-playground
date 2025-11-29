@@ -32,15 +32,13 @@ public class TimeController {
 
 
     @GetMapping("/times")
-    public ResponseEntity<List<TimeResponse>> readTimes() {
+    public List<TimeResponse> readTimes() {
         List<Time> times = timeService.getTime();
 
         List<TimeResponse> responses = times.stream().
                 map(TimeResponse::from).toList();
 
-        return ResponseEntity
-                .ok()
-                .body(responses);
+        return responses;
     }
 
     @DeleteMapping("/times/{id}")
