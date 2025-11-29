@@ -6,18 +6,19 @@ import roomescape.dto.ReservationResponse;
 import roomescape.dto.ReservationRequest;
 import roomescape.exception.NotFoundReservationException;
 import roomescape.domain.Reservation;
+import roomescape.domain.Time;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
 @Service
-public class ReservationList    {
+public class ReservationService    {
 
     private final ReservationDao reservationDao;
-    private static final Logger logger = Logger.getLogger(ReservationList.class.getName());
+    private static final Logger logger = Logger.getLogger(ReservationService.class.getName());
 
-    public ReservationList(ReservationDao reservationDao) {
+    public ReservationService(ReservationDao reservationDao) {
         this.reservationDao = reservationDao;
     }
 
@@ -31,7 +32,13 @@ public class ReservationList    {
     }
 
     public ReservationResponse create(ReservationRequest request) {
-        long id = reservationDao.insert(request.name(), request.date(), request.timeId());
+        Reservation reservation = new Reservation(
+                null,
+                request.name(),
+                request.date(),
+                new Time(request.timeId(), null)
+        );
+        long id = reservationDao.insert(reservation);
         Reservation saved = reservationDao.findById(id);
         return toResponse(saved);
     }

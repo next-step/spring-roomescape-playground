@@ -45,11 +45,11 @@ public class ReservationDao {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public long insert(String name, String date, long timeId) {
+    public long insert(Reservation reservation) {
         Map<String, Object> params = new HashMap<>();
-        params.put("name", name);
-        params.put("date", date);
-        params.put("time_id", timeId);
+        params.put("name", reservation.getName());
+        params.put("date", reservation.getDate());
+        params.put("time_id", reservation.getTime().getId());
 
         Number key = simpleInsert.executeAndReturnKey(params);
         return key.longValue();
