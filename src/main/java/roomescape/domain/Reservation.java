@@ -21,11 +21,11 @@ public class Reservation {
         this.time = time;
     }
 
-    public static Reservation newReservationFromDb(Long id, String name, String date, Time time) {
+    public static Reservation of(Long id, String name, String date, Time time) {
         return new Reservation(id, name, date, time);
     }
 
-    public static Reservation createReservation(Long id, String name, String stringDate, Time times) {
+    public static Reservation create(Long id, String name, String stringDate, Time times) {
         LocalDate date = LocalDate.parse(stringDate);
 
         if (date.isBefore(LocalDate.now())) {

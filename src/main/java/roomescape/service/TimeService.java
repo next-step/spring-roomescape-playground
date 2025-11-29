@@ -17,9 +17,9 @@ public class TimeService {
     private final TimeDao timeDao;
 
     public Time registerTime(String time) {
-        Time times = Time.createTime(null, time);
+        Time times = Time.of(null, time);
         Long id = timeDao.insert(times);
-        return Time.createTime(id, time);
+        return Time.of(id, time);
     }
 
     public List<Time> getTime() {

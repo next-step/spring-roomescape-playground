@@ -27,7 +27,7 @@ public class TimeDao {
     public List<Time> findAll() {
         String sql = "select id,time from time";
         return jdbcTemplate.query(sql,
-                (resultSet, rowNum) -> Time.createTime(
+                (resultSet, rowNum) -> Time.of(
                         resultSet.getLong("id"),
                         resultSet.getString("time")));
     }
@@ -35,7 +35,7 @@ public class TimeDao {
     public Time findById(Long id) {
         String sql = "select id, time from time where id = ?";
         return jdbcTemplate.queryForObject(sql,
-                (resultSet, rowNum) -> Time.createTime(
+                (resultSet, rowNum) -> Time.of(
                         resultSet.getLong("id"),
                         resultSet.getString("time")
                 ), id

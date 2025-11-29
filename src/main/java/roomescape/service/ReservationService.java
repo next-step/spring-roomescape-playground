@@ -20,9 +20,9 @@ public class ReservationService {
     public Reservation registerReservation(String name, String date, String stringTime) {
         Long timeId = Long.parseLong(stringTime);
         Time time = timeService.getTimeById(timeId);
-        Reservation reservation = Reservation.createReservation(null, name, date, time);
+        Reservation reservation = Reservation.create(null, name, date, time);
         Long id = reservationDao.insert(reservation);
-        return Reservation.newReservationFromDb(id, name, date, time);
+        return Reservation.of(id, name, date, time);
     }
 
     public List<Reservation> getReservations() {

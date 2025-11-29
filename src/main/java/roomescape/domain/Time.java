@@ -12,7 +12,7 @@ public class Time {
         this.time = time;
     }
 
-    public static Time createTime(Long id, String time) {
+    public static Time of(Long id, String time) {
         return new Time(id, time);
     }
 }

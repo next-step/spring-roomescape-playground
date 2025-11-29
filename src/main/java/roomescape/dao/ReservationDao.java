@@ -42,11 +42,11 @@ public class ReservationDao {
                 """;
 
         return jdbcTemplate.query(sql,
-                (rs, rowNum) -> Reservation.newReservationFromDb(
+                (rs, rowNum) -> Reservation.of(
                         rs.getLong("id"),
                         rs.getString("name"),
                         rs.getString("date"),
-                        Time.createTime(
+                        Time.of(
                                 rs.getLong("time_id"),
                                 rs.getString("time")
                         )
