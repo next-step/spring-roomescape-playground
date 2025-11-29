@@ -1,8 +1,8 @@
 package roomescape.domain;
 
 import lombok.Getter;
-import roomescape.exception.FailMessage;
-import roomescape.exception.InvalidReservationArgumentException;
+import roomescape.web_layer.controller.exception.FailMessage;
+import roomescape.web_layer.controller.exception.InvalidReservationArgumentException;
 
 import java.time.LocalDate;
 

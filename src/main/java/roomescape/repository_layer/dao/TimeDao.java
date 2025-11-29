@@ -1,4 +1,4 @@
-package roomescape.dao;
+package roomescape.repository_layer.dao;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;

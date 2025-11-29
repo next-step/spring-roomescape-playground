@@ -1,4 +1,4 @@
-package roomescape.controller.api;
+package roomescape.web_layer.controller.api;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -9,10 +9,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import roomescape.domain.Reservation;
 import roomescape.dto.ReservationRequest;
 import roomescape.dto.ReservationResponse;
-import roomescape.service.ReservationService;
+import roomescape.service_layer.service.ReservationService;
 
 import java.net.URI;
 import java.util.List;
@@ -23,24 +22,16 @@ public class ReservationController {
 
     private final ReservationService reservationService;
 
+    @GetMapping("/reservations")
+    public List<ReservationResponse> readReservations() {
+        return reservationService.getReservations();
+    }
 
     @PostMapping("/reservations")
     public ResponseEntity<ReservationResponse> createReservations(@Valid @RequestBody ReservationRequest request) {
-        Reservation newReservation = reservationService.registerReservation(request.name(), request.date(), request.time());
+        ReservationResponse response = reservationService.registerReservation(request);
 
-        return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).
-                body(ReservationResponse.from(newReservation));
-    }
-
-
-    @GetMapping("/reservations")
-    public List<ReservationResponse> readReservations() {
-        List<Reservation> reservations = reservationService.getReservations();
-
-        List<ReservationResponse> responses = reservations.stream().
-                map(ReservationResponse::from).toList();
-
-        return responses;
+        return ResponseEntity.created(URI.create("/reservations/" + response.id())).body(response);
     }
 
     @DeleteMapping("/reservations/{id}")

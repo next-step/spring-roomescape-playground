@@ -1,9 +1,9 @@
-package roomescape.exception;
+package roomescape.web_layer.controller.exception;
 
-public class InvalidReservationArgumentException extends RuntimeException {
+public class NotFoundTimeException extends RuntimeException {
     private final FailMessage failMessage;
 
-    public InvalidReservationArgumentException(FailMessage failMessage) {
+    public NotFoundTimeException(FailMessage failMessage) {
         super(failMessage.getMessage());
         this.failMessage = failMessage;
     }
