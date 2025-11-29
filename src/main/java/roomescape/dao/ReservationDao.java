@@ -17,6 +17,17 @@ public class ReservationDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert simpleInsert;
 
+    private static final String BASE_SELECT_SQL = """
+        SELECT 
+            r.id as reservation_id, 
+            r.name, 
+            r.date, 
+            t.id as time_id, 
+            t.time as time_value 
+        FROM reservation r 
+        INNER JOIN time t ON r.time_id = t.id
+        """;
+
     public ReservationDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.simpleInsert = new SimpleJdbcInsert(jdbcTemplate)
@@ -33,15 +44,7 @@ public class ReservationDao {
             );
 
     public List<Reservation> findAll() {
-        String sql = """
-                SELECT 
-                    r.id as reservation_id, 
-                    r.name, 
-                    r.date, 
-                    t.id as time_id, 
-                    t.time as time_value 
-                FROM reservation as r inner join time as t on r.time_id = t.id
-                """;
+        String sql = BASE_SELECT_SQL;
         return jdbcTemplate.query(sql, rowMapper);
     }
 
@@ -57,8 +60,7 @@ public class ReservationDao {
 
      public Reservation findById(long id) {
          return jdbcTemplate.queryForObject(
-                 "SELECT r.id as reservation_id, r.name, r.date, t.id as time_id, t.time as time_value " +
-                         "FROM reservation r INNER JOIN time t ON r.time_id = t.id WHERE r.id = ?",
+                 BASE_SELECT_SQL + " WHERE r.id = ?",
                  rowMapper,
                  id
          );
