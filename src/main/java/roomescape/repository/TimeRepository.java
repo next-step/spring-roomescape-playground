@@ -60,4 +60,14 @@ public class TimeRepository {
             return Optional.empty();
         }
     }
+
+    public Optional<Time> findByTime(LocalTime time) {
+        String sql = "SELECT id, time FROM time WHERE time = ?";
+        try {
+            Time result = jdbcTemplate.queryForObject(sql, timeRowMapper, time);
+            return Optional.of(result);
+        } catch (Exception e) {
+            return Optional.empty();
+        }
+    }
 }
