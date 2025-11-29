@@ -5,7 +5,6 @@ import roomescape.dao.TimeDao;
 import roomescape.domain.Time;
 import roomescape.dto.TimeRequest;
 import roomescape.dto.TimeResponse;
-import roomescape.exception.InvalidTimeRequestException;
 import roomescape.exception.NotFoundTimeException;
 
 import java.util.ArrayList;
@@ -32,10 +31,6 @@ public class TimeService {
     }
 
     public TimeResponse create(TimeRequest request) {
-        if (request.time() == null || request.time().isBlank()) {
-            logger.warning("Invalid time request: " + request);
-            throw new InvalidTimeRequestException("잘못된 시간 요청입니다.");
-        }
         long id = timeDao.insert(request.time());
         Time saved = timeDao.findById(id);
         return new TimeResponse(saved.getId(), saved.getTime());
