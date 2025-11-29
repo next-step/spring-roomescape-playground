@@ -3,6 +3,7 @@ package roomescape.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import roomescape.model.Reservation;
+import roomescape.repository.ReservationRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +11,11 @@ import java.util.List;
 
 @Controller
 public class ReservationController {
-    private final List<Reservation> reservations = new ArrayList<>();
+    private final ReservationRepository reservationRepository;
+
+    public ReservationController(ReservationRepository reservationRepository) {
+        this.reservationRepository = reservationRepository;
+    }
 
     @GetMapping("/reservation")
     public String reservation() {
