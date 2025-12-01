@@ -1,6 +1,7 @@
 package roomescape.controller;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,13 +16,9 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/times")
+@RequiredArgsConstructor
 public class TimeController {
     private final TimeService service;
-
-    @Autowired
-    public TimeController(TimeService service) {
-        this.service = service;
-    }
 
     @GetMapping
     public List<TimeResponse> getAllReservations() {

@@ -1,5 +1,6 @@
 package roomescape.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import jakarta.validation.Valid;
@@ -14,14 +15,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/reservations")
+@RequiredArgsConstructor
 public class ReservationController {
 
     private final ReservationService service;
-
-    @Autowired
-    public ReservationController(ReservationService service) {
-        this.service = service;
-    }
 
     @GetMapping
     public List<ReservationResponse> getAllReservations() {
