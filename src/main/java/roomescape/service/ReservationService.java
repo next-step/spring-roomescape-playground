@@ -1,5 +1,6 @@
 package roomescape.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,20 +15,11 @@ import roomescape.repository.TimeRepository;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ReservationService {
     private final ReservationRepository reservationRepository;
     private final IdempotencyRepository idempotencyRepository;
     private final TimeRepository timeRepository;
-
-    @Autowired
-    public ReservationService(ReservationRepository reservationRepository,
-                              IdempotencyRepository idempotencyRepository,
-                              TimeRepository timeRepository
-    ) {
-        this.reservationRepository = reservationRepository;
-        this.idempotencyRepository = idempotencyRepository;
-        this.timeRepository = timeRepository;
-    }
 
     public List<Reservation> getAllReservations() {
         return reservationRepository.findAll();
