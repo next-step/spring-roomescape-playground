@@ -11,8 +11,6 @@ import org.springframework.stereotype.Repository;
 public class IdempotencyRepository {
     private final JdbcTemplate jdbcTemplate;
 
-
-
     public boolean exists(String key) {
         String sql = "SELECT count(*) FROM idempotency_keys WHERE id = ?";
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class, key);

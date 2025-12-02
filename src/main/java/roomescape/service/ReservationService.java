@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import roomescape.advice.ErrorCode;
 import roomescape.advice.IdempotencyKeyMismatchException;
+import roomescape.advice.RoomEscapeException;
 import roomescape.dto.reservationDto.ReservationCreateRequest;
 import roomescape.model.Reservation;
 import roomescape.model.Time;
@@ -34,7 +36,7 @@ public class ReservationService {
         Time time = timeRepository.findById(request.timeId());
 
         if (reservationRepository.existsByDateAndTime(request.date(), time.getId())) {
-            throw new IllegalArgumentException("이미 예약된 시간입니다!");
+            throw new RoomEscapeException(ErrorCode.RESERVATION_NOT_FOUND);
         }
 
         Reservation newReservation = Reservation.create(
@@ -55,7 +57,7 @@ public class ReservationService {
         Reservation existingReservation = reservationRepository.findById(existingReservationId); // 없을 경우 예외 처리 필요
 
         if (!matches(existingReservation, request)) {
-            throw new IdempotencyKeyMismatchException();
+            throw new RoomEscapeException(ErrorCode.IDEMPOTENCY_KEY_MISMATCH);
         }
 
         return existingReservation;
@@ -74,7 +76,7 @@ public class ReservationService {
         int count = reservationRepository.deleteById(id);
 
         if (count == 0) {
-            throw new IllegalArgumentException("삭제할 예약을 찾을 수 없습니다.");
+            throw new RoomEscapeException(ErrorCode.RESERVATION_NOT_FOUND);
         }
     }
 }
