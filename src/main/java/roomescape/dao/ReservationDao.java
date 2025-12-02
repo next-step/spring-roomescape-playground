@@ -4,6 +4,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import roomescape.dao.query.SelectQuery;
 import roomescape.domain.Reservation;
 import roomescape.domain.Time;
 
@@ -16,17 +17,6 @@ public class ReservationDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert simpleInsert;
-
-    private static final String BASE_SELECT_SQL = """
-        SELECT 
-            r.id as reservation_id, 
-            r.name, 
-            r.date, 
-            t.id as time_id, 
-            t.time as time_value 
-        FROM reservation r 
-        INNER JOIN time t ON r.time_id = t.id
-        """;
 
     public ReservationDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -44,7 +34,16 @@ public class ReservationDao {
             );
 
     public List<Reservation> findAll() {
-        String sql = BASE_SELECT_SQL;
+        String sql = SelectQuery
+                .select("r.id").as("reservation_id")
+                .and("r.name")
+                .and("r.date")
+                .and("t.id").as("time_id")
+                .and("t.time").as("time_value")
+                .from("reservation r")
+                .innerJoin("time t", "r.time_id = t.id")
+                .build();
+
         return jdbcTemplate.query(sql, rowMapper);
     }
 
@@ -58,14 +57,25 @@ public class ReservationDao {
         return key.longValue();
     }
 
-     public Reservation findById(long id) {
-         return jdbcTemplate.queryForObject(
-                 BASE_SELECT_SQL + " WHERE r.id = ?",
-                 rowMapper,
-                 id
-         );
-     }
- 
+    public Reservation findById(long id) {
+        String sql = SelectQuery
+                .select("r.id").as("reservation_id")
+                .and("r.name")
+                .and("r.date")
+                .and("t.id").as("time_id")
+                .and("t.time").as("time_value")
+                .from("reservation r")
+                .innerJoin("time t", "r.time_id = t.id")
+                .where("r.id = ?")
+                .build();
+
+        return jdbcTemplate.queryForObject(
+                sql,
+                rowMapper,
+                id
+        );
+    }
+
     public int deleteById(long id) {
         return jdbcTemplate.update("DELETE FROM reservation WHERE id = ?", id);
     }
