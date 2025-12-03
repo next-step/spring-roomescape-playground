@@ -23,12 +23,11 @@ public class TimeRepository {
 
     private final RowMapper<Time> timeRowMapper = (rs, rowNum) -> Time.of(
             rs.getLong("id"),
-            rs.getObject("time", LocalTime.class),
-            rs.getBoolean("available")
+            rs.getObject("time", LocalTime.class)
     );
 
     public List<Time> findAll() {
-        String sql = "SELECT id, time, available FROM time";
+        String sql = "SELECT id, time FROM time";
         return jdbcTemplate.query(sql, timeRowMapper);
     }
 
@@ -43,7 +42,7 @@ public class TimeRepository {
         }, keyHolder);
 
         long id = Objects.requireNonNull(keyHolder.getKey()).longValue();
-        return Time.of(id, time.getStartTime(), true);
+        return Time.of(id, time.getStartTime());
     }
 
     public int deleteById(Long id) {
@@ -52,7 +51,7 @@ public class TimeRepository {
     }
 
     public Optional<Time> findById(Long id) {
-        String sql = "SELECT id, time, available FROM time WHERE id = ?";
+        String sql = "SELECT id, time FROM time WHERE id = ?";
         try {
             Time time = jdbcTemplate.queryForObject(sql, timeRowMapper, id);
             return Optional.ofNullable(time);

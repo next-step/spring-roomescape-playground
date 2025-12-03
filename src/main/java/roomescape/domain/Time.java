@@ -5,24 +5,18 @@ import java.time.LocalTime;
 public class Time {
     private Long id;
     private LocalTime startTime;
-    private boolean available;
 
     protected Time() {
     }
 
-    private Time(Long id, LocalTime startTime, boolean available) {
+    private Time(Long id, LocalTime startTime) {
         validate(startTime);
         this.id = id;
         this.startTime = startTime;
-        this.available = available;
     }
 
-    public static Time create(LocalTime startTime) {
-        return new Time(null, startTime, true);
-    }
-
-    public static Time of(Long id, LocalTime startTime, Boolean available) {
-        return new Time(id, startTime, available);
+    public static Time of(Long id, LocalTime startTime) {
+        return new Time(id, startTime);
     }
 
     private void validate(LocalTime startTime) {
@@ -37,9 +31,5 @@ public class Time {
 
     public LocalTime getStartTime() {
         return startTime;
-    }
-
-    public boolean isAvailable() {
-        return available;
     }
 }

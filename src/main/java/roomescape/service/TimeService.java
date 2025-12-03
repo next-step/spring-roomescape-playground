@@ -32,7 +32,7 @@ public class TimeService {
         timeRepository.findByTime(request.time())
                 .ifPresent(t -> { throw new IllegalStateException("이미 존재하는 시간입니다."); });
 
-        Time time = Time.create(request.time());
+        Time time = Time.of(null, request.time());
         Time savedTime = timeRepository.save(time);
         return TimeResponse.from(savedTime);
     }
