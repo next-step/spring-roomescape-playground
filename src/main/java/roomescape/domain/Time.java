@@ -6,9 +6,6 @@ public class Time {
     private Long id;
     private LocalTime startTime;
 
-    protected Time() {
-    }
-
     private Time(Long id, LocalTime startTime) {
         validate(startTime);
         this.id = id;
