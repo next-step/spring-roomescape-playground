@@ -45,4 +45,12 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.badRequest().body(errors);
     }
+
+    @ExceptionHandler(org.springframework.http.converter.HttpMessageNotReadableException.class)
+    public ResponseEntity<roomescape.dto.ErrorResponse> handleHttpMessageNotReadable(org.springframework.http.converter.HttpMessageNotReadableException e) {
+        String message = ErrorMessage.INVALID_REQUEST.getMessage();
+        ErrorResponse errorResponse = new ErrorResponse(message);
+
+        return ResponseEntity.badRequest().body(errorResponse);
+    }
 }

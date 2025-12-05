@@ -11,8 +11,7 @@ public record ReservationResponse(
         String name,
         @JsonFormat(pattern = "yyyy-MM-dd")
         LocalDate date,
-        @JsonFormat(pattern = "HH:mm")
-        LocalTime time
+        TimeResponse time
 ) {
 
     public static ReservationResponse from(Reservation reservation) {
@@ -20,7 +19,7 @@ public record ReservationResponse(
                 reservation.getId(),
                 reservation.getName(),
                 reservation.getDate(),
-                reservation.getTime()
+                TimeResponse.from(reservation.getTime())
         );
     }
 }
