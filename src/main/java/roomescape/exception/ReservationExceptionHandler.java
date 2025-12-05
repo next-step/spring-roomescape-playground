@@ -5,13 +5,22 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.MissingServletRequestParameterException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+
+import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class ReservationExceptionHandler {
 
+    private static final Logger logger = Logger.getLogger("테스트용");
+
     @ExceptionHandler({
             InvalidReservationRequestException.class,
+            MethodArgumentNotValidException.class,
             IllegalArgumentException.class,
             HttpMessageNotReadableException.class,              
             MethodArgumentTypeMismatchException.class,          
@@ -21,8 +30,12 @@ public class ReservationExceptionHandler {
         return ResponseEntity.badRequest().build();
     }
 
-    @ExceptionHandler(NotFoundReservationException.class)
-    public ResponseEntity<Void> handleNotFound(NotFoundReservationException e) {
+    @ExceptionHandler({NotFoundReservationException.class, NotFoundTimeException.class})
+    public ResponseEntity<Void> handleNotFound(RuntimeException e) {
+        String stackTrace = Arrays.stream(e.getStackTrace())
+                .map(StackTraceElement::toString)
+                .collect(Collectors.joining("\n"));
+        logger.log(Level.INFO, stackTrace);
         return ResponseEntity.status(404).build();
     }
 
