@@ -63,7 +63,7 @@ public class ReservationController {
 
         jdbcTemplate.update(
                 connection -> {
-                    PreparedStatement ps = connection.prepareStatement(sql,new String[]{"id"});
+                    PreparedStatement ps = connection.prepareStatement(sql,PreparedStatement.RETURN_GENERATED_KEYS);
                     ps.setString(1,reservation.getName());
                     ps.setString(2,reservation.getDate());
                     ps.setString(3,reservation.getTime());
@@ -72,7 +72,11 @@ public class ReservationController {
                 keyHolder
         );
         // Generated id
-        Long id = keyHolder.getKey().longValue();
+        Number key = keyHolder.getKey();
+        if(key == null){
+            throw new IllegalStateException("Failed to retrieve generated id");
+        }
+        Long id = key.longValue();
 
         return ResponseEntity.created(
                 URI.create("/reservations/" + id)
