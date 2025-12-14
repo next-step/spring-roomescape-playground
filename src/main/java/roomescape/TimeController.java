@@ -22,6 +22,12 @@ public class TimeController {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    // render
+    @GetMapping("/time")
+    public String timePage() {
+        return "time";
+    }
+
     // RowMapper
     private final RowMapper<Time> rowMapper = (resultSet,rowNum) ->
             new Time(

@@ -28,7 +28,7 @@ public class ReservationController {
     // render
     @GetMapping("/reservation")
     public String reservationPage() {
-        return "reservation";
+        return "new-reservation";
     }
 
     // RowMapper
@@ -37,7 +37,7 @@ public class ReservationController {
                 resultSet.getLong("id"),
                 resultSet.getString("name"),
                 resultSet.getString("date"),
-                resultSet.getString("time")
+                new Time(resultSet.getLong("id"),resultSet.getString("time"))
         );
 
 
@@ -45,7 +45,16 @@ public class ReservationController {
     @GetMapping("/reservations")
     @ResponseBody
     public List<Reservation> findAllReservations() {
-        String sql = "select id,name,date,time from reservation";
+        String sql = """
+                SELECT
+                    r.id AS reservation_id,
+                    r.name,
+                    r.date,
+                    t.id AS time_id,
+                    t.time AS time_value
+                FROM reservation r
+                INNER JOIN time t ON r.time_id = t.id
+            """;
         return jdbcTemplate.query(sql,rowMapper);
     }
 
@@ -53,11 +62,11 @@ public class ReservationController {
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> add_reservation(@RequestBody Reservation reservation){
         // handle exception -> any required field empty
-        if(isBlank(reservation.getName()) || isBlank(reservation.getDate()) || isBlank(reservation.getTime())){
+        if(isBlank(reservation.getName()) || isBlank(reservation.getDate()) || reservation.getTime().getId()==null){
             throw new BadRequestReservationException();
         }
 
-        String sql = "insert into reservation (name,date,time) values (?,?,?)";
+        String sql = "insert into reservation (name,date,time_id) values (?,?,?)";
         // Create keyHolder
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
@@ -66,7 +75,7 @@ public class ReservationController {
                     PreparedStatement ps = connection.prepareStatement(sql,PreparedStatement.RETURN_GENERATED_KEYS);
                     ps.setString(1,reservation.getName());
                     ps.setString(2,reservation.getDate());
-                    ps.setString(3,reservation.getTime());
+                    ps.setLong(3,reservation.getTime().getId());
                     return ps;
                 },
                 keyHolder
