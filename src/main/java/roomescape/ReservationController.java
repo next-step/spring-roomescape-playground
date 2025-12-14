@@ -77,7 +77,6 @@ public class ReservationController {
             throw new IllegalStateException("Failed to retrieve generated id");
         }
         Long id = key.longValue();
-
         return ResponseEntity.created(
                 URI.create("/reservations/" + id)
         ).build();
