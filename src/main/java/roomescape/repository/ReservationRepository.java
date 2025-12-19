@@ -6,6 +6,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
+import roomescape.domain.Time;
 
 import java.sql.PreparedStatement;
 import java.time.LocalDate;
@@ -22,36 +23,42 @@ public class ReservationRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    private final RowMapper<Reservation> reservationRowMapper = (rs, rowNum) -> new Reservation(
-            rs.getLong("id"),
-            rs.getString("name"),
-            rs.getObject("date", LocalDate.class),
-            rs.getObject("time", LocalTime.class)
-    );
+    private final RowMapper<Reservation> reservationRowMapper = (rs, rowNum) -> {
+        Time time = new Time(
+                rs.getLong("time_id"),
+                LocalTime.parse(rs.getString("time_value"))
+        );
+        return new Reservation(
+                rs.getLong("reservation_id"),
+                rs.getString("name"),
+                rs.getObject("date", LocalDate.class),
+                time
+        );
+    };
 
     public List<Reservation> findAll() {
-        String sql = "SELECT id, name, date, time FROM reservation";
+        String sql = "SELECT r.id as reservation_id, r.name, r.date, t.id as time_id, t.time as time_value " +
+                "FROM reservation as r INNER JOIN time as t ON r.time_id = t.id";
         return jdbcTemplate.query(sql, reservationRowMapper);
     }
 
-    public boolean existsDateAndTime(LocalDate date, LocalTime time) {
-        String sql = "SELECT COUNT(*) FROM reservation WHERE date = ? AND time = ?";
-        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, date, time);
+    public boolean existsDateAndTime(LocalDate date, Time time) {
+        String sql = "SELECT COUNT(*) FROM reservation WHERE date = ? AND time_id = ?";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, date, time.getId());
         return count != null && count > 0;
     }
 
     public Reservation save(Reservation reservation) {
-        String sql = "INSERT INTO reservation(name, date, time) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO reservation(name, date, time_id) VALUES (?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
-        jdbcTemplate.update(
-                connection -> {
-                    PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
-                    ps.setString(1, reservation.getName());
-                    ps.setObject(2, reservation.getDate());
-                    ps.setObject(3, reservation.getTime());
-                    return ps;
-                }, keyHolder);
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
+            ps.setString(1, reservation.getName());
+            ps.setObject(2, reservation.getDate());
+            ps.setLong(3, reservation.getTime().getId());
+            return ps;
+        }, keyHolder);
 
         long id = Objects.requireNonNull(keyHolder.getKey()).longValue();
         return new Reservation(id, reservation.getName(), reservation.getDate(), reservation.getTime());

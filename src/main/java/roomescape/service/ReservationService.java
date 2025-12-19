@@ -33,13 +33,14 @@ public class ReservationService {
             throw new InvalidDataException("과거 날짜로 예약할 수 없습니다.");
         }
 
-        Time time = timeRepository.findById(request.time().getId()).orElseThrow(() -> new NotFoundDataException("존재하지 않는 시간입니다."));
+        Time time = timeRepository.findById(request.timeId())
+                                  .orElseThrow(() -> new NotFoundDataException("존재하지 않는 시간입니다."));
 
-        if (reservationRepository.existsDateAndTime(request.date(), request.time())) {
+        if (reservationRepository.existsDateAndTime(request.date(), time)) {
             throw new InvalidReservationException("해당 시간에 이미 예약이 존재합니다.");
         }
 
-        Reservation newReservation = new Reservation(null, request.name(), request.date(), request.time());
+        Reservation newReservation = new Reservation(null, request.name(), request.date(), time);
         return reservationRepository.save(newReservation);
     }
 

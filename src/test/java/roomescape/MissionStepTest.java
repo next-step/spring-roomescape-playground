@@ -48,10 +48,10 @@ public class MissionStepTest {
 
     @Test
     void 삼단계() {
-        Map<String, String> params = new HashMap<>();
+        Map<String, Object> params = new HashMap<>();
         params.put("name", "브라운");
         params.put("date", "3023-08-05");
-        params.put("time", "15:40");
+        params.put("timeId", 1);
 
         RestAssured.given().log().all()
                    .contentType(ContentType.JSON)
@@ -119,10 +119,10 @@ public class MissionStepTest {
     @Test
     void 육단계() {
         jdbcTemplate.update(
-                "INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)",
+                "INSERT INTO reservation (name, date, time_id) VALUES (?, ?, ?)",
                 "브라운",
                 "2023-08-05",
-                "15:40");
+                1);
 
         List<Reservation> reservations = RestAssured.given().log().all()
                                                     .when().get("/reservations")
@@ -137,10 +137,10 @@ public class MissionStepTest {
 
     @Test
     void 칠단계() {
-        Map<String, String> params = new HashMap<>();
+        Map<String, Object> params = new HashMap<>();
         params.put("name", "브라운");
         params.put("date", "3023-08-05");
-        params.put("time", "10:00");
+        params.put("timeId", 1);
 
         RestAssured.given().log().all()
                    .contentType(ContentType.JSON)
@@ -165,7 +165,7 @@ public class MissionStepTest {
     @Test
     void 팔단계() {
         Map<String, String> params = new HashMap<>();
-        params.put("time", "10:00");
+        params.put("time", "15:40");
 
         RestAssured.given().log().all()
                    .contentType(ContentType.JSON)
@@ -173,16 +173,16 @@ public class MissionStepTest {
                    .when().post("/times")
                    .then().log().all()
                    .statusCode(201)
-                   .header("Location", "/times/1");
+                   .header("Location", "/times/4");
 
         RestAssured.given().log().all()
                    .when().get("/times")
                    .then().log().all()
                    .statusCode(200)
-                   .body("size()", is(1));
+                   .body("size()", is(4));
 
         RestAssured.given().log().all()
-                   .when().delete("/times/1")
+                   .when().delete("/times/4")
                    .then().log().all()
                    .statusCode(204);
     }
