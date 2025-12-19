@@ -2,10 +2,12 @@ package roomescape.service;
 
 import org.springframework.stereotype.Service;
 import roomescape.domain.Reservation;
+import roomescape.domain.Time;
 import roomescape.dto.ReservationRequest;
 import roomescape.exception.InvalidDataException;
 import roomescape.exception.InvalidReservationException;
 import roomescape.repository.ReservationRepository;
+import roomescape.repository.TimeRepository;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -14,9 +16,11 @@ import java.util.List;
 public class ReservationService {
 
     private final ReservationRepository reservationRepository;
+    private final TimeRepository timeRepository;
 
-    public ReservationService(ReservationRepository reservationRepository) {
+    public ReservationService(ReservationRepository reservationRepository, TimeRepository timeRepository) {
         this.reservationRepository = reservationRepository;
+        this.timeRepository = timeRepository;
     }
 
     public List<Reservation> findAll() {
@@ -24,7 +28,6 @@ public class ReservationService {
     }
 
     public Reservation save(ReservationRequest request) {
-        Reservation newReservation = new Reservation(null, request.name(), request.date(), request.time());
         if (request.date().isBefore(LocalDate.now())) {
             throw new InvalidDataException("과거 날짜로 예약할 수 없습니다.");
         }
@@ -32,6 +35,8 @@ public class ReservationService {
         if (reservationRepository.existsDateAndTime(request.date(), request.time())) {
             throw new InvalidReservationException("해당 시간에 이미 예약이 존재합니다.");
         }
+
+        Reservation newReservation = new Reservation(null, request.name(), request.date(), request.time());
         return reservationRepository.save(newReservation);
     }
 

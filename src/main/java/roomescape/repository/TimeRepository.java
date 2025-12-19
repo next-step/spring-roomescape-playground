@@ -11,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Repository
 public class TimeRepository {
@@ -29,6 +30,12 @@ public class TimeRepository {
     public List<Time> findAll() {
         String sql = "SELECT id, time FROM time";
         return jdbcTemplate.query(sql, timeRowMapper);
+    }
+
+    public Optional<Time> findById(Long id) {
+        String sql = "SELECT id, time FROM time WHERE id = ?";
+        List<Time> results = jdbcTemplate.query(sql, timeRowMapper, id);
+        return results.isEmpty() ? Optional.empty() : Optional.of(results.get(0));
     }
 
     public Time save(Time time) {
