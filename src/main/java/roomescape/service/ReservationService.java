@@ -6,6 +6,7 @@ import roomescape.domain.Time;
 import roomescape.dto.ReservationRequest;
 import roomescape.exception.InvalidDataException;
 import roomescape.exception.InvalidReservationException;
+import roomescape.exception.NotFoundDataException;
 import roomescape.repository.ReservationRepository;
 import roomescape.repository.TimeRepository;
 
@@ -31,6 +32,8 @@ public class ReservationService {
         if (request.date().isBefore(LocalDate.now())) {
             throw new InvalidDataException("과거 날짜로 예약할 수 없습니다.");
         }
+
+        Time time = timeRepository.findById(request.time().getId()).orElseThrow(() -> new NotFoundDataException("존재하지 않는 시간입니다."));
 
         if (reservationRepository.existsDateAndTime(request.date(), request.time())) {
             throw new InvalidReservationException("해당 시간에 이미 예약이 존재합니다.");

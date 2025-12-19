@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import roomescape.domain.Time;
 import roomescape.dto.TimeRequest;
 import roomescape.exception.InvalidReservationException;
+import roomescape.repository.ReservationRepository;
 import roomescape.repository.TimeRepository;
 
 import java.util.List;
@@ -12,9 +13,11 @@ import java.util.List;
 public class TimeService {
 
     private final TimeRepository timeRepository;
+    private final ReservationRepository reservationRepository;
 
-    public TimeService(TimeRepository timeRepository) {
+    public TimeService(TimeRepository timeRepository, ReservationRepository reservationRepository) {
         this.timeRepository = timeRepository;
+        this.reservationRepository = reservationRepository;
     }
 
     public List<Time> findAll() {
