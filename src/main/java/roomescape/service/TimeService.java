@@ -3,7 +3,7 @@ package roomescape.service;
 import org.springframework.stereotype.Service;
 import roomescape.domain.Time;
 import roomescape.dto.TimeRequest;
-import roomescape.exception.InvalidReservationException;
+import roomescape.exception.NotFoundDataException;
 import roomescape.repository.ReservationRepository;
 import roomescape.repository.TimeRepository;
 
@@ -32,7 +32,7 @@ public class TimeService {
     public void deleteById(Long id) {
         boolean deleted = timeRepository.deleteById(id);
         if (!deleted) {
-            throw new InvalidReservationException("존재하지 않는 시간입니다.");
+            throw new NotFoundDataException("존재하지 않는 시간입니다.");
         }
     }
 }
