@@ -1,7 +1,9 @@
-package roomescape.exception;
+package roomescape.web_layer.controller.exception;
 
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
+@Getter
 public enum FailMessage {
     //400
     BAD_REQUEST(HttpStatus.BAD_REQUEST, 40000, "잘못된 요청입니다."),
@@ -15,17 +17,5 @@ public enum FailMessage {
         this.httpStatus = httpStatus;
         this.code = code;
         this.message = message;
-    }
-
-    public HttpStatus getHttpStatus() {
-        return httpStatus;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public int getCode() {
-        return code;
     }
 }

@@ -1,18 +1,19 @@
 package roomescape.domain;
 
-import roomescape.exception.FailMessage;
-import roomescape.exception.InvalidReservationArgumentException;
+import lombok.Getter;
+import roomescape.web_layer.controller.exception.FailMessage;
+import roomescape.web_layer.controller.exception.InvalidReservationArgumentException;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 
+@Getter
 public class Reservation {
     private final Long id;
     private final String name;
     private final String date;
-    private final String time;
+    private final Time time;
 
-    private Reservation(Long id, String name, String date, String time) {
+    private Reservation(Long id, String name, String date, Time time) {
 
         this.id = id;
         this.name = name;
@@ -20,41 +21,18 @@ public class Reservation {
         this.time = time;
     }
 
-    public static Reservation newReservationFromDb(Long id, String name, String date, String time) {
+    public static Reservation of(Long id, String name, String date, Time time) {
         return new Reservation(id, name, date, time);
     }
 
-    public static Reservation createReservation(Long id, String name, String stringDate, String stringTime) {
+    public static Reservation create(Long id, String name, String stringDate, Time times) {
         LocalDate date = LocalDate.parse(stringDate);
-        LocalTime time = LocalTime.parse(stringTime);
 
         if (date.isBefore(LocalDate.now())) {
             throw new InvalidReservationArgumentException(FailMessage.BAD_REQUEST);
         }
 
-        if (date.isEqual(LocalDate.now()) && time.isBefore(LocalTime.now())) {
-            throw new InvalidReservationArgumentException(FailMessage.BAD_REQUEST);
-        }
+        return new Reservation(id, name, stringDate, times);
 
-        return new Reservation(id, name, stringDate, stringTime);
-
-    }
-
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public String getTime() {
-
-        return time;
     }
 }
