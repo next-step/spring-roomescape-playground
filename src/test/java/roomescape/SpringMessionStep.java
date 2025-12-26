@@ -7,6 +7,7 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
+import roomescape.dto.ReservationResponse;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,5 +44,56 @@ public class SpringMessionStep {
                                                                  .extract();
 
         assertThat(checkResponse.body().jsonPath().getString("name")).isEqualTo("어드민");
+    }
+
+    @Test
+    void 이단계() {
+        String token = createToken("admin@email.com", "password");  // 일단계에서 토큰을 추출하는 로직을 메서드로 따로 만들어서 활용하세요.
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("date", "2026-03-01");
+        params.put("timeId", 1);
+
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .body(params)
+                .cookie("token", token)
+                .contentType(ContentType.JSON)
+                .post("/reservations")
+                .then().log().all()
+                .extract();
+
+        assertThat(response.statusCode()).isEqualTo(201);
+        assertThat(response.as(ReservationResponse.class).name()).isEqualTo("어드민");
+
+        params.put("name", "브라운");
+        params.put("timeId", 2);  // 중복 방지를 위해 다른 시간으로 변경
+
+        ExtractableResponse<Response> adminResponse = RestAssured.given().log().all()
+                .body(params)
+                .cookie("token", token)
+                .contentType(ContentType.JSON)
+                .post("/reservations")
+                .then().log().all()
+                .extract();
+
+        assertThat(adminResponse.statusCode()).isEqualTo(201);
+        assertThat(adminResponse.as(ReservationResponse.class).name()).isEqualTo("브라운");
+    }
+
+    // 일단계에서 토큰을 추출하는 로직을 메서드로 분리
+    private String createToken(String email, String password) {
+        Map<String, String> loginParams = new HashMap<>();
+        loginParams.put("email", email);
+        loginParams.put("password", password);
+
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(loginParams)
+                .when().post("/login")
+                .then().log().all()
+                .statusCode(200)
+                .extract();
+
+        return response.headers().get("Set-Cookie").getValue().split(";")[0].split("=")[1];
     }
 }

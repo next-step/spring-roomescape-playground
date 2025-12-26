@@ -57,7 +57,7 @@ public class LoginController {
         Member member = memberRepository.findById(memberId)
                                         .orElseThrow(() -> new NotFoundDataException("존재하지 않는 회원입니다."));
 
-        MemberResponse memberResponse = new MemberResponse(member.getName());
+        MemberResponse memberResponse = new MemberResponse(member.getName(), member.getRole());
         return ResponseEntity.ok(memberResponse);
     }
 

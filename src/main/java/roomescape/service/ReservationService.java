@@ -1,8 +1,10 @@
 package roomescape.service;
 
 import org.springframework.stereotype.Service;
+import roomescape.domain.Member;
 import roomescape.domain.Reservation;
 import roomescape.domain.Time;
+import roomescape.dto.LoginMember;
 import roomescape.dto.ReservationRequest;
 import roomescape.exception.InvalidDataException;
 import roomescape.exception.InvalidReservationException;
@@ -18,17 +20,21 @@ public class ReservationService {
 
     private final ReservationRepository reservationRepository;
     private final TimeRepository timeRepository;
+    private final MemberService memberService;
 
-    public ReservationService(ReservationRepository reservationRepository, TimeRepository timeRepository) {
+    public ReservationService(ReservationRepository reservationRepository,
+            TimeRepository timeRepository,
+            MemberService memberService) {
         this.reservationRepository = reservationRepository;
         this.timeRepository = timeRepository;
+        this.memberService = memberService;
     }
 
     public List<Reservation> findAll() {
         return reservationRepository.findAll();
     }
 
-    public Reservation save(ReservationRequest request) {
+    public Reservation save(ReservationRequest request, LoginMember loginMember) {
         if (request.date().isBefore(LocalDate.now())) {
             throw new InvalidDataException("과거 날짜로 예약할 수 없습니다.");
         }
@@ -40,7 +46,18 @@ public class ReservationService {
             throw new InvalidReservationException("해당 시간에 이미 예약이 존재합니다.");
         }
 
-        Reservation newReservation = new Reservation(null, request.name(), request.date(), time);
+        // name이 있으면 해당 name으로 Member를 찾고, 없으면 로그인 정보 활용
+        String reservationName;
+        if (request.name() != null && !request.name().isBlank()) {
+            Member member = memberService.findByName(request.name());
+            reservationName = member.getName();
+        } else if (loginMember != null) {
+            reservationName = loginMember.name();
+        } else {
+            throw new InvalidDataException("예약자 정보가 필요합니다.");
+        }
+
+        Reservation newReservation = new Reservation(null, reservationName, request.date(), time);
         return reservationRepository.save(newReservation);
     }
 

@@ -35,4 +35,10 @@ public class MemberRepository {
         List<Member> results = jdbcTemplate.query(sql, memberRowMapper, id);
         return results.isEmpty() ? Optional.empty() : Optional.of(results.get(0));
     }
+
+    public Optional<Member> findByName(String name) {
+        String sql = "SELECT id, email, password, name, role FROM member WHERE name = ?";
+        List<Member> results = jdbcTemplate.query(sql, memberRowMapper, name);
+        return results.isEmpty() ? Optional.empty() : Optional.of(results.get(0));
+    }
 }

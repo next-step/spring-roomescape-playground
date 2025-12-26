@@ -1,11 +1,14 @@
 let isEditing = false;
 const RESERVATION_API_ENDPOINT = '/reservations';
 const TIME_API_ENDPOINT = '/times';
+const LOGIN_CHECK_ENDPOINT = '/login/check';
+let currentUserRole = null;
 
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('add-reservation').addEventListener('click', addEditableRow);
   fetchReservations();
   fetchTimes();
+  checkLoginStatus();
 });
 
 function fetchTimes() {
@@ -92,7 +95,10 @@ function createEditableFieldsFor(row) {
   const dateInput = createInput('date');
   const timeDropdown = document.getElementById('time-select').cloneNode(true);
 
-  const fields = ['', nameInput, dateInput, timeDropdown];
+  // 관리자가 아니면 name 필드 숨김
+  const fields = currentUserRole === 'ADMIN'
+    ? ['', nameInput, dateInput, timeDropdown]
+    : ['', '', dateInput, timeDropdown];
 
   fields.forEach((field, index) => {
     const cell = row.insertCell(index);
@@ -127,10 +133,14 @@ function saveRow(event) {
   const timeSelect = row.querySelector('select');
 
   const reservation = {
-    name: nameInput.value,
     date: dateInput.value,
-    time: timeSelect.value
+    timeId: timeSelect.value
   };
+
+  // name 필드가 있고 비어있지 않으면 추가 (관리자만 name 필드가 있음)
+  if (nameInput && nameInput.value.trim()) {
+    reservation.name = nameInput.value;
+  }
 
   requestCreate(reservation)
       .then(data => updateRowWithReservationData(row, data))
@@ -144,7 +154,7 @@ function updateRowWithReservationData(row, data) {
   cells[0].textContent = data.id;
   cells[1].textContent = data.name;
   cells[2].textContent = data.date;
-  cells[3].textContent = data.time.time;
+  cells[3].textContent = data.time;
 
   // 버튼 변경: 삭제 버튼으로 변경
   cells[4].innerHTML = '';
@@ -212,5 +222,21 @@ function requestReadTimes() {
       .then(response => {
         if (response.status === 200) return response.json();
         throw new Error('Read failed');
+      });
+}
+
+function checkLoginStatus() {
+  return fetch(LOGIN_CHECK_ENDPOINT)
+      .then(response => {
+        if (response.status === 200) return response.json();
+        throw new Error('Not logged in');
+      })
+      .then(data => {
+        // LoginMember에서 role 정보 가져오기
+        currentUserRole = data.role || 'USER';
+      })
+      .catch(error => {
+        console.log('Not logged in, using default role');
+        currentUserRole = 'USER';
       });
 }
