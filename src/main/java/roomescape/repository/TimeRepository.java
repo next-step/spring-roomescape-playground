@@ -1,5 +1,6 @@
 package roomescape.repository;
 
+import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -35,7 +36,7 @@ public class TimeRepository {
     public Optional<Time> findById(Long id) {
         String sql = "SELECT id, time FROM time WHERE id = ?";
         List<Time> results = jdbcTemplate.query(sql, timeRowMapper, id);
-        return results.isEmpty() ? Optional.empty() : Optional.of(results.get(0));
+        return Optional.ofNullable(DataAccessUtils.singleResult(results));
     }
 
     public Time save(Time time) {

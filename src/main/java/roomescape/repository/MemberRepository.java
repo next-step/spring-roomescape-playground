@@ -1,5 +1,6 @@
 package roomescape.repository;
 
+import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -27,18 +28,18 @@ public class MemberRepository {
     public Optional<Member> findByEmailAndPassword(String email, String password) {
         String sql = "SELECT id, email, password, name, role FROM member WHERE email = ? AND password = ?";
         List<Member> results = jdbcTemplate.query(sql, memberRowMapper, email, password);
-        return results.isEmpty() ? Optional.empty() : Optional.of(results.get(0));
+        return Optional.ofNullable(DataAccessUtils.singleResult(results));
     }
 
     public Optional<Member> findById(Long id) {
         String sql = "SELECT id, email, password, name, role FROM member WHERE id = ?";
         List<Member> results = jdbcTemplate.query(sql, memberRowMapper, id);
-        return results.isEmpty() ? Optional.empty() : Optional.of(results.get(0));
+        return Optional.ofNullable(DataAccessUtils.singleResult(results));
     }
 
     public Optional<Member> findByName(String name) {
         String sql = "SELECT id, email, password, name, role FROM member WHERE name = ?";
         List<Member> results = jdbcTemplate.query(sql, memberRowMapper, name);
-        return results.isEmpty() ? Optional.empty() : Optional.of(results.get(0));
+        return Optional.ofNullable(DataAccessUtils.singleResult(results));
     }
 }

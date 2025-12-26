@@ -3,6 +3,7 @@ package roomescape.controller;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import roomescape.domain.Reservation;
 import roomescape.dto.LoginMember;
@@ -23,7 +24,10 @@ public class ReservationController {
     }
 
     @GetMapping("/reservation")
-    public String reservationPage() {
+    public String reservationPage(LoginMember loginMember, Model model) {
+        if (loginMember != null) {
+            model.addAttribute("loginMember", loginMember);
+        }
         return "new-reservation";
     }
 
@@ -37,15 +41,10 @@ public class ReservationController {
     @ResponseBody
     public ResponseEntity<ReservationResponse> createReservation(
             @Valid @RequestBody ReservationRequest request,
-            LoginMember loginMember) throws Exception {
-        Reservation reservation = reservationService.save(request, loginMember);
+            LoginMember loginMember) {
 
-        ReservationResponse response = new ReservationResponse(
-                reservation.getId(),
-                reservation.getName(),
-                reservation.getDate().toString(),
-                reservation.getTime().getTime().toString()
-        );
+        Reservation reservation = reservationService.save(request, loginMember);
+        ReservationResponse response = ReservationResponse.from(reservation);
 
         return ResponseEntity
                 .created(URI.create("/reservations/" + reservation.getId()))

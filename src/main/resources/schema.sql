@@ -5,16 +5,6 @@ CREATE TABLE time
     PRIMARY KEY (id)
 );
 
-CREATE TABLE reservation
-(
-    id   BIGINT       NOT NULL AUTO_INCREMENT,
-    name VARCHAR(255) NOT NULL,
-    date VARCHAR(255) NOT NULL,
-    time_id BIGINT,
-    PRIMARY KEY (id),
-    FOREIGN KEY (time_id) REFERENCES time(id)
-    );
-
 CREATE TABLE member
 (
     id       BIGINT       NOT NULL AUTO_INCREMENT,
@@ -23,4 +13,25 @@ CREATE TABLE member
     name     VARCHAR(255) NOT NULL,
     role     VARCHAR(50)  NOT NULL,
     PRIMARY KEY (id)
+);
+
+CREATE TABLE theme
+(
+    id          BIGINT       NOT NULL AUTO_INCREMENT,
+    name        VARCHAR(255) NOT NULL,
+    description VARCHAR(255),
+    thumbnail   VARCHAR(255),
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE reservation
+(
+    id       BIGINT       NOT NULL AUTO_INCREMENT,
+    name     VARCHAR(255) NOT NULL,
+    date     VARCHAR(255) NOT NULL,
+    time_id  BIGINT,
+    theme_id BIGINT,
+    PRIMARY KEY (id),
+    FOREIGN KEY (time_id) REFERENCES time(id),
+    FOREIGN KEY (theme_id) REFERENCES theme(id)
 );

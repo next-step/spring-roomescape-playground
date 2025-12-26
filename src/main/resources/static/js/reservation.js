@@ -26,7 +26,8 @@ function insertReservationRow(row, reservation, displayIndex) {
     row.insertCell(0).textContent = displayIndex;
     row.insertCell(1).textContent = reservation.name;
     row.insertCell(2).textContent = reservation.date;
-    row.insertCell(3).textContent = reservation.time;
+
+    row.insertCell(3).textContent = reservation.time.time;
 
     const actionCell = row.insertCell(4);
     const deleteButton = createActionButton('삭제', 'btn-danger', deleteRow);

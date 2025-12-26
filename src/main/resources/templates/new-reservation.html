@@ -1,69 +1,94 @@
 <!DOCTYPE html>
-<html lang="ko">
-
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>방탈출 어드민 페이지</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-  <link rel="stylesheet" href="/css/styles.css">
-  <link rel="stylesheet" href="/css/reservation.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>예약 페이지</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="/css/reservation.css">
 </head>
-
 <body>
 
-<div class="container-fluid page">
-  <div class="row">
-    <!-- Sidebar -->
-    <div id="sidebar-container" class="col-md-3">
-      <nav id="sidebar" class="text-white">
-        <!-- 로고 영역 -->
-        <div class="sidebar-logo p-4">
-          <a href="/">
-            <img src="https://avatars.githubusercontent.com/u/141792611?s=96&v=4" alt="logo"
-                 class="img-fluid rounded-circle">
-          </a>
+<header class="reservation-header">
+    <div class="header-container d-flex justify-content-between align-items-center">
+        <div class="header-left">
+            <a href="/" class="logo-link">
+                <img src="https://avatars.githubusercontent.com/u/141792611?s=96&v=4" alt="logo" class="header-logo" style="width: 40px; height: 40px; border-radius: 50%;">
+            </a>
         </div>
-        <ul class="list-unstyled mt-4">
-          <li class="p-3">
-            <i class="fas fa-calendar-check menu-icon mr-2"></i>
-            <a href="/reservation" class="text-white">예약관리</a>
-          </li>
-          <li class="p-3">
-            <i class="fas fa-clock menu-icon mr-2"></i>
-            <a href="/time" class="text-white">시간관리</a>
-          </li>
-        </ul>
-      </nav>
+
+        <div class="header-right d-flex align-items-center">
+            <span class="mr-3 text-secondary" style="font-weight: 500;">Reservation</span>
+
+            <a href="/login" class="d-flex align-items-center text-decoration-none text-secondary">
+                <i class="fas fa-user-circle user-icon fa-lg"></i>
+                <span class="user-name ml-2 font-weight-bold"
+                      th:text="${loginMember != null ? loginMember.name : 'Login'}">Login</span>
+            </a>
+        </div>
     </div>
-    <!-- Content -->
-    <div id="content-container" class="col-md-9 p-5">
-      <h1>예약 관리</h1>
-      <div class="table-header">
-        <button id="add-reservation" class="btn btn-primary">예약 추가</button>
-      </div>
-      <div class="table-container"/>
-      <table class="table table-bordered">
-        <thead>
-        <tr>
-          <th>예약번호</th>
-          <th>예약자</th>
-          <th>날짜</th>
-          <th>시간</th>
-          <th></th>
-        </tr>
-        </thead>
-        <tbody id="reservation-table-body">
-        </tbody>
-      </table>
+</header>
+
+<div class="container mt-5">
+    <h2 class="text-center mb-5 font-weight-bold">예약 페이지</h2>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white text-center border-0 pt-4">
+                    <h5 class="font-weight-bold">날짜 선택</h5>
+                </div>
+                <div class="card-body d-flex justify-content-center">
+                    <input type="text" id="date-input" class="d-none">
+                    <div id="inline-calendar"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white text-center border-0 pt-4">
+                    <h5 class="font-weight-bold">테마 선택</h5>
+                </div>
+                <div class="card-body">
+                    <div id="theme-list" class="list-group list-group-flush">
+                        <button type="button" class="list-group-item list-group-item-action" data-id="1">테마 1</button>
+                        <button type="button" class="list-group-item list-group-item-action" data-id="2">테마 2</button>
+                        <button type="button" class="list-group-item list-group-item-action" data-id="3">테마 3</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white text-center border-0 pt-4">
+                    <h5 class="font-weight-bold">시간 선택</h5>
+                </div>
+                <div class="card-body">
+                    <div id="time-list" class="list-group list-group-flush">
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
+
+    <div class="row mt-4 mb-5">
+        <div class="col-12 text-center">
+            <button id="add-reservation" class="btn btn-primary btn-lg custom-btn-blue">예약하기</button>
+
+            <a href="/admin" class="btn btn-secondary btn-lg custom-btn-gray ml-2">예약대기(관리자)</a>
+        </div>
+    </div>
+
+
 </div>
 
-<script src="/js/scripts.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://npmcdn.com/flatpickr/dist/l10n/ko.js"></script>
 <script src="/js/new-reservation.js"></script>
 </body>
-
 </html>

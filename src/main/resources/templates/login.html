@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - 방탈출</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         * {
             margin: 0;
@@ -16,13 +17,36 @@
             background-color: #ffffff;
         }
 
-        /* 로그인 컨테이너 */
+        .reservation-header {
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+            padding: 15px 0;
+        }
+
+        .header-logo {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+
+        .header-link {
+            color: #6c757d;
+            text-decoration: none;
+            font-size: 16px;
+            margin-left: 20px;
+        }
+
+        .header-link:hover {
+            color: #333;
+            text-decoration: none;
+        }
+
         .login-container {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: calc(100vh - 150px);
+            min-height: calc(100vh - 71px);
             padding: 40px 20px;
         }
 
@@ -105,23 +129,24 @@
             background-color: #084015;
             border-color: #084015;
         }
-
-        @media (max-width: 600px) {
-            .header {
-                padding: 20px 30px;
-            }
-
-            h1 {
-                font-size: 36px;
-            }
-
-            .button-group {
-                flex-direction: column;
-            }
-        }
     </style>
 </head>
 <body>
+
+<header class="reservation-header">
+    <div class="container d-flex justify-content-between align-items-center">
+        <div class="header-left">
+            <a href="/" class="logo-link">
+                <img src="https://avatars.githubusercontent.com/u/141792611?s=96&v=4" alt="logo" class="header-logo">
+            </a>
+        </div>
+
+        <div class="header-right d-flex align-items-center">
+            <a href="/reservation" class="header-link">Reservation</a>
+            <a href="/login" class="header-link">Login</a>
+        </div>
+    </div>
+</header>
 
 <div class="login-container">
     <h1>Login</h1>
@@ -132,6 +157,7 @@
                     id="email"
                     value="admin@email.com"
                     required
+                    placeholder="Email"
             >
         </div>
         <div class="input-group">
@@ -140,6 +166,7 @@
                     id="password"
                     value="password"
                     required
+                    placeholder="Password"
             >
         </div>
         <div class="button-group">

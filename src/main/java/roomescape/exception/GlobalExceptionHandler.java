@@ -15,12 +15,12 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(InvalidDataException.class)
-    public ResponseEntity<String> handleInvalidReservationDataException(InvalidDataException e) {
+    public ResponseEntity<String> handleInvalidDataException(InvalidDataException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 
     @ExceptionHandler(NotFoundDataException.class)
-    public ResponseEntity<String> handleNotFoundReservationException(NotFoundDataException e) {
+    public ResponseEntity<String> handleNotFoundDataException(NotFoundDataException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 

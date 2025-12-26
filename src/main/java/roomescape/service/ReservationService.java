@@ -1,8 +1,8 @@
 package roomescape.service;
 
 import org.springframework.stereotype.Service;
-import roomescape.domain.Member;
 import roomescape.domain.Reservation;
+import roomescape.domain.Theme;
 import roomescape.domain.Time;
 import roomescape.dto.LoginMember;
 import roomescape.dto.ReservationRequest;
@@ -20,14 +20,14 @@ public class ReservationService {
 
     private final ReservationRepository reservationRepository;
     private final TimeRepository timeRepository;
-    private final MemberService memberService;
+    private final ThemeService themeService;
 
     public ReservationService(ReservationRepository reservationRepository,
             TimeRepository timeRepository,
-            MemberService memberService) {
+            ThemeService themeService) {
         this.reservationRepository = reservationRepository;
         this.timeRepository = timeRepository;
-        this.memberService = memberService;
+        this.themeService = themeService;
     }
 
     public List<Reservation> findAll() {
@@ -42,22 +42,22 @@ public class ReservationService {
         Time time = timeRepository.findById(request.timeId())
                                   .orElseThrow(() -> new NotFoundDataException("존재하지 않는 시간입니다."));
 
-        if (reservationRepository.existsDateAndTime(request.date(), time)) {
+        Theme theme = themeService.findById(request.themeId());
+
+        if (reservationRepository.existsDateAndTimeAndTheme(request.date(), time, theme)) {
             throw new InvalidReservationException("해당 시간에 이미 예약이 존재합니다.");
         }
 
-        // name이 있으면 해당 name으로 Member를 찾고, 없으면 로그인 정보 활용
         String reservationName;
         if (request.name() != null && !request.name().isBlank()) {
-            Member member = memberService.findByName(request.name());
-            reservationName = member.getName();
+            reservationName = request.name();
         } else if (loginMember != null) {
             reservationName = loginMember.name();
         } else {
             throw new InvalidDataException("예약자 정보가 필요합니다.");
         }
 
-        Reservation newReservation = new Reservation(null, reservationName, request.date(), time);
+        Reservation newReservation = new Reservation(null, reservationName, request.date(), time, theme);
         return reservationRepository.save(newReservation);
     }
 

@@ -1,242 +1,108 @@
-let isEditing = false;
-const RESERVATION_API_ENDPOINT = '/reservations';
-const TIME_API_ENDPOINT = '/times';
-const LOGIN_CHECK_ENDPOINT = '/login/check';
-let currentUserRole = null;
+let selectedDate = '';
+let selectedThemeId = '';
+let selectedTimeId = '';
 
-document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('add-reservation').addEventListener('click', addEditableRow);
-  fetchReservations();
-  fetchTimes();
-  checkLoginStatus();
+document.addEventListener('DOMContentLoaded', function() {
+    flatpickr("#inline-calendar", {
+        inline: true,
+        locale: "ko",
+        dateFormat: "Y-m-d",
+        minDate: "today",
+        onChange: function(selectedDates, dateStr) {
+            selectedDate = dateStr;
+            console.log("날짜 선택:", selectedDate);
+        }
+    });
+
+    setupThemeSelection();
+
+    fetchTimes();
+
+    const reserveBtn = document.getElementById('add-reservation');
+    if (reserveBtn) {
+        reserveBtn.addEventListener('click', submitReservation);
+    }
 });
 
-function fetchTimes() {
-  requestReadTimes()
-      .then(data => {
-        const timeSelectControl = createFormControl(data);
-        appendFormControlToDocument(timeSelectControl);
-      })
-      .catch(error => console.error('Error fetching time:', error));
-}
-
-function createFormControl(timeData) {
-  const select = document.createElement('select');
-  select.className = 'form-control';
-  select.id = 'time-select';
-
-  const defaultOption = document.createElement('option');
-  defaultOption.textContent = "시간 선택";
-  select.appendChild(defaultOption);
-
-  timeData.forEach(time => {
-    const option = document.createElement('option');
-    option.value = time.id;
-    option.textContent = time.time;
-    select.appendChild(option);
-  });
-
-  return select;
-}
-
-function appendFormControlToDocument(control) {
-  document.body.appendChild(control);
-}
-
-function fetchReservations() {
-  requestRead()
-      .then(renderReservations)
-      .catch(error => console.error('Error fetching reservations:', error));
-}
-
-function renderReservations(data) {
-  const tableBody = document.getElementById('reservation-table-body');
-  tableBody.innerHTML = '';
-
-  data.forEach(reservation => {
-    const row = tableBody.insertRow();
-    insertReservationRow(row, reservation);
-  });
-}
-
-function insertReservationRow(row, reservation) {
-  ['id', 'name', 'date'].forEach((field, index) => {
-    row.insertCell(index).textContent = reservation[field];
-  });
-
-  row.insertCell(3).textContent = reservation.time.time;
-
-  const actionCell = row.insertCell(4);
-  actionCell.appendChild(createActionButton('삭제', 'btn-danger', deleteRow));
-}
-
-function createActionButton(label, className, eventListener) {
-  const button = document.createElement('button');
-  button.textContent = label;
-  button.classList.add('btn', className, 'mr-2');
-  button.addEventListener('click', eventListener);
-  return button;
-}
-
-function addEditableRow() {
-
-  if (isEditing) return;  // 이미 편집 중인 경우 추가하지 않음
-
-  const tableBody = document.getElementById('reservation-table-body');
-  const row = tableBody.insertRow();
-  isEditing = true;
-
-  createEditableFieldsFor(row);
-  addSaveAndCancelButtonsToRow(row);
-}
-
-function createEditableFieldsFor(row) {
-  const nameInput = createInput('text');
-  const dateInput = createInput('date');
-  const timeDropdown = document.getElementById('time-select').cloneNode(true);
-
-  // 관리자가 아니면 name 필드 숨김
-  const fields = currentUserRole === 'ADMIN'
-    ? ['', nameInput, dateInput, timeDropdown]
-    : ['', '', dateInput, timeDropdown];
-
-  fields.forEach((field, index) => {
-    const cell = row.insertCell(index);
-    if (typeof field === 'string') {
-      cell.textContent = field;
-    } else {
-      cell.appendChild(field);
-    }
-  });
-}
-
-function addSaveAndCancelButtonsToRow(row) {
-  const actionCell = row.insertCell(4);
-  actionCell.appendChild(createActionButton('확인', 'btn-primary', saveRow));
-  actionCell.appendChild(createActionButton('취소', 'btn-secondary', () => {
-    row.remove();
-    isEditing = false;
-  }));
-}
-
-function createInput(type) {
-  const input = document.createElement('input');
-  input.type = type;
-  input.className = 'form-control';
-  return input;
-}
-
-function saveRow(event) {
-  const row = event.target.parentNode.parentNode;
-  const nameInput = row.querySelector('input[type="text"]');
-  const dateInput = row.querySelector('input[type="date"]');
-  const timeSelect = row.querySelector('select');
-
-  const reservation = {
-    date: dateInput.value,
-    timeId: timeSelect.value
-  };
-
-  // name 필드가 있고 비어있지 않으면 추가 (관리자만 name 필드가 있음)
-  if (nameInput && nameInput.value.trim()) {
-    reservation.name = nameInput.value;
-  }
-
-  requestCreate(reservation)
-      .then(data => updateRowWithReservationData(row, data))
-      .catch(error => console.error('Error:', error));
-
-  isEditing = false;  // isEditing 값을 false로 설정
-}
-
-function updateRowWithReservationData(row, data) {
-  const cells = row.cells;
-  cells[0].textContent = data.id;
-  cells[1].textContent = data.name;
-  cells[2].textContent = data.date;
-  cells[3].textContent = data.time;
-
-  // 버튼 변경: 삭제 버튼으로 변경
-  cells[4].innerHTML = '';
-  cells[4].appendChild(createActionButton('삭제', 'btn-danger', deleteRow));
-
-  isEditing = false;
-
-  // Remove the editable input fields and just show the saved data
-  for (let i = 1; i <= 3; i++) {
-    const inputElement = cells[i].querySelector('input');
-    if (inputElement) {
-      inputElement.remove();
-    }
-  }
-}
-
-function deleteRow(event) {
-  const row = event.target.closest('tr');
-  const reservationId = row.cells[0].textContent;
-
-  requestDelete(reservationId)
-      .then(() => row.remove())
-      .catch(error => console.error('Error:', error));
-}
-
-function requestCreate(reservation) {
-  const requestOptions = {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify(reservation)
-  };
-
-  return fetch(RESERVATION_API_ENDPOINT, requestOptions)
-      .then(response => {
-        if (response.status === 201) {
-          return response.json();
-        }
-        return response.text().then(text => {
-          throw new Error(text);
+function setupThemeSelection() {
+    const themeList = document.getElementById('theme-list');
+    if (themeList) {
+        const buttons = themeList.querySelectorAll('.list-group-item');
+        buttons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                buttons.forEach(b => b.classList.remove('active-theme'));
+                this.classList.add('active-theme');
+                selectedThemeId = this.getAttribute('data-id');
+                console.log("테마 선택:", selectedThemeId);
+            });
         });
-      });
+    }
 }
 
-function requestRead() {
-  return fetch(RESERVATION_API_ENDPOINT)
-      .then(response => {
-        if (response.status === 200) return response.json();
-        throw new Error('Read failed');
-      });
+function fetchTimes() {
+    fetch('/times')
+        .then(response => {
+            if (response.ok) return response.json();
+            throw new Error('시간 로딩 실패');
+        })
+        .then(data => {
+            const timeList = document.getElementById('time-list');
+            timeList.innerHTML = '';
+
+            data.forEach(time => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'list-group-item list-group-item-action';
+                btn.textContent = time.time;
+                btn.dataset.id = time.id;
+
+                btn.addEventListener('click', function() {
+                    timeList.querySelectorAll('.list-group-item').forEach(item => {
+                        item.classList.remove('active-theme');
+                    });
+                    this.classList.add('active-theme');
+                    selectedTimeId = this.dataset.id;
+                    console.log("시간 선택:", selectedTimeId);
+                });
+
+                timeList.appendChild(btn);
+            });
+        })
+        .catch(error => console.error(error));
 }
 
-function requestDelete(id) {
-  const requestOptions = {
-    method: 'DELETE',
-  };
+function submitReservation() {
+    if (!selectedDate || !selectedThemeId || !selectedTimeId) {
+        alert("날짜, 테마, 시간을 모두 선택해주세요.");
+        return;
+    }
 
-  return fetch(`${RESERVATION_API_ENDPOINT}/${id}`, requestOptions)
-      .then(response => {
-        if (response.status !== 204) throw new Error('Delete failed');
-      });
-}
+    const reservationData = {
+        date: selectedDate,
+        timeId: selectedTimeId,
+        themeId: selectedThemeId
+    };
 
-function requestReadTimes() {
-  return fetch(TIME_API_ENDPOINT)
-      .then(response => {
-        if (response.status === 200) return response.json();
-        throw new Error('Read failed');
-      });
-}
+    const nameInput = document.getElementById('name-input');
+    if (nameInput && nameInput.value.trim() !== "") {
+        reservationData.name = nameInput.value.trim();
+    }
 
-function checkLoginStatus() {
-  return fetch(LOGIN_CHECK_ENDPOINT)
-      .then(response => {
-        if (response.status === 200) return response.json();
-        throw new Error('Not logged in');
-      })
-      .then(data => {
-        // LoginMember에서 role 정보 가져오기
-        currentUserRole = data.role || 'USER';
-      })
-      .catch(error => {
-        console.log('Not logged in, using default role');
-        currentUserRole = 'USER';
-      });
+    fetch('/reservations', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(reservationData),
+    })
+        .then(response => {
+            if (response.status === 201) {
+                alert("예약 완료!");
+                window.location.href = "/reservation";
+            } else {
+                return response.text().then(text => alert(text));
+            }
+        })
+        .catch(error => {
+            console.error(error);
+            alert("오류 발생");
+        });
 }

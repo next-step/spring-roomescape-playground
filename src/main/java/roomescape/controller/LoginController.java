@@ -1,7 +1,6 @@
 package roomescape.controller;
 
 import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -10,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import roomescape.domain.Member;
+import roomescape.dto.LoginMember;
 import roomescape.dto.LoginRequest;
 import roomescape.dto.MemberResponse;
 import roomescape.exception.NotFoundDataException;
@@ -48,30 +48,12 @@ public class LoginController {
 
     @GetMapping("/login/check")
     @ResponseBody
-    public ResponseEntity<MemberResponse> checkLogin(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-        String token = extractTokenFromCookie(cookies);
-
-        Long memberId = JwtUtil.getMemberIdFromToken(token);
-
-        Member member = memberRepository.findById(memberId)
-                                        .orElseThrow(() -> new NotFoundDataException("존재하지 않는 회원입니다."));
-
-        MemberResponse memberResponse = new MemberResponse(member.getName(), member.getRole());
-        return ResponseEntity.ok(memberResponse);
-    }
-
-    private String extractTokenFromCookie(Cookie[] cookies) {
-        if (cookies == null) {
+    public ResponseEntity<MemberResponse> checkLogin(LoginMember loginMember) {
+        if (loginMember == null) {
             throw new NotFoundDataException("로그인이 필요합니다.");
         }
 
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equals("token")) {
-                return cookie.getValue();
-            }
-        }
-
-        throw new NotFoundDataException("로그인이 필요합니다.");
+        MemberResponse memberResponse = new MemberResponse(loginMember.name(), loginMember.role());
+        return ResponseEntity.ok(memberResponse);
     }
 }

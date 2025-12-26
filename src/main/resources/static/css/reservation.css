@@ -1,16 +1,56 @@
-.table-container table th:nth-child(1),
-.table-container table td:nth-child(1),
-.table-container table th:nth-child(2),
-.table-container table td:nth-child(2),
-.table-container table th:nth-child(3),
-.table-container table td:nth-child(3),
-.table-container table th:nth-child(4),
-.table-container table td:nth-child(4),
-.table-container table th:nth-child(5),
-.table-container table td:nth-child(5) {
-    width: 20%;
+body {
+    background-color: #ffffff;
+    font-family: 'Noto Sans KR', sans-serif;
 }
 
-.table-container table td:nth-child(5) {
+.reservation-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    padding: 15px 0;
+}
+
+.card {
+    border: 1px solid #eee;
+    border-radius: 8px;
+    min-height: 400px;
+}
+
+.list-group-item {
+    border: 1px solid #f1f1f1;
+    margin-bottom: 8px;
+    border-radius: 4px !important;
+    background-color: #f8f9fa;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.2s;
     text-align: center;
+    font-weight: 500;
+}
+
+.list-group-item:hover {
+    background-color: #e9ecef;
+}
+
+.list-group-item.active-theme {
+    background-color: #1b3c28 !important;
+    color: white !important;
+    border-color: #1b3c28 !important;
+}
+
+.custom-btn-blue {
+    background-color: #7d96ff;
+    border: none;
+    padding: 10px 40px;
+}
+.custom-btn-blue:hover {
+    background-color: #637fdc;
+}
+
+.flatpickr-calendar {
+    box-shadow: none !important;
+    margin: 0 auto;
+}
+.flatpickr-day.selected {
+    background: #5b7dff !important;
+    border-color: #5b7dff !important;
 }
