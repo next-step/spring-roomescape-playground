@@ -17,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 
-public class SpringMissionStep {
+public class SpringMissionTest {
     @Test
     void 일단계() {
         Map<String, String> params = new HashMap<>();
