@@ -29,10 +29,6 @@ public class ReservationService {
 
     @Transactional
     public Reservation addReservation(ReservationCreateRequest request, String idempotencyKey) {
-        if (idempotencyRepository.exists(idempotencyKey)) {
-            return validateAndGetExistingReservation(request, idempotencyKey);
-        }
-
         Time time = timeRepository.findById(request.timeId());
 
         if (reservationRepository.existsByDateAndTime(request.date(), time.getId())) {
