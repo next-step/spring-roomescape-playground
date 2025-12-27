@@ -17,14 +17,18 @@ public class IdempotencyInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String key = request.getHeader("Idempotency-Key");
-        if (key == null) return true;
-
-        if (idempotencyManager.isProcessed(key)) {
+        if (key != null && idempotencyManager.isProcessed(key)) {
             Object cachedResponse = idempotencyManager.getResponse(key);
+
+            response.setStatus(HttpServletResponse.SC_CREATED);
             response.setContentType("application/json");
+            response.setContentType("application/json;charset=UTF-8");
             response.getWriter().write(objectMapper.writeValueAsString(cachedResponse));
             return false;
         }
         return true;
     }
+
+
+
 }

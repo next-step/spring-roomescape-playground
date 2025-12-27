@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
+import roomescape.Manager.IdempotencyManager;
 import roomescape.dto.reservationDto.ReservationCreateRequest;
 import roomescape.dto.reservationDto.ReservationResponse;
 import roomescape.model.Reservation;
@@ -19,6 +20,7 @@ import java.util.List;
 public class ReservationController {
 
     private final ReservationService service;
+    private final IdempotencyManager idempotencyManager;
 
     @GetMapping
     public List<ReservationResponse> getAllReservations() {
@@ -42,6 +44,10 @@ public class ReservationController {
         Reservation savedReservation = service.addReservation(requestDto, idempotencyKey);
 
         ReservationResponse responseDto = ReservationResponse.from(savedReservation);
+
+        if (idempotencyKey != null) {
+            idempotencyManager.saveResponse(idempotencyKey, responseDto);
+        }
         URI location = URI.create("/reservations/" + savedReservation.getId());
 
         return ResponseEntity.created(location).body(responseDto);

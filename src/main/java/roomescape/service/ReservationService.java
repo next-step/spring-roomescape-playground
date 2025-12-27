@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import roomescape.Manager.IdempotencyManager;
 import roomescape.advice.ErrorCode;
 import roomescape.advice.IdempotencyKeyMismatchException;
 import roomescape.advice.RoomEscapeException;
@@ -21,6 +22,7 @@ import java.util.List;
 public class ReservationService {
     private final ReservationRepository reservationRepository;
     private final IdempotencyRepository idempotencyRepository;
+    private final IdempotencyManager idempotencyManager;
     private final TimeRepository timeRepository;
 
     public List<Reservation> getAllReservations() {
@@ -42,7 +44,8 @@ public class ReservationService {
         );
 
         Reservation savedReservation = reservationRepository.save(newReservation);
-        idempotencyRepository.save(idempotencyKey, savedReservation.getId());
+
+        idempotencyManager.saveResponse(idempotencyKey, savedReservation);
 
         return savedReservation;
     }
