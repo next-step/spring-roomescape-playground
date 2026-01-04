@@ -33,7 +33,7 @@ public class ReservationService {
             throw new InvalidDataException("과거 날짜로 예약할 수 없습니다.");
         }
 
-        Time time = timeRepository.findById(request.timeId())
+        Time time = timeRepository.findById(request.time())
                                   .orElseThrow(() -> new NotFoundDataException("존재하지 않는 시간입니다."));
 
         if (reservationRepository.existsDateAndTime(request.date(), time)) {
