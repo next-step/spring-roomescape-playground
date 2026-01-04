@@ -2,7 +2,6 @@ package roomescape.controller;
 
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import roomescape.domain.Time;
 import roomescape.dto.TimeRequest;
@@ -11,7 +10,8 @@ import roomescape.service.TimeService;
 import java.net.URI;
 import java.util.List;
 
-@Controller
+@RestController
+@RequestMapping("/times")
 public class TimeController {
 
     private final TimeService timeService;
@@ -20,19 +20,12 @@ public class TimeController {
         this.timeService = timeService;
     }
 
-    @GetMapping("/time")
-    public String timePage() {
-        return "time";
-    }
-
-    @GetMapping("/times")
-    @ResponseBody
+    @GetMapping
     public List<Time> getTimes() {
         return timeService.findAll();
     }
 
-    @PostMapping("/times")
-    @ResponseBody
+    @PostMapping
     public ResponseEntity<Time> createTime(@Valid @RequestBody TimeRequest request) {
         Time time = timeService.save(request);
 
@@ -41,8 +34,7 @@ public class TimeController {
                 .body(time);
     }
 
-    @DeleteMapping("/times/{id}")
-    @ResponseBody
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTime(@PathVariable Long id) {
         timeService.deleteById(id);
         return ResponseEntity.noContent().build();
