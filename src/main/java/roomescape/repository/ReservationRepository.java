@@ -43,9 +43,8 @@ public class ReservationRepository {
     }
 
     public boolean existsDateAndTime(LocalDate date, Time time) {
-        String sql = "SELECT COUNT(*) FROM reservation WHERE date = ? AND time_id = ?";
-        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, date, time.getId());
-        return count != null && count > 0;
+        String sql = "SELECT EXISTS(SELECT 1 FROM reservation WHERE date = ? AND time_id = ?)";
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, date, time.getId()));
     }
 
     public Reservation save(Reservation reservation) {
