@@ -2,10 +2,14 @@ package roomescape.service;
 
 import org.springframework.stereotype.Service;
 import roomescape.domain.Reservation;
+import roomescape.domain.Time;
 import roomescape.dto.ReservationRequest;
+import roomescape.exception.ErrorMessage;
 import roomescape.exception.InvalidDataException;
 import roomescape.exception.InvalidReservationException;
+import roomescape.exception.NotFoundDataException;
 import roomescape.repository.ReservationRepository;
+import roomescape.repository.TimeRepository;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -14,9 +18,11 @@ import java.util.List;
 public class ReservationService {
 
     private final ReservationRepository reservationRepository;
+    private final TimeRepository timeRepository;
 
-    public ReservationService(ReservationRepository reservationRepository) {
+    public ReservationService(ReservationRepository reservationRepository, TimeRepository timeRepository) {
         this.reservationRepository = reservationRepository;
+        this.timeRepository = timeRepository;
     }
 
     public List<Reservation> findAll() {
@@ -24,21 +30,25 @@ public class ReservationService {
     }
 
     public Reservation save(ReservationRequest request) {
-        Reservation newReservation = new Reservation(null, request.name(), request.date(), request.time());
         if (request.date().isBefore(LocalDate.now())) {
-            throw new InvalidDataException("과거 날짜로 예약할 수 없습니다.");
+            throw new InvalidDataException(ErrorMessage.INVALID_DATE);
         }
 
-        if (reservationRepository.existsDateAndTime(request.date(), request.time())) {
-            throw new InvalidReservationException("해당 시간에 이미 예약이 존재합니다.");
+        Time time = timeRepository.findById(request.time())
+                                  .orElseThrow(() -> new NotFoundDataException(ErrorMessage.TIME_NOT_FOUND));
+
+        if (reservationRepository.existsDateAndTime(request.date(), time)) {
+            throw new InvalidReservationException(ErrorMessage.RESERVATION_EXISTS);
         }
+
+        Reservation newReservation = new Reservation(null, request.name(), request.date(), time);
         return reservationRepository.save(newReservation);
     }
 
     public void deleteById(Long id) {
         boolean deleted = reservationRepository.deleteById(id);
         if (!deleted) {
-            throw new InvalidReservationException("존재하지 않는 예약입니다.");
+            throw new InvalidReservationException(ErrorMessage.RESERVATION_NOT_FOUND);
         }
     }
 }
