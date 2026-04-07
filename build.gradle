@@ -18,6 +18,20 @@ repositories {
 
 // 이 'dependencies' 블록 안에 모든 의존성을 관리하세요.
 dependencies {
+
+
+
+    // Lombok 의존성 추가
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    // 테스트 환경에서도 Lombok을 사용한다면 추가
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+
+    // (참고) 이전 답변에서 LocalDate 처리를 위해 필요했던 Jackson 모듈
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+
     // [필수 1] JdbcTemplate을 포함한 스프링 JDBC 스타터
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 

@@ -1,86 +1,81 @@
 package roomescape.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import roomescape.Manager.IdempotencyManager;
+import roomescape.advice.ErrorCode;
 import roomescape.advice.IdempotencyKeyMismatchException;
-import roomescape.dto.ReservationCreateRequest;
+import roomescape.advice.RoomEscapeException;
+import roomescape.dto.reservationDto.ReservationCreateRequest;
 import roomescape.model.Reservation;
+import roomescape.model.Time;
 import roomescape.repository.IdempotencyRepository;
 import roomescape.repository.ReservationRepository;
+import roomescape.repository.TimeRepository;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ReservationService {
     private final ReservationRepository reservationRepository;
     private final IdempotencyRepository idempotencyRepository;
-
-    @Autowired
-    public ReservationService(ReservationRepository reservationRepository,
-                              IdempotencyRepository idempotencyRepository
-    ) {
-        this.reservationRepository = reservationRepository;
-        this.idempotencyRepository = idempotencyRepository;
-    }
+    private final IdempotencyManager idempotencyManager;
+    private final TimeRepository timeRepository;
 
     public List<Reservation> getAllReservations() {
         return reservationRepository.findAll();
     }
 
     @Transactional
-    public Reservation addReservation(Reservation newReservation, String idempotencyKey) {
+    public Reservation addReservation(ReservationCreateRequest request, String idempotencyKey) {
+        Time time = timeRepository.findById(request.timeId());
 
-        if (idempotencyRepository.exists(idempotencyKey)) {
-            Long existingReservationId = idempotencyRepository.getReservationId(idempotencyKey);
-
-            Reservation existingReservation = reservationRepository.findById(existingReservationId);
-
-            if (!isSameReservation(existingReservation, newReservation)) {
-                throw new IdempotencyKeyMismatchException();
-            }
-
-            return existingReservation;
+        if (reservationRepository.existsByDateAndTime(request.date(), time.getId())) {
+            throw new RoomEscapeException(ErrorCode.RESERVATION_NOT_FOUND);
         }
 
-        if (reservationRepository.existsByDateAndTime(newReservation.getDate(), newReservation.getTime())) {
-            throw new IllegalArgumentException("이미 예약된 시간입니다!");
-        }
+        Reservation newReservation = Reservation.create(
+                request.name(),
+                request.date(),
+                time
+        );
 
         Reservation savedReservation = reservationRepository.save(newReservation);
 
-        idempotencyRepository.save(idempotencyKey, savedReservation.getId());
+        idempotencyManager.saveResponse(idempotencyKey, savedReservation);
 
         return savedReservation;
     }
 
-    public Reservation addReservation(Reservation newReservation) {
+    private Reservation validateAndGetExistingReservation(ReservationCreateRequest request, String idempotencyKey) {
+        Long existingReservationId = idempotencyRepository.getReservationId(idempotencyKey);
 
+        Reservation existingReservation = reservationRepository.findById(existingReservationId); // 없을 경우 예외 처리 필요
 
-        Reservation savedReservation = reservationRepository.save(newReservation);
+        if (!matches(existingReservation, request)) {
+            throw new RoomEscapeException(ErrorCode.IDEMPOTENCY_KEY_MISMATCH);
+        }
 
-        //idempotencyRepository.save(savedReservation.getId());
-
-        return savedReservation;
+        return existingReservation;
     }
 
-    private boolean isSameReservation(Reservation r1, Reservation r2) {
-        return r1.getName().equals(r2.getName()) &&
-                r1.getDate().equals(r2.getDate()) &&
-                r1.getTime().equals(r2.getTime());
+    private boolean matches(Reservation reservation, ReservationCreateRequest request) {
+        return reservation.getName().equals(request.name()) &&
+                reservation.getDate().equals(request.date()) &&
+                reservation.getTime().getId().equals(request.timeId());
     }
 
+
+    @Transactional
     public void deleteReservation(Long id) {
-        reservationRepository.deleteById(id);
-    }
 
-    public boolean exitsKey(String idempotencyKey) {
-        return idempotencyRepository.exists(idempotencyKey);
-    }
+        int count = reservationRepository.deleteById(id);
 
-    public Reservation get(ReservationCreateRequest request) {
-        return reservationRepository.get(request.name(), request.date(), request.time());
+        if (count == 0) {
+            throw new RoomEscapeException(ErrorCode.RESERVATION_NOT_FOUND);
+        }
     }
 }

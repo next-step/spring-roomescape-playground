@@ -1,18 +1,15 @@
 package roomescape.repository;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository
+@RequiredArgsConstructor
 public class IdempotencyRepository {
     private final JdbcTemplate jdbcTemplate;
-
-    @Autowired
-    public IdempotencyRepository(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
 
     public boolean exists(String key) {
         String sql = "SELECT count(*) FROM idempotency_keys WHERE id = ?";
@@ -38,5 +35,4 @@ public class IdempotencyRepository {
         String sql = "INSERT INTO idempotency_keys (id, reservation_id) VALUES (?, ?)";
         jdbcTemplate.update(sql, key, reservationId);
     }
-
 }
