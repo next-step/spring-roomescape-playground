@@ -4,6 +4,9 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class RoomscapeController {
 
     private final List<Reservation> reservations = new ArrayList<>();
-    int id = 0;
+    private AtomicLong index = new AtomicLong(0);
 
     @GetMapping("/")
     public String showPage(){
@@ -37,16 +40,16 @@ public class RoomscapeController {
 
     @PostMapping("/reservations")
     @ResponseBody
-    public List<Reservation> createReservation(@RequestBody Reservation request) {
+    public ResponseEntity<Reservation> createReservation(@RequestBody Reservation request) {
 
         Reservation res = new Reservation(
-                ++id,
+                (int) index.incrementAndGet(),
                 request.getName(),
                 request.getDate(),
                 request.getTime()
         );
         reservations.add(res);
-        return reservations;
+        return ResponseEntity.status(HttpStatus.CREATED).body(res);
     }
 
     @DeleteMapping("/reservations/{id}")
