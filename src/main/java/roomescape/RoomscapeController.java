@@ -5,6 +5,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Controller
 public class RoomscapeController {
@@ -34,8 +36,8 @@ public class RoomscapeController {
 
     @GetMapping("/reservations")
     @ResponseBody
-    public List<Reservation> showAllReservations() {
-        return reservations;
+    public ResponseEntity<List<Reservation>> showAllReservations() {
+        return ResponseEntity.ok(reservations);
     }
 
     @PostMapping("/reservations")
@@ -48,12 +50,14 @@ public class RoomscapeController {
                 request.getDate(),
                 request.getTime()
         );
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Location", "/reservations/" + res.getId());
         reservations.add(res);
-        return ResponseEntity.status(HttpStatus.CREATED).body(res);
+        return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(res);
     }
 
     @DeleteMapping("/reservations/{id}")
-    @ResponseBody
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void deleteReservation(@PathVariable int id) {
         reservations.removeIf(res -> res.getId() == id);
     }
