@@ -18,6 +18,11 @@ public class ReservationController {
     private final List<Reservation> reservations = new ArrayList<>();
     private final AtomicLong index = new AtomicLong(1);
 
+    @GetMapping("/reservation")
+    public String reservation() {
+        return "reservation";
+    }
+
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> create(@RequestBody Reservation reservation) {
         Reservation newReservation = Reservation.toEntity(reservation, index.getAndIncrement());
