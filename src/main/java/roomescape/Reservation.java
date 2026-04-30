@@ -1,6 +1,12 @@
 package roomescape;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.concurrent.atomic.AtomicLong;
+
 public class Reservation {
+    private static final AtomicLong idCounter = new AtomicLong(1);
+
     private Long id;
     private String name;
     private String date;
@@ -9,17 +15,21 @@ public class Reservation {
     public Reservation() {
     }
 
-    public Reservation(Long id, String name, String date, String time) {
-        this.id = id;
-        this.name = name;
-        this.date = date;
-        this.time = time;
+    public Reservation(Reservation reservation) {
+        this.id = idCounter.getAndIncrement();
+        this.name = reservation.name;
+        this.date = reservation.date;
+        this.time = reservation.time;
     }
 
-    public Reservation(String name, String date, String time) {
-        this.name = name;
-        this.date = date;
-        this.time = time;
+    public boolean isPast() {
+        String dateTimeString = date + " " + time;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+        LocalDateTime dateTime = LocalDateTime.parse(dateTimeString, formatter);
+        LocalDateTime currentDateTime = LocalDateTime.now();
+
+        return dateTime.isBefore(currentDateTime);
     }
 
     public Long getId() {
@@ -36,15 +46,5 @@ public class Reservation {
 
     public String getTime() {
         return time;
-    }
-
-    public static Reservation toEntity(Reservation reservation, Long id) {
-        return new Reservation(id, reservation.name, reservation.date, reservation.time);
-    }
-
-    public void update(Reservation newReservation) {
-        this.name = newReservation.name;
-        this.date = newReservation.date;
-        this.time = newReservation.time;
     }
 }
