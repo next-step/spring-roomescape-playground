@@ -40,11 +40,7 @@ public class RoomescapeController {
 
     @DeleteMapping("/reservations/{id}")
     public  ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
-        Reservation reservation = reservations.stream()
-                .filter(it -> Objects.equals(it.getId(), id))
-                .findFirst()
-                .orElseThrow(RuntimeException::new);
-        reservations.remove(reservation);
+        reservations.removeIf(reservation -> reservation.getId().equals(id));
 
         return ResponseEntity.noContent().build();
     }
