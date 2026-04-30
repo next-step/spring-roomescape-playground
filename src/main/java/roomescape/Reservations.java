@@ -3,6 +3,7 @@ package roomescape;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import roomescape.exceptions.EmptyNameException;
 import roomescape.exceptions.PastDateTimeException;
 import roomescape.exceptions.ReservationNotFoundException;
 
@@ -14,6 +15,9 @@ public class Reservations {
     }
 
     public void add(Reservation reservation) {
+        if (reservation.getName().isBlank()) {
+            throw new EmptyNameException();
+        }
         if (reservation.isPast()) {
             throw new PastDateTimeException();
         }

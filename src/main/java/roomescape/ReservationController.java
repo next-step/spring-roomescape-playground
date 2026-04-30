@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import roomescape.exceptions.EmptyNameException;
 import roomescape.exceptions.PastDateTimeException;
 import roomescape.exceptions.ReservationNotFoundException;
 
@@ -41,8 +42,8 @@ public class ReservationController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @ExceptionHandler({PastDateTimeException.class})
-    public ResponseEntity<String> handlePastDateTimeException(Exception exception) {
+    @ExceptionHandler({EmptyNameException.class, PastDateTimeException.class})
+    public ResponseEntity<String> handleIllegalReservation(Exception exception) {
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(exception.getMessage());
     }
 
