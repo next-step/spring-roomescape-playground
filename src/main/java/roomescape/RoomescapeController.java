@@ -2,7 +2,7 @@ package roomescape;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class RoomescapeController {
 
     private final List<Reservation> reservations = new ArrayList<>();
-    private AtomicLong index = new AtomicLong(0);
+    private AtomicInteger index = new AtomicInteger(0);
 
     @GetMapping("/")
     public String showPage(){
@@ -42,7 +42,7 @@ public class RoomescapeController {
     public ResponseEntity<Reservation> createReservation(@RequestBody Reservation request) {
 
         Reservation res = new Reservation(
-                (int) index.incrementAndGet(),
+                index.incrementAndGet(),
                 request.getName(),
                 request.getDate(),
                 request.getTime()
