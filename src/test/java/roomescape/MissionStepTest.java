@@ -15,7 +15,7 @@ import org.springframework.test.annotation.DirtiesContext;
 public class MissionStepTest {
 
     @Test
-    void 일단계() {
+    void testWelcomePage() {
         RestAssured.given().log().all()
                 .when().get("/")
                 .then().log().all()
@@ -23,7 +23,7 @@ public class MissionStepTest {
     }
 
     @Test
-    void 이단계() {
+    void testReservations_Get() {
         RestAssured.given().log().all()
                 .when().get("/reservations")
                 .then().log().all()
@@ -33,11 +33,11 @@ public class MissionStepTest {
                 .when().get("/reservations")
                 .then().log().all()
                 .statusCode(200)
-                .body("size()", is(0)); // 아직 생성 요청이 없으니 Controller에서 임의로 넣어준 Reservation 갯수 만큼 검증하거나 0개임을 확인하세요.
+                .body("size()", is(0));
     }
 
     @Test
-    void 삼단계() {
+    void testReservations_PostAndDelete() {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
         params.put("date", "2023-08-05");
