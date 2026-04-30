@@ -28,7 +28,6 @@ public class RoomescapeController {
     @GetMapping("/reservations")
     @ResponseBody
     public List<Reservation> showReservations() {
-        showReservationPage();
         return reservations;
     }
 
