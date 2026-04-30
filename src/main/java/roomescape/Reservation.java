@@ -11,6 +11,7 @@ public class Reservation {
     private LocalTime time;
 
     public Reservation(int id, String name, LocalDate date, LocalTime time) {
+        checkValidId(id);
         this.id = id;
         this.name = name;
         this.date = date;
@@ -47,5 +48,11 @@ public class Reservation {
 
     public void setTime(LocalTime time) {
         this.time = time;
+    }
+
+    private void checkValidId(int id){
+        if (id <= 0){
+            throw new IllegalArgumentException("id는 자연수여야 합니다.");
+        }
     }
 }
