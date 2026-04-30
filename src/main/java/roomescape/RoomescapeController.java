@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Controller
-public class RoomscapeController {
+public class RoomescapeController {
 
     private final List<Reservation> reservations = new ArrayList<>();
     private AtomicLong index = new AtomicLong(0);
