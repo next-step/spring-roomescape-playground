@@ -41,16 +41,16 @@ public class RoomescapeController {
     @ResponseBody
     public ResponseEntity<Reservation> createReservation(@RequestBody Reservation request) {
 
-        Reservation res = new Reservation(
+        Reservation responseFromClient = new Reservation(
                 index.incrementAndGet(),
                 request.getName(),
                 request.getDate(),
                 request.getTime()
         );
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Location", "/reservations/" + res.getId());
-        reservations.add(res);
-        return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(res);
+        headers.add("Location", "/reservations/" + responseFromClient.getId());
+        reservations.add(responseFromClient);
+        return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(responseFromClient);
     }
 
     @DeleteMapping("/reservations/{id}")
