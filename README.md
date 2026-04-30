@@ -1,4 +1,4 @@
-# Reservation
+# Reservation API 명세
 ___
 
 ## Request

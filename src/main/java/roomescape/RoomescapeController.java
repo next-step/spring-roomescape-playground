@@ -20,11 +20,6 @@ public class RoomescapeController {
     private List<Reservation> reservations = new ArrayList<>();
     private AtomicLong index = new AtomicLong(1);
 
-    @GetMapping("/")
-    public String showHomePage() {
-        return "home";
-    }
-
     @GetMapping("/reservation")
     public String showReservationPage() {
         return "reservation";
