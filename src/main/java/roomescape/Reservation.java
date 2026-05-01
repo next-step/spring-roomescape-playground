@@ -5,8 +5,8 @@ import java.time.LocalTime;
 
 public class Reservation {
 
-    private int id;
-    private String name;
+    private int reservationId;
+    private String nameOfUser;
     private LocalDate date;
     private LocalTime time;
 
@@ -15,18 +15,18 @@ public class Reservation {
 
     public Reservation(int id, String name, LocalDate date, LocalTime time) {
         checkValidId(id);
-        this.id = id;
-        this.name = name;
+        this.reservationId = id;
+        this.nameOfUser = name;
         this.date = date;
         this.time = time;
     }
 
-    public int getId() {
-        return id;
+    public int getReservationId() {
+        return reservationId;
     }
 
-    public String getName() {
-        return name;
+    public String getNameOfUser() {
+        return nameOfUser;
     }
 
     public LocalDate getDate() {
@@ -37,12 +37,12 @@ public class Reservation {
         return time;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setReservationId(int reservationId) {
+        this.reservationId = reservationId;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setNameOfUser(String nameOfUser) {
+        this.nameOfUser = nameOfUser;
     }
 
     public void setDate(LocalDate date) {

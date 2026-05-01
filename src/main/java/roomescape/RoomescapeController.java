@@ -43,12 +43,12 @@ public class RoomescapeController {
 
         Reservation reservationOfClient = new Reservation(
                 index.incrementAndGet(),
-                request.getName(),
+                request.getNameOfUser(),
                 request.getDate(),
                 request.getTime()
         );
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Location", "/reservations/" + reservationOfClient.getId());
+        headers.add("Location", "/reservations/" + reservationOfClient.getReservationId());
         reservations.add(reservationOfClient);
         return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(reservationOfClient);
     }
@@ -56,6 +56,6 @@ public class RoomescapeController {
     @DeleteMapping("/reservations/{id}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void deleteReservation(@PathVariable int id) {
-        reservations.removeIf(res -> res.getId() == id);
+        reservations.removeIf(res -> res.getReservationId() == id);
     }
 }
