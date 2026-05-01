@@ -21,11 +21,11 @@ public class Reservation {
         this.time = time;
     }
 
-    public int getReservationId() {
+    public int getId() {
         return reservationId;
     }
 
-    public String getNameOfUser() {
+    public String getName() {
         return nameOfUser;
     }
 
@@ -37,11 +37,11 @@ public class Reservation {
         return time;
     }
 
-    public void setReservationId(int reservationId) {
+    public void setId(int reservationId) {
         this.reservationId = reservationId;
     }
 
-    public void setNameOfUser(String nameOfUser) {
+    public void setName(String nameOfUser) {
         this.nameOfUser = nameOfUser;
     }
 
