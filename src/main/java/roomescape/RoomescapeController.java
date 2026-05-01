@@ -3,7 +3,6 @@ package roomescape;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -40,7 +39,11 @@ public class RoomescapeController {
 
     @DeleteMapping("/reservations/{id}")
     public  ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
-        reservations.removeIf(reservation -> reservation.getId().equals(id));
+        boolean removed = reservations.removeIf(reservation -> reservation.getId().equals(id));
+
+        if (!removed) {
+            return ResponseEntity.notFound().build();
+        }
 
         return ResponseEntity.noContent().build();
     }
