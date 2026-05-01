@@ -1,28 +1,38 @@
 package roomescape;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
-import org.springframework.beans.NullValueInNestedPathException;
 
 public class Reservation {
 
     private int reservationId;
     private String nameOfUser;
-    private LocalDate date;
-    private LocalTime time;
+    @JsonIgnore
+    private LocalDateTime dateTime;;
 
     public Reservation() {
     }
 
-    public Reservation(int id, String name, LocalDate date, LocalTime time) {
+    public Reservation(int id, String name, LocalDateTime dateTime) {
         checkValidId(id);
         checkValidName(name);
-        checkValidDate(date);
-        checkValidTime(time);
+        checkValidDate(dateTime);
         this.reservationId = id;
         this.nameOfUser = name;
-        this.date = date;
-        this.time = time;
+        this.dateTime = dateTime;
+    }
+
+    @JsonProperty("date")
+    public LocalDate getDate() {
+        return dateTime.toLocalDate();
+    }
+
+    @JsonProperty("time")
+    public LocalTime getTime() {
+        return dateTime.toLocalTime();
     }
 
     public int getId() {
@@ -33,12 +43,8 @@ public class Reservation {
         return nameOfUser;
     }
 
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public LocalTime getTime() {
-        return time;
+    public LocalDateTime getDateTime() {
+        return dateTime;
     }
 
     public void setId(int reservationId) {
@@ -50,15 +56,17 @@ public class Reservation {
     }
 
     public void setDate(LocalDate date) {
-        this.date = date;
+        if (this.dateTime == null) this.dateTime = LocalDateTime.of(date, LocalTime.MIN);
+        else this.dateTime = LocalDateTime.of(date, this.dateTime.toLocalTime());
     }
 
     public void setTime(LocalTime time) {
-        this.time = time;
+        if (this.dateTime == null) this.dateTime = LocalDateTime.of(LocalDate.MIN, time);
+        else this.dateTime = LocalDateTime.of(this.dateTime.toLocalDate(), time);
     }
 
-    public boolean isSameTime(LocalDate date, LocalTime time) {
-        return this.date.equals(date) && this.time.equals(time);
+    public boolean isSameTime(LocalDateTime date) {
+        return this.dateTime.equals(date);
     }
 
     private void checkValidId(int id){
@@ -73,25 +81,14 @@ public class Reservation {
         }
     }
 
-    private void checkValidDate(LocalDate date){
-        if (date == null){
+    private void checkValidDate(LocalDateTime dateTime){
+        if (dateTime == null){
             throw new IllegalArgumentException("날짜가 비었습니다.");
         }
 
-        LocalDate now = LocalDate.now();
-        if (date.isBefore(now)){
+        LocalDateTime now = LocalDateTime.now();
+        if (dateTime.isBefore(now)){
             throw new IllegalArgumentException("이미 지난 날짜입니다.");
-        }
-    }
-
-    private void checkValidTime(LocalTime time){
-        if (time == null){
-            throw new IllegalArgumentException("시간이 비었습니다.");
-        }
-
-        LocalTime now = LocalTime.now();
-        if (time.isBefore(now)){
-            throw new IllegalArgumentException("이미 지난 시간입니다.");
         }
     }
 }

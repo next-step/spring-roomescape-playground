@@ -1,7 +1,6 @@
 package roomescape;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -44,7 +43,7 @@ public class RoomescapeController {
     public ResponseEntity<Reservation> createReservation(@RequestBody Reservation request) {
 
         boolean isDuplicate = reservations.stream()
-                .anyMatch(res -> res.isSameTime(request.getDate(), request.getTime()));
+                .anyMatch(res -> res.isSameTime(request.getDateTime()));
 
         if (isDuplicate) {
             throw new IllegalArgumentException("이미 해당 시간에 예약이 존재합니다.");
@@ -53,8 +52,7 @@ public class RoomescapeController {
         Reservation reservationOfClient = new Reservation(
                 index.incrementAndGet(),
                 request.getName(),
-                request.getDate(),
-                request.getTime()
+                request.getDateTime()
         );
         HttpHeaders headers = new HttpHeaders();
         headers.add("Location", "/reservations/" + reservationOfClient.getId());
