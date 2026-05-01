@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class RoomescapeController {
 
     private final List<Reservation> reservations = new ArrayList<>();
-    private AtomicInteger index = new AtomicInteger(0);
+    private final AtomicInteger index = new AtomicInteger(0);
 
     @GetMapping("/")
     public String showPage(){
