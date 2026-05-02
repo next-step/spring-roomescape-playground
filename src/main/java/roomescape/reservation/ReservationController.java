@@ -4,17 +4,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import roomescape.reservation.domain.Reservation;
-import roomescape.reservation.domain.ReservationId;
 import roomescape.reservation.domain.ReservationList;
 
 import java.net.URI;
 import java.util.Collection;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Controller
 public class ReservationController {
 	private final ReservationList reservationList = new ReservationList();
-	private final AtomicLong nextId = new AtomicLong(0);
 	
 	@GetMapping("/reservation")
 	public String reservationPage() {
@@ -28,8 +25,7 @@ public class ReservationController {
 	
 	@PostMapping("/reservations")
 	public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservation) {
-		Reservation newReservation = Reservation.toEntity(reservation, new ReservationId(nextId.incrementAndGet()));
-		reservationList.add(newReservation);
+		Reservation newReservation = reservationList.add(reservation);
 		
 		return ResponseEntity
 				.created(URI.create("/reservations/" + newReservation.getId()))
@@ -38,8 +34,7 @@ public class ReservationController {
 	
 	@DeleteMapping("/reservations/{id}")
 	public ResponseEntity<Void> deleteReservation(@PathVariable long id) {
-		ReservationId reservationId = new ReservationId(id);
-		reservationList.remove(reservationId);
+		reservationList.remove(id);
 		
 		return ResponseEntity.noContent().build();
 	}
