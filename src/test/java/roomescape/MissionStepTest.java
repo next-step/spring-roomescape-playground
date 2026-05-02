@@ -13,9 +13,8 @@ import org.springframework.test.annotation.DirtiesContext;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class MissionStepTest {
-
     @Test
-    void testWelcomePage() {
+    void welcomePage() {
         RestAssured.given().log().all()
                 .when().get("/")
                 .then().log().all()
@@ -23,7 +22,7 @@ public class MissionStepTest {
     }
 
     @Test
-    void testReservations_Get() {
+    void getReservations() {
         RestAssured.given().log().all()
                 .when().get("/reservations")
                 .then().log().all()
@@ -37,7 +36,7 @@ public class MissionStepTest {
     }
 
     @Test
-    void testReservations_PostAndDelete() {
+    void postAndDeleteReservations() {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
         params.put("date", "2027-08-05");
