@@ -19,7 +19,7 @@ public class Reservation {
     public Reservation(int id, String name, LocalDateTime dateTime) {
         checkValidId(id);
         checkValidName(name);
-        checkValidDate(dateTime);
+        checkValidDateTime(dateTime);
         this.reservationId = id;
         this.nameOfUser = name;
         this.dateTime = dateTime;
@@ -80,8 +80,8 @@ public class Reservation {
             throw new IllegalArgumentException("이름이 비었습니다.");
         }
     }
-
-    private void checkValidDate(LocalDateTime dateTime){
+    
+    private void checkValidDateTime(LocalDateTime dateTime){
         if (dateTime == null){
             throw new IllegalArgumentException("날짜가 비었습니다.");
         }
