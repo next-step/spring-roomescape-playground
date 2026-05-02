@@ -46,7 +46,7 @@ public class RoomescapeController {
                 .anyMatch(res -> res.isSameTime(request.getDateTime()));
 
         if (isDuplicate) {
-            throw new IllegalArgumentException("이미 해당 시간에 예약이 존재합니다.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
 
         Reservation reservationOfClient = new Reservation(
