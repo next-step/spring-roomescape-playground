@@ -1,5 +1,6 @@
 package roomescape;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDate;
@@ -13,7 +14,20 @@ public class Reservation {
     @JsonIgnore
     private LocalDateTime dateTime;;
 
-    public Reservation() {
+    @JsonCreator
+    public Reservation(
+            @JsonProperty("name") String name,
+            @JsonProperty("date") LocalDate date,
+            @JsonProperty("time") LocalTime time
+    ) {
+        LocalDateTime dt = LocalDateTime.of(date, time);
+
+        checkValidName(name);
+        checkValidDateTime(dt);
+
+        this.nameOfUser = name;
+        this.dateTime = dt;
+        this.reservationId = 0;
     }
 
     public Reservation(int id, String name, LocalDateTime dateTime) {
