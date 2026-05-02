@@ -4,11 +4,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import roomescape.reservation.domain.Reservation;
+import roomescape.reservation.domain.ReservationId;
 import roomescape.reservation.domain.ReservationList;
 
 import java.net.URI;
 import java.util.Collection;
-
 @Controller
 public class ReservationController {
 	private final ReservationList reservationList = new ReservationList();
@@ -34,7 +34,8 @@ public class ReservationController {
 	
 	@DeleteMapping("/reservations/{id}")
 	public ResponseEntity<Void> deleteReservation(@PathVariable long id) {
-		reservationList.remove(id);
+		ReservationId reservationId = new ReservationId(id);
+		reservationList.remove(reservationId);
 		
 		return ResponseEntity.noContent().build();
 	}

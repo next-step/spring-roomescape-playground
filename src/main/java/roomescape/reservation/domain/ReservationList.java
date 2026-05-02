@@ -18,8 +18,7 @@ public class ReservationList {
 		return newReservation;
 	}
 	
-	public void remove(long id) {
-		ReservationId reservationId = new ReservationId(id);
-		reservations.remove(reservationId);
+	public void remove(ReservationId id) {
+		reservations.remove(id);
 	}
 }
