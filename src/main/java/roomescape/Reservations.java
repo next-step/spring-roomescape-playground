@@ -3,24 +3,18 @@ package roomescape;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import roomescape.exceptions.EmptyNameException;
-import roomescape.exceptions.PastDateTimeException;
+import java.util.concurrent.atomic.AtomicLong;
 import roomescape.exceptions.ReservationNotFoundException;
 
 public class Reservations {
     private final List<Reservation> reservations;
+    private final AtomicLong idCounter = new AtomicLong(1);
 
     public Reservations() {
         this.reservations = new ArrayList<>();
     }
 
     public void add(Reservation reservation) {
-        if (reservation.getName().isBlank()) {
-            throw new EmptyNameException();
-        }
-        if (reservation.isPast()) {
-            throw new PastDateTimeException();
-        }
         reservations.add(reservation);
     }
 
@@ -30,6 +24,10 @@ public class Reservations {
                 .findFirst()
                 .orElseThrow(ReservationNotFoundException::new);
         reservations.remove(reservation);
+    }
+
+    public Long nextId() {
+        return idCounter.getAndIncrement();
     }
 
     public List<Reservation> get() {

@@ -2,11 +2,10 @@ package roomescape;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.concurrent.atomic.AtomicLong;
+import roomescape.exceptions.EmptyNameException;
+import roomescape.exceptions.PastDateTimeException;
 
 public class Reservation {
-    private static final AtomicLong idCounter = new AtomicLong(1);
-
     private Long id;
     private String name;
     private String date;
@@ -15,14 +14,24 @@ public class Reservation {
     public Reservation() {
     }
 
-    public Reservation(Reservation reservation) {
-        this.id = idCounter.getAndIncrement();
+    public Reservation(Reservation reservation, Long id) {
+        validate(reservation);
+        this.id = id;
         this.name = reservation.name;
         this.date = reservation.date;
         this.time = reservation.time;
     }
 
-    public boolean isPast() {
+    private void validate(Reservation reservation) {
+        if (reservation.name.isBlank()) {
+            throw new EmptyNameException();
+        }
+        if (reservation.isPast()) {
+            throw new PastDateTimeException();
+        }
+    }
+
+    private boolean isPast() {
         String dateTimeString = date + " " + time;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
