@@ -1,8 +1,10 @@
 package roomescape.hello;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
@@ -10,13 +12,9 @@ import java.util.concurrent.atomic.AtomicLong;
 @Controller
 public class ReservationController {
     private final List<Reservation> reservations = new ArrayList<>();
-    private final AtomicLong counter = new AtomicLong();
+    private final AtomicLong index = new AtomicLong(0);
 
     public ReservationController() {
-        // 초기 데이터 추가
-        reservations.add(new Reservation(counter.incrementAndGet(), "브라운", "2023-01-01", "10:00"));
-        reservations.add(new Reservation(counter.incrementAndGet(), "브라운", "2023-01-02", "11:00"));
-        reservations.add(new Reservation(counter.incrementAndGet(), "브라운", "2023-01-03", "12:00"));
     }
 
     @GetMapping("/reservation")
@@ -28,5 +26,27 @@ public class ReservationController {
     @GetMapping("/reservations")
     public List<Reservation> getReservations() {
         return reservations;
+    }
+
+    @PostMapping("/reservations")
+    public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservation) {
+        Reservation newReservation = new Reservation(
+                index.incrementAndGet(),
+                reservation.getName(),
+                reservation.getDate(),
+                reservation.getTime()
+        );
+        reservations.add(newReservation);
+
+        return ResponseEntity
+                .created(URI.create("/reservations/" + newReservation.getId()))
+                .body(newReservation);
+    }
+
+    @DeleteMapping("/reservations/{id}")
+    public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
+        reservations.removeIf(reservation -> reservation.getId().equals(id));
+
+        return ResponseEntity.noContent().build();
     }
 }
