@@ -33,7 +33,6 @@ public class Reservation {
     public Reservation(int id, String name, LocalDateTime dateTime) {
         checkValidId(id);
         checkValidName(name);
-        checkValidDateTime(dateTime);
         this.reservationId = id;
         this.nameOfUser = name;
         this.dateTime = dateTime;
@@ -60,25 +59,7 @@ public class Reservation {
     public LocalDateTime getDateTime() {
         return dateTime;
     }
-
-    public void setId(int reservationId) {
-        this.reservationId = reservationId;
-    }
-
-    public void setName(String nameOfUser) {
-        this.nameOfUser = nameOfUser;
-    }
-
-    public void setDate(LocalDate date) {
-        if (this.dateTime == null) this.dateTime = LocalDateTime.of(date, LocalTime.MIN);
-        else this.dateTime = LocalDateTime.of(date, this.dateTime.toLocalTime());
-    }
-
-    public void setTime(LocalTime time) {
-        if (this.dateTime == null) this.dateTime = LocalDateTime.of(LocalDate.MIN, time);
-        else this.dateTime = LocalDateTime.of(this.dateTime.toLocalDate(), time);
-    }
-
+    
     public boolean isSameTime(LocalDateTime date) {
         return this.dateTime.equals(date);
     }
