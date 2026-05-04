@@ -47,4 +47,20 @@ public class Reservation {
         this.date = newReservation.date;
         this.time = newReservation.time;
     }
+
+    public static class Response {
+        private Long id;
+        private String date;
+        private String time;
+
+        public Response(Reservation reservation) {
+            this.id = reservation.getId();
+            this.date = reservation.getDate();
+            this.time = reservation.getTime();
+        }
+
+        public Long getId() { return id; }
+        public String getDate() { return date; }
+        public String getTime() { return time; }
+    }
 }
