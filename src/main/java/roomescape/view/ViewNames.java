@@ -7,7 +7,7 @@ public enum ViewNames {
     private final String viewName;
 
     ViewNames(String viewName) {
-       this.viewName = viewName;
+        this.viewName = viewName;
     }
 
     public String getViewName() {

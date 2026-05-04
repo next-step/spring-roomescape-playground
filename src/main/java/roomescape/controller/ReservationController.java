@@ -35,7 +35,7 @@ public class ReservationController {
         this.reservations.add(newReservation);
 
         return ResponseEntity
-                .created(URI.create("/reservations/" + newIndex))
+                .created(URI.create(EndPointPath.RESERVATION_API_ENDPOINT + "/" + newIndex))
                 .body(newReservation);
     }
 

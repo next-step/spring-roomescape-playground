@@ -6,7 +6,7 @@ import roomescape.common.PagePath;
 
 @Controller
 public class ReservationPage {
-    @GetMapping(PagePath.HOME_PAGE_PATH)
+    @GetMapping(PagePath.RESERVATION_PAGE_PATH)
     public String reservationPage() {
         return ViewNames.RESERVATION.getViewName();
     }
