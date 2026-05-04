@@ -6,7 +6,8 @@ public class Reservation {
     private String date;
     private String time;
 
-    public Reservation(){}
+    public Reservation() {
+    }
 
     public Reservation(int id, String name, String date, String time) {
         this.id = id;

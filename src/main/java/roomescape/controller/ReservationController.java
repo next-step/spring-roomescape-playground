@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import roomescape.common.EndPointPath;
 import roomescape.model.Reservation;
 
 import java.net.URI;
@@ -15,16 +17,17 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Controller
+@RequestMapping(EndPointPath.RESERVATION_API_ENDPOINT)
 public class ReservationController {
-    private List<Reservation> reservations = new ArrayList<>();
-    private AtomicLong index = new AtomicLong(1);
+    private final List<Reservation> reservations = new ArrayList<>();
+    private final AtomicLong index = new AtomicLong(1);
 
-    @GetMapping("/reservations")
+    @GetMapping
     public ResponseEntity<List<Reservation>> getAllBookings() {
         return ResponseEntity.ok().body(this.reservations);
     }
 
-    @PostMapping("/reservations")
+    @PostMapping
     public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservation) {
         int newIndex = (int) this.index.getAndIncrement();
         System.out.println(reservation.getId());
@@ -36,7 +39,7 @@ public class ReservationController {
                 .body(newReservation);
     }
 
-    @DeleteMapping("/reservations/{deletingIndex}")
+    @DeleteMapping("/{deletingIndex}")
     public ResponseEntity<Void> deleteReseravation(@PathVariable Integer deletingIndex) {
         Reservation toDelete = this.reservations.stream()
                 .filter(reservation -> deletingIndex == reservation.getId())
