@@ -1,4 +1,4 @@
-package roomescape;
+package roomescape.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import roomescape.model.Reservation;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ public class ReservationController {
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservation) {
         int newIndex = (int) this.index.getAndIncrement();
+        System.out.println(reservation.getId());
         Reservation newReservation = new Reservation(newIndex, reservation.getName(), reservation.getDate(), reservation.getTime());
         this.reservations.add(newReservation);
 

@@ -1,4 +1,4 @@
-package roomescape;
+package roomescape.view;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class LandingPage {
     @GetMapping("/")
     public String landingPage() {
-        return "home";
+        return ViewNames.HOME.getViewName();
     }
 }
