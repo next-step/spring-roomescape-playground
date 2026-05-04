@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import roomescape.common.EndPointPath;
+import roomescape.dto.ReservationDto;
 import roomescape.model.Reservation;
 
 import java.net.URI;
@@ -28,10 +29,9 @@ public class ReservationController {
     }
 
     @PostMapping
-    public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservation) {
+    public ResponseEntity<Reservation> createReservation(@RequestBody ReservationDto reservationDto) {
         int newIndex = (int) this.index.getAndIncrement();
-        System.out.println(reservation.getId());
-        Reservation newReservation = new Reservation(newIndex, reservation.getName(), reservation.getDate(), reservation.getTime());
+        Reservation newReservation = new Reservation(newIndex, reservationDto.name(), reservationDto.date(), reservationDto.time());
         this.reservations.add(newReservation);
 
         return ResponseEntity
@@ -40,7 +40,7 @@ public class ReservationController {
     }
 
     @DeleteMapping("/{deletingIndex}")
-    public ResponseEntity<Void> deleteReseravation(@PathVariable Integer deletingIndex) {
+    public ResponseEntity<Void> deleteReservation(@PathVariable Integer deletingIndex) {
         Reservation toDelete = this.reservations.stream()
                 .filter(reservation -> deletingIndex == reservation.getId())
                 .findFirst()
