@@ -1,6 +1,5 @@
 package roomescape;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -49,7 +48,7 @@ public class RoomescapeController {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
 
-        Reservation reservationOfClient = new Reservation(
+        Reservation reservationOfClient = Reservation.createNewReservation(
                 index.incrementAndGet(),
                 request.getName(),
                 request.getDateTime()

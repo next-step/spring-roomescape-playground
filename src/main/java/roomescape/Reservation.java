@@ -31,11 +31,16 @@ public class Reservation {
     }
 
     public Reservation(int id, String name, LocalDateTime dateTime) {
-        checkValidId(id);
-        checkValidName(name);
         this.reservationId = id;
         this.nameOfUser = name;
         this.dateTime = dateTime;
+    }
+
+    public static Reservation createNewReservation(int id, String name, LocalDateTime dateTime){
+        checkValidId(id);
+        checkValidName(name);
+        checkValidDateTime(dateTime);
+        return new Reservation(id, name, dateTime);
     }
 
     @JsonProperty("date")
@@ -64,19 +69,19 @@ public class Reservation {
         return this.dateTime.equals(date);
     }
 
-    private void checkValidId(int id){
+    private static void checkValidId(int id){
         if (id <= 0){
             throw new IllegalArgumentException("id는 자연수여야 합니다.");
         }
     }
 
-    private void checkValidName(String nameOfUser){
+    private static void checkValidName(String nameOfUser){
         if (nameOfUser == null || nameOfUser.isBlank()){
             throw new IllegalArgumentException("이름이 비었습니다.");
         }
     }
     
-    private void checkValidDateTime(LocalDateTime dateTime){
+    private static void checkValidDateTime(LocalDateTime dateTime){
         if (dateTime == null){
             throw new IllegalArgumentException("날짜가 비었습니다.");
         }
