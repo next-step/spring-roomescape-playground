@@ -17,14 +17,14 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Controller
-@RequestMapping(EndPointPath.RESERVATION_API_ENDPOINT)
+@RequestMapping(EndPointPath.RESERVATION_API_ENDPOINT_ROOT)
 public class ReservationController {
     private final List<Reservation> reservations = new ArrayList<>();
     private final AtomicLong index = new AtomicLong(1);
 
     @GetMapping
     public ResponseEntity<List<Reservation>> getAllBookings() {
-        return ResponseEntity.ok().body(this.reservations);
+        return ResponseEntity.ok().body(List.copyOf(this.reservations));
     }
 
     @PostMapping
@@ -35,7 +35,7 @@ public class ReservationController {
         this.reservations.add(newReservation);
 
         return ResponseEntity
-                .created(URI.create(EndPointPath.RESERVATION_API_ENDPOINT + "/" + newIndex))
+                .created(URI.create(EndPointPath.RESERVATION_API_ENDPOINT_ROOT + "/" + newIndex))
                 .body(newReservation);
     }
 
