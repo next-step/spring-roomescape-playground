@@ -21,9 +21,20 @@ public class ReservationController {
     private final List<Reservation> reservations = new ArrayList<>();
     private final AtomicLong index = new AtomicLong(1);
 
+    @GetMapping("/reservation")
+    public String reservationPage() {
+        return "reservation";
+    }
+
+    @GetMapping("/reservations")
+    @ResponseBody
+    public List<Reservation> findReservations() {
+        return reservations;
+    }
+
     @PostMapping("/reservations")
     @ResponseBody
-    public ResponseEntity<Reservation> reservations(@RequestBody ReservationRequest reservationRequest) {
+    public ResponseEntity<Reservation> createReservation(@RequestBody ReservationRequest reservationRequest) {
         long id = index.getAndIncrement();
 
         Reservation reservation = new Reservation(
@@ -41,23 +52,12 @@ public class ReservationController {
     }
 
     @DeleteMapping("/reservations/{id}")
-    public ResponseEntity<Void> reservations(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
 
         reservations.removeIf(reservation -> reservation.id().equals(id));
 
         return ResponseEntity
                 .noContent()
                 .build();
-    }
-
-    @GetMapping("/reservations")
-    @ResponseBody
-    public List<Reservation> reservations() {
-        return reservations;
-    }
-
-    @GetMapping("/reservation")
-    public String reservation() {
-        return "reservation";
     }
 }
