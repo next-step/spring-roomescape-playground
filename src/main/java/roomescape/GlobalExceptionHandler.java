@@ -7,6 +7,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import roomescape.exceptions.AlreadyReservedException;
 import roomescape.exceptions.PastDateTimeException;
 import roomescape.exceptions.ReservationNotFoundException;
 
@@ -16,6 +17,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
         String message = Optional.ofNullable(exception.getFieldError()).map(FieldError::getDefaultMessage).orElse("");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+    }
+
+    @ExceptionHandler({AlreadyReservedException.class})
+    public ResponseEntity<String> handleAlreadyReservedException(AlreadyReservedException exception) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
     }
 
     @ExceptionHandler({PastDateTimeException.class})

@@ -15,7 +15,7 @@ import org.springframework.test.annotation.DirtiesContext;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class MissionStepTest {
     @Test
-    void welcomePage() {
+    void getWelcomePageSuccess() {
         RestAssured.given().log().all()
                 .when().get("/")
                 .then().log().all()
@@ -23,7 +23,7 @@ public class MissionStepTest {
     }
 
     @Test
-    void getReservations() {
+    void getReservationsSuccess() {
         RestAssured.given().log().all()
                 .when().get("/reservations")
                 .then().log().all()
@@ -113,6 +113,31 @@ public class MissionStepTest {
                 .then().log().all()
                 .statusCode(400)
                 .body(equalTo("예약 시간이 비어 있을 수 없습니다."));
+    }
+
+    @Test
+    void postReservationsAlreadyReservedException() {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", "브라운");
+        params.put("date", "2027-08-05");
+        params.put("time", "15:40");
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(201)
+                .header("Location", "/reservations/1")
+                .body("id", is(1));
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(400)
+                .body(equalTo("기존 예약과 시간이 겹칩니다."));
     }
 
     @Test

@@ -6,6 +6,7 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 import roomescape.dto.ReservationRequest;
 import roomescape.dto.ReservationResponse;
+import roomescape.exceptions.AlreadyReservedException;
 import roomescape.exceptions.ReservationNotFoundException;
 
 public class Reservations {
@@ -18,6 +19,7 @@ public class Reservations {
 
     public ReservationResponse add(ReservationRequest reservationRequest) {
         Reservation reservation = reservationRequest.toReservation(nextId());
+        checkConflict(reservation);
         reservations.add(reservation);
         return ReservationResponse.fromReservation(reservation);
     }
@@ -28,6 +30,13 @@ public class Reservations {
                 .findFirst()
                 .orElseThrow(ReservationNotFoundException::new);
         reservations.remove(reservation);
+    }
+
+    private void checkConflict(Reservation newReservation) {
+        if (reservations.stream().anyMatch(reservation -> reservation.conflicts(newReservation))) {
+            idCounter.decrementAndGet();
+            throw new AlreadyReservedException();
+        }
     }
 
     private Long nextId() {
