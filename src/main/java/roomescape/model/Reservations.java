@@ -21,8 +21,8 @@ public class Reservations {
         return List.copyOf(copiedReservation);
     }
 
-    public void add(Reservation newReservation){
-        this.reservations.add(newReservation);
+    public void add(Reservation reservation){
+        this.reservations.add(reservation);
     }
 
     public void removeById(int deletingId){

@@ -1,12 +1,12 @@
-package roomescape.view;
+package roomescape.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import roomescape.common.PagePath;
+import roomescape.common.ViewNames;
 
 @Controller
-public class ReservationPage {
-    @GetMapping(PagePath.RESERVATION_PAGE_PATH)
+public class ReservationPageController {
+    @GetMapping("/reservation")
     public String reservationPage() {
         return ViewNames.RESERVATION.getViewName();
     }

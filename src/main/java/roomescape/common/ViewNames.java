@@ -1,4 +1,4 @@
-package roomescape.view;
+package roomescape.common;
 
 public enum ViewNames {
     HOME("home"),

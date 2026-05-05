@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import roomescape.common.EndPointPath;
 import roomescape.dto.ReservationDto;
 import roomescape.model.Reservation;
 import roomescape.model.Reservations;
@@ -19,8 +18,9 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Controller
-@RequestMapping(EndPointPath.RESERVATION_API_ENDPOINT_ROOT)
+@RequestMapping(ReservationController.RESERVATION_API_ENDPOINT_ROOT)
 public class ReservationController {
+    public final static String RESERVATION_API_ENDPOINT_ROOT = "/reservations";
     private final AtomicLong index = new AtomicLong(1);
     private final Reservations reservations;
 
@@ -41,7 +41,7 @@ public class ReservationController {
         this.reservations.add(newReservation);
 
         return ResponseEntity
-                .created(URI.create(EndPointPath.RESERVATION_API_ENDPOINT_ROOT + "/" + newIndex))
+                .created(URI.create(RESERVATION_API_ENDPOINT_ROOT + "/" + newIndex))
                 .body(newReservation);
     }
 
