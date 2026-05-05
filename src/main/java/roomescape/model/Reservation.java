@@ -6,9 +6,6 @@ public class Reservation {
     private String date;
     private String time;
 
-    public Reservation() {
-    }
-
     public Reservation(int id, String name, String date, String time) {
         this.id = id;
         this.name = name;
@@ -16,6 +13,9 @@ public class Reservation {
         this.time = time;
     }
 
+    public Reservation copy() {
+        return new Reservation(this.id, this.name, this.date, this.time);
+    }
     public int getId() {
         return id;
     }
