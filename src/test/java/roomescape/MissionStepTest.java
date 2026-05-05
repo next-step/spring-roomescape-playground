@@ -82,8 +82,37 @@ public class MissionStepTest {
                 .body(params)
                 .when().post("/reservations")
                 .then().log().all()
-                .statusCode(422)
-                .body(equalTo("이름이 비어있을 수 없습니다."));
+                .statusCode(400)
+                .body(equalTo("이름이 비어 있을 수 없습니다."));
+    }
+
+    @Test
+    void postReservationsEmptyDateTimeException() {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", "브라운");
+        params.put("date", "");
+        params.put("time", "15:40");
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(400)
+                .body(equalTo("예약 시간이 비어 있을 수 없습니다."));
+
+        params.clear();
+        params.put("name", "브라운");
+        params.put("date", "2027-08-05");
+        params.put("time", "");
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(400)
+                .body(equalTo("예약 시간이 비어 있을 수 없습니다."));
     }
 
     @Test
@@ -98,28 +127,14 @@ public class MissionStepTest {
                 .body(params)
                 .when().post("/reservations")
                 .then().log().all()
-                .statusCode(422)
+                .statusCode(400)
                 .body(equalTo("과거 시간을 예약할 수 없습니다."));
     }
 
     @Test
     void deleteReservationsReservationNotFoundException() {
-        Map<String, String> params = new HashMap<>();
-        params.put("name", "브라운");
-        params.put("date", "2027-08-05");
-        params.put("time", "15:40");
-
         RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
-                .body(params)
-                .when().post("/reservations")
-                .then().log().all()
-                .statusCode(201)
-                .header("Location", "/reservations/1")
-                .body("id", is(1));
-
-        RestAssured.given().log().all()
-                .when().delete("/reservations/2")
+                .when().delete("/reservations/1")
                 .then().log().all()
                 .statusCode(404)
                 .body(equalTo("해당 예약을 찾을 수 없습니다."));
