@@ -1,22 +1,16 @@
 package roomescape.model;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Configuration
+@Repository
 public class Reservations {
     private final List<Reservation> reservations;
 
     public Reservations(){
         this.reservations = new ArrayList<Reservation>();
-    }
-
-    @Bean
-    public Reservations reservationsAsBean() {
-        return new Reservations();
     }
 
     public List<Reservation> getReservationList(){
@@ -33,7 +27,7 @@ public class Reservations {
 
     public void removeById(int deletingId){
         Reservation toDelete = this.reservations.stream()
-                .filter(reservation -> deletingId == reservation.getId())
+                .filter(reservation -> deletingId == reservation.id())
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Wrong Index"));
 

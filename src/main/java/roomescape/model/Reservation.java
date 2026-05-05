@@ -1,34 +1,7 @@
 package roomescape.model;
 
-public class Reservation {
-    private int id;
-    private String name;
-    private String date;
-    private String time;
-
-    public Reservation(int id, String name, String date, String time) {
-        this.id = id;
-        this.name = name;
-        this.date = date;
-        this.time = time;
-    }
-
+public record Reservation (int id, String name, String date, String time) {
     public Reservation copy() {
         return new Reservation(this.id, this.name, this.date, this.time);
-    }
-    public int getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public String getTime() {
-        return time;
     }
 }
