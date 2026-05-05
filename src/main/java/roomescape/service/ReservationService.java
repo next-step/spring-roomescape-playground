@@ -10,15 +10,16 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 public class ReservationService {
-    private final List<Reservation> reservations;
+    private final List<Reservation> reservations = new CopyOnWriteArrayList<>();
     private final AtomicLong index;
 
     public ReservationService() {
-        this.reservations = setDefaultReservations();
+        this.reservations.addAll(setDefaultReservations());
         index = new AtomicLong(this.reservations.size() + 1);
     }
 
