@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
+import roomescape.dto.ReservationRequest;
+import roomescape.dto.ReservationResponse;
 import roomescape.exceptions.ReservationNotFoundException;
 
 public class Reservations {
@@ -14,8 +16,10 @@ public class Reservations {
         this.reservations = new ArrayList<>();
     }
 
-    public void add(Reservation reservation) {
+    public ReservationResponse add(ReservationRequest reservationRequest) {
+        Reservation reservation = reservationRequest.toReservation(nextId());
         reservations.add(reservation);
+        return ReservationResponse.fromReservation(reservation);
     }
 
     public void delete(Long id) {
@@ -26,11 +30,13 @@ public class Reservations {
         reservations.remove(reservation);
     }
 
-    public Long nextId() {
+    private Long nextId() {
         return idCounter.getAndIncrement();
     }
 
-    public List<Reservation> get() {
-        return new ArrayList<>(reservations);
+    public List<ReservationResponse> get() {
+        return reservations.stream()
+                .map(ReservationResponse::fromReservation)
+                .toList();
     }
 }
