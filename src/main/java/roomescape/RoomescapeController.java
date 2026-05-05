@@ -34,21 +34,13 @@ public class RoomescapeController {
 
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> addReservation(@RequestBody Reservation reservation) {
-        if (reservation.getName() == null || reservation.getName().isBlank()) {
-            throw new BadRequestException("이름이 존재하지 않습니다.");
-        }
-
-        if (reservation.getDate() == null || reservation.getDate().isBlank()) {
-            throw new BadRequestException("날짜가 존재하지 않습니다.");
-        }
-
-        if (reservation.getTime() == null || reservation.getTime().isBlank()) {
-            throw new BadRequestException("시간이 존재하지 않습니다.");
-        }
+        validateReservation(reservation);
 
         Reservation newReservation = Reservation.toEntity(reservation, index.getAndIncrement());
         reservations.add(newReservation);
-        return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
+        return ResponseEntity
+                .created(URI.create("/reservations/" + newReservation.getId()))
+                .body(newReservation);
     }
 
     @DeleteMapping("/reservations/{id}")
@@ -60,5 +52,17 @@ public class RoomescapeController {
         }
 
         return ResponseEntity.noContent().build();
+    }
+
+    private void validateReservation (Reservation reservation) {
+        validateRequired(reservation.getName(), "이름");
+        validateRequired(reservation.getDate(), "날짜");
+        validateRequired(reservation.getTime(), "시간");
+    }
+
+    private void validateRequired (String value, String fieldName) {
+        if (value == null || value.isBlank()) {
+            throw new BadRequestException(fieldName + "이 존재하지 않습니다.");
+        }
     }
 }
