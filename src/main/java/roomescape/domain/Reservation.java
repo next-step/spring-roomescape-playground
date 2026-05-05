@@ -1,7 +1,8 @@
-package roomescape;
+package roomescape.domain;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import roomescape.exceptions.EmptyDateTimeException;
 import roomescape.exceptions.EmptyNameException;
 import roomescape.exceptions.PastDateTimeException;
 
@@ -25,6 +26,9 @@ public class Reservation {
     private void validate(Reservation reservation) {
         if (reservation.name.isBlank()) {
             throw new EmptyNameException();
+        }
+        if (reservation.date.isBlank() || reservation.time.isBlank()) {
+            throw new EmptyDateTimeException();
         }
         if (reservation.isPast()) {
             throw new PastDateTimeException();
