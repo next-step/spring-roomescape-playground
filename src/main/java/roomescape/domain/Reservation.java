@@ -1,12 +1,15 @@
 package roomescape.domain;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 public class Reservation {
     private final Long id;
     private final String name;
-    private final String date;
-    private final String time;
+    private final LocalDate date;
+    private final LocalTime time;
 
-    public Reservation(Long id, String name, String date, String time) {
+    public Reservation(Long id, String name, LocalDate date, LocalTime time) {
         this.id = id;
         this.name = name;
         this.date = date;
@@ -21,16 +24,17 @@ public class Reservation {
         return name;
     }
 
-    public String getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public String getTime() {
+    public LocalTime getTime() {
         return time;
     }
 
-    public static Reservation toEntity(Reservation reservation, Long id) {
-        return new Reservation(id, reservation.name, reservation.date, reservation.time);
+    // static 말고 그냥 파라미터 없이
+    public Reservation toEntity(Long id) {
+        return new Reservation(id, this.name, this.date, this.time);
     }
 
 }

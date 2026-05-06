@@ -33,11 +33,11 @@ public class ReservationController {
 
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> add(@RequestBody Reservation reservation) {
-        if (reservation.getName().isBlank() || reservation.getDate().isBlank() || reservation.getTime().isBlank()) {
+        if (reservation.getName().isBlank() || reservation.getDate() == null || reservation.getTime() == null) {
             throw new IllegalArgumentException("name, date, time은 필수입니다.");
         }
 
-        Reservation newReservation = Reservation.toEntity(reservation, index.getAndIncrement());
+        Reservation newReservation = reservation.toEntity(index.getAndIncrement());
         reservations.add(newReservation);
         return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
     }
@@ -56,7 +56,7 @@ public class ReservationController {
     }
 
     @ExceptionHandler({NotFoundReservationException.class, IllegalArgumentException.class})
-    public ResponseEntity<Void> handleException(Exception e) {
+    public ResponseEntity<Void> handleException() {
         return ResponseEntity.badRequest().build();
     }
 }
