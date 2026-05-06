@@ -1,9 +1,13 @@
 package roomescape.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import roomescape.domain.Reservation;
+import roomescape.dto.request.ReservationCreateRequest;
+import roomescape.dto.response.ReservationCreateResponse;
+import roomescape.dto.response.ReservationGetResponse;
 import roomescape.exception.NotFoundReservationException;
 
 import java.net.URI;
@@ -17,9 +21,6 @@ public class ReservationController {
     private final List<Reservation> reservations = new ArrayList<>();
     private final AtomicLong index = new AtomicLong(1);
 
-    public ReservationController() {
-    }
-
     @GetMapping("/reservation")
     public String reservationPage() {
         return "reservation";
@@ -27,24 +28,41 @@ public class ReservationController {
 
     @GetMapping("/reservations")
     @ResponseBody
-    public List<Reservation> getReservations() {
-        return reservations;
+    public List<ReservationGetResponse> getReservations() {
+        return reservations.stream()
+                .map(it -> ReservationGetResponse.builder()
+                        .id(it.getId())
+                        .name(it.getName())
+                        .date(it.getDate())
+                        .time(it.getTime())
+                        .build())
+                .toList();
     }
 
     @PostMapping("/reservations")
-    public ResponseEntity<Reservation> add(@RequestBody Reservation reservation) {
-        if (reservation.getName().isBlank() || reservation.getDate() == null || reservation.getTime() == null) {
-            throw new IllegalArgumentException("name, date, time은 필수입니다.");
-        }
+    public ResponseEntity<ReservationCreateResponse> add(@RequestBody @Valid ReservationCreateRequest request) {
+        Long newId = index.getAndIncrement();
+        Reservation newReservation = Reservation.builder()
+                .id(newId)
+                .name(request.getName())
+                .date(request.getDate())
+                .time(request.getTime())
+                .build();
 
-        Reservation newReservation = reservation.toEntity(index.getAndIncrement());
         reservations.add(newReservation);
-        return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
+
+        ReservationCreateResponse response = ReservationCreateResponse.builder()
+                .id(newReservation.getId())
+                .name(newReservation.getName())
+                .date(newReservation.getDate())
+                .time(newReservation.getTime())
+                .build();
+
+        return ResponseEntity.created(URI.create("/reservations/" + response.getId())).body(response);
     }
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-
         Reservation removeTarget = reservations.stream()
                 .filter(it -> Objects.equals(it.getId(), id))
                 .findFirst()
@@ -55,7 +73,7 @@ public class ReservationController {
         return ResponseEntity.noContent().build();
     }
 
-    @ExceptionHandler({NotFoundReservationException.class, IllegalArgumentException.class})
+    @ExceptionHandler({NotFoundReservationException.class})
     public ResponseEntity<Void> handleException() {
         return ResponseEntity.badRequest().build();
     }
