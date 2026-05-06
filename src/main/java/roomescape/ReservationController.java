@@ -28,13 +28,20 @@ public class ReservationController {
             throw new IllegalArgumentException("필수 예약 정보가 누락되었습니다.");
         }
 
+        boolean isDuplicate = reservations.stream()
+                .anyMatch(r -> r.getDate().equals(reservation.getDate()) &&
+                        r.getTime().equals(reservation.getTime()));
+        if (isDuplicate) {
+            throw new DuplicateReservationException("해당 날짜와 시간은 이미 예약되어 있습니다.");
+        }
+
         Reservation newReservation = Reservation.toEntity(reservation, index.getAndIncrement());
         reservations.add(newReservation);
         return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
     }
 
     @GetMapping("/reservations")
-    public ResponseEntity<List<Reservation.Response>> read() {
+    public ResponseEntity<List<Reservation.Response>> readAll() {
         List<Reservation.Response> responseList = reservations.stream()
                 .map(Reservation.Response::new)
                 .toList();
@@ -42,12 +49,22 @@ public class ReservationController {
         return ResponseEntity.ok(responseList);
     }
 
+    @GetMapping("/reservations/{id}")
+    public ResponseEntity<Reservation.Response> readOne(@PathVariable Long id) {
+        return reservations.stream()
+                .filter(it -> Objects.equals(it.getId(), id))
+                .findFirst()
+                .map(Reservation.Response::new)
+                .map(ResponseEntity::ok)
+                .orElseThrow(() -> new NotFoundReservationException("조회하려는 예약이 존재하지 않습니다. ID: " + id));
+    }
+
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         Reservation reservation = reservations.stream()
                 .filter(it -> Objects.equals(it.getId(), id))
                 .findFirst()
-                .orElseThrow(() -> new NotFoundReservationException("해당 ID의 예약을 찾을 수 없습니다: " + id));
+                .orElseThrow(() -> new NotFoundReservationException("삭제하려는 예약이 존재하지 않습니다. ID: " + id));
 
         reservations.remove(reservation);
         return ResponseEntity.noContent().build();
