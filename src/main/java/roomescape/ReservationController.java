@@ -22,15 +22,9 @@ public class ReservationController {
 
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> create(@RequestBody Reservation reservation) {
-        if (reservation.getName() == null || reservation.getName().isBlank() ||
-                reservation.getDate() == null || reservation.getDate().isBlank() ||
-                reservation.getTime() == null || reservation.getTime().isBlank()) {
-            throw new IllegalArgumentException("필수 예약 정보가 누락되었습니다.");
-        }
-
         boolean isDuplicate = reservations.stream()
-                .anyMatch(r -> r.getDate().equals(reservation.getDate()) &&
-                        r.getTime().equals(reservation.getTime()));
+                .anyMatch(r -> r.hasSameDateTimeWith(reservation));
+
         if (isDuplicate) {
             throw new DuplicateReservationException("해당 날짜와 시간은 이미 예약되어 있습니다.");
         }
