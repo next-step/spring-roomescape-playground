@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,7 +22,7 @@ public class RoomescapeController {
     private final AtomicInteger index = new AtomicInteger(0);
 
     @GetMapping("/")
-    public String showPage(){
+    public String showPage() {
         return "home";
     }
 
@@ -42,12 +41,7 @@ public class RoomescapeController {
     @ResponseBody
     public ResponseEntity<Reservation> createReservation(@RequestBody Reservation request) {
 
-        boolean isDuplicate = reservations.stream()
-                .anyMatch(res -> res.isSameTime(request.getDateTime()));
-
-        if (isDuplicate) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        }
+        checkDuplicateException(request);
 
         Reservation reservationOfClient = Reservation.createNewReservation(
                 index.incrementAndGet(),
@@ -66,15 +60,18 @@ public class RoomescapeController {
         Reservation reservation = reservations.stream()
                 .filter(res -> res.getId() == id)
                 .findFirst()
-                .orElseThrow(() -> new NotFoundReservationException("ID " + id + "번 예약을 찾을 수 없습니다."));
+                .orElseThrow(
+                        () -> new ReservationException.NotFoundReservationException("ID " + id + "번 예약을 찾을 수 없습니다."));
 
         reservations.remove(reservation);
     }
 
-    @ExceptionHandler(NotFoundReservationException.class)
-    public ResponseEntity<String> handleException(NotFoundReservationException e) {
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(e.getMessage());
+    private void checkDuplicateException(Reservation request) {
+        boolean isDuplicate = reservations.stream()
+                .anyMatch(res -> res.isSameTime(request.getDateTime()));
+
+        if (isDuplicate) {
+            throw new ReservationException.DuplicateTimeException();
+        }
     }
 }
