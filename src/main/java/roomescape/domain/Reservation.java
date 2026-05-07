@@ -11,9 +11,7 @@ public class Reservation {
     private final LocalDateTime dateTime;
 
     public Reservation(Long id, String name, LocalDateTime dateTime) {
-        if (isPast(dateTime)) {
-            throw new PastDateTimeException();
-        }
+        validate(dateTime);
         this.id = id;
         this.name = name;
         this.dateTime = dateTime;
@@ -26,8 +24,10 @@ public class Reservation {
         return endTime.isAfter(newReservation.dateTime) || dateTime.isBefore(newEndTime);
     }
 
-    private boolean isPast(LocalDateTime dateTime) {
-        return dateTime.isBefore(LocalDateTime.now());
+    private void validate(LocalDateTime dateTime) {
+        if (dateTime.isBefore(LocalDateTime.now())) {
+            throw new PastDateTimeException();
+        }
     }
 
     public Long getId() {
