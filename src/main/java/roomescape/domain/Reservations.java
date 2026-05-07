@@ -10,12 +10,8 @@ import roomescape.exceptions.AlreadyReservedException;
 import roomescape.exceptions.ReservationNotFoundException;
 
 public class Reservations {
-    private final List<Reservation> reservations;
+    private final List<Reservation> reservations = new ArrayList<>();
     private final AtomicLong idCounter = new AtomicLong(1);
-
-    public Reservations() {
-        this.reservations = new ArrayList<>();
-    }
 
     public ReservationResponse add(ReservationRequest reservationRequest) {
         Reservation reservation = reservationRequest.toReservation(nextId());
