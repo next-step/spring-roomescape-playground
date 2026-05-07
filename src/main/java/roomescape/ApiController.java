@@ -22,7 +22,7 @@ public class ApiController {
     }
 
     @PostMapping("/reservations")
-    public ResponseEntity<Reservation> createReservation(@RequestBody Reservation request) {//reservation객체로 바꿔서 받음
+    public ResponseEntity<Reservation> createReservation(@RequestBody ReservationRequest request) {//reservation객체로 바꿔서 받음
         Reservation reservation = new Reservation(//새 예약 객체 만듦
                 index.incrementAndGet(), //id를 1 증가시키고 값을 가져옴
                 request.getName(),
