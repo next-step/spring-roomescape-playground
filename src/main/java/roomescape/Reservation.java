@@ -1,4 +1,4 @@
-package roomescape.hello;
+package roomescape;
 
 public class Reservation {
     private Long id;
@@ -6,7 +6,6 @@ public class Reservation {
     private String date;
     private String time;
 
-    public Reservation() {}
 
     public Reservation(Long id, String name, String date, String time) {
         this.id = id;
