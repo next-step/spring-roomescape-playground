@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import roomescape.dto.ReservationRequest;
 import roomescape.model.Reservation;
+import roomescape.service.ReservationService;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -20,36 +21,29 @@ import java.util.concurrent.atomic.AtomicLong;
 @RestController
 @RequestMapping("/reservations")
 public class ReservationController {
-    private final List<Reservation> reservations = new ArrayList<>();
-    private final AtomicLong index = new AtomicLong(1);
+    private final ReservationService reservationService;
+
+    public ReservationController(ReservationService reservationService) {
+        this.reservationService = reservationService;
+    }
 
     @GetMapping
     public List<Reservation> findReservations() {
-        return reservations;
+        return reservationService.findReservations();
     }
 
     @PostMapping
     public ResponseEntity<Reservation> createReservation(@RequestBody @Valid ReservationRequest reservationRequest) {
-        long id = index.getAndIncrement();
-
-        Reservation reservation = new Reservation(
-                id,
-                reservationRequest.name(),
-                reservationRequest.date(),
-                reservationRequest.time()
-        );
-
-        reservations.add(reservation);
+        Reservation reservation = reservationService.createReservation(reservationRequest);
 
         return ResponseEntity
-                .created(URI.create("/reservations/" + id))
+                .created(URI.create("/reservations/" + reservation.id()))
                 .body(reservation);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
-
-        reservations.removeIf(reservation -> reservation.id().equals(id));
+        reservationService.deleteReservation(id);
 
         return ResponseEntity
                 .noContent()
