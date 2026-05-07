@@ -1,6 +1,5 @@
-package roomescape;
+package roomescape.controller;
 
-import java.io.NotActiveException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
+import roomescape.DTO.Reservation;
 import roomescape.exception.BadRequestException;
 
 @Controller
@@ -48,7 +48,7 @@ public class RoomescapeController {
         boolean removed = reservations.removeIf(reservation -> reservation.getId().equals(id));
 
         if (!removed) {
-            throw new BadRequestException("예약을 찾을 수 없습니다.");
+            throw new BadRequestException("예약번호가 " + id + "인 예약은 존재하지 않습니다.");
         }
 
         return ResponseEntity.noContent().build();
