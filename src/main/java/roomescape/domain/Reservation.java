@@ -18,8 +18,8 @@ public class Reservation {
     }
 
     public boolean conflicts(Reservation newReservation) {
-        LocalDateTime endTime = dateTime.plusHours(RESERVATION_LENGTH_MINUTES);
-        LocalDateTime newEndTime = newReservation.dateTime.plusHours(RESERVATION_LENGTH_MINUTES);
+        LocalDateTime endTime = dateTime.plusMinutes(RESERVATION_LENGTH_MINUTES);
+        LocalDateTime newEndTime = newReservation.dateTime.plusMinutes(RESERVATION_LENGTH_MINUTES);
 
         return endTime.isAfter(newReservation.dateTime) || dateTime.isBefore(newEndTime);
     }
