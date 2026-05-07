@@ -34,10 +34,9 @@ public class RoomescapeController {
 
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> addReservation(@RequestBody Reservation reservation) {
-        validateReservation(reservation);
-
         Reservation newReservation = Reservation.toEntity(reservation, index.getAndIncrement());
         reservations.add(newReservation);
+
         return ResponseEntity
                 .created(URI.create("/reservations/" + newReservation.getId()))
                 .body(newReservation);
@@ -52,17 +51,5 @@ public class RoomescapeController {
         }
 
         return ResponseEntity.noContent().build();
-    }
-
-    private void validateReservation (Reservation reservation) {
-        validateRequired(reservation.getName(), "이름");
-        validateRequired(reservation.getDate(), "날짜");
-        validateRequired(reservation.getTime(), "시간");
-    }
-
-    private void validateRequired (String value, String fieldName) {
-        if (value == null || value.isBlank()) {
-            throw new BadRequestException(fieldName + "이 존재하지 않습니다.");
-        }
     }
 }

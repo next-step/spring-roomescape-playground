@@ -1,4 +1,6 @@
-package roomescape;
+package roomescape.DTO;
+
+import roomescape.exception.BadRequestException;
 
 public class Reservation {
     private Long id;
@@ -16,6 +18,13 @@ public class Reservation {
     public static Reservation toEntity(Reservation reservation, Long id) {
         return new Reservation(id, reservation.name, reservation.date, reservation.time);
     }
+
+    private void validateRequired(String value, String fieldName) {
+        if (value == null || value.isBlank()) {
+            throw new BadRequestException(fieldName + "이 존재하지 않습니다.");
+        }
+    }
+
     public Long getId() {
         return id;
     }
