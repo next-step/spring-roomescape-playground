@@ -34,6 +34,8 @@ public class RoomescapeController {
 
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> addReservation(@RequestBody Reservation reservation) {
+        validateDuplicate(reservation);
+
         Reservation newReservation = Reservation.toEntity(reservation, index.getAndIncrement());
         reservations.add(newReservation);
 
@@ -51,5 +53,15 @@ public class RoomescapeController {
         }
 
         return ResponseEntity.noContent().build();
+    }
+
+    private void validateDuplicate(Reservation reservation) {
+        boolean duplicated = reservations.stream()
+                .anyMatch(savedReservation ->
+                        savedReservation.isSameSchedule(reservation));
+
+        if (duplicated) {
+            throw new BadRequestException("이미 예약된 날짜와 시간입니다.");
+        }
     }
 }
