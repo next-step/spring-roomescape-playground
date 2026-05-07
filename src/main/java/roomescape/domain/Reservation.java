@@ -1,4 +1,4 @@
-package roomescape.DTO;
+package roomescape.domain;
 
 import roomescape.exception.BadRequestException;
 
@@ -17,10 +17,6 @@ public class Reservation {
         this.name = name;
         this.date = date;
         this.time = time;
-    }
-
-    public static Reservation toEntity(Reservation reservation, Long id) {
-        return new Reservation(id, reservation.name, reservation.date, reservation.time);
     }
 
     private void validateName(String name) {
