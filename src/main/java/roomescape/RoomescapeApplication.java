@@ -1,4 +1,4 @@
-package roomescape.hello;
+package roomescape;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
