@@ -10,30 +10,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
-@Controller //웹 요청을 받는 담당자
-public class ReservationController {
+@RestController
+public class ApiController {
+
     private final List<Reservation> reservations = new ArrayList<>();
     private final AtomicLong index = new AtomicLong(0);
 
-    @GetMapping("/")
-    //"/"주소로 get을 요청하면 아래 메서드 실행
-    public String home() {
-        return "home";
-    }//화면 보여주기
-
-    @GetMapping("/reservation")
-    public String reservationPage() {
-        return "reservation";
-    }//예약관리 페이지를 보여줌
-
     @GetMapping("/reservations")
-    @ResponseBody
     public List<Reservation> getReservations() {//예약 목록을 조회
         return reservations; //현재 저장된 예약 리스트 전체를 응답으로 보냄
     }
 
     @PostMapping("/reservations")
-    @ResponseBody
     public ResponseEntity<Reservation> createReservation(@RequestBody Reservation request) {//reservation객체로 바꿔서 받음
         Reservation reservation = new Reservation(//새 예약 객체 만듦
                 index.incrementAndGet(), //id를 1 증가시키고 값을 가져옴
@@ -48,7 +36,6 @@ public class ReservationController {
     }
 
     @DeleteMapping("/reservations/{id}") //삭제 요청
-    @ResponseBody
     public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {//주소에 있는 id값을 꺼내서 변수 id에 넣음
         reservations.removeIf(reservation -> reservation.getId().equals(id));
         return ResponseEntity.noContent().build(); //삭제 성공 후 응답 보내기. 204 no content 상태 코드를 반환
