@@ -1,4 +1,4 @@
-package roomescape.hello;
+package roomescape;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -13,7 +13,6 @@ import java.util.concurrent.atomic.AtomicLong;
 public class ReservationController {
     private final List<Reservation> reservations = new ArrayList<>();
     private final AtomicLong index = new AtomicLong(0);
-
 
     @GetMapping("/reservation")
     public String reservationPage() {
