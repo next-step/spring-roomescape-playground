@@ -99,7 +99,7 @@ public class MissionStepTest {
                 .when().post("/reservations")
                 .then().log().all()
                 .statusCode(400)
-                .body(equalTo("예약 시간이 비어 있을 수 없습니다."));
+                .body(equalTo("예약 날짜가 비어 있을 수 없습니다."));
 
         params.clear();
         params.put("name", "브라운");
