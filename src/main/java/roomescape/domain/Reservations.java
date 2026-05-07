@@ -39,9 +39,7 @@ public class Reservations {
         return idCounter.getAndIncrement();
     }
 
-    public List<ReservationResponse> get() {
-        return reservations.stream()
-                .map(ReservationResponse::fromReservation)
-                .toList();
+    public List<Reservation> get() {
+        return reservations;
     }
 }

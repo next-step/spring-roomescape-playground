@@ -32,7 +32,9 @@ public class ReservationController {
 
     @GetMapping("/reservations")
     public ResponseEntity<List<ReservationResponse>> read() {
-        return ResponseEntity.ok(reservations.get());
+        return ResponseEntity.ok(reservations.get().stream()
+                .map(ReservationResponse::fromReservation)
+                .toList());
     }
 
     @DeleteMapping("/reservations/{id}")
