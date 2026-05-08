@@ -23,7 +23,7 @@ public class Reservation {
 
     private void validate(String name, LocalDate date, LocalTime time) {
         if (name == null || name.isBlank() || date == null || time == null) {
-            throw new NotFoundReservationException("필수 값이 누락되었습니다.");
+            throw new InvalidReservationException("필수 값이 누락되었습니다.");
         }
 
         if (date.isBefore(LocalDate.now())) {
