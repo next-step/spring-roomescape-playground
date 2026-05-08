@@ -22,7 +22,7 @@ public class RoomescapeController {
     private final AtomicInteger index = new AtomicInteger(0);
 
     @GetMapping("/")
-    public String showPage(){
+    public String showPage() {
         return "home";
     }
 
@@ -41,12 +41,7 @@ public class RoomescapeController {
     @ResponseBody
     public ResponseEntity<Reservation> createReservation(@RequestBody Reservation request) {
 
-        boolean isDuplicate = reservations.stream()
-                .anyMatch(res -> res.isSameTime(request.getDateTime()));
-
-        if (isDuplicate) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        }
+        checkDuplicateException(request);
 
         Reservation reservationOfClient = Reservation.createNewReservation(
                 index.incrementAndGet(),
@@ -62,6 +57,21 @@ public class RoomescapeController {
     @DeleteMapping("/reservations/{id}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void deleteReservation(@PathVariable int id) {
-        reservations.removeIf(res -> res.getId() == id);
+        Reservation reservation = reservations.stream()
+                .filter(res -> res.getId() == id)
+                .findFirst()
+                .orElseThrow(
+                        () -> new ReservationException.NotFoundReservationException("ID " + id + "번 예약을 찾을 수 없습니다."));
+
+        reservations.remove(reservation);
+    }
+
+    private void checkDuplicateException(Reservation request) {
+        boolean isDuplicate = reservations.stream()
+                .anyMatch(res -> res.isSameTime(request.getDateTime()));
+
+        if (isDuplicate) {
+            throw new ReservationException.DuplicateTimeException();
+        }
     }
 }
