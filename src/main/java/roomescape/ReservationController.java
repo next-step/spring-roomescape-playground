@@ -26,11 +26,12 @@ public class ReservationController {
                 .anyMatch(r -> r.hasSameDateTimeWith(reservation));
 
         if (isDuplicate) {
-            throw new DuplicateReservationException("해당 날짜와 시간은 이미 예약되어 있습니다.");
+            throw new DuplicateReservationException(reservation.getDate(), reservation.getTime());
         }
 
         Reservation newReservation = Reservation.toEntity(reservation, index.getAndIncrement());
         reservations.add(newReservation);
+
         return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
     }
 
@@ -50,7 +51,7 @@ public class ReservationController {
                 .findFirst()
                 .map(Reservation.Response::new)
                 .map(ResponseEntity::ok)
-                .orElseThrow(() -> new NotFoundReservationException("조회하려는 예약이 존재하지 않습니다. ID: " + id));
+                .orElseThrow(() -> new NotFoundReservationException(id));
     }
 
     @DeleteMapping("/reservations/{id}")
@@ -58,7 +59,7 @@ public class ReservationController {
         Reservation reservation = reservations.stream()
                 .filter(it -> Objects.equals(it.getId(), id))
                 .findFirst()
-                .orElseThrow(() -> new NotFoundReservationException("삭제하려는 예약이 존재하지 않습니다. ID: " + id));
+                .orElseThrow(() -> new NotFoundReservationException(id));
 
         reservations.remove(reservation);
         return ResponseEntity.noContent().build();
