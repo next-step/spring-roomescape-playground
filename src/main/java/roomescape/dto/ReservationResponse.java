@@ -1,15 +1,18 @@
 package roomescape.dto;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import org.springframework.cglib.core.Local;
 import roomescape.domain.Reservation;
 
 public class ReservationResponse {
 
     private Long id;
     private String name;
-    private String date;
-    private String time;
+    private LocalDate date;
+    private LocalTime time;
 
-    public ReservationResponse(Long id, String name, String date, String time) {
+    public ReservationResponse(Long id, String name, LocalDate date, LocalTime time) {
         this.id = id;
         this.name = name;
         this.date = date;
@@ -33,11 +36,11 @@ public class ReservationResponse {
         return name;
     }
 
-    public String getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public String getTime() {
+    public LocalTime getTime() {
         return time;
     }
 }

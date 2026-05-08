@@ -1,28 +1,31 @@
 package roomescape.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 public class ReservationRequest {
     @NotBlank(message = "이름은 비어 있을 수 없습니다.")
     @Size(max = 10, message = "이름은 10자 이하만 가능합니다.")
     private String name;
 
-    @NotBlank(message = "날짜는 비어 있을 수 없습니다.")
-    private String date;
+    @NotNull(message = "날짜는 비어 있을 수 없습니다.")
+    private LocalDate date;
 
-    @NotBlank(message = "시간은 비어 있을 수 없습니다.")
-    private String time;
+    @NotNull(message = "시간은 비어 있을 수 없습니다.")
+    private LocalTime time;
 
     public String getName() {
         return name;
     }
 
-    public String getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public String getTime() {
+    public LocalTime getTime() {
         return time;
     }
 }
