@@ -1,5 +1,7 @@
 package roomescape;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.Objects;
 
 public class Reservation {
@@ -30,7 +32,16 @@ public class Reservation {
         if (name == null || name.isBlank() ||
                 date == null || date.isBlank() ||
                 time == null || time.isBlank()) {
-            throw new IllegalArgumentException("필수 예약 정보가 누락되었습니다.");
+            throw new InvalidReservationException("필수 예약 정보가 누락되었습니다.");
+        }
+
+        try {
+            LocalDate parsedDate = LocalDate.parse(date);
+            if (parsedDate.isBefore(LocalDate.now())) {
+                throw new InvalidReservationException("과거 날짜로는 예약할 수 없습니다.");
+            }
+        } catch (DateTimeParseException e) {
+            throw new InvalidReservationException("날짜 형식이 올바르지 않습니다. (예: 2023-01-01)");
         }
     }
 
