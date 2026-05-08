@@ -1,7 +1,5 @@
 package roomescape.domain;
 
-import roomescape.exception.BadRequestException;
-
 public class Reservation {
     private Long id;
     private String name;
