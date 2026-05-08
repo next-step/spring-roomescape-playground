@@ -2,6 +2,7 @@ package roomescape.domain;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import roomescape.exception.BadRequestException;
 
 public class Reservation {
     private Long id;
@@ -10,6 +11,8 @@ public class Reservation {
     private LocalTime time;
 
     public Reservation(Long id, String name, LocalDate date, LocalTime time) {
+        validateName(name);
+
         this.id = id;
         this.name = name;
         this.date = date;
@@ -19,6 +22,12 @@ public class Reservation {
     public boolean isSameSchedule(Reservation other) {
         return this.date.equals(other.date)
                 && this.time.equals(other.time);
+    }
+
+    private void validateName(String name) {
+        if (name.length() > 10) {
+            throw new BadRequestException("이름은 10자 이하만 가능합니다.");
+        }
     }
 
     public Long getId() {
