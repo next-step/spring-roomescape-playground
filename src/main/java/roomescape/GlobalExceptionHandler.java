@@ -1,34 +1,46 @@
 package roomescape;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<Void> handleIllegalArgumentException(IllegalArgumentException e) {
-        System.out.println("잘못된 요청입니다: " + e.getMessage());
-        return ResponseEntity.badRequest().build();
-    }
+    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
-    @ExceptionHandler(NotFoundReservationException.class)
-    public ResponseEntity<Void> handleNotFoundReservationException(NotFoundReservationException e) {
-        System.out.println("예약을 찾을 수 없습니다: " + e.getMessage());
-        return ResponseEntity.badRequest().build();
+    @ExceptionHandler(InvalidReservationException.class)
+    public ResponseEntity<String> handleInvalidReservationException(InvalidReservationException e) {
+        log.error("잘못된 예약 요청: {}", e.getMessage());
+        return ResponseEntity.badRequest().body(e.getMessage());
     }
 
     @ExceptionHandler(DuplicateReservationException.class)
-    public ResponseEntity<Void> handleDuplicateReservationException(DuplicateReservationException e) {
-        System.out.println("중복 예약 오류: " + e.getMessage());
-        return ResponseEntity.badRequest().build();
+    public ResponseEntity<String> handleDuplicateReservationException(DuplicateReservationException e) {
+        log.error("중복 예약 발생: {}", e.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+    }
+
+    @ExceptionHandler(NotFoundReservationException.class)
+    public ResponseEntity<String> handleNotFoundReservationException(NotFoundReservationException e) {
+        log.error("예약 조회 실패: {}", e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<Void> handleTypeMismatchException(MethodArgumentTypeMismatchException e) {
-        System.out.println("경로 변수 타입이 올바르지 않습니다: " + e.getMessage());
-        return ResponseEntity.badRequest().build();
+    public ResponseEntity<String> handleTypeMismatchException(MethodArgumentTypeMismatchException e) {
+        log.error("타입 변환 오류: {}", e.getMessage());
+        return ResponseEntity.badRequest().body("경로 변수나 파라미터의 타입이 올바르지 않습니다.");
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<String> handleMessageNotReadableException(HttpMessageNotReadableException e) {
+        log.error("JSON 파싱 오류: {}", e.getMessage());
+        return ResponseEntity.badRequest().body("요청 데이터 형식이 올바르지 않습니다.");
     }
 }
