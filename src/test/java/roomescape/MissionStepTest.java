@@ -82,12 +82,12 @@ public class MissionStepTest {
                 .body(params)
                 .when().post("/reservations")
                 .then().log().all()
-                .statusCode(400);
+                .statusCode(404);
 
         // 삭제할 예약이 없는 경우
         RestAssured.given().log().all()
                 .when().delete("/reservations/1")
                 .then().log().all()
-                .statusCode(400);
+                .statusCode(404);
     }
 }

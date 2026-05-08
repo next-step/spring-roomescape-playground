@@ -73,7 +73,7 @@ public class RoomescapeController {
 
     @ExceptionHandler(NotFoundReservationException.class)
     public ResponseEntity<String> handleException(NotFoundReservationException e) {
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.notFound().build();
     }
     @ExceptionHandler(InvalidReservationException.class)
     public ResponseEntity<String> handleBadRequest(InvalidReservationException e) {
