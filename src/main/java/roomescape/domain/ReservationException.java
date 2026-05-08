@@ -5,3 +5,4 @@ public class ReservationException extends RuntimeException {
         super(message);
     }
 }
+

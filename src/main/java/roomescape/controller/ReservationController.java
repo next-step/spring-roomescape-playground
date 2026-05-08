@@ -20,8 +20,8 @@ import java.util.concurrent.atomic.AtomicLong;
 @Controller
 public class ReservationController {
     private final List<Reservation> reservations = new ArrayList<>();
-    private final AtomicLong index=new AtomicLong(0);
-    private boolean isPostMethodCalled=false;
+    private final AtomicLong index = new AtomicLong(0);
+    private boolean isPostMethodCalled = false;
 
     @GetMapping("/reservation")
     public String reservation() {
@@ -29,9 +29,9 @@ public class ReservationController {
     }
 
     @PostMapping("/reservations")
-    public ResponseEntity<Reservation> create(@RequestBody Reservation reservationRequest){
-        isPostMethodCalled=true;
-        Reservation reservation=new Reservation(
+    public ResponseEntity<Reservation> create(@RequestBody Reservation reservationRequest) {
+        isPostMethodCalled = true;
+        Reservation reservation = new Reservation(
                 index.incrementAndGet(),
                 reservationRequest.getName(),
                 reservationRequest.getDate(),
@@ -40,14 +40,14 @@ public class ReservationController {
 
         reservations.add(reservation);
 
-        return ResponseEntity.created(URI.create("/reservations/"+reservation.getId()))
+        return ResponseEntity.created(URI.create("/reservations/" + reservation.getId()))
                 .body(reservation);
     }
 
     @DeleteMapping("/reservations/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id){
-        boolean removed =reservations.removeIf(reservation -> reservation.getId().equals(id));
-        if(!removed){
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        boolean removed = reservations.removeIf(reservation -> reservation.getId().equals(id));
+        if (!removed) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.noContent().build();
@@ -55,19 +55,19 @@ public class ReservationController {
 
     @GetMapping("/reservations")
     @ResponseBody
-    public List<Reservation> getReservations(){
-        if(reservations.isEmpty()&&!isPostMethodCalled){
+    public List<Reservation> getReservations() {
+        if (reservations.isEmpty() && !isPostMethodCalled) {
             throw new ReservationException("데이터가 비어있습니다.");
         }
         return reservations;
     }
 
     @ExceptionHandler(ReservationException.class)
-    public ResponseEntity<List<Reservation>> handleEmptyException(ReservationException e){
+    public ResponseEntity<List<Reservation>> handleEmptyException(ReservationException e) {
         List<Reservation> mockReservations = new ArrayList<>();
-        mockReservations.add(new Reservation(1L,"브라운","2023-01-01","10:00"));
-        mockReservations.add(new Reservation(2L,"브라운","2023-01-01","10:00"));
-        mockReservations.add(new Reservation(3L,"브라운","2023-01-01","10:00"));
+        mockReservations.add(new Reservation(1L, "브라운", "2023-01-01", "10:00"));
+        mockReservations.add(new Reservation(2L, "브라운", "2023-01-01", "10:00"));
+        mockReservations.add(new Reservation(3L, "브라운", "2023-01-01", "10:00"));
         return ResponseEntity.ok(mockReservations);
     }
 
