@@ -2,6 +2,9 @@ package roomescape.controller;
 
 import jakarta.validation.Valid;
 import java.net.URI;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
@@ -40,13 +43,15 @@ public class RoomescapeController {
     @PostMapping("/reservations")
     @ResponseBody
     public ResponseEntity<ReservationResponse> addReservation(@RequestBody @Valid ReservationRequest request) {
+        validateReservationDateTime(request.date(), request.time());
+
         Long id = index.getAndIncrement();
 
         Reservation reservation = new Reservation(
                 id,
-                request.getName(),
-                request.getDate(),
-                request.getTime()
+                request.name(),
+                request.date(),
+                request.time()
         );
 
         validateDuplicate(reservation);
@@ -75,6 +80,14 @@ public class RoomescapeController {
 
         if (duplicated) {
             throw new BadRequestException("이미 예약된 날짜와 시간입니다.");
+        }
+    }
+
+    private void validateReservationDateTime(LocalDate date, LocalTime time) {
+        LocalDateTime reservationDateTime = LocalDateTime.of(date, time);
+
+        if (reservationDateTime.isBefore(LocalDateTime.now())) {
+            throw new BadRequestException("예약 시간은 현재 시각 이후여야 합니다.");
         }
     }
 }
