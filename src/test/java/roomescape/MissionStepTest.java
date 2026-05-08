@@ -91,4 +91,61 @@ public class MissionStepTest {
                 .then().log().all()
                 .statusCode(400);
     }
+
+    @Test
+    void 이름이_10자를_초과하면_400을_응답한다() {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", "열글자를초과하는이름입니다");
+        params.put("date", "2099-08-05");
+        params.put("time", "15:40");
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(400);
+    }
+
+    @Test
+    void 같은_날짜와_시간으로_예약하면_400을_응답한다() {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", "브라운");
+        params.put("date", "2099-08-05");
+        params.put("time", "15:40");
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(201);
+
+        Map<String, String> duplicateParams = new HashMap<>();
+        duplicateParams.put("name", "초은");
+        duplicateParams.put("date", "2099-08-05");
+        duplicateParams.put("time", "15:40");
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(duplicateParams)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(400);
+    }
+
+    @Test
+    void 현재_시각보다_이전_시간이면_400을_응답한다() {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", "브라운");
+        params.put("date", "2026-05-08");
+        params.put("time", "15:40");
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(400);
+    }
 }
