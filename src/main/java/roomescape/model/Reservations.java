@@ -25,7 +25,7 @@ public class Reservations {
         this.reservations.add(reservation);
     }
 
-    public void removeById(int deletingId) {
+    public void removeById(long deletingId) {
         Reservation toDelete = this.reservations.stream()
                 .filter(reservation -> deletingId == reservation.id())
                 .findFirst()
