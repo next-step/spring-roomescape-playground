@@ -1,8 +1,11 @@
 package roomescape.controller;
 
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import roomescape.domain.Reservation;
 import roomescape.dto.request.ReservationCreateRequest;
@@ -11,9 +14,7 @@ import roomescape.dto.response.ReservationGetResponse;
 import roomescape.exception.NotFoundReservationException;
 
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Controller
@@ -63,8 +64,18 @@ public class ReservationController {
         return ResponseEntity.noContent().build();
     }
 
-    @ExceptionHandler({NotFoundReservationException.class})
-    public ResponseEntity<Void> handleException() {
-        return ResponseEntity.badRequest().build();
+    @ExceptionHandler(NotFoundReservationException.class)
+    public ResponseEntity<ProblemDetail> handleNotFoundReservationException() {
+        ProblemDetail problem = ProblemDetail
+                .forStatusAndDetail(HttpStatus.NOT_FOUND, "존재하지 않는 예약입니다.");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(problem);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, String>> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+        Map<String, String> errors = new HashMap<>();
+        e.getBindingResult().getFieldErrors()
+                .forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
+        return ResponseEntity.badRequest().body(errors);
     }
 }
