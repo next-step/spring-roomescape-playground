@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import roomescape.domain.NotFoundReservationException;
 import roomescape.domain.Reservation;
 
 import java.net.URI;
@@ -18,7 +19,6 @@ import java.util.concurrent.atomic.AtomicLong;
 public class ReservationController {
     private final List<Reservation> reservations = new ArrayList<>();
     private final AtomicLong index = new AtomicLong(0);
-    private boolean isPostMethodCalled = false;
 
     @GetMapping("/reservation")
     public String reservation() {
@@ -27,7 +27,6 @@ public class ReservationController {
 
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> create(@RequestBody Reservation reservationRequest) {
-        isPostMethodCalled = true;
         Reservation reservation = new Reservation(
                 index.incrementAndGet(),
                 reservationRequest.getName(),
@@ -45,7 +44,7 @@ public class ReservationController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         boolean removed = reservations.removeIf(reservation -> reservation.getId().equals(id));
         if (!removed) {
-            return ResponseEntity.notFound().build();
+            throw new NotFoundReservationException("존재하지 않는 예약을 지울 수 없습니다.");
         }
         return ResponseEntity.noContent().build();
     }
