@@ -25,6 +25,10 @@ public class ReservationController {
         return "reservation";
     }
 
+    @GetMapping("/reservations")
+    public ResponseEntity <List<Reservation>> getAllReservations() {
+        return ResponseEntity.ok(reservations);
+    }
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> create(@RequestBody Reservation reservationRequest) {
         Reservation reservation = new Reservation(
