@@ -40,23 +40,13 @@ public class ReservationController {
     }
 
     @PostMapping("/reservations")
-    public ResponseEntity<ReservationCreateResponse> add(@RequestBody @Valid ReservationCreateRequest request) {
+    public ResponseEntity<ReservationCreateResponse> add(@RequestBody @Valid ReservationCreateRequest reservationCreateRequest) {
         Long newId = index.getAndIncrement();
-        Reservation newReservation = Reservation.builder()
-                .id(newId)
-                .name(request.getName())
-                .date(request.getDate())
-                .time(request.getTime())
-                .build();
+        Reservation newReservation = reservationCreateRequest.toEntity(newId);
 
         reservations.add(newReservation);
 
-        ReservationCreateResponse response = ReservationCreateResponse.builder()
-                .id(newReservation.getId())
-                .name(newReservation.getName())
-                .date(newReservation.getDate())
-                .time(newReservation.getTime())
-                .build();
+        ReservationCreateResponse response = ReservationCreateResponse.from(newReservation);
 
         return ResponseEntity.created(URI.create("/reservations/" + response.getId())).body(response);
     }
