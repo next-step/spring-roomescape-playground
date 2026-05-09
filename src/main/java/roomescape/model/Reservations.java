@@ -9,23 +9,23 @@ import java.util.List;
 public class Reservations {
     private final List<Reservation> reservations;
 
-    public Reservations(){
+    public Reservations() {
         this.reservations = new ArrayList<Reservation>();
     }
 
-    public List<Reservation> getReservationList(){
+    public List<Reservation> getReservationList() {
         List<Reservation> copiedReservation = new ArrayList<>();
-        for (Reservation reservation: this.reservations) {
+        for (Reservation reservation : this.reservations) {
             copiedReservation.add(reservation.copy());
         }
         return List.copyOf(copiedReservation);
     }
 
-    public void add(Reservation reservation){
+    public void add(Reservation reservation) {
         this.reservations.add(reservation);
     }
 
-    public void removeById(int deletingId){
+    public void removeById(int deletingId) {
         Reservation toDelete = this.reservations.stream()
                 .filter(reservation -> deletingId == reservation.id())
                 .findFirst()
