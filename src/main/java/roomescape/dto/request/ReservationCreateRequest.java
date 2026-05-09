@@ -12,7 +12,7 @@ public class ReservationCreateRequest {
     @NotBlank(message = "이름은 필수 입력값입니다.")
     private String name;
 
-    @NotNull(message = "날짜은 필수 입력값입니다.")
+    @NotNull(message = "날짜는 필수 입력값입니다.")
     private LocalDate date;
 
     @NotNull(message = "시간은 필수 입력값입니다.")
