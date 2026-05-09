@@ -26,11 +26,12 @@ public class ReservationController {
     }
 
     @GetMapping("/reservations")
-    public ResponseEntity <List<Reservation>> getAllReservations() {
+    public ResponseEntity<List<Reservation>> getAllReservations() {
         return ResponseEntity.ok(reservations);
     }
+
     @PostMapping("/reservations")
-    public ResponseEntity<Reservation> create(@RequestBody Reservation reservationRequest) {
+    public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservationRequest) {
         Reservation reservation = new Reservation(
                 index.incrementAndGet(),
                 reservationRequest.getName(),
@@ -45,7 +46,7 @@ public class ReservationController {
     }
 
     @DeleteMapping("/reservations/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
         boolean removed = reservations.removeIf(reservation -> reservation.getId().equals(id));
         if (!removed) {
             throw new NotFoundReservationException("존재하지 않는 예약을 지울 수 없습니다.");
