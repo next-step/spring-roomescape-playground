@@ -70,6 +70,7 @@ public class MissionStepTest {
                 .statusCode(200)
                 .body("size()", is(0));
     }
+
     @Test
     void 사단계() {
         Map<String, String> params = new HashMap<>();
