@@ -1,7 +1,9 @@
 package roomescape.exceptions;
 
-public class AlreadyReservedException extends RuntimeException {
+import roomescape.ErrorCode;
+
+public class AlreadyReservedException extends CustomException {
     public AlreadyReservedException() {
-        super("기존 예약과 시간이 겹칩니다.");
+        super(ErrorCode.ALREADY_RESERVED);
     }
 }
