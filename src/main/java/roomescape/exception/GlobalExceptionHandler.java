@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> processValidationError(MethodArgumentNotValidException e) {
+    public ResponseEntity<ErrorResponse> processValidationException(MethodArgumentNotValidException e) {
         String message = e.getBindingResult().getAllErrors().stream()
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .collect(Collectors.joining(", "));
@@ -24,7 +24,12 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(ReservationNotFoundException.class)
-    public ResponseEntity<ErrorResponse> processNoReservationError(ReservationNotFoundException e) {
+    public ResponseEntity<ErrorResponse> processNoReservationException(ReservationNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(e.getMessage()));
+    }
+
+    @ExceptionHandler(InvalidReservationTimeException.class)
+    public ResponseEntity<ErrorResponse> processInvalidReservationTimeException(InvalidReservationTimeException e) {
         return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
     }
 
