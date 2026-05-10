@@ -1,4 +1,14 @@
 package roomescape.dto;
 
-public record ReservationDto(String name, String date, String time) {
+import jakarta.validation.constraints.NotBlank;
+
+public record ReservationDto(
+        @NotBlank
+        String name,
+
+        @NotBlank
+        String date,
+
+        @NotBlank
+        String time) {
 }
