@@ -3,6 +3,7 @@ package roomescape;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Objects;
 import roomescape.exception.InvalidReservationException;
 import roomescape.exception.NotFoundReservationException;
 
@@ -10,7 +11,6 @@ public class Reservation {
     private Long id;
     private String name;
     private LocalDate date;
-    @JsonFormat(pattern = "HH:mm")
     private LocalTime time;
 
     public Reservation(Long id, String name, LocalDate date, LocalTime time) {
@@ -19,6 +19,10 @@ public class Reservation {
         this.name = name;
         this.date = date;
         this.time = time;
+    }
+
+    public static Reservation toEntity(ReservationRequest request, Long id) {
+        return new Reservation(id, request.getName(), request.getDate(), request.getTime());
     }
 
     private void validate(String name, LocalDate date, LocalTime time) {
@@ -57,5 +61,18 @@ public class Reservation {
 
     public LocalTime getTime() {
         return time;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Reservation that = (Reservation) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
