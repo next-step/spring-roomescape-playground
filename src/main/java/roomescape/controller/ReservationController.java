@@ -59,7 +59,9 @@ public class ReservationController {
 
 
     @ExceptionHandler(value = IllegalArgumentException.class)
-    public ResponseEntity<Void> handleNoReservationToDelete() {
-        return ResponseEntity.badRequest().build();
+    public ResponseEntity<String> handleNoReservationToDelete() {
+        return ResponseEntity
+                .badRequest()
+                .body("없는 예약번호 입니다.");
     }
 }
