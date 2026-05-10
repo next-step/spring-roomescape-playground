@@ -1,6 +1,8 @@
-package roomescape;
+package roomescape.service;
 
 import org.springframework.stereotype.Service;
+import roomescape.domain.Reservation;
+import roomescape.dto.ReservationRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,12 +18,12 @@ public class ReservationService {
         return reservations;
     }
 
-    public Reservation createReservation(Reservation reservation) {
+    public Reservation createReservation(ReservationRequest request) {
         Reservation newReservation = new Reservation(
                 index.incrementAndGet(),
-                reservation.getName(),
-                reservation.getDate(),
-                reservation.getTime()
+                request.getName(),
+                request.getDate(),
+                request.getTime()
         );
         reservations.add(newReservation);
         return newReservation;
