@@ -26,11 +26,10 @@ public class ReservationService {
     }
 
     public ReservationResponse createReservation(ReservationRequest request) {
-        long id = index.getAndIncrement();
-        Reservation reservation = new Reservation(id, request.name(), request.date(), request.time());
+        Reservation reservation = new Reservation(request.name(), request.date(), request.time());
+        reservation.setId(index.getAndIncrement());
 
         reservations.addReservation(reservation);
-
         return ReservationResponse.from(reservation);
     }
 
