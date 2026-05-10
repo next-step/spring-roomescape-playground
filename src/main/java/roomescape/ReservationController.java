@@ -5,14 +5,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Controller
 public class ReservationController {
-    private final List<Reservation> reservations = new ArrayList<>();
-    private final AtomicLong index = new AtomicLong(0);
+
+    private final ReservationService reservationService;
+
+    public ReservationController(ReservationService reservationService) {
+        this.reservationService = reservationService;
+    }
 
     @GetMapping("/reservation")
     public String reservationPage() {
@@ -22,19 +24,12 @@ public class ReservationController {
     @ResponseBody
     @GetMapping("/reservations")
     public List<Reservation> getReservations() {
-        return reservations;
+        return reservationService.getAllReservations();
     }
 
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservation) {
-        Reservation newReservation = new Reservation(
-                index.incrementAndGet(),
-                reservation.getName(),
-                reservation.getDate(),
-                reservation.getTime()
-        );
-        reservations.add(newReservation);
-
+        Reservation newReservation = reservationService.createReservation(reservation);
         return ResponseEntity
                 .created(URI.create("/reservations/" + newReservation.getId()))
                 .body(newReservation);
@@ -42,8 +37,7 @@ public class ReservationController {
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
-        reservations.removeIf(reservation -> reservation.getId().equals(id));
-
+        reservationService.deleteReservation(id);
         return ResponseEntity.noContent().build();
     }
 }
