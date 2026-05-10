@@ -1,8 +1,9 @@
 package roomescape.domain;
 
+import roomescape.exception.ReservationNotFoundException;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -42,6 +43,6 @@ public class Reservations {
         return reservations.stream()
                 .filter(reservation -> Objects.equals(reservation.getId(), id))
                 .findFirst()
-                .orElseThrow(() -> new NoSuchElementException("해당 ID의 예약을 찾을 수 없습니다: " + id));
+                .orElseThrow(() -> new ReservationNotFoundException(id));
     }
 }
