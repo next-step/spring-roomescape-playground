@@ -3,12 +3,12 @@ package roomescape.dto;
 import jakarta.validation.constraints.NotBlank;
 
 public record ReservationDto(
-        @NotBlank
+        @NotBlank(message = "이름은 비어있으면 안됩니다")
         String name,
 
-        @NotBlank
+        @NotBlank(message = "날짜는 비어있으면 안됩니다")
         String date,
 
-        @NotBlank
+        @NotBlank(message = "시간은 비어있으면 안됩니다")
         String time) {
 }

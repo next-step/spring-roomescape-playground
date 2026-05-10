@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -58,7 +59,7 @@ public class ReservationController {
 
 
     @ExceptionHandler(value = IllegalArgumentException.class)
-    public ResponseEntity<Void> handle(IllegalArgumentException exception) {
+    public ResponseEntity<Void> handleNoReservationToDelete() {
         return ResponseEntity.badRequest().build();
     }
 }
