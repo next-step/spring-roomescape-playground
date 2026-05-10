@@ -37,21 +37,26 @@ public class RoomescapeController {
 
     @GetMapping("/reservations")
     @ResponseBody
-    public List<Reservation> getReservations() {
-        return reservations;
+    public List<ReservationResponse> getReservations() {
+        return reservations.stream()
+                .map(ReservationResponse::from)
+                .toList();
     }
 
     @PostMapping("/reservations")
-    public ResponseEntity<Reservation> addReservation(@RequestBody Reservation request) {
+    public ResponseEntity<ReservationResponse> addReservation(@RequestBody ReservationRequest request) {
         validateDuplicate(request);
 
+        // Request DTO -> Entity 변환
         Reservation newReservation = Reservation.toEntity(request, index.getAndIncrement());
         reservations.add(newReservation);
 
-        return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
+        // Entity -> Response DTO 변환
+        ReservationResponse response = ReservationResponse.from(newReservation);
+        return ResponseEntity.created(URI.create("/reservations/" + response.getId())).body(response);
     }
 
-    private void validateDuplicate(Reservation request) {
+    private void validateDuplicate(ReservationRequest request) {
         boolean isDuplicate = reservations.stream()
                 .anyMatch(it -> it.isSameTime(request.getDate(), request.getTime()));
 
@@ -73,7 +78,7 @@ public class RoomescapeController {
 
     @ExceptionHandler(NotFoundReservationException.class)
     public ResponseEntity<String> handleException(NotFoundReservationException e) {
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
     @ExceptionHandler(InvalidReservationException.class)
     public ResponseEntity<String> handleBadRequest(InvalidReservationException e) {
