@@ -1,13 +1,12 @@
 package roomescape;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
 
-@Controller
+@RestController
 public class ReservationController {
 
     private final ReservationService reservationService;
@@ -21,7 +20,6 @@ public class ReservationController {
         return "reservation";
     }
 
-    @ResponseBody
     @GetMapping("/reservations")
     public List<Reservation> getReservations() {
         return reservationService.getAllReservations();
