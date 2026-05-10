@@ -1,6 +1,9 @@
 package roomescape.model;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +33,6 @@ public class Reservations {
                 .filter(reservation -> deletingId == reservation.id())
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Wrong Index"));
-
         this.reservations.remove(toDelete);
     }
 }

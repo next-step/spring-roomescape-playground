@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -51,7 +52,13 @@ public class ReservationController {
 
     @DeleteMapping("/{deletingId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteReservation(@PathVariable Integer deletingId) {
+    public void deleteReservation(@PathVariable Long deletingId) {
         this.reservations.removeById(deletingId);
+    }
+
+
+    @ExceptionHandler(value = IllegalArgumentException.class)
+    public ResponseEntity<Void> handle(IllegalArgumentException exception) {
+        return ResponseEntity.badRequest().build();
     }
 }
