@@ -13,7 +13,7 @@ import java.util.Map;
 public class IncorrectAttributeError {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleIncorrectAttributes(MethodArgumentNotValidException exception) {
-         Map<String, String> errors = new HashMap<>();
+        Map<String, String> errors = new HashMap<>();
 
         for (FieldError error : exception.getBindingResult().getFieldErrors()) {
             errors.put(error.getField(), error.getDefaultMessage());
