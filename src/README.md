@@ -29,7 +29,7 @@ src/main/java/roomescape/
 1. **DTO 적용 (역할 분리)**: 클라이언트의 요청 데이터를 받는 `ReservationRequest`와 실제 비즈니스 모델인 `Reservation`을 분리하여 API 스펙의 안정성을 높였습니다.
 2. **비즈니스 검증 분리 (`ReservationValidator`)**: 과거 시간 예약 방지, 중복 예약 방지 등 복잡한 비즈니스 규칙을 서비스에서 분리하여 가독성과 유지보수성을 향상시켰습니다.
 3. **전역 예외 처리 (`GlobalExceptionHandler`)**: `@RestControllerAdvice`를 활용하여 애플리케이션 전역에서 발생하는 예외를 중앙 집중식으로 처리하고, 안전한 HTTP 상태 코드(400, 404, 500)를 반환합니다.
-4. **Spring Validation (`@Valid`)**: DTO 레벨에서 누락된 값이나 잘못된 형식(시간, 날짜 정규식)을 스프링의 기본 검증 기능으로 깔끔하게 처리합니다.
+4. **Spring Validation (`@Valid`)**: `ReservationController`에서 `@Valid`를 사용해 `ReservationRequest`의 필수 값과 형식 검증을 수행합니다. 과거 시간 예약 방지와 중복 예약 방지는 `ReservationValidator`에서 별도로 처리합니다.
 
 ---
 
