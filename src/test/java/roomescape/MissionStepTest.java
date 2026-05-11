@@ -28,8 +28,8 @@ public class MissionStepTest {
     void 삼단계() {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
-        params.put("date", "2023-08-05");
-        params.put("time", "15:40");
+        params.put("date", "2099-08-05");
+        params.put("time", "11:40");
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -56,6 +56,21 @@ public class MissionStepTest {
                 .then().log().all()
                 .statusCode(200)
                 .body("size()", is(0));
+    }
+
+    @Test
+    void 예약_시간은_1시부터_12시까지만_가능하다() {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", "브라운");
+        params.put("date", "2099-08-05");
+        params.put("time", "13:40");
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(400);
     }
 
 
