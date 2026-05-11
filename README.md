@@ -1,15 +1,3 @@
-## 인사
-
-안녕하세요 그리드 백엔드 4기 이채현입니다.
-
-과제를 수행하는데, Main을 통해서 실행한 결과 모든 부분이 제대로 작동하는 것을 확인하였으나
-
-테스트 부분에서는
-
-이단계에서는 원래의 이름을 3개 부여받아야하는 상태인 반면
-
-삼단계에서는 생성할때 1개 생성하지 않을때 0개여야 해서 이 부분이 아직도 오류가 발생하고 있습니다.
-
 ## 단계별 설명
 
 ### 1단계
@@ -23,3 +11,28 @@ localhost:8080 요청시, 어드민 메인 페이지가 응답할 수 있어야 
 ### 3단계
 
 /reservations 를 통해 삭제와 추가 구현
+
+### 4단계
+
+- 예약 추가시 필요한 인자값이 비어있는 경우 400에러 출력
+- 삭제 할 예약의 식별자로 저장된 예약을 찾을 수 없는 경우
+
+위 두가지에 대한 오류를 400으로 구현
+
+## 프로젝트 구조
+
+src/main/java/roomescape
+
+```text
+├──controller  
+│  ├──ReservationController.java        # 예약 화면 반환 컨트롤러  
+│  └──HomeController.java               # 홈 화면 반환 컨트롤러  
+├──domain                               
+│  └──Reservation                       # 예약 저장을 위한 domain
+├──exception                                
+│  ├──GlobalExceptionHandler            #공통 예외 핸들러
+│  ├──InvalidReservationException       #예약추가시-인자값이 비어있는경우 예외 case
+│  └──NotFoundReservationException      #예약취소시- 예약을 찾을 수 없는경우 예외 case
+└──RoomescapeApplication        
+'''
+
