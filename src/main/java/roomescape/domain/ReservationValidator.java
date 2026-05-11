@@ -27,7 +27,7 @@ public class ReservationValidator {
         boolean isDuplicated = reservations.stream()
                 .anyMatch(reservation -> 
                     reservation.getDate().equals(request.getDate()) && 
-                    reservation.getTime().equals(request.getTime())
+                    reservation.getTime().getTime().equals(request.getTime())
                 );
 
         if (isDuplicated) {
