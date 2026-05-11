@@ -1,9 +1,11 @@
-package roomescape;
+package roomescape.controller;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import roomescape.Reservation;
+import roomescape.ReservationRequest;
+import roomescape.exception.BadRequestException;
+import roomescape.exception.NotFoundReservationException;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -23,6 +25,9 @@ public class ApiController {
 
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> createReservation(@RequestBody ReservationRequest request) {//reservation객체로 바꿔서 받음
+        if(request.getName().isEmpty() || request.getDate().isEmpty() || request.getTime().isEmpty()){
+            throw new BadRequestException(("필수 입력 값이 누락되었습니다."));
+        }
         Reservation reservation = new Reservation(//새 예약 객체 만듦
                 index.incrementAndGet(), //id를 1 증가시키고 값을 가져옴
                 request.getName(),
@@ -36,8 +41,14 @@ public class ApiController {
     }
 
     @DeleteMapping("/reservations/{id}") //삭제 요청
-    public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {//주소에 있는 id값을 꺼내서 변수 id에 넣음
-        reservations.removeIf(reservation -> reservation.getId().equals(id));
+    public ResponseEntity<Void> deleteReservation(@PathVariable Long id){//주소에 있는 id값을 꺼내서 변수 id에 넣음
+        Reservation reservation = reservations.stream()
+                        .filter(it -> it.getId().equals(id))
+                                .findFirst()
+                                        .orElseThrow(() -> new NotFoundReservationException("삭제할 예약을 찾을 수 없습니다."));
+
+
+        reservations.remove(reservation);
         return ResponseEntity.noContent().build(); //삭제 성공 후 응답 보내기. 204 no content 상태 코드를 반환
     }
 }
