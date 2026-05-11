@@ -21,7 +21,7 @@ public class ReservationService {
     }
 
     public List<Reservation> getAllReservations() {
-        return List.copyOf(reservations);
+        return reservations;
     }
 
     public Reservation createReservation(ReservationRequest request) {
