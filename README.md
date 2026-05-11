@@ -67,35 +67,67 @@ HTTP/1.1 204 No Content
 - [x] 아래의 API 명세를 따라 예약 관리 페이지 로드 시 호출되는 예약 목록 조회 API도 함께 구현하세요.
 - [x] API 명세를 따라 예약 추가 API 와 삭제 API를 구현하세요.
 - [x] 아래 화면에서 예약 추가와 취소가 잘 동작해야합니다.
+- [x] 예약 관련 API 호출 시 에러가 발생하는 경우 중 요청의 문제인 경우 Status Code를 400으로 응답하세요.
 
 ## 클래스 정리
 
 ### Reservation
 
-예약 정보를 저장한다.
+예약 정보를 담당하는 도메인 모델로, 데이터 저장뿐만 아니라 데이터의 유효성 검증을 스스로 수행한다. id 기반의 equals/hashCode를 통해 객체의 식별성을 보장한다.
 
-#### toEntity
+#### validate
+생성 시점에 이름, 날짜, 시간의 누락 여부를 확인하고, 과거 날짜나 이미 지난 시간으로 예약하는 것을 방지한다.
 
-Reservation과 id를 받았을때 Reservation 관련 정보(id, name, date, time)을 반환한다.
+#### toEntity (Static Factory Method)
+ReservationRequest 정보와 새로운 id를 받았을 때, 이를 조합하여 비즈니스 로직(validate)이 검증된 완전한 Reservation 엔티티 객체를 생성하고 반환한다.
+
+#### isSameTime
+외부에서 데이터를 꺼내지 않고도, 특정 날짜와 시간이 자신의 예약 정보와 일치하는지 확인한다. (Tell, Don't Ask)
+
+### ReservationRequest
+
+클라이언트의 요청 데이터를 담는 DTO로, 엔티티와 정체성을 분리하여 id가 없는 상태의 데이터를 관리한다.
+
+### ReservationResponse
+
+클라이언트에게 전달할 응답 데이터를 담는 DTO로, @JsonFormat 등을 통해 노출할 데이터의 형식을 제어한다.
 
 ### RoomescapeController
 
-#### showHomePage
-home.html 화면을 보여준다.
-
-#### showReservationPage
-reservation.html 화면을 보여준다.
+#### showHomePage / showReservationPage
+각각 home.html, reservation.html 화면을 보여준다.
 
 #### getReservations
-전체 예약 목록을 반환한다.
+전체 예약 목록을 ReservationResponse로 변환하여 반환한다.
 
 #### addReservation
-예약을 추가하고, 생성된 예약을 반환한다.
-- 생성된 예약의 URI: /reservations/{id}
+예약을 추가하고, 생성된 예약 정보를 반환한다.
+- validateDuplicate를 호출하여 중복 예약을 먼저 확인한다.
+- Reservation.toEntity를 통해 객체를 생성하며, 이 과정에서 유효성 검증 실패 시 예외가 발생한다.
+- 성공 시 201 Created 코드와 Location 헤더를 포함하여 응답한다.
 
 #### deleteReservation
 id에 해당하는 예약을 삭제한다.
-- 해당 id의 예약이 없으면 RuntimeException을 던진다.
+- 해당 id의 예약이 리스트에 없으면 NotFoundReservationException을 던진다.
+- 성공 시 204 No Content를 반환한다.
+
+#### handleException
+발생한 커스텀 예외들을 잡아 적절한 HTTP 상태 코드와 함께 에러 메시지를 바디(Body)에 담아 응답한다.
+
+### NotFoundReservationException
+요청한 리소스를 찾을 수 없을 때 사용하는 커스텀 Exception
+→ 삭제할 예약이 존재하지 않을 때 던지며, 404 Not Found로 응답한다.
+
+### InvalidReservationException
+입력된 데이터가 비즈니스 규칙에 어긋나거나 필수 값이 누락되었을 때 사용하는 커스텀 Exception
+→ 과거 날짜 예약이나 값 누락 시 던지며, 400 Bad Request로 응답한다.
+
+### ReservationConflictException
+서버의 현재 데이터 상태와 충돌이 발생했을 때 사용하는 커스텀 Exception
+→ 이미 동일한 시간에 예약이 존재할 때 던지며, 409 Conflict로 응답한다.
 
 ## 예외 처리
-해당 id의 예약이 없을 때
+- 삭제하려는 해당 id의 예약이 존재하지 않을 때 (404)
+- 예약 정보 중 필수 값(이름, 날짜, 시간)이 누락되었을 때 (400)
+- 과거 날짜나 이미 지난 시간으로 예약을 시도할 때 (400)
+- 이미 예약된 시간에 중복 예약을 시도할 때 (409)
