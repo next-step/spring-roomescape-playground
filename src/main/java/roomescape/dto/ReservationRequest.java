@@ -15,6 +15,6 @@ public class ReservationRequest {
     private String date;
 
     @NotBlank(message = "시간은 필수 입력값입니다.")
-    @Pattern(regexp = "^([01]?\\d|2[0-3]):[0-5]\\d$", message = "시간은 HH:mm 형식이어야 합니다. (예: 15:40)")
+    @Pattern(regexp = "^(0?[1-9]|1[0-2]):[0-5]\\d$", message = "시간은 1시부터 12시 사이여야 합니다. (예: 01:40)")
     private String time;
 }
