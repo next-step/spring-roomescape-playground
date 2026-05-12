@@ -12,7 +12,8 @@ public class Reservation {
     private int reservationId;
     private String nameOfUser;
     @JsonIgnore
-    private LocalDateTime dateTime;;
+    private LocalDateTime dateTime;
+    ;
 
     @JsonCreator
     public Reservation(
@@ -36,11 +37,27 @@ public class Reservation {
         this.dateTime = dateTime;
     }
 
-    public static Reservation createNewReservation(int id, String name, LocalDateTime dateTime){
-        checkValidId(id);
-        checkValidName(name);
-        checkValidDateTime(dateTime);
-        return new Reservation(id, name, dateTime);
+    private static void checkValidId(int id) {
+        if (id <= 0) {
+            throw new IllegalArgumentException("id는 자연수여야 합니다.");
+        }
+    }
+
+    private static void checkValidName(String nameOfUser) {
+        if (nameOfUser == null || nameOfUser.isBlank()) {
+            throw new IllegalArgumentException("이름이 비었습니다.");
+        }
+    }
+
+    private static void checkValidDateTime(LocalDateTime dateTime) {
+        if (dateTime == null) {
+            throw new IllegalArgumentException("날짜가 비었습니다.");
+        }
+
+        LocalDateTime now = LocalDateTime.now();
+        if (dateTime.isBefore(now)) {
+            throw new IllegalArgumentException("이미 지난 날짜입니다.");
+        }
     }
 
     @JsonProperty("date")
@@ -64,31 +81,8 @@ public class Reservation {
     public LocalDateTime getDateTime() {
         return dateTime;
     }
-    
+
     public boolean isSameTime(LocalDateTime date) {
         return this.dateTime.equals(date);
-    }
-
-    private static void checkValidId(int id){
-        if (id <= 0){
-            throw new IllegalArgumentException("id는 자연수여야 합니다.");
-        }
-    }
-
-    private static void checkValidName(String nameOfUser){
-        if (nameOfUser == null || nameOfUser.isBlank()){
-            throw new IllegalArgumentException("이름이 비었습니다.");
-        }
-    }
-    
-    private static void checkValidDateTime(LocalDateTime dateTime){
-        if (dateTime == null){
-            throw new IllegalArgumentException("날짜가 비었습니다.");
-        }
-
-        LocalDateTime now = LocalDateTime.now();
-        if (dateTime.isBefore(now)){
-            throw new IllegalArgumentException("이미 지난 날짜입니다.");
-        }
     }
 }

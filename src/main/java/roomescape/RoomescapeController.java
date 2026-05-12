@@ -1,11 +1,11 @@
 package roomescape;
 
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,8 +18,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @Controller
 public class RoomescapeController {
 
-    private final List<Reservation> reservations = new ArrayList<>();
-    private final AtomicInteger index = new AtomicInteger(0);
+    private final JdbcTemplate jdbcTemplate;
+
+    public RoomescapeController(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     @GetMapping("/")
     public String showPage() {
@@ -34,41 +37,59 @@ public class RoomescapeController {
     @GetMapping("/reservations")
     @ResponseBody
     public ResponseEntity<List<Reservation>> showAllReservations() {
-        return ResponseEntity.ok(reservations);
+        String sqlQuery = "SELECT * from Reservations";
+        List<Reservation> reservations = jdbcTemplate.query(
+                sqlQuery, (resultSet, rowNum) -> {
+                    Reservation reservation = new Reservation(
+                            resultSet.getInt("id"),
+                            resultSet.getString("name"),
+                            resultSet.getTimestamp("datetime").toLocalDateTime()
+                    );
+                    return reservation;
+                });
+        return ResponseEntity.ok().body(reservations);
     }
 
     @PostMapping("/reservations")
     @ResponseBody
     public ResponseEntity<Reservation> createReservation(@RequestBody Reservation request) {
-
-        checkDuplicateException(request);
-
-        Reservation reservationOfClient = Reservation.createNewReservation(
-                index.incrementAndGet(),
-                request.getName(),
-                request.getDateTime()
+        String selectQuery = "SELECT datetime from Reservations";
+        List<LocalDateTime> ReservationsTime = jdbcTemplate.query(
+                selectQuery, (resultSet, rowNum) -> resultSet.getObject("datetime", LocalDateTime.class)
         );
+        checkDuplicateException(request.getDateTime(), ReservationsTime);
+
+        String sqlQuery = "INSERT INTO Reservations(name, datetime) VALUES (?, ?)";
+        jdbcTemplate.update(sqlQuery, request.getName(), request.getDateTime());
+
+        sqlQuery = "SELECT * FROM Reservations ORDER BY id DESC LIMIT 1";
+        Reservation reservation = jdbcTemplate.queryForObject(sqlQuery, (rs, rowNum) ->
+                new Reservation(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getTimestamp("datetime").toLocalDateTime()
+                )
+        );
+
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Location", "/reservations/" + reservationOfClient.getId());
-        reservations.add(reservationOfClient);
-        return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(reservationOfClient);
+        headers.add("Location", "/reservations/" + reservation.getId());
+        return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(reservation);
     }
 
     @DeleteMapping("/reservations/{id}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void deleteReservation(@PathVariable int id) {
-        Reservation reservation = reservations.stream()
-                .filter(res -> res.getId() == id)
-                .findFirst()
-                .orElseThrow(
-                        () -> new ReservationException.NotFoundReservationException("ID " + id + "번 예약을 찾을 수 없습니다."));
+        String sqlQuery = "DELETE FROM Reservations WHERE id = ?";
+        int deletedRows = jdbcTemplate.update(sqlQuery, id);
+        if (deletedRows == 0) {
+            throw new ReservationException.NotFoundReservationException("해당 예약이 존재하지 않습니다.");
+        }
 
-        reservations.remove(reservation);
     }
 
-    private void checkDuplicateException(Reservation request) {
-        boolean isDuplicate = reservations.stream()
-                .anyMatch(res -> res.isSameTime(request.getDateTime()));
+    private void checkDuplicateException(LocalDateTime request, List<LocalDateTime> reservationList) {
+        boolean isDuplicate = reservationList.stream()
+                .anyMatch(res -> res.isEqual(request));
 
         if (isDuplicate) {
             throw new ReservationException.DuplicateTimeException();
