@@ -26,7 +26,7 @@ public class Reservation {
         LocalDateTime endTime = dateTime.plusMinutes(RESERVATION_LENGTH_MINUTES);
         LocalDateTime newEndTime = newReservation.dateTime.plusMinutes(RESERVATION_LENGTH_MINUTES);
 
-        return endTime.isAfter(newReservation.dateTime) || dateTime.isBefore(newEndTime);
+        return endTime.isAfter(newReservation.dateTime) && dateTime.isBefore(newEndTime);
     }
 
     private void validate(LocalDateTime dateTime) {
