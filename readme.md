@@ -1,65 +1,12 @@
-## Reservation System
+## 방탈출 공간 예약 사용 설명서
 
---- 
-### GET
+### 예약 방법
 
-```
-   GET /reservations HTTP/1.1
-```
-- Response
-  ```
-    HTTP/1.1 200 
-    Content-Type: application/json
-    
-    [
-    {
-    "id": 1,
-    "name": "브라운",
-    "date": "2023-01-01",
-    "time": "10:00"
-    },
-    {
-    "id": 2,
-    "name": "브라운",
-    "date": "2023-01-02",
-    "time": "11:00"
-    }
-    ]
-  ``` 
-  
----
-### POST
-```
-   POST /reservations HTTP/1.1
-    // 데이터
-    content-type: application/json
+- 예약자명, 예약 날짜, 예약 시간을 기입하고 버튼을 누른다.
 
-{
-    "date": "2023-08-05",
-    "name": "브라운",
-    "time": "15:40"
-}
-```
-- Response
-   ```
-    HTTP/1.1 201 
-    Location: /reservations/1
-    Content-Type: application/json
-    
-    {
-    "id": 1,
-    "name": "브라운",
-    "date": "2023-08-05",
-    "time": "15:40"
-    }
-   ```
-          
---- 
-### DELETE
-```
-DELETE /reservations/1 HTTP/1.1
-```
-- Response
-  ```
-  HTTP/1.1 204 No Content
-  ```
+### 공간 예약 시 주의점
+
+- 현재 시간보다 이전의 시간은 예약할 수 없다.
+- 기존에 예약된 시간이 있는 경우엔 예약할 수 없다.
+- 예약 번호는 예약 시간 순서와 관계없이 매겨진다.
+- 예약하고자 하는 값이 비어 있을 경우 예약되지 않는다.
