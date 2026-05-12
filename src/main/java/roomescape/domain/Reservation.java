@@ -1,7 +1,7 @@
 package roomescape.domain;
 
 import java.time.LocalDateTime;
-import roomescape.exceptions.PastDateTimeException;
+import roomescape.exception.customexception.PastDateTimeException;
 
 public class Reservation {
     private static final int RESERVATION_LENGTH_MINUTES = 60;

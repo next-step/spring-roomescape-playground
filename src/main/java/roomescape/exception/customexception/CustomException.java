@@ -1,6 +1,6 @@
-package roomescape.exceptions;
+package roomescape.exception.customexception;
 
-import roomescape.ErrorCode;
+import roomescape.exception.model.ErrorCode;
 
 public class CustomException extends RuntimeException {
     private final ErrorCode errorCode;

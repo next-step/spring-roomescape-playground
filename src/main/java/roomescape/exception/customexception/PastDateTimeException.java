@@ -1,6 +1,6 @@
-package roomescape.exceptions;
+package roomescape.exception.customexception;
 
-import roomescape.ErrorCode;
+import roomescape.exception.model.ErrorCode;
 
 public class PastDateTimeException extends CustomException {
     public PastDateTimeException() {

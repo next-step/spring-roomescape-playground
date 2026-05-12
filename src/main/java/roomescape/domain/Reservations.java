@@ -6,8 +6,8 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 import roomescape.dto.ReservationRequest;
 import roomescape.dto.ReservationResponse;
-import roomescape.exceptions.AlreadyReservedException;
-import roomescape.exceptions.ReservationNotFoundException;
+import roomescape.exception.customexception.AlreadyReservedException;
+import roomescape.exception.customexception.ReservationNotFoundException;
 
 public class Reservations {
     private final List<Reservation> reservations = new ArrayList<>();

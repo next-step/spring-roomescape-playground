@@ -1,4 +1,4 @@
-package roomescape;
+package roomescape.exception.handler;
 
 import java.util.Optional;
 import org.springframework.http.HttpStatus;
@@ -7,7 +7,8 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import roomescape.exceptions.CustomException;
+import roomescape.exception.customexception.CustomException;
+import roomescape.exception.model.ErrorCode;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
