@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +27,11 @@ public class RoomescapeController {
 
     private List<Reservation> reservations = new ArrayList<>();
     private AtomicLong index = new AtomicLong(1);
+    private final JdbcTemplate jdbcTemplate;
+
+    public RoomescapeController(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     @GetMapping("/reservation")
     public String showReservationPage() {
@@ -35,6 +41,15 @@ public class RoomescapeController {
     @GetMapping("/reservations")
     @ResponseBody
     public List<ReservationResponse> showReservations() {
+        String sql = "SELECT id, name, date, time FROM reservation";
+        List<Reservation> reservations = jdbcTemplate.query(sql, (rs, rowNum) ->
+                new Reservation(
+                        rs.getLong("id"),
+                        rs.getString("name"),
+                        rs.getDate("date").toLocalDate(),
+                        rs.getTime("time").toLocalTime()
+                ));
+
         return reservations.stream()
                 .map(ReservationResponse::from)
                 .toList();
