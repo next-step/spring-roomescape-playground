@@ -20,7 +20,7 @@ public record ReservationRequest(
         @JsonFormat(shape = Shape.STRING, pattern = "HH:mm")
         @NotNull(message = "예약 시간이 비어 있을 수 없습니다.")
         LocalTime time) {
-    public Reservation toReservation(Long id) {
-        return new Reservation(id, name, LocalDateTime.of(date, time));
+    public Reservation toReservation() {
+        return new Reservation(name, LocalDateTime.of(date, time));
     }
 }

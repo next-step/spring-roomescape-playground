@@ -1,9 +1,6 @@
 package roomescape.service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import roomescape.domain.Reservation;
@@ -16,8 +13,6 @@ import roomescape.repository.ReservationRepository;
 @Service
 public class ReservationService {
     private final ReservationRepository reservationRepository;
-    private final List<Reservation> reservations = new ArrayList<>();
-    private final AtomicLong idCounter = new AtomicLong(1);
 
     @Autowired
     public ReservationService(ReservationRepository reservationRepository) {
@@ -25,10 +20,10 @@ public class ReservationService {
     }
 
     public ReservationResponse createReservation(ReservationRequest reservationRequest) {
-        Reservation reservation = reservationRequest.toReservation(nextId());
+        Reservation reservation = reservationRequest.toReservation();
         checkConflict(reservation);
-        reservations.add(reservation);
-        return ReservationResponse.fromReservation(reservation);
+        Reservation createdReservation = reservationRepository.saveReservation(reservation);
+        return ReservationResponse.fromReservation(createdReservation);
     }
 
     public List<ReservationResponse> readAllReservations() {
@@ -39,21 +34,16 @@ public class ReservationService {
     }
 
     public void deleteReservation(Long id) {
-        Reservation reservation = reservations.stream()
-                .filter(it -> Objects.equals(it.getId(), id))
-                .findFirst()
-                .orElseThrow(ReservationNotFoundException::new);
-        reservations.remove(reservation);
-    }
-
-    private void checkConflict(Reservation newReservation) {
-        if (reservations.stream().anyMatch(reservation -> reservation.conflicts(newReservation))) {
-            idCounter.decrementAndGet();
-            throw new AlreadyReservedException();
+        int affectedRows = reservationRepository.deleteReservationById(id);
+        if (affectedRows == 0) {
+            throw new ReservationNotFoundException();
         }
     }
 
-    private Long nextId() {
-        return idCounter.getAndIncrement();
+    private void checkConflict(Reservation newReservation) {
+        if (reservationRepository.findAllReservations().stream()
+                .anyMatch(reservation -> reservation.conflicts(newReservation))) {
+            throw new AlreadyReservedException();
+        }
     }
 }

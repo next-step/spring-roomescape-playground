@@ -6,9 +6,14 @@ import roomescape.exception.customexception.PastDateTimeException;
 public class Reservation {
     private static final int RESERVATION_LENGTH_MINUTES = 60;
 
-    private final Long id;
-    private final String name;
-    private final LocalDateTime dateTime;
+    private Long id;
+    private String name;
+    private LocalDateTime dateTime;
+
+    public Reservation(String name, LocalDateTime dateTime) {
+        this.name = name;
+        this.dateTime = dateTime;
+    }
 
     public Reservation(Long id, String name, LocalDateTime dateTime) {
         validate(dateTime);
