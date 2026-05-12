@@ -1,7 +1,6 @@
 package roomescape;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
 import io.restassured.RestAssured;
@@ -90,7 +89,8 @@ public class MissionStepTest {
                 .when().post("/reservations")
                 .then().log().all()
                 .statusCode(400)
-                .body(equalTo("이름이 비어 있을 수 없습니다."));
+                .body("detail", is("필드 값 검증에 실패했습니다."))
+                .body("messages", is(List.of("이름이 비어 있을 수 없습니다.")));
     }
 
     @Test
@@ -106,7 +106,8 @@ public class MissionStepTest {
                 .when().post("/reservations")
                 .then().log().all()
                 .statusCode(400)
-                .body(equalTo("예약 날짜가 비어 있을 수 없습니다."));
+                .body("detail", is("필드 값 검증에 실패했습니다."))
+                .body("messages", is(List.of("예약 날짜가 비어 있을 수 없습니다.")));
 
         params.clear();
         params.put("name", "브라운");
@@ -119,7 +120,8 @@ public class MissionStepTest {
                 .when().post("/reservations")
                 .then().log().all()
                 .statusCode(400)
-                .body(equalTo("예약 시간이 비어 있을 수 없습니다."));
+                .body("detail", is("필드 값 검증에 실패했습니다."))
+                .body("messages", is(List.of("예약 시간이 비어 있을 수 없습니다.")));
     }
 
     @Test
@@ -143,8 +145,8 @@ public class MissionStepTest {
                 .body(params)
                 .when().post("/reservations")
                 .then().log().all()
-                .statusCode(400)
-                .body(equalTo("기존 예약과 시간이 겹칩니다."));
+                .statusCode(409)
+                .body("detail", is("기존 예약과 시간이 겹칩니다."));
     }
 
     @Test
@@ -160,7 +162,7 @@ public class MissionStepTest {
                 .when().post("/reservations")
                 .then().log().all()
                 .statusCode(400)
-                .body(equalTo("과거 시간을 예약할 수 없습니다."));
+                .body("detail", is("과거 시간을 예약할 수 없습니다."));
     }
 
     @Test
@@ -169,7 +171,7 @@ public class MissionStepTest {
                 .when().delete("/reservations/1")
                 .then().log().all()
                 .statusCode(404)
-                .body(equalTo("해당 예약을 찾을 수 없습니다."));
+                .body("detail", is("해당 예약을 찾을 수 없습니다."));
     }
 
     @Autowired
