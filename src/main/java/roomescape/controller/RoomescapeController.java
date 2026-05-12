@@ -2,14 +2,16 @@ package roomescape.controller;
 
 import jakarta.validation.Valid;
 import java.net.URI;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,16 +19,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
+import roomescape.domain.Reservation;
 import roomescape.dto.ReservationRequest;
 import roomescape.dto.ReservationResponse;
-import roomescape.domain.Reservation;
 import roomescape.exception.BadRequestException;
 
 @Controller
 public class RoomescapeController {
 
-    private List<Reservation> reservations = new ArrayList<>();
-    private AtomicLong index = new AtomicLong(1);
     private final JdbcTemplate jdbcTemplate;
 
     public RoomescapeController(JdbcTemplate jdbcTemplate) {
@@ -42,13 +42,15 @@ public class RoomescapeController {
     @ResponseBody
     public List<ReservationResponse> showReservations() {
         String sql = "SELECT id, name, date, time FROM reservation";
+
         List<Reservation> reservations = jdbcTemplate.query(sql, (rs, rowNum) ->
                 new Reservation(
                         rs.getLong("id"),
                         rs.getString("name"),
-                        rs.getDate("date").toLocalDate(),
-                        rs.getTime("time").toLocalTime()
-                ));
+                        LocalDate.parse(rs.getString("date")),
+                        LocalTime.parse(rs.getString("time"))
+                )
+        );
 
         return reservations.stream()
                 .map(ReservationResponse::from)
@@ -59,8 +61,21 @@ public class RoomescapeController {
     @ResponseBody
     public ResponseEntity<ReservationResponse> addReservation(@RequestBody @Valid ReservationRequest request) {
         validateReservationDateTime(request.date(), request.time());
+        validateDuplicate(request.date(), request.time());
 
-        Long id = index.getAndIncrement();
+        String sql = "INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)";
+
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, request.name());
+            ps.setString(2, request.date().toString());
+            ps.setString(3, request.time().toString());
+            return ps;
+        }, keyHolder);
+
+        Long id = keyHolder.getKey().longValue();
 
         Reservation reservation = new Reservation(
                 id,
@@ -69,31 +84,35 @@ public class RoomescapeController {
                 request.time()
         );
 
-        validateDuplicate(reservation);
-        reservations.add(reservation);
-
         return ResponseEntity
-                .created(URI.create("/reservations/" + reservation.getId()))
+                .created(URI.create("/reservations/" + id))
                 .body(ReservationResponse.from(reservation));
     }
 
     @DeleteMapping("/reservations/{id}")
-    public  ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
-        boolean removed = reservations.removeIf(reservation -> reservation.getId().equals(id));
+    public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
+        String sql = "DELETE FROM reservation WHERE id = ?";
 
-        if (!removed) {
+        int deletedCount = jdbcTemplate.update(sql, id);
+
+        if (deletedCount == 0) {
             throw new BadRequestException("예약번호가 " + id + "인 예약은 존재하지 않습니다.");
         }
 
         return ResponseEntity.noContent().build();
     }
 
-    private void validateDuplicate(Reservation reservation) {
-        boolean duplicated = reservations.stream()
-                .anyMatch(savedReservation ->
-                        savedReservation.isSameSchedule(reservation));
+    private void validateDuplicate(LocalDate date, LocalTime time) {
+        String sql = "SELECT COUNT(*) FROM reservation WHERE date = ? AND time = ?";
 
-        if (duplicated) {
+        Integer count = jdbcTemplate.queryForObject(
+                sql,
+                Integer.class,
+                date.toString(),
+                time.toString()
+        );
+
+        if (count > 0) {
             throw new BadRequestException("이미 예약된 날짜와 시간입니다.");
         }
     }
