@@ -13,7 +13,6 @@ public class Reservation {
     private String nameOfUser;
     @JsonIgnore
     private LocalDateTime dateTime;
-    ;
 
     @JsonCreator
     public Reservation(
@@ -21,13 +20,13 @@ public class Reservation {
             @JsonProperty("date") LocalDate date,
             @JsonProperty("time") LocalTime time
     ) {
-        LocalDateTime dt = LocalDateTime.of(date, time);
+        LocalDateTime dateTime = LocalDateTime.of(date, time);
 
         checkValidName(name);
-        checkValidDateTime(dt);
+        checkValidDateTime(dateTime);
 
         this.nameOfUser = name;
-        this.dateTime = dt;
+        this.dateTime = dateTime;
         this.reservationId = 0;
     }
 
