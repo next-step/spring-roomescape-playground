@@ -1,6 +1,8 @@
 package roomescape;
 
 import java.net.URI;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -9,6 +11,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +25,11 @@ public class ReservationController {
     private static final Logger log = LoggerFactory.getLogger(ReservationController.class);
     private final List<Reservation> reservations = Collections.synchronizedList(new ArrayList<>());
     private final AtomicLong index = new AtomicLong(1);
+    private final JdbcTemplate jdbcTemplate;
+
+    public ReservationController(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> create(@RequestBody Reservation reservation) {
@@ -42,10 +50,22 @@ public class ReservationController {
 
     @GetMapping("/reservations")
     public ResponseEntity<List<Reservation.Response>> readAll() {
-        log.info("전체 예약 조회 요청");
-        List<Reservation.Response> responseList = reservations.stream()
-                .map(Reservation.Response::new)
-                .toList();
+        log.info("전체 예약 조회 요청 (DB 연동)");
+
+        String sql = "SELECT id, name, date, time FROM reservation";
+
+        List<Reservation.Response> responseList = jdbcTemplate.query(
+                sql,
+                (rs, rowNum) -> {
+                    Reservation reservation = new Reservation(
+                            rs.getLong("id"),
+                            rs.getString("name"),
+                            LocalDate.parse(rs.getString("date")),
+                            LocalTime.parse(rs.getString("time"))
+                    );
+                    return new Reservation.Response(reservation);
+                }
+        );
 
         return ResponseEntity.ok(responseList);
     }
