@@ -10,12 +10,13 @@ import roomescape.exception.NotFoundReservationException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicLong;
 
 @RestController
 public class ApiController {
 
-    private final List<Reservation> reservations = new ArrayList<>();
+    private final List<Reservation> reservations = new CopyOnWriteArrayList<>();
     private final AtomicLong index = new AtomicLong(0);
 
     @GetMapping("/reservations")
