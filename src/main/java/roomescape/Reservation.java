@@ -19,7 +19,7 @@ public class Reservation {
     }
 
     public Reservation(Long id, String name, LocalDate date, LocalTime time) {
-        validate(name, date, time);
+        validateBasic(name, date, time);
         this.id = id;
         this.name = name;
         this.date = date;
@@ -27,19 +27,20 @@ public class Reservation {
     }
 
     public Reservation(String name, LocalDate date, LocalTime time) {
-        validate(name, date, time);
+        validateBasic(name, date, time);
+
+        if (date.isBefore(LocalDate.now())) {
+            throw new InvalidReservationException("과거 날짜로는 예약할 수 없습니다.");
+        }
+
         this.name = name;
         this.date = date;
         this.time = time;
     }
 
-    private void validate(String name, LocalDate date, LocalTime time) {
+    private void validateBasic(String name, LocalDate date, LocalTime time) {
         if (name == null || name.isBlank() || date == null || time == null) {
             throw new InvalidReservationException("필수 예약 정보가 누락되었습니다.");
-        }
-
-        if (date.isBefore(LocalDate.now())) {
-            throw new InvalidReservationException("과거 날짜로는 예약할 수 없습니다.");
         }
     }
 
