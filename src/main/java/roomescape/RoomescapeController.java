@@ -54,10 +54,10 @@ public class RoomescapeController {
     @ResponseBody
     public ResponseEntity<Reservation> createReservation(@RequestBody Reservation request) {
         String selectQuery = "SELECT datetime from Reservations";
-        List<LocalDateTime> ReservationsTime = jdbcTemplate.query(
+        List<LocalDateTime> reservationTime = jdbcTemplate.query(
                 selectQuery, (resultSet, rowNum) -> resultSet.getObject("datetime", LocalDateTime.class)
         );
-        checkDuplicateException(request.getDateTime(), ReservationsTime);
+        checkDuplicateException(request.getDateTime(), reservationTime);
 
         String sqlQuery = "INSERT INTO Reservations(name, datetime) VALUES (?, ?)";
         jdbcTemplate.update(sqlQuery, request.getName(), request.getDateTime());
