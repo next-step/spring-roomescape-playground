@@ -1,37 +1,39 @@
 package roomescape.domain;
 
+import org.springframework.stereotype.Component;
 import roomescape.exception.ReservationNotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicLong;
 
+@Component
 public class Reservations {
     private final List<Reservation> reservations;
+    private final AtomicLong index;
 
     public Reservations() {
         this.reservations = new CopyOnWriteArrayList<>(new ArrayList<>());
+        index = new AtomicLong(reservations.size() + 1);
     }
 
     private Reservations(List<Reservation> reservations) {
         this.reservations = new CopyOnWriteArrayList<>(reservations);
-    }
-
-    public static Reservations from(List<Reservation> reservations) {
-        return new Reservations(reservations);
+        index = new AtomicLong(reservations.size() + 1);
     }
 
     public List<Reservation> getReservations() {
         return List.copyOf(reservations);
     }
 
-    public int getReservationCount() {
-        return reservations.size();
-    }
+    public Reservation addReservation(Reservation validatedReservation) {
+        Long id = index.getAndIncrement();
+        Reservation reservation = Reservation.withId(validatedReservation, id);
+        this.reservations.add(reservation);
 
-    public void addReservation(Reservation reservation) {
-        reservations.add(reservation);
+        return reservation;
     }
 
     public void deleteReservationById(Long id) {
