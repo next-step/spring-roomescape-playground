@@ -36,12 +36,6 @@ public class Reservation {
         this.dateTime = dateTime;
     }
 
-    private static void checkValidId(int id) {
-        if (id <= 0) {
-            throw new IllegalArgumentException("id는 자연수여야 합니다.");
-        }
-    }
-
     private static void checkValidName(String nameOfUser) {
         if (nameOfUser == null || nameOfUser.isBlank()) {
             throw new IllegalArgumentException("이름이 비었습니다.");
@@ -79,9 +73,5 @@ public class Reservation {
 
     public LocalDateTime getDateTime() {
         return dateTime;
-    }
-
-    public boolean isSameTime(LocalDateTime date) {
-        return this.dateTime.equals(date);
     }
 }
