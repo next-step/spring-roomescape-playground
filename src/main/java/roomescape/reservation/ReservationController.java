@@ -1,14 +1,16 @@
 package roomescape.reservation;
 
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import roomescape.reservation.domain.Reservation;
 import roomescape.reservation.domain.ReservationId;
-import roomescape.reservation.domain.ReservationList;
 
 import java.net.URI;
 import java.util.Collection;
+import roomescape.reservation.dto.ReservationRequest;
+
 @Controller
 public class ReservationController {
 	private final ReservationRepository reservationRepository;
@@ -28,8 +30,11 @@ public class ReservationController {
 	}
 
 	@PostMapping("/reservations")
-	public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservation) {
-		Reservation newReservation = reservationRepository.save(reservation);
+	public ResponseEntity<Reservation> createReservation(
+		@Valid @RequestBody ReservationRequest request
+	) {
+
+		Reservation newReservation = reservationRepository.save(request.toReservation());
 		
 		return ResponseEntity
 				.created(URI.create("/reservations/" + newReservation.getId()))
