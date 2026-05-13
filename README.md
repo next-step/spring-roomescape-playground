@@ -73,3 +73,9 @@ Content-Type: application/json
 ```http request
 HTTP/1.1 204 No Content
 ```
+
+## 기술 스택
+
+- Spring Boot
+- JdbcTemplate
+- H2 Database
