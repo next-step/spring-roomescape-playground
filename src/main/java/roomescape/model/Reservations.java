@@ -1,6 +1,7 @@
 package roomescape.model;
 
 import org.springframework.stereotype.Repository;
+import roomescape.model.errors.ReservationNotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +30,7 @@ public class Reservations {
         Reservation toDelete = this.reservations.stream()
                 .filter(reservation -> deletingId == reservation.id())
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Wrong Index"));
+                .orElseThrow(ReservationNotFoundException::new);
         this.reservations.remove(toDelete);
     }
 }
