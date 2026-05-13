@@ -1,24 +1,26 @@
 package roomescape.controller;
 
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import roomescape.domain.Reservation;
+import roomescape.dto.request.ReservationCreateRequest;
+import roomescape.dto.response.ReservationCreateResponse;
+import roomescape.dto.response.ReservationGetResponse;
 import roomescape.exception.NotFoundReservationException;
 
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Controller
 public class ReservationController {
     private final List<Reservation> reservations = new ArrayList<>();
     private final AtomicLong index = new AtomicLong(1);
-
-    public ReservationController() {
-    }
 
     @GetMapping("/reservation")
     public String reservationPage() {
@@ -27,24 +29,31 @@ public class ReservationController {
 
     @GetMapping("/reservations")
     @ResponseBody
-    public List<Reservation> getReservations() {
-        return reservations;
+    public List<ReservationGetResponse> getReservations() {
+        return reservations.stream()
+                .map(it -> ReservationGetResponse.builder()
+                        .id(it.getId())
+                        .name(it.getName())
+                        .date(it.getDate())
+                        .time(it.getTime())
+                        .build())
+                .toList();
     }
 
     @PostMapping("/reservations")
-    public ResponseEntity<Reservation> add(@RequestBody Reservation reservation) {
-        if (reservation.getName().isBlank() || reservation.getDate().isBlank() || reservation.getTime().isBlank()) {
-            throw new IllegalArgumentException("name, date, time은 필수입니다.");
-        }
+    public ResponseEntity<ReservationCreateResponse> add(@RequestBody @Valid ReservationCreateRequest reservationCreateRequest) {
+        Long newId = index.getAndIncrement();
+        Reservation newReservation = reservationCreateRequest.toEntity(newId);
 
-        Reservation newReservation = Reservation.toEntity(reservation, index.getAndIncrement());
         reservations.add(newReservation);
-        return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
+
+        ReservationCreateResponse response = ReservationCreateResponse.from(newReservation);
+
+        return ResponseEntity.created(URI.create("/reservations/" + response.getId())).body(response);
     }
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-
         Reservation removeTarget = reservations.stream()
                 .filter(it -> Objects.equals(it.getId(), id))
                 .findFirst()
@@ -55,8 +64,18 @@ public class ReservationController {
         return ResponseEntity.noContent().build();
     }
 
-    @ExceptionHandler({NotFoundReservationException.class, IllegalArgumentException.class})
-    public ResponseEntity<Void> handleException(Exception e) {
-        return ResponseEntity.badRequest().build();
+    @ExceptionHandler(NotFoundReservationException.class)
+    public ResponseEntity<ProblemDetail> handleNotFoundReservationException() {
+        ProblemDetail problem = ProblemDetail
+                .forStatusAndDetail(HttpStatus.NOT_FOUND, "존재하지 않는 예약입니다.");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(problem);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, String>> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+        Map<String, String> errors = new HashMap<>();
+        e.getBindingResult().getFieldErrors()
+                .forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
+        return ResponseEntity.badRequest().body(errors);
     }
 }
