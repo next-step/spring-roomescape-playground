@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestControllerAdvice
-public class IncorrectAttributeError {
+public class IncorrectAttributeErrorHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> handleIncorrectAttributes(MethodArgumentNotValidException exception) {
