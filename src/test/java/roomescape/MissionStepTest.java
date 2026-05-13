@@ -122,7 +122,7 @@ public class MissionStepTest {
     // CRUD 기능을 DB를 다 바꿔놓고 테스트를 돌려서 6단계가 안돌아가요 ㅠㅠ
     @Test
     void 육단계() {
-        jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "브라운", "2023-08-05",
+        jdbcTemplate.update("INSERT INTO Reservations (name, date, time) VALUES (?, ?, ?)", "브라운", "2023-08-05",
                 "15:40");
 
         List<Reservation> reservations = RestAssured.given().log().all()
@@ -131,7 +131,7 @@ public class MissionStepTest {
                 .statusCode(200).extract()
                 .jsonPath().getList(".", Reservation.class);
 
-        Integer count = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
+        Integer count = jdbcTemplate.queryForObject("SELECT count(1) from Reservations", Integer.class);
 
         assertThat(reservations.size()).isEqualTo(count);
     }
