@@ -10,17 +10,22 @@ public class Reservation {
     private final String name;
     private final LocalDate date;
     private final LocalTime time;
-    private Long id;
+    private final Long id;
 
-    public Reservation(String name, LocalDate date, LocalTime time) {
+    private Reservation(String name, LocalDate date, LocalTime time, Long id) {
         validateReservationDateTime(date, time);
+        this.id = id;
         this.name = name;
         this.date = date;
         this.time = time;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public static Reservation of(String name, LocalDate date, LocalTime time) {
+        return new Reservation(name, date, time, null);
+    }
+
+    public static Reservation withId(Reservation reservation, Long id) {
+        return new Reservation(reservation.name, reservation.date, reservation.time, id);
     }
 
     private void validateReservationDateTime(LocalDate date, LocalTime time) {
