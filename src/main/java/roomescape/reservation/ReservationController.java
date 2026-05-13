@@ -11,7 +11,11 @@ import java.net.URI;
 import java.util.Collection;
 @Controller
 public class ReservationController {
-	private final ReservationList reservationList = new ReservationList();
+	private final ReservationRepository reservationRepository;
+
+	public ReservationController(ReservationRepository reservationRepository) {
+		this.reservationRepository = reservationRepository;
+	}
 	
 	@GetMapping("/reservation")
 	public String reservationPage() {
@@ -20,12 +24,12 @@ public class ReservationController {
 	
 	@GetMapping("/reservations")
 	public ResponseEntity<Collection<Reservation>> getReservations() {
-		return ResponseEntity.ok(reservationList.get());
+		return ResponseEntity.ok(reservationRepository.findAll());
 	}
-	
+
 	@PostMapping("/reservations")
 	public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservation) {
-		Reservation newReservation = reservationList.add(reservation);
+		Reservation newReservation = reservationRepository.save(reservation);
 		
 		return ResponseEntity
 				.created(URI.create("/reservations/" + newReservation.getId()))
@@ -35,7 +39,7 @@ public class ReservationController {
 	@DeleteMapping("/reservations/{id}")
 	public ResponseEntity<Void> deleteReservation(@PathVariable long id) {
 		ReservationId reservationId = new ReservationId(id);
-		reservationList.remove(reservationId);
+		reservationRepository.deleteById(reservationId);
 		
 		return ResponseEntity.noContent().build();
 	}
