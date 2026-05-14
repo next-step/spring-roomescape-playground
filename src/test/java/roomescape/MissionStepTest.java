@@ -31,7 +31,7 @@ public class MissionStepTest {
                 .statusCode(200);
 
         RestAssured.given().log().all()
-                .when().get("/reservations")
+                .when().get("api/reservations")
                 .then().log().all()
                 .statusCode(200)
                 .body("size()", is(0)); // 아직 생성 요청이 없으니 Controller에서 임의로 넣어준 Reservation 갯수 만큼 검증하거나 0개임을 확인하세요.
@@ -47,25 +47,25 @@ public class MissionStepTest {
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(params)
-                .when().post("/reservations")
+                .when().post("api/reservations")
                 .then().log().all()
                 .statusCode(201)
-                .header("Location", "/reservations/1")
+                .header("Location", "api/reservations/1")
                 .body("id", is(1));
 
         RestAssured.given().log().all()
-                .when().get("/reservations")
+                .when().get("api/reservations")
                 .then().log().all()
                 .statusCode(200)
                 .body("size()", is(1));
 
         RestAssured.given().log().all()
-                .when().delete("/reservations/1")
+                .when().delete("api/reservations/1")
                 .then().log().all()
                 .statusCode(204);
 
         RestAssured.given().log().all()
-                .when().get("/reservations")
+                .when().get("api/reservations")
                 .then().log().all()
                 .statusCode(200)
                 .body("size()", is(0));
@@ -82,13 +82,13 @@ public class MissionStepTest {
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(params)
-                .when().post("/reservations")
+                .when().post("api/reservations")
                 .then().log().all()
                 .statusCode(400);
 
         // 삭제할 예약이 없는 경우
         RestAssured.given().log().all()
-                .when().delete("/reservations/1")
+                .when().delete("api/reservations/1")
                 .then().log().all()
                 .statusCode(404);
     }

@@ -27,7 +27,7 @@ public class ReservationController {
         return "reservation";
     }
 
-    @GetMapping("/reservations")
+    @GetMapping("api/reservations")
     @ResponseBody
     public List<ReservationGetResponse> getReservations() {
         return reservations.stream()
@@ -40,7 +40,7 @@ public class ReservationController {
                 .toList();
     }
 
-    @PostMapping("/reservations")
+    @PostMapping("api/reservations")
     public ResponseEntity<ReservationCreateResponse> add(@RequestBody @Valid ReservationCreateRequest reservationCreateRequest) {
         Long newId = index.getAndIncrement();
         Reservation newReservation = reservationCreateRequest.toEntity(newId);
@@ -49,10 +49,10 @@ public class ReservationController {
 
         ReservationCreateResponse response = ReservationCreateResponse.from(newReservation);
 
-        return ResponseEntity.created(URI.create("/reservations/" + response.getId())).body(response);
+        return ResponseEntity.created(URI.create("api/reservations/" + response.getId())).body(response);
     }
 
-    @DeleteMapping("/reservations/{id}")
+    @DeleteMapping("api/reservations/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         Reservation removeTarget = reservations.stream()
                 .filter(it -> Objects.equals(it.getId(), id))
