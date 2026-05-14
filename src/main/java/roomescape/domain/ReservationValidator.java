@@ -16,8 +16,8 @@ public class ReservationValidator {
     private static final int MAX_RESERVATION_HOUR = 24;
 
     public void validateReservationTime(ReservationRequest request) {
-        LocalDate reservationDate = LocalDate.parse(request.getDate(), DateTimeFormatter.ISO_LOCAL_DATE);
-        String[] timeParts = request.getTime().split(":");
+        LocalDate reservationDate = LocalDate.parse(request.date(), DateTimeFormatter.ISO_LOCAL_DATE);
+        String[] timeParts = request.time().split(":");
         int hour = Integer.parseInt(timeParts[0]);
         int minute = Integer.parseInt(timeParts[1]);
 
@@ -40,8 +40,8 @@ public class ReservationValidator {
     public void validateDuplicatedReservation(ReservationRequest request, List<Reservation> reservations) {
         boolean isDuplicated = reservations.stream()
                 .anyMatch(reservation -> 
-                    reservation.getDate().equals(request.getDate()) && 
-                    reservation.getTime().equals(request.getTime())
+                    reservation.getDate().equals(request.date()) && 
+                    reservation.getTime().equals(request.time())
                 );
 
         if (isDuplicated) {

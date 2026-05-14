@@ -30,9 +30,9 @@ public class ReservationService {
 
         Reservation newReservation = new Reservation(
                 index.incrementAndGet(),
-                request.getName(),
-                request.getDate(),
-                request.getTime()
+                request.name(),
+                request.date(),
+                request.time()
         );
         reservations.add(newReservation);
         return newReservation;
