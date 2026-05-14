@@ -4,6 +4,6 @@ import roomescape.exception.model.ErrorCode;
 
 public class PastDateTimeException extends CustomException {
     public PastDateTimeException() {
-        super(ErrorCode.PAST_DATETIME);
+        super(ErrorCode.RESERVATION_PAST_DATETIME);
     }
 }
