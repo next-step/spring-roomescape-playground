@@ -11,6 +11,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @Component
 public class Reservations {
+
     private final List<Reservation> reservations;
     private final AtomicLong index;
 
