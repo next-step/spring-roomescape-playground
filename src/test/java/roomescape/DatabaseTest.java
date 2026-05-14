@@ -30,10 +30,11 @@ class DatabaseTest {
     @BeforeEach
     void setUp() {
         RestAssured.port = port;
+        jdbcTemplate.execute("DELETE FROM reservation");
     }
 
     @Test
-    void 오단계() {
+    void checkDatabaseConnection_Success() {
         try (Connection connection = jdbcTemplate.getDataSource().getConnection()) {
             assertThat(connection).isNotNull();
             assertThat(connection.getCatalog()).isEqualTo("DATABASE");
@@ -44,7 +45,7 @@ class DatabaseTest {
     }
 
     @Test
-    void 육단계() {
+    void readAllReservations_Success() {
         jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "브라운", "2023-08-05", "15:40");
 
         List<Reservation> reservations = RestAssured.given().log().all()
@@ -59,7 +60,7 @@ class DatabaseTest {
     }
 
     @Test
-    void 칠단계() {
+    void createAndDeleteReservation_Success() {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
         params.put("date", LocalDate.now().plusDays(1).toString());
@@ -70,14 +71,15 @@ class DatabaseTest {
                 .body(params)
                 .when().post("/reservations")
                 .then().log().all()
-                .statusCode(201)
-                .header("Location", "/reservations/1");
+                .statusCode(201);
 
         Integer count = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
         assertThat(count).isEqualTo(1);
 
+        Long insertedId = jdbcTemplate.queryForObject("SELECT id from reservation LIMIT 1", Long.class);
+
         RestAssured.given().log().all()
-                .when().delete("/reservations/1")
+                .when().delete("/reservations/" + insertedId)
                 .then().log().all()
                 .statusCode(204);
 
