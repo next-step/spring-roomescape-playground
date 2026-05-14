@@ -1,14 +1,7 @@
-package roomescape;
+package roomescape.controller;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import roomescape.Reservation;
-
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Controller //웹 요청을 받는 담당자
 public class ViewController {
