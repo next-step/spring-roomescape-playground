@@ -3,10 +3,8 @@ package roomescape.domain;
 import org.springframework.stereotype.Component;
 import roomescape.dto.ReservationRequest;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Component
@@ -16,13 +14,12 @@ public class ReservationValidator {
     private static final int MAX_RESERVATION_HOUR = 24;
 
     public void validateReservationTime(ReservationRequest request) {
-        LocalDate reservationDate = LocalDate.parse(request.date(), DateTimeFormatter.ISO_LOCAL_DATE);
         String[] timeParts = request.time().split(":");
         int hour = Integer.parseInt(timeParts[0]);
         int minute = Integer.parseInt(timeParts[1]);
 
         validateReservationHour(hour);
-        LocalDateTime reservationDateTime = LocalDateTime.of(reservationDate, LocalTime.of(0, minute))
+        LocalDateTime reservationDateTime = LocalDateTime.of(request.date(), LocalTime.of(0, minute))
                 .plusHours(hour);
         LocalDateTime now = LocalDateTime.now();
 
@@ -40,7 +37,7 @@ public class ReservationValidator {
     public void validateDuplicatedReservation(ReservationRequest request, List<Reservation> reservations) {
         boolean isDuplicated = reservations.stream()
                 .anyMatch(reservation -> 
-                    reservation.getDate().equals(request.date()) && 
+                    reservation.getDate().equals(request.date().toString()) && 
                     reservation.getTime().equals(request.time())
                 );
 

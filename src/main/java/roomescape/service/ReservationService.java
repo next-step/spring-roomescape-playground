@@ -31,7 +31,7 @@ public class ReservationService {
         Reservation newReservation = new Reservation(
                 index.incrementAndGet(),
                 request.name(),
-                request.date(),
+                request.date().toString(),
                 request.time()
         );
         reservations.add(newReservation);
