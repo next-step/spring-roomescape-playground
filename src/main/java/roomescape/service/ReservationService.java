@@ -1,5 +1,6 @@
 package roomescape.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import roomescape.domain.Reservation;
 import roomescape.domain.Reservations;
@@ -13,8 +14,8 @@ public class ReservationService {
 
     private final Reservations reservations;
 
-    public ReservationService() {
-        reservations = new Reservations();
+    public ReservationService(Reservations reservations) {
+        this.reservations = reservations;
     }
 
     public List<ReservationResponse> getAllReservations() {

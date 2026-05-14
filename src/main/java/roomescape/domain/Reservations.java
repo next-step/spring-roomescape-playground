@@ -20,11 +20,6 @@ public class Reservations {
         index = new AtomicLong(reservations.size() + 1);
     }
 
-    private Reservations(List<Reservation> reservations) {
-        this.reservations = new CopyOnWriteArrayList<>(reservations);
-        index = new AtomicLong(reservations.size() + 1);
-    }
-
     public List<Reservation> getReservations() {
         return List.copyOf(reservations);
     }
