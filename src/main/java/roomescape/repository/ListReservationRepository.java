@@ -6,7 +6,6 @@ import roomescape.domain.Reservation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Repository
@@ -30,13 +29,6 @@ public class ListReservationRepository implements ReservationRepository {
         );
         reservations.add(saved);
         return saved;
-    }
-
-    @Override
-    public Optional<Reservation> findById(Long id) {
-        return reservations.stream()
-                .filter(it -> Objects.equals(it.getId(), id))
-                .findFirst();
     }
 
     @Override
