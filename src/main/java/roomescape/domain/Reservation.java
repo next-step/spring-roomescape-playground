@@ -21,7 +21,7 @@ public class Reservation {
         this.time = time;
     }
 
-    private void validate(Long id, String name, LocalDate date, LocalTime time) {
+    private void validate(String name, LocalDate date, LocalTime time) {
         Objects.requireNonNull(name, "name은 필수입니다.");
         Objects.requireNonNull(date, "date는 필수입니다.");
         Objects.requireNonNull(time, "time은 필수입니다.");
