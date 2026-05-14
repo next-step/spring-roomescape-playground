@@ -1,5 +1,7 @@
 package roomescape.repository;
 
+import static roomescape.domain.Reservation.RESERVATION_LENGTH_MINUTES;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import javax.sql.DataSource;
@@ -45,5 +47,12 @@ public class ReservationRepository {
     public int deleteReservationById(Long id) {
         String sql = "DELETE FROM reservation WHERE id = ?";
         return jdbcTemplate.update(sql, id);
+    }
+
+    public boolean countConflictingReservations(LocalDateTime dateTime) {
+        String sql = "SELECT COUNT(*) FROM reservation WHERE DATEADD(MINUTE, CAST(? AS INT), datetime) > CAST(? AS SMALLDATETIME) AND datetime < DATEADD(MINUTE, CAST(? AS INT), CAST(? AS SMALLDATETIME))";
+        int conflictingReservationCount = jdbcTemplate.queryForObject(sql, Integer.class, RESERVATION_LENGTH_MINUTES,
+                dateTime, RESERVATION_LENGTH_MINUTES, dateTime);
+        return conflictingReservationCount > 0;
     }
 }

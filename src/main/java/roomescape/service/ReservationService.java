@@ -41,8 +41,7 @@ public class ReservationService {
     }
 
     private void checkConflict(Reservation newReservation) {
-        if (reservationRepository.findAllReservations().stream()
-                .anyMatch(reservation -> reservation.conflicts(newReservation))) {
+        if (reservationRepository.countConflictingReservations(newReservation.getDateTime())) {
             throw new AlreadyReservedException();
         }
     }

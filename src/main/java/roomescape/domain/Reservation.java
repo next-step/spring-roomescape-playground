@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import roomescape.exception.customexception.PastDateTimeException;
 
 public class Reservation {
-    private static final int RESERVATION_LENGTH_MINUTES = 60;
+    public static final int RESERVATION_LENGTH_MINUTES = 60;
 
     private Long id;
     private String name;
@@ -21,13 +21,6 @@ public class Reservation {
         this.id = id;
         this.name = name;
         this.dateTime = dateTime;
-    }
-
-    public boolean conflicts(Reservation newReservation) {
-        LocalDateTime endTime = dateTime.plusMinutes(RESERVATION_LENGTH_MINUTES);
-        LocalDateTime newEndTime = newReservation.dateTime.plusMinutes(RESERVATION_LENGTH_MINUTES);
-
-        return endTime.isAfter(newReservation.dateTime) && dateTime.isBefore(newEndTime);
     }
 
     private void validate(LocalDateTime dateTime) {
