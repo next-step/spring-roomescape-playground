@@ -1,13 +1,12 @@
 package roomescape.domain;
 
-import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Objects;
 
 @Getter
-@Builder
 public class Reservation {
     private final Long id;
     private final String name;
@@ -15,9 +14,17 @@ public class Reservation {
     private final LocalTime time;
 
     public Reservation(Long id, String name, LocalDate date, LocalTime time) {
+        validate(id, name, date, time);
         this.id = id;
         this.name = name;
         this.date = date;
         this.time = time;
+    }
+
+    private void validate(Long id, String name, LocalDate date, LocalTime time) {
+        Objects.requireNonNull(name, "name은 필수입니다.");
+        Objects.requireNonNull(date, "date는 필수입니다.");
+        Objects.requireNonNull(time, "time은 필수입니다.");
+        if (name.isBlank()) throw new IllegalArgumentException("name은 빈 값일 수 없습니다.");
     }
 }
