@@ -2,9 +2,13 @@ package roomescape.repository;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
 
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -33,12 +37,30 @@ public class H2ReservationRepository implements ReservationRepository {
 
     @Override
     public Reservation save(Reservation reservation) {
-        throw new UnsupportedOperationException("아직 구현되지 않았습니다.");
-    }
+        String sql = "INSERT INTO reservation(name, date, time) VALUES (?, ?, ?)";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
 
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, reservation.getName());
+            ps.setString(2, reservation.getDate().toString());
+            ps.setString(3, reservation.getTime().toString());
+            return ps;
+        }, keyHolder);
+
+        Long generatedId = keyHolder.getKey().longValue();
+        return new Reservation(
+                generatedId,
+                reservation.getName(),
+                reservation.getDate(),
+                reservation.getTime()
+        );
+    }
 
     @Override
     public boolean deleteById(Long id) {
-        throw new UnsupportedOperationException("아직 구현되지 않았습니다.");
+        String sql = "DELETE FROM reservation WHERE id = ?";
+        int affected = jdbcTemplate.update(sql, id);
+        return affected > 0;
     }
 }
