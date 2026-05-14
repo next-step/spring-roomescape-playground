@@ -1,6 +1,5 @@
 package roomescape.repository;
 
-import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
 
 import java.util.ArrayList;
@@ -8,7 +7,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 
-@Repository
+//@Repository
 public class ListReservationRepository implements ReservationRepository {
     private final AtomicLong index = new AtomicLong(1);
     private final List<Reservation> reservations = new ArrayList<>();
