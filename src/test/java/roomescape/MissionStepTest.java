@@ -59,11 +59,26 @@ public class MissionStepTest {
     }
 
     @Test
-    void 예약_시간은_1시부터_12시까지만_가능하다() {
+    void 예약_시간은_0시를_허용한다() {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
         params.put("date", "2099-08-05");
-        params.put("time", "13:40");
+        params.put("time", "00:40");
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(201);
+    }
+
+    @Test
+    void 예약_시간은_24시를_초과할_수_없다() {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", "브라운");
+        params.put("date", "2099-08-05");
+        params.put("time", "25:40");
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)

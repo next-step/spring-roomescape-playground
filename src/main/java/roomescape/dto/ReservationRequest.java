@@ -15,7 +15,6 @@ public class ReservationRequest {
     private String date;
 
     @NotBlank(message = "시간은 필수 입력값입니다.")
-    // 수정된 정규식: 24시간제 허용
-    @Pattern(regexp = "^([01]?\\d|2[0-3]):[0-5]\\d$", message = "시간은 HH:mm 형식이어야 합니다. (예: 15:40)")
+    @Pattern(regexp = "^([01]\\d|2[0-4]):[0-5]\\d$", message = "시간은 HH:mm 형식이어야 합니다. (예: 15:40)")
     private String time;
 }
