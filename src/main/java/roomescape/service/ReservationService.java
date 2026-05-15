@@ -17,7 +17,7 @@ public class ReservationService {
         this.reservationRepository = reservationRepository;
     }
 
-    public ReservationResponse createReservation(ReservationRequest reservationRequest) {
+    public synchronized ReservationResponse createReservation(ReservationRequest reservationRequest) {
         Reservation reservation = reservationRequest.toReservation();
         checkConflict(reservation);
         Reservation createdReservation = reservationRepository.saveReservation(reservation);
