@@ -87,9 +87,9 @@ public class RoomescapeController {
 
     }
 
-    private void checkDuplicateException(LocalDateTime request, List<LocalDateTime> reservationTimes) {
+    private void checkDuplicateException(LocalDateTime requestTime, List<LocalDateTime> reservationTimes) {
         boolean isDuplicate = reservationTimes.stream()
-                .anyMatch(res -> res.isEqual(request));
+                .anyMatch(reservationTime -> reservationTime.isEqual(requestTime));
 
         if (isDuplicate) {
             throw new ReservationException.DuplicateTimeException();
