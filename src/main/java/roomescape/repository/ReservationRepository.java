@@ -49,10 +49,9 @@ public class ReservationRepository {
         return jdbcTemplate.update(sql, id);
     }
 
-    public boolean countConflictingReservations(LocalDateTime dateTime) {
-        String sql = "SELECT COUNT(*) FROM reservation WHERE DATEADD(MINUTE, CAST(? AS INT), datetime) > CAST(? AS SMALLDATETIME) AND datetime < DATEADD(MINUTE, CAST(? AS INT), CAST(? AS SMALLDATETIME))";
-        int conflictingReservationCount = jdbcTemplate.queryForObject(sql, Integer.class, RESERVATION_LENGTH_MINUTES,
-                dateTime, RESERVATION_LENGTH_MINUTES, dateTime);
-        return conflictingReservationCount > 0;
+    public int countConflictingReservations(LocalDateTime dateTime) {
+        String sql = "SELECT COUNT(*) FROM reservation WHERE CAST(? AS SMALLDATETIME) BETWEEN DATEADD(MINUTE, -CAST(? AS INT), datetime) AND DATEADD(MINUTE, CAST(? AS INT), datetime)";
+        return jdbcTemplate.queryForObject(sql, Integer.class, dateTime, RESERVATION_LENGTH_MINUTES,
+                RESERVATION_LENGTH_MINUTES);
     }
 }

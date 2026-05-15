@@ -39,7 +39,7 @@ public class ReservationService {
     }
 
     private void checkConflict(Reservation newReservation) {
-        if (reservationRepository.countConflictingReservations(newReservation.getDateTime())) {
+        if (reservationRepository.countConflictingReservations(newReservation.getDateTime()) > 0) {
             throw new AlreadyReservedException();
         }
     }
