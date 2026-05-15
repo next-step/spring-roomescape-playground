@@ -18,6 +18,7 @@ import java.util.List;
 
 @Controller
 public class ReservationController {
+
     private final ReservationService service;
 
     public ReservationController(ReservationService service) {
@@ -47,5 +48,4 @@ public class ReservationController {
         service.deleteReservation(id);
         return ResponseEntity.noContent().build();
     }
-
 }
