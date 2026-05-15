@@ -15,11 +15,13 @@ import roomescape.domain.Reservation;
 
 @Repository
 public class ReservationRepository {
-    private static final RowMapper<Reservation> reservationRowMapper = (resultSet, rowNum) -> new Reservation(
-            resultSet.getLong("id"),
-            resultSet.getString("name"),
-            resultSet.getObject("datetime", LocalDateTime.class)
-    );
+    private static final RowMapper<Reservation> reservationRowMapper = (resultSet, rowNum) -> {
+        Reservation reservation = new Reservation(
+                resultSet.getString("name"),
+                resultSet.getObject("datetime", LocalDateTime.class)
+        );
+        return reservation.withId(resultSet.getLong("id"));
+    };
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert simpleJdbcInsert;
@@ -36,7 +38,7 @@ public class ReservationRepository {
                 .addValue("name", reservation.getName())
                 .addValue("datetime", reservation.getDateTime());
         Long id = simpleJdbcInsert.executeAndReturnKey(params).longValue();
-        return new Reservation(id, reservation.getName(), reservation.getDateTime());
+        return reservation.withId(id);
     }
 
     public List<Reservation> findAllReservations() {

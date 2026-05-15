@@ -14,10 +14,14 @@ public class Reservation {
         this.dateTime = dateTime;
     }
 
-    public Reservation(Long id, String name, LocalDateTime dateTime) {
+    private Reservation(Long id, String name, LocalDateTime dateTime) {
         this.id = id;
         this.name = name;
         this.dateTime = dateTime;
+    }
+
+    public Reservation withId(Long id) {
+        return new Reservation(id, this.name, this.dateTime);
     }
 
     public Long getId() {
