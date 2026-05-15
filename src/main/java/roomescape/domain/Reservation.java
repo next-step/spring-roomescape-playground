@@ -1,7 +1,6 @@
 package roomescape.domain;
 
 import java.time.LocalDateTime;
-import roomescape.exception.customexception.PastDateTimeException;
 
 public class Reservation {
     public static final int RESERVATION_LENGTH_MINUTES = 60;
@@ -11,22 +10,14 @@ public class Reservation {
     private LocalDateTime dateTime;
 
     public Reservation(String name, LocalDateTime dateTime) {
-        validate(dateTime);
         this.name = name;
         this.dateTime = dateTime;
     }
 
     public Reservation(Long id, String name, LocalDateTime dateTime) {
-        validate(dateTime);
         this.id = id;
         this.name = name;
         this.dateTime = dateTime;
-    }
-
-    private void validate(LocalDateTime dateTime) {
-        if (dateTime.isBefore(LocalDateTime.now())) {
-            throw new PastDateTimeException();
-        }
     }
 
     public Long getId() {
