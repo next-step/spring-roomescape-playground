@@ -11,7 +11,7 @@ import java.util.List;
 public class ReservationValidator {
 
     private static final int MIN_RESERVATION_HOUR = 0;
-    private static final int MAX_RESERVATION_HOUR = 24;
+    private static final int MAX_RESERVATION_HOUR = 23; 
 
     public void validateReservationTime(ReservationRequest request) {
         String[] timeParts = request.time().split(":");
@@ -19,8 +19,8 @@ public class ReservationValidator {
         int minute = Integer.parseInt(timeParts[1]);
 
         validateReservationHour(hour);
-        LocalDateTime reservationDateTime = LocalDateTime.of(request.date(), LocalTime.of(0, minute))
-                .plusHours(hour);
+
+        LocalDateTime reservationDateTime = LocalDateTime.of(request.date(), LocalTime.of(hour, minute));
         LocalDateTime now = LocalDateTime.now();
 
         if (reservationDateTime.isBefore(now)) {
@@ -30,7 +30,7 @@ public class ReservationValidator {
 
     private void validateReservationHour(int hour) {
         if (hour < MIN_RESERVATION_HOUR || hour > MAX_RESERVATION_HOUR) {
-            throw new IllegalArgumentException("예약 시간은 0시부터 24시 사이여야 합니다.");
+            throw new IllegalArgumentException("예약 시간은 0시부터 23시 사이여야 합니다.");
         }
     }
 
