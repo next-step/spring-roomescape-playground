@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import roomescape.domain.Reservation;
+import roomescape.exception.customexception.PastDateTimeException;
 
 public record ReservationRequest(
         @NotBlank(message = "이름이 비어 있을 수 없습니다.")
@@ -20,7 +21,15 @@ public record ReservationRequest(
         @JsonFormat(shape = Shape.STRING, pattern = "HH:mm")
         @NotNull(message = "예약 시간이 비어 있을 수 없습니다.")
         LocalTime time) {
-    public Reservation toReservation(Long id) {
-        return new Reservation(id, name, LocalDateTime.of(date, time));
+    public Reservation toReservation() {
+        LocalDateTime dateTime = LocalDateTime.of(date, time);
+        validate(dateTime);
+        return new Reservation(name, dateTime);
+    }
+
+    private void validate(LocalDateTime dateTime) {
+        if (dateTime.isBefore(LocalDateTime.now())) {
+            throw new PastDateTimeException();
+        }
     }
 }

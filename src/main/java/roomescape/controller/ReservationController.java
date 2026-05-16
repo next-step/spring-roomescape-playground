@@ -1,4 +1,4 @@
-package roomescape;
+package roomescape.controller;
 
 import jakarta.validation.Valid;
 import java.net.URI;
@@ -11,13 +11,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import roomescape.domain.Reservations;
 import roomescape.dto.ReservationRequest;
 import roomescape.dto.ReservationResponse;
+import roomescape.service.ReservationService;
 
 @Controller
 public class ReservationController {
-    private final Reservations reservations = new Reservations();
+    private final ReservationService reservationService;
+
+    public ReservationController(ReservationService reservationService) {
+        this.reservationService = reservationService;
+    }
 
     @GetMapping("/reservation")
     public String reservation() {
@@ -26,20 +30,18 @@ public class ReservationController {
 
     @PostMapping("/reservations")
     public ResponseEntity<ReservationResponse> create(@Valid @RequestBody ReservationRequest reservationRequest) {
-        ReservationResponse response = reservations.add(reservationRequest);
+        ReservationResponse response = reservationService.createReservation(reservationRequest);
         return ResponseEntity.created(URI.create("/reservations/" + response.id())).body(response);
     }
 
     @GetMapping("/reservations")
     public ResponseEntity<List<ReservationResponse>> read() {
-        return ResponseEntity.ok(reservations.get().stream()
-                .map(ReservationResponse::fromReservation)
-                .toList());
+        return ResponseEntity.ok(reservationService.readAllReservations());
     }
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        reservations.delete(id);
+        reservationService.deleteReservation(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
