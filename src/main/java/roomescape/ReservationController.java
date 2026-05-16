@@ -25,29 +25,23 @@ public class ReservationController {
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> create(@RequestBody Reservation reservation) {
         log.info("예약 생성 요청: name={}, date={}, time={}", reservation.getName(), reservation.getDate(), reservation.getTime());
-
         Reservation newReservation = reservationService.createReservation(reservation);
-
         return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
     }
 
     @GetMapping("/reservations")
     public ResponseEntity<List<Reservation.Response>> readAll() {
         log.info("전체 예약 조회 요청");
-
         List<Reservation.Response> responseList = reservationService.findAllReservations().stream()
                 .map(Reservation.Response::new)
                 .toList();
-
         return ResponseEntity.ok(responseList);
     }
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         log.info("예약 삭제 요청: id={}", id);
-
         reservationService.deleteReservation(id);
-
         return ResponseEntity.noContent().build();
     }
 }
