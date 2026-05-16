@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import roomescape.domain.Reservation;
-import roomescape.domain.ReservationRequest;
+import roomescape.dto.ReservationRequest;
 import roomescape.exception.NotFoundReservationException;
 
 import java.net.URI;
@@ -28,6 +28,7 @@ public class ReservationController {
 
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> createReservation(@RequestBody ReservationRequest reservationRequest) {
+
         Reservation reservation = new Reservation(
                 index.incrementAndGet(),
                 reservationRequest.getName(),
