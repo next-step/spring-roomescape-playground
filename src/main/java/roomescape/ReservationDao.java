@@ -19,15 +19,21 @@ public class ReservationDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public boolean existsByDateAndTime(String date, String time) {
-        String countDuplicateReservationSql = """
-                SELECT count(1) 
-                FROM reservation 
-                WHERE date = ? AND time = ?
+    public boolean existsByDateAndTime(LocalDate date, LocalTime time) {
+        String sqlForDuplicateCheck = """
+                SELECT EXISTS (
+                    SELECT 1 
+                    FROM reservation 
+                    WHERE date = ? AND time = ?
+                )
                 """;
 
-        Integer count = jdbcTemplate.queryForObject(countDuplicateReservationSql, Integer.class, date, time);
-        return count != null && count > 0;
+        return jdbcTemplate.queryForObject(
+                sqlForDuplicateCheck,
+                Boolean.class,
+                date.toString(),
+                time.toString()
+        );
     }
 
     public Long insert(Reservation reservation) {
@@ -52,6 +58,7 @@ public class ReservationDao {
         String selectAllSql = """
                 SELECT id, name, date, time 
                 FROM reservation
+                ORDER BY id ASC
                 """;
 
         return jdbcTemplate.query(selectAllSql, (rs, rowNum) -> new Reservation(
