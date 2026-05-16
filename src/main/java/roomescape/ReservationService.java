@@ -1,5 +1,7 @@
 package roomescape;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import roomescape.exception.DuplicateReservationException;
@@ -15,8 +17,11 @@ public class ReservationService {
     }
 
     public Reservation createReservation(Reservation reservation) {
-        if (reservationDao.existsByDateAndTime(reservation.getDate().toString(), reservation.getTime().toString())) {
-            throw new DuplicateReservationException(reservation.getDate().toString(), reservation.getTime().toString());
+        LocalDate date = reservation.getDate();
+        LocalTime time = reservation.getTime();
+
+        if (reservationDao.existsByDateAndTime(date, time)) {
+            throw new DuplicateReservationException(date.toString(), time.toString());
         }
 
         Long generatedId = reservationDao.insert(reservation);
