@@ -52,7 +52,7 @@ public class ReservationRepository {
     }
 
     public int countConflictingReservations(LocalDateTime dateTime) {
-        String sql = "SELECT COUNT(*) FROM reservation WHERE CAST(? AS SMALLDATETIME) BETWEEN DATEADD(MINUTE, -CAST(? AS INT), datetime) AND DATEADD(MINUTE, CAST(? AS INT), datetime)";
+        String sql = "SELECT COUNT(*) FROM reservation WHERE CAST(? AS TIMESTAMP) BETWEEN DATEADD(MINUTE, -CAST(? AS INT), datetime) AND DATEADD(MINUTE, CAST(? AS INT), datetime)";
         return jdbcTemplate.queryForObject(sql, Integer.class, dateTime, RESERVATION_LENGTH_MINUTES,
                 RESERVATION_LENGTH_MINUTES);
     }
