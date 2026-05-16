@@ -24,7 +24,7 @@ public class ReservationRequest {
             throw new InvalidReservationException("ERROR: 날짜를 작성하여야 합니다.");
         }
         if (time == null || time.isBlank()) {
-            throw new InvalidReservationException("ERROR: 이름을 작성하여야 합니다.");
+            throw new InvalidReservationException("ERROR: 시간을 작성하여야 합니다.");
         }
     }
 
