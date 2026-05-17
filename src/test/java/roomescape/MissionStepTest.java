@@ -46,7 +46,7 @@ public class MissionStepTest {
     void 삼단계() {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
-        params.put("date", "2023-08-05");
+        params.put("date", "2026-08-05");
         params.put("time", "15:40");
 
         RestAssured.given().log().all()
@@ -75,6 +75,28 @@ public class MissionStepTest {
                 .statusCode(200)
                 .body("size()", is(0));
     }
+    @Test
+    void 사단계() {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", "브라운");
+        params.put("date", "");
+        params.put("time", "");
+
+        // 필요한 인자가 없는 경우
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(400);
+
+        // 삭제할 예약이 없는 경우
+        RestAssured.given().log().all()
+                .when().delete("/reservations/1")
+                .then().log().all()
+                .statusCode(404);
+    }
+
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
@@ -90,7 +112,7 @@ public class MissionStepTest {
     }
     @Test
     void 육단계() {
-        jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "브라운", "2023-08-05", "15:40");
+        jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "브라운", "2026-08-05", "15:40");
 
         List<Reservation> reservations = RestAssured.given().log().all()
                 .when().get("/reservations")
@@ -106,7 +128,7 @@ public class MissionStepTest {
     void 칠단계() {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
-        params.put("date", "2023-08-05");
+        params.put("date", "2026-08-05");
         params.put("time", "10:00");
 
         RestAssured.given().log().all()
