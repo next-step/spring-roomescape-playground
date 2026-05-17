@@ -20,7 +20,10 @@ import static org.hamcrest.Matchers.is;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+
 public class MissionStepTest {
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @Test
     void 일단계() {
@@ -98,9 +101,6 @@ public class MissionStepTest {
                 .then().log().all()
                 .statusCode(400);
     }
-
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
 
     @Test
     void 오단계() {
