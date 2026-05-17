@@ -11,4 +11,9 @@ public class ReservationExceptionHandler {
     public ResponseEntity<String> handleBadRequest(NotFoundException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Void> handleIllegalArgumentException() {
+        return ResponseEntity.badRequest().build();
+    }
 }

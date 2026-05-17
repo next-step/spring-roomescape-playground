@@ -75,6 +75,10 @@ public class ReservationRepository {
                 WHERE id = ?
                 """;
 
-        jdbcTemplate.update(sql, id.id());
+        int deleteCount = jdbcTemplate.update(sql, id.id());
+
+        if (deleteCount == 0) {
+            throw new IllegalArgumentException("존재하지 않는 예약입니다.");
+        }
     }
 }
