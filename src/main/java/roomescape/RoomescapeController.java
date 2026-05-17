@@ -1,22 +1,15 @@
 package roomescape;
 
 import java.net.URI;
-import java.sql.PreparedStatement;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import roomescape.exception.InvalidReservationException;
 import roomescape.exception.NotFoundReservationException;
 import roomescape.exception.ReservationConflictException;
@@ -25,9 +18,13 @@ import roomescape.exception.ReservationConflictException;
 public class RoomescapeController {
 
     private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert simpleJdbcInsert;
 
     public RoomescapeController(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+        this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("reservation")
+                .usingGeneratedKeyColumns("id");
     }
 
     @GetMapping("/")
@@ -57,21 +54,16 @@ public class RoomescapeController {
     public ResponseEntity<ReservationResponse> addReservation(@RequestBody ReservationRequest request) {
         validateDuplicate(request);
 
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(
-                    "INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)",
-                    new String[]{"id"});
-            ps.setString(1, request.getName());
-            ps.setDate(2, java.sql.Date.valueOf(request.getDate()));
-            ps.setTime(3, java.sql.Time.valueOf(request.getTime()));
-            return ps;
-        }, keyHolder);
+        SqlParameterSource params = new MapSqlParameterSource()
+                .addValue("name", request.getName())
+                .addValue("date", java.sql.Date.valueOf(request.getDate()))
+                .addValue("time", java.sql.Time.valueOf(request.getTime()));
 
-        Long id = keyHolder.getKey().longValue();
+        Long id = simpleJdbcInsert.executeAndReturnKey(params).longValue();
+
         Reservation newReservation = Reservation.toEntity(request, id);
-
         ReservationResponse response = ReservationResponse.from(newReservation);
+
         return ResponseEntity.created(URI.create("/reservations/" + id)).body(response);
     }
 
@@ -79,8 +71,8 @@ public class RoomescapeController {
         Integer count = jdbcTemplate.queryForObject(
                 "SELECT COUNT(*) FROM reservation WHERE date = ? AND time = ?",
                 Integer.class,
-                java.sql.Date.valueOf(request.getDate()),     // LocalDate -> Date
-                java.sql.Time.valueOf(request.getTime())      // LocalTime -> Time
+                java.sql.Date.valueOf(request.getDate()),
+                java.sql.Time.valueOf(request.getTime())
         );
 
         if (count != null && count > 0) {
