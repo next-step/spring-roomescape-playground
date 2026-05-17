@@ -2,16 +2,11 @@ package roomescape.controller;
 
 import jakarta.validation.Valid;
 import java.net.URI;
-import java.sql.PreparedStatement;
-import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,14 +18,15 @@ import roomescape.domain.Reservation;
 import roomescape.dto.ReservationRequest;
 import roomescape.dto.ReservationResponse;
 import roomescape.exception.BadRequestException;
+import roomescape.repository.ReservationRepository;
 
 @Controller
 public class RoomescapeController {
 
-    private final JdbcTemplate jdbcTemplate;
+    private final ReservationRepository reservationRepository;
 
-    public RoomescapeController(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    public RoomescapeController(ReservationRepository reservationRepository) {
+        this.reservationRepository = reservationRepository;
     }
 
     @GetMapping("/reservation")
@@ -41,18 +37,7 @@ public class RoomescapeController {
     @GetMapping("/reservations")
     @ResponseBody
     public List<ReservationResponse> showReservations() {
-        String sql = "SELECT id, name, date, time FROM reservation";
-
-        List<Reservation> reservations = jdbcTemplate.query(sql, (rs, rowNum) ->
-                new Reservation(
-                        rs.getLong("id"),
-                        rs.getString("name"),
-                        LocalDate.parse(rs.getString("date")),
-                        LocalTime.parse(rs.getString("time"))
-                )
-        );
-
-        return reservations.stream()
+        return reservationRepository.findAll().stream()
                 .map(ReservationResponse::from)
                 .toList();
     }
@@ -63,39 +48,25 @@ public class RoomescapeController {
         validateReservationDateTime(request.date(), request.time());
         validateDuplicate(request.date(), request.time());
 
-        String sql = "INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)";
-
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-
-        jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, request.name());
-            ps.setString(2, request.date().toString());
-            ps.setString(3, request.time().toString());
-            return ps;
-        }, keyHolder);
-
-        Long id = keyHolder.getKey().longValue();
-
         Reservation reservation = new Reservation(
-                id,
+                null,
                 request.name(),
                 request.date(),
                 request.time()
         );
 
+        Reservation savedReservation = reservationRepository.save(reservation);
+
         return ResponseEntity
-                .created(URI.create("/reservations/" + id))
-                .body(ReservationResponse.from(reservation));
+                .created(URI.create("/reservations/" + savedReservation.getId()))
+                .body(ReservationResponse.from(savedReservation));
     }
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
-        String sql = "DELETE FROM reservation WHERE id = ?";
+        boolean deleted = reservationRepository.deleteById(id);
 
-        int deletedCount = jdbcTemplate.update(sql, id);
-
-        if (deletedCount == 0) {
+        if (!deleted) {
             throw new BadRequestException("예약번호가 " + id + "인 예약은 존재하지 않습니다.");
         }
 
@@ -103,16 +74,9 @@ public class RoomescapeController {
     }
 
     private void validateDuplicate(LocalDate date, LocalTime time) {
-        String sql = "SELECT COUNT(*) FROM reservation WHERE date = ? AND time = ?";
+        boolean duplicated = reservationRepository.existsByDateAndTime(date, time);
 
-        Integer count = jdbcTemplate.queryForObject(
-                sql,
-                Integer.class,
-                date.toString(),
-                time.toString()
-        );
-
-        if (count > 0) {
+        if (duplicated) {
             throw new BadRequestException("이미 예약된 날짜와 시간입니다.");
         }
     }
