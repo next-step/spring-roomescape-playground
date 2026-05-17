@@ -8,14 +8,18 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import roomescape.domain.Reservation;
+import roomescape.exception.InvalidReservationException;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.hamcrest.Matchers.is;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
@@ -154,5 +158,27 @@ public class MissionStepTest {
 
         Integer countAfterDelete = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
         assertThat(countAfterDelete).isEqualTo(0);
+    }
+
+    @Test
+    void 이름이_빈_값이면_예약_생성_실패() {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", " ");
+        params.put("date", "2023-08-05");
+        params.put("time", "10:00");
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("api/reservations")
+                .then().log().all()
+                .statusCode(400);
+    }
+
+    @Test
+    void 이름이_빈_값이면_예외() {
+        assertThatThrownBy(() -> new Reservation(1L, "", LocalDate.now(), LocalTime.now()))
+                .isInstanceOf(InvalidReservationException.class)
+                .hasMessage("name은 빈 값일 수 없습니다.");
     }
 }
