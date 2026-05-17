@@ -20,6 +20,7 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
@@ -180,5 +181,28 @@ public class MissionStepTest {
         assertThatThrownBy(() -> new Reservation(1L, "", LocalDate.now(), LocalTime.now()))
                 .isInstanceOf(InvalidReservationException.class)
                 .hasMessage("name은 빈 값일 수 없습니다.");
+    }
+
+    @Test
+    void 같은_날_같은_시간_예약_중복이면_409_반환() {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", "홍길동");
+        params.put("date", "2023-08-05");
+        params.put("time", "10:00");
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/api/reservations")
+                .then().log().all()
+                .statusCode(201);
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/api/reservations")
+                .then().log().all()
+                .statusCode(409)
+                .body("detail", equalTo("이미 예약된 시간입니다."));
     }
 }

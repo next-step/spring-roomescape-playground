@@ -5,6 +5,7 @@ import roomescape.domain.Reservation;
 import roomescape.dto.request.ReservationCreateRequest;
 import roomescape.dto.response.ReservationCreateResponse;
 import roomescape.dto.response.ReservationGetResponse;
+import roomescape.exception.DuplicateReservationException;
 import roomescape.exception.NotFoundReservationException;
 import roomescape.repository.ReservationRepository;
 
@@ -37,6 +38,11 @@ public class ReservationService {
     }
 
     public ReservationCreateResponse addReservation(ReservationCreateRequest reservationCreateRequest) {
+        boolean exists = repository.existsByDateAndTime(reservationCreateRequest.getDate(), reservationCreateRequest.getTime());
+        if (exists) {
+            throw new DuplicateReservationException("이미 예약된 시간입니다.");
+        }
+
         Reservation newReservation = new Reservation(
                 null,
                 reservationCreateRequest.getName(),

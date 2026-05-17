@@ -28,7 +28,7 @@ public class GlobalExceptionHandler {
                 HttpStatus.BAD_REQUEST,
                 e.getMessage()
         );
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problem);
+        return ResponseEntity.badRequest().body(problem);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -43,6 +43,15 @@ public class GlobalExceptionHandler {
         );
         problem.setProperty("errors", errors);
         return ResponseEntity.badRequest().body(problem);
+    }
+
+    @ExceptionHandler(DuplicateReservationException.class)
+    public ResponseEntity<ProblemDetail> handleDuplicate(DuplicateReservationException e) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(
+                HttpStatus.CONFLICT,
+                e.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(problem);
     }
 
     @ExceptionHandler(Exception.class)

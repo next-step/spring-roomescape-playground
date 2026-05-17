@@ -11,6 +11,8 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.sql.Time;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 @Repository
@@ -62,5 +64,13 @@ public class H2ReservationRepository implements ReservationRepository {
         String sql = "DELETE FROM reservation WHERE id = ?";
         int affected = jdbcTemplate.update(sql, id);
         return affected > 0;
+    }
+
+    @Override
+    public boolean existsByDateAndTime(LocalDate date, LocalTime time) {
+        String sql = "SELECT count(1) FROM reservation WHERE date = ? AND time = ?";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class,
+                Date.valueOf(date), Time.valueOf(time));
+        return count != null && count > 0;
     }
 }

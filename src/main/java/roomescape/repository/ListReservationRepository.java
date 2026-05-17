@@ -2,6 +2,8 @@ package roomescape.repository;
 
 import roomescape.domain.Reservation;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -33,5 +35,11 @@ public class ListReservationRepository implements ReservationRepository {
     @Override
     public boolean deleteById(Long id) {
         return reservations.removeIf(it -> Objects.equals(it.getId(), id));
+    }
+
+    @Override
+    public boolean existsByDateAndTime(LocalDate date, LocalTime time) {
+        return reservations.stream()
+                .anyMatch(it -> it.getDate().equals(date) && it.getTime().equals(time));
     }
 }
