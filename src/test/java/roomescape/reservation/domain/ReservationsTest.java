@@ -1,76 +1,96 @@
 package roomescape.reservation.domain;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.jdbc.core.JdbcTemplate;
+import roomescape.global.DatabaseInitialization;
+import roomescape.reservation.dao.ReservationsDao;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 
+@JdbcTest
 public class ReservationsTest {
-	Reservation dummy = new Reservation(
-			new ReservationId(1),
-			"aaa",
-			LocalDateTime.of(2026, 5, 7, 11, 13)
-	);
+	private ReservationsDao reservationsDao;
+	private Reservations reservations;
 	
-	Reservation dummy2 = new Reservation(
-			new ReservationId(2),
-			"bbb",
-			LocalDateTime.of(2026, 8, 2, 22, 13)
-	);
-	
-	public ReservationsTest() throws ReservationException {
+	@Autowired
+	public ReservationsTest(JdbcTemplate jdbcTemplate) {
+		DatabaseInitialization databaseInitialization = new DatabaseInitialization(jdbcTemplate);
+		databaseInitialization.initializeTables();
+		
+		reservationsDao = new ReservationsDao(jdbcTemplate);
+		reservations = new Reservations(reservationsDao);
 	}
 	
 	@Test
 	void 예약을_추가한_후_조회할_수_있다() {
-		Reservations reservations = new Reservations();
+		CreateReservationInfo hola = new CreateReservationInfo(
+				"hola",
+				LocalDateTime.of(1026, 5, 7, 11, 13)
+		);
+		
+		CreateReservationInfo gracia = new CreateReservationInfo(
+				"gracia",
+				LocalDateTime.of(1026, 8, 2, 22, 13)
+		);
+		
 		assertThatCode(() -> {
-			reservations.add(dummy);
-			reservations.add(dummy2);
+			reservations.create(hola);
+			reservations.create(gracia);
 		}).doesNotThrowAnyException();
 		
 		assertThat(reservations.getAll())
-				.hasSize(2)
-				.isEqualTo(List.of(dummy, dummy2));
+				.anyMatch(reservation -> reservation.getName().equals(hola.name()))
+				.anyMatch(reservation -> reservation.getName().equals(gracia.name()));
 	}
 	
 	@Test
 	void 예약을_삭제할_수_있다() throws ReservationException {
-		Reservations reservations = new Reservations();
-		reservations.add(dummy);
-		reservations.add(dummy2);
+		CreateReservationInfo info = new CreateReservationInfo(
+				"aaa",
+				LocalDateTime.of(2026, 5, 7, 11, 13)
+		);
+		Reservation reservation = createFresh(info);
 		
-		assertThatCode(() -> reservations.remove(new ReservationId(1)))
+		assertThatCode(() -> reservations.delete(reservation.getId()))
 				.doesNotThrowAnyException();
 		
-		assertThat(reservations.getAll()).hasSize(1);
+		assertThat(reservations.getAll())
+				.noneMatch(existing -> existing.getId().equals(reservation.getId()));
 	}
 	
 	@Test
-	void 동일한_예약을_중복으로_추가할_수_없다() throws ReservationException {
-		Reservations reservations = new Reservations();
-		reservations.add(dummy);
-		
-		assertThatThrownBy(() -> reservations.add(dummy))
-				.isInstanceOf(ReservationException.IdAlreadyExists.class);
-	}
-	@Test
 	void 같은_시간에_예약을_중복으로_추가할_수_없다() throws ReservationException {
-		Reservations reservations = new Reservations();
-		reservations.add(dummy);
+		CreateReservationInfo info = new CreateReservationInfo(
+				"bbb",
+				LocalDateTime.of(2026, 5, 7, 11, 13)
+		);
+		createFresh(info);
 		
-		Reservation sameTime = new Reservation(new ReservationId(2), dummy.getName(), dummy.getTime());
-		
-		assertThatThrownBy(() -> reservations.add(sameTime))
+		assertThatThrownBy(() -> reservations.create(info))
 				.isInstanceOf(ReservationException.DuplicateTime.class);
 	}
 	
 	@Test
 	void 존재하지_않는_예약을_삭제할_수_없다() {
-		Reservations reservations = new Reservations();
-		assertThatThrownBy(() -> reservations.remove(new ReservationId(1)))
+		long nonExistingId = reservationsDao.getAll().stream()
+				.mapToLong(reservation -> reservation.getId().id())
+				.max().orElse(0) + 1;
+		
+		
+		assertThatThrownBy(() -> reservations.delete(new ReservationId(nonExistingId)))
 				.isInstanceOf(ReservationException.DoesNotExist.class);
+	}
+	
+	
+	private Reservation createFresh(CreateReservationInfo reservation) {
+		Reservation previous = reservationsDao.getByTime(reservation.time());
+		if(previous != null) {
+			reservationsDao.delete(previous.getId());
+		}
+		return reservations.create(reservation);
 	}
 }

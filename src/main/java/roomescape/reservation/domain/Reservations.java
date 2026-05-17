@@ -1,33 +1,33 @@
 package roomescape.reservation.domain;
 
-import java.util.*;
+import jakarta.annotation.Nonnull;
+import org.springframework.stereotype.Component;
+import roomescape.reservation.dao.ReservationsDao;
 
+import java.util.List;
+
+@Component
 public class Reservations {
-	private final Map<ReservationId, Reservation> reservations = new TreeMap<>();
-	
-	public synchronized List<Reservation> getAll() {
-		return new ArrayList<>(reservations.values());
-	}
-	
-	public synchronized void add(Reservation reservation) throws ReservationException {
-		for(Reservation existing : reservations.values()) {
-			if(existing.getId().equals(reservation.getId())) {
-				throw new ReservationException.IdAlreadyExists();
-			}
-			
-			if(existing.getTime().equals(reservation.getTime())) {
-				throw new ReservationException.DuplicateTime();
-			}
-		}
-		
-		reservations.put(reservation.getId(), reservation);
-	}
-	
-	public synchronized void remove(ReservationId id) throws ReservationException {
-		if(!reservations.containsKey(id)) {
-			throw new ReservationException.DoesNotExist();
-		}
-		
-		reservations.remove(id);
-	}
+    private final ReservationsDao reservationsDao;
+
+    public Reservations(ReservationsDao reservationsDao) {
+        this.reservationsDao = reservationsDao;
+    }
+
+    public @Nonnull List<Reservation> getAll() {
+        return reservationsDao.getAll();
+    }
+
+    public @Nonnull Reservation create(@Nonnull CreateReservationInfo info) {
+        Reservation previous = reservationsDao.getByTime(info.time());
+        if (previous != null) {
+            throw new ReservationException.DuplicateTime();
+        }
+
+        return reservationsDao.create(info);
+    }
+
+    public void delete(@Nonnull ReservationId id) {
+        reservationsDao.delete(id);
+    }
 }

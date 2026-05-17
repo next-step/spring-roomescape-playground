@@ -1,58 +1,88 @@
 package roomescape.reservation;
 
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import roomescape.global.exception.ApiException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.jdbc.core.JdbcTemplate;
+import roomescape.global.DatabaseInitialization;
+import roomescape.reservation.dao.ReservationsDao;
 import roomescape.reservation.domain.ReservationId;
+import roomescape.reservation.domain.Reservations;
 import roomescape.reservation.dto.CreateReservationRequest;
 import roomescape.reservation.dto.ReservationResponse;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.*;
 
+@JdbcTest
 public class ReservationServiceTest {
-	CreateReservationRequest dummyCreateRequest = new CreateReservationRequest(
-			"이현우",
-			LocalDate.of(2027, 3, 20),
-			LocalTime.of(10, 11)
-	);
+	private final JdbcTemplate jdbcTemplate;
 	
-	CreateReservationRequest dummyCreateRequest2 = new CreateReservationRequest(
-			"우끾끾",
-			LocalDate.of(2027, 4, 21),
-			LocalTime.of(23, 50)
-	);
+	ReservationService service;
+	
+	@Autowired
+	public ReservationServiceTest(JdbcTemplate jdbcTemplate) {
+		this.jdbcTemplate = jdbcTemplate;
+		
+		DatabaseInitialization databaseInitialization = new DatabaseInitialization(jdbcTemplate);
+		databaseInitialization.initializeTables();
+		
+		Reservations reservations = new Reservations(new ReservationsDao(jdbcTemplate));
+		this.service = new ReservationService(reservations);
+	}
 	
 	@Test
 	void 예약_생성_가능() {
-		ReservationService service = new ReservationService();
 		assertThatCode(() -> {
-			ReservationResponse response = service.createReservation(dummyCreateRequest);
+			CreateReservationRequest request = new CreateReservationRequest(
+					"pony",
+					LocalDate.of(2027, 3, 20),
+					LocalTime.of(10, 11)
+			);
 			
-			assertThat(response.id()).isEqualTo(new ReservationId(1));
-			assertThat(response.name()).isEqualTo("이현우");
+			ReservationResponse response = service.createReservation(request);
+			assertThat(response.name()).isEqualTo("pony");
 		}).doesNotThrowAnyException();
 	}
 	
 	@Test
-	void 예약_조회_가능() throws ApiException {
-		ReservationService service = new ReservationService();
-		service.createReservation(dummyCreateRequest);
-		service.createReservation(dummyCreateRequest2);
+	void 예약_조회_가능() {
+		CreateReservationRequest request1 = new CreateReservationRequest(
+				"이현우",
+				LocalDate.of(2011, 3, 20),
+				LocalTime.of(10, 11)
+		);
+		
+		CreateReservationRequest request2 = new CreateReservationRequest(
+				"우끾끾",
+				LocalDate.of(2011, 4, 21),
+				LocalTime.of(23, 50)
+		);
+		
+		service.createReservation(request1);
+		service.createReservation(request2);
 		
 		List<ReservationResponse> reservations = service.getReservations();
-		assertThat(reservations).hasSize(2);
-		assertThat(reservations.get(0).name()).isEqualTo("이현우");
-		assertThat(reservations.get(1).name()).isEqualTo("우끾끾");
+		Integer currentSize = jdbcTemplate.queryForObject("SELECT count(*) FROM reservations", Integer.class);
+		
+		assertThat(reservations)
+				.hasSize(Objects.requireNonNull(currentSize))
+				.anyMatch(response -> response.name().equals(request1.name()))
+				.anyMatch(response -> response.name().equals(request2.name()));
 	}
 	
 	@Test
-	void 예약_삭제_가능() throws ApiException {
-		ReservationService service = new ReservationService();
-		service.createReservation(dummyCreateRequest);
+	void 예약_삭제_가능() {
+		CreateReservationRequest request = new CreateReservationRequest(
+				"이현우",
+				LocalDate.of(2087, 3, 20),
+				LocalTime.of(10, 11)
+		);
+		service.createReservation(request);
 		
 		assertThatCode(() -> service.deleteReservation(new ReservationId(1)))
 				.doesNotThrowAnyException();
@@ -62,17 +92,47 @@ public class ReservationServiceTest {
 	}
 	
 	@Test
-	void 동일_시간에_중복_예약_불가능() throws ApiException {
-		ReservationService service = new ReservationService();
-		service.createReservation(dummyCreateRequest);
+	void 이름에는_글자_이외_불가능() {
+		assertThatThrownBy(() -> {
+			CreateReservationRequest request = new CreateReservationRequest(
+					"d a", // space
+					LocalDate.of(2037, 3, 20),
+					LocalTime.of(10, 11)
+			);
+			service.createReservation(request);
+		})
+				.isInstanceOf(ReservationInputFormatException.class)
+				.extracting("field")
+				.isEqualTo("name");
 		
-		assertThatThrownBy(() -> service.createReservation(dummyCreateRequest))
+		assertThatThrownBy(() -> {
+			CreateReservationRequest request = new CreateReservationRequest(
+					"나는이름이길어서슬픈생물", // length
+					LocalDate.of(2037, 3, 20),
+					LocalTime.of(10, 11)
+			);
+			service.createReservation(request);
+		})
+				.isInstanceOf(ReservationInputFormatException.class)
+				.extracting("field")
+				.isEqualTo("name");
+	}
+	
+	@Test
+	void 동일_시간에_중복_예약_불가능() {
+		CreateReservationRequest request = new CreateReservationRequest(
+				"이현우",
+				LocalDate.of(2047, 3, 20),
+				LocalTime.of(10, 11)
+		);
+		service.createReservation(request);
+		
+		assertThatThrownBy(() -> service.createReservation(request))
 				.isInstanceOf(ReservationDuplicateTimeException.class);
 	}
 	
 	@Test
 	void 존재하지_않는_예약_삭제_불가능() {
-		ReservationService service = new ReservationService();
 		assertThatThrownBy(() -> service.deleteReservation(new ReservationId(1)))
 				.isInstanceOf(ReservationDoesNotExistException.class);
 	}

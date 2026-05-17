@@ -8,7 +8,9 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import roomescape.reservation.domain.ReservationId;
 import roomescape.reservation.dto.ReservationResponse;
@@ -18,6 +20,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.hamcrest.Matchers.is;
@@ -26,6 +29,9 @@ import static org.hamcrest.Matchers.is;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ReservationScenarioTest {
+	@Autowired
+	JdbcTemplate jdbcTemplate;
+	
 	Map<String, String> createParams;
 	ReservationResponse expected;
 	
@@ -64,7 +70,7 @@ public class ReservationScenarioTest {
 	void 예약_중복_추가_불가능() {
 		RestAssured.given().contentType(ContentType.JSON).body(createParams)
 				.when().post("/reservations")
-				.then().statusCode(400);
+				.then().statusCode(409);
 	}
 	
 	@Test
@@ -84,6 +90,8 @@ public class ReservationScenarioTest {
 	@Test
 	@Order(4)
 	void 예약_삭제() {
+		int previousCount = getReservationsCount();
+		
 		RestAssured.given()
 				.when().delete("/reservations/1")
 				.then()
@@ -94,6 +102,9 @@ public class ReservationScenarioTest {
 				.then()
 				.statusCode(200)
 				.body("size()", is(0));
+		
+		assertThat(getReservationsCount())
+				.isEqualTo(previousCount - 1);
 	}
 	
 	@Test
@@ -102,5 +113,11 @@ public class ReservationScenarioTest {
 		RestAssured.given()
 				.when().delete("/reservations/1")
 				.then().statusCode(404);
+	}
+	
+	
+	private int getReservationsCount() {
+		Integer count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM reservations", Integer.class);
+		return Objects.requireNonNull(count);
 	}
 }

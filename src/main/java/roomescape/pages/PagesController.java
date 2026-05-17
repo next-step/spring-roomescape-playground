@@ -5,13 +5,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class PagesController {
-	@GetMapping("/")
-	public String getHome() {
-		return "home";
-	}
-	
-	@GetMapping("/reservation")
-	public String getReservation() {
-		return "reservation";
-	}
+    @GetMapping("/")
+    public String getHome() {
+        return "home";
+    }
+
+    @GetMapping("/reservation")
+    public String getReservation() {
+        return "reservation";
+    }
 }
