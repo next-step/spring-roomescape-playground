@@ -46,7 +46,6 @@ public class RoomescapeController {
     @ResponseBody
     public ResponseEntity<ReservationResponse> addReservation(@RequestBody @Valid ReservationRequest request) {
         validateReservationDateTime(request.date(), request.time());
-        validateDuplicate(request.date(), request.time());
 
         Reservation reservation = new Reservation(
                 null,
@@ -71,14 +70,6 @@ public class RoomescapeController {
         }
 
         return ResponseEntity.noContent().build();
-    }
-
-    private void validateDuplicate(LocalDate date, LocalTime time) {
-        boolean duplicated = reservationRepository.existsByDateAndTime(date, time);
-
-        if (duplicated) {
-            throw new BadRequestException("이미 예약된 날짜와 시간입니다.");
-        }
     }
 
     private void validateReservationDateTime(LocalDate date, LocalTime time) {

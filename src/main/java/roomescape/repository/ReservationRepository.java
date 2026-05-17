@@ -5,12 +5,14 @@ import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
+import roomescape.exception.BadRequestException;
 
 @Repository
 public class ReservationRepository {
@@ -32,13 +34,18 @@ public class ReservationRepository {
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
-        jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, reservation.getName());
-            ps.setString(2, reservation.getDate().toString());
-            ps.setString(3, reservation.getTime().toString());
-            return ps;
-        }, keyHolder);
+        try {
+            jdbcTemplate.update(connection -> {
+                PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+                ps.setString(1, reservation.getName());
+                ps.setString(2, reservation.getDate().toString());
+                ps.setString(3, reservation.getTime().toString());
+                return ps;
+            }, keyHolder);
+        } catch (DuplicateKeyException e) {
+            throw new BadRequestException("이미 예약된 날짜와 시간입니다.");
+        }
+
 
         Long id = keyHolder.getKey().longValue();
 
@@ -56,19 +63,6 @@ public class ReservationRepository {
         int deletedCount = jdbcTemplate.update(sql, id);
 
         return deletedCount > 0;
-    }
-
-    public boolean existsByDateAndTime(LocalDate date, LocalTime time) {
-        String sql = "SELECT COUNT(*) FROM reservation WHERE date = ? AND time = ?";
-
-        Integer count = jdbcTemplate.queryForObject(
-                sql,
-                Integer.class,
-                date.toString(),
-                time.toString()
-        );
-
-        return count != null && count > 0;
     }
 
     private RowMapper<Reservation> reservationRowMapper() {
