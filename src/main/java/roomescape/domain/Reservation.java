@@ -1,6 +1,7 @@
 package roomescape.domain;
 
 import lombok.Getter;
+import roomescape.exception.InvalidReservationException;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -25,6 +26,6 @@ public class Reservation {
         Objects.requireNonNull(name, "name은 필수입니다.");
         Objects.requireNonNull(date, "date는 필수입니다.");
         Objects.requireNonNull(time, "time은 필수입니다.");
-        if (name.isBlank()) throw new IllegalArgumentException("name은 빈 값일 수 없습니다.");
+        if (name.isBlank()) throw new InvalidReservationException("name은 빈 값일 수 없습니다.");
     }
 }

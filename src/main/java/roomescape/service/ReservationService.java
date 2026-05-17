@@ -36,7 +36,6 @@ public class ReservationService {
         return response;
     }
 
-
     public ReservationCreateResponse addReservation(ReservationCreateRequest reservationCreateRequest) {
         Reservation newReservation = new Reservation(
                 null,
@@ -55,7 +54,7 @@ public class ReservationService {
 
     public void deleteReservation(Long id) {
         if (!repository.deleteById(id)) {
-            throw new NotFoundReservationException();   // ← 여기서 던짐
+            throw new NotFoundReservationException();
         }
     }
 }

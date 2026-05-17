@@ -17,9 +17,18 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ProblemDetail> handleNotFound(NotFoundReservationException e) {
         ProblemDetail problem = ProblemDetail.forStatusAndDetail(
                 HttpStatus.NOT_FOUND,
-                "존재하지 않는 예약입니다."
+                e.getMessage()
         );
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(problem);
+    }
+
+    @ExceptionHandler(InvalidReservationException.class)
+    public ResponseEntity<ProblemDetail> handleInvalidInput(InvalidReservationException e) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(
+                HttpStatus.BAD_REQUEST,
+                e.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problem);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -36,7 +45,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(problem);
     }
 
-    // 500: 예상 못 한 모든 예외 (fallback)
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ProblemDetail> handleUnexpected(Exception e) {
         ProblemDetail problem = ProblemDetail.forStatusAndDetail(
