@@ -7,10 +7,10 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
 
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.sql.Time;
 import java.util.List;
 
 @Repository
@@ -25,8 +25,8 @@ public class H2ReservationRepository implements ReservationRepository {
     private final RowMapper<Reservation> reservationRowMapper = (rs, rowNum) -> new Reservation(
             rs.getLong("id"),
             rs.getString("name"),
-            LocalDate.parse(rs.getString("date")),
-            LocalTime.parse(rs.getString("time"))
+            rs.getDate("date").toLocalDate(),
+            rs.getTime("time").toLocalTime()
     );
 
     @Override
@@ -43,8 +43,8 @@ public class H2ReservationRepository implements ReservationRepository {
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, reservation.getName());
-            ps.setString(2, reservation.getDate().toString());
-            ps.setString(3, reservation.getTime().toString());
+            ps.setDate(2, Date.valueOf(reservation.getDate()));
+            ps.setTime(3, Time.valueOf(reservation.getTime()));
             return ps;
         }, keyHolder);
 
