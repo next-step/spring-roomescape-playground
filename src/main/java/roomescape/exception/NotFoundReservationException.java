@@ -1,4 +1,4 @@
-package roomescape;
+package roomescape.exception;
 
 public class NotFoundReservationException extends RoomescapeException {
     public NotFoundReservationException(Long id) {

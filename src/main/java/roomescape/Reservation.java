@@ -3,7 +3,7 @@ package roomescape;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Objects;
+import roomescape.exception.InvalidReservationException;
 
 public class Reservation {
     private Long id;
@@ -19,7 +19,7 @@ public class Reservation {
     }
 
     public Reservation(Long id, String name, LocalDate date, LocalTime time) {
-        validate(name, date, time);
+        validateBasic(name, date, time);
         this.id = id;
         this.name = name;
         this.date = date;
@@ -27,46 +27,27 @@ public class Reservation {
     }
 
     public Reservation(String name, LocalDate date, LocalTime time) {
-        validate(name, date, time);
-        this.name = name;
-        this.date = date;
-        this.time = time;
-    }
-
-    private void validate(String name, LocalDate date, LocalTime time) {
-        if (name == null || name.isBlank() || date == null || time == null) {
-            throw new InvalidReservationException("필수 예약 정보가 누락되었습니다.");
-        }
+        this(null, name, date, time);
 
         if (date.isBefore(LocalDate.now())) {
             throw new InvalidReservationException("과거 날짜로는 예약할 수 없습니다.");
         }
     }
 
-    public boolean hasSameDateTimeWith(Reservation other) {
-        return Objects.equals(this.date, other.getDate()) &&
-                Objects.equals(this.time, other.getTime());
+    private void validateBasic(String name, LocalDate date, LocalTime time) {
+        if (name == null || name.isBlank() || date == null || time == null) {
+            throw new InvalidReservationException("필수 예약 정보가 누락되었습니다.");
+        }
     }
 
     public static Reservation toEntity(Reservation reservation, Long id) {
         return new Reservation(id, reservation.getName(), reservation.getDate(), reservation.getTime());
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public LocalTime getTime() {
-        return time;
-    }
+    public Long getId() { return id; }
+    public String getName() { return name; }
+    public LocalDate getDate() { return date; }
+    public LocalTime getTime() { return time; }
 
     public static class Response {
         private Long id;
@@ -85,20 +66,9 @@ public class Reservation {
             this.time = reservation.getTime();
         }
 
-        public Long getId() {
-            return id;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public LocalDate getDate() {
-            return date;
-        }
-
-        public LocalTime getTime() {
-            return time;
-        }
+        public Long getId() { return id; }
+        public String getName() { return name; }
+        public LocalDate getDate() { return date; }
+        public LocalTime getTime() { return time; }
     }
 }

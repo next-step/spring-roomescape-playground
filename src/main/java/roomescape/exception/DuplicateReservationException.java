@@ -1,4 +1,4 @@
-package roomescape;
+package roomescape.exception;
 
 public class DuplicateReservationException extends RoomescapeException {
     public DuplicateReservationException(String date, String time) {
