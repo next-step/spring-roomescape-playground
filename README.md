@@ -70,6 +70,7 @@ HTTP/1.1 204 No Content
 - [x] h2 데이터베이스를 활용하여 데이터를 저장하도록 수정하세요.
 - [x] 예약 조회 API 처리 로직에서 저장된 예약을 조회할 때 데이터베이스를 활용하도록 수정하세요.
 - [x] 예약 추가/취소 API 처리 로직에서 데이터베이스를 활용하도록 수정하세요.
+- [x] 예약 관련 API 호출 시 에러가 발생하는 경우 중 요청의 문제인 경우 Status Code를 400으로 응답하세요.
 
 ## 클래스 정리
 
@@ -114,6 +115,18 @@ DB에서 전체 예약 목록을 조회하여 ReservationResponse로 변환하�
 #### deleteReservation
 id에 해당하는 예약을 DB에서 삭제한다.
 - jdbcTemplate.update()의 반환값(영향받은 행 수)이 0이면 NotFoundReservationException을 던진다.
+전체 예약 목록을 ReservationResponse로 변환하여 반환한다.
+
+#### addReservation
+예약을 추가하고, 생성된 예약 정보를 반환한다.
+- validateDuplicate를 호출하여 중복 예약을 먼저 확인한다.
+- Reservation.toEntity를 통해 객체를 생성하며, 이 과정에서 유효성 검증 실패 시 예외가 발생한다.
+- 성공 시 201 Created 코드와 Location 헤더를 포함하여 응답한다.
+
+#### deleteReservation
+id에 해당하는 예약을 삭제한다.
+- 해당 id의 예약이 리스트에 없으면 NotFoundReservationException을 던진다.
+>>>>>>> upstream/mikeylili
 - 성공 시 204 No Content를 반환한다.
 
 #### handleException

@@ -67,6 +67,7 @@ public class RoomescapeController {
         return ResponseEntity.created(URI.create("/reservations/" + id)).body(response);
     }
 
+
     private void validateDuplicate(ReservationRequest request) {
         Integer count = jdbcTemplate.queryForObject(
                 "SELECT COUNT(*) FROM reservation WHERE date = ? AND time = ?",
@@ -81,15 +82,14 @@ public class RoomescapeController {
     }
 
     @DeleteMapping("/reservations/{id}")
-    public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
-        int deleted = jdbcTemplate.update("DELETE FROM reservation WHERE id = ?", id);
+        public ResponseEntity<Void> deleteReservation(@PathVariable Long id){
+            int deleted = jdbcTemplate.update("DELETE FROM reservation WHERE id = ?", id);
 
-        if (deleted == 0) {
-            throw new NotFoundReservationException();
+            if (deleted == 0) {
+                throw new NotFoundReservationException();
+            }
+            return ResponseEntity.noContent().build();
         }
-
-        return ResponseEntity.noContent().build();
-    }
 
     @ExceptionHandler(NotFoundReservationException.class)
     public ResponseEntity<String> handleException(NotFoundReservationException e) {
