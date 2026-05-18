@@ -19,9 +19,11 @@ public class RoomescapeController {
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert simpleJdbcInsert;
+    private final ReservationValidator reservationValidator;
 
-    public RoomescapeController(JdbcTemplate jdbcTemplate) {
+    public RoomescapeController(JdbcTemplate jdbcTemplate, ReservationValidator reservationValidator) {
         this.jdbcTemplate = jdbcTemplate;
+        this.reservationValidator = reservationValidator;
         this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("reservation")
                 .usingGeneratedKeyColumns("id");
@@ -52,44 +54,31 @@ public class RoomescapeController {
 
     @PostMapping("/reservations")
     public ResponseEntity<ReservationResponse> addReservation(@RequestBody ReservationRequest request) {
-        validateDuplicate(request);
+        Reservation tempReservation = request.toEntity(null); //DB들어가기 전, 식별자 없는 객체 검증
+        reservationValidator.validateDuplicate(tempReservation);
 
         SqlParameterSource params = new MapSqlParameterSource()
-                .addValue("name", request.getName())
-                .addValue("date", java.sql.Date.valueOf(request.getDate()))
-                .addValue("time", java.sql.Time.valueOf(request.getTime()));
+                .addValue("name", tempReservation.getName())
+                .addValue("date", java.sql.Date.valueOf(tempReservation.getDate()))
+                .addValue("time", java.sql.Time.valueOf(tempReservation.getTime()));
 
         Long id = simpleJdbcInsert.executeAndReturnKey(params).longValue();
 
-        Reservation newReservation = Reservation.toEntity(request, id);
-        ReservationResponse response = ReservationResponse.from(newReservation);
+        Reservation savedReservation = request.toEntity(id);//검증을 모두 통과한 객체
+        ReservationResponse response = ReservationResponse.from(savedReservation);
 
         return ResponseEntity.created(URI.create("/reservations/" + id)).body(response);
     }
 
-
-    private void validateDuplicate(ReservationRequest request) {
-        Integer count = jdbcTemplate.queryForObject(
-                "SELECT COUNT(*) FROM reservation WHERE date = ? AND time = ?",
-                Integer.class,
-                java.sql.Date.valueOf(request.getDate()),
-                java.sql.Time.valueOf(request.getTime())
-        );
-
-        if (count != null && count > 0) {
-            throw new ReservationConflictException("중복된 예약이 존재합니다.");
-        }
-    }
-
     @DeleteMapping("/reservations/{id}")
-        public ResponseEntity<Void> deleteReservation(@PathVariable Long id){
-            int deleted = jdbcTemplate.update("DELETE FROM reservation WHERE id = ?", id);
+    public ResponseEntity<Void> deleteReservation(@PathVariable Long id){
+        int deleted = jdbcTemplate.update("DELETE FROM reservation WHERE id = ?", id);
 
-            if (deleted == 0) {
-                throw new NotFoundReservationException();
-            }
-            return ResponseEntity.noContent().build();
+        if (deleted == 0) {
+            throw new NotFoundReservationException();
         }
+        return ResponseEntity.noContent().build();
+    }
 
     @ExceptionHandler(NotFoundReservationException.class)
     public ResponseEntity<String> handleException(NotFoundReservationException e) {

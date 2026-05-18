@@ -96,6 +96,48 @@ public class MissionStepTest {
                 .then().log().all()
                 .statusCode(404);
     }
+    @Test
+    void 예외_케이스_테스트() {
+        // 케이스 1: 과거 날짜로 예약 생성 시도 (400 Bad Request 예상)
+        Map<String, String> pastDateParams = new HashMap<>();
+        pastDateParams.put("name", "브라운");
+        pastDateParams.put("date", "2020-01-01"); // 확실한 과거 날짜
+        pastDateParams.put("time", "13:00");
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(pastDateParams)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(400);
+
+        // 케이스 2: 동일한 날짜와 시간에 중복 예약 시도 (409 Conflict 예상)
+        Map<String, String> firstReservation = new HashMap<>();
+        firstReservation.put("name", "브라운");
+        firstReservation.put("date", "2026-08-05");
+        firstReservation.put("time", "13:00");
+
+        // 첫 번째 정상 예약 등록 (201 Created)
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(firstReservation)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(201);
+
+        Map<String, String> duplicateReservation = new HashMap<>();
+        duplicateReservation.put("name", "클로이");
+        duplicateReservation.put("date", "2026-08-05"); // 동일 날짜
+        duplicateReservation.put("time", "13:00");       // 동일 시간
+
+        // 동일 시간 예약 시도 시 중복 예외 차단 검증 (409 Conflict)
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(duplicateReservation)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(409);
+    }
 
     @Autowired
     private JdbcTemplate jdbcTemplate;

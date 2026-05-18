@@ -126,7 +126,6 @@ id에 해당하는 예약을 DB에서 삭제한다.
 #### deleteReservation
 id에 해당하는 예약을 삭제한다.
 - 해당 id의 예약이 리스트에 없으면 NotFoundReservationException을 던진다.
->>>>>>> upstream/mikeylili
 - 성공 시 204 No Content를 반환한다.
 
 #### handleException
