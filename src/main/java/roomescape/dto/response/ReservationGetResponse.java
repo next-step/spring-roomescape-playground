@@ -1,25 +1,21 @@
 package roomescape.dto.response;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Getter
-@Builder
 public class ReservationGetResponse {
-    @NotNull(message = "아이디가 설정되지 않았습니다.")
-    private Long id;
+    private final Long id;
+    private final String name;
+    private final LocalDate date;
+    private final LocalTime time;
 
-    @NotBlank(message = "이름은 필수 입력값입니다.")
-    private String name;
-
-    @NotNull(message = "날짜은 필수 입력값입니다.")
-    private LocalDate date;
-
-    @NotNull(message = "시간은 필수 입력값입니다.")
-    private LocalTime time;
+    public ReservationGetResponse(Long id, String name, LocalDate date, LocalTime time) {
+        this.id = id;
+        this.name = name;
+        this.date = date;
+        this.time = time;
+    }
 }

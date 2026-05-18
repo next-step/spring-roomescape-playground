@@ -4,7 +4,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import roomescape.domain.Reservation;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -20,13 +19,4 @@ public class ReservationCreateRequest {
 
     @NotNull(message = "시간은 필수 입력값입니다.")
     private LocalTime time;
-
-    public Reservation toEntity(Long id) {
-        return Reservation.builder()
-                .id(id)
-                .name(this.name)
-                .date(this.date)
-                .time(this.time)
-                .build();
-    }
 }
