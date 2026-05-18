@@ -6,3 +6,5 @@ CREATE TABLE reservation
     time TIME         NOT NULL,
     PRIMARY KEY (id)
 );
+
+CREATE INDEX reservation_date_time ON reservation (date, time);

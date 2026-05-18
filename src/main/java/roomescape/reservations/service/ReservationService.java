@@ -1,6 +1,7 @@
 package roomescape.reservations.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import roomescape.reservations.exception.ReservationException;
 import roomescape.reservations.dto.request.ReservationRequest;
 import roomescape.reservations.dto.response.ReservationResponse;
@@ -37,7 +38,11 @@ public class ReservationService {
         return convertIntoResponseDTO(reservation);
     }
 
+    @Transactional
     public ReservationResponse createReservation(ReservationRequest newReservation) {
+        int currentTimeReservationCount = jdbcReservationRepository.getReservationCountInTimeSlot(newReservation.date(), newReservation.time());
+        validateCapacityPerTime(currentTimeReservationCount);
+
         Reservation reservation = new Reservation(
                 null,
                 newReservation.name(),
@@ -46,7 +51,6 @@ public class ReservationService {
         );
 
         validateDuplicateReservation(reservation);
-        validateCapacityPerTime(reservation.getDate(), reservation.getTime());
 
         Long createdReservationId = jdbcReservationRepository.createReservation(reservation);
 
@@ -67,21 +71,15 @@ public class ReservationService {
         }
     }
 
-    private void validateCapacityPerTime(LocalDate date, LocalTime time) {
-        long currentReservationCount = jdbcReservationRepository.getAllReservations().stream()
-                .filter(reservation -> reservation.getDate().equals(date) && reservation.getTime().equals(time))
-                .count();
-
-        if (currentReservationCount >= MAX_CAPACITY_PER_TIME) {
+    private void validateCapacityPerTime(int currentTimeReservationCount) {
+        if (currentTimeReservationCount >= MAX_CAPACITY_PER_TIME) {
             throw new ReservationException("선택하신 시간대는 예약이 마감되었어요! 다른 시간대를 찾아봐주세요! (정원: " + MAX_CAPACITY_PER_TIME + "명)");
         }
     }
 
     private void validateDuplicateReservation(Reservation newReservation) {
-        boolean existsBySameUserAtSameTime = jdbcReservationRepository.getAllReservations().stream()
-                .anyMatch(reservation -> reservation.getDate().equals(newReservation.getDate())
-                        && reservation.getTime().equals(newReservation.getTime())
-                        && reservation.getName().equals(newReservation.getName()));
+        boolean existsBySameUserAtSameTime = jdbcReservationRepository
+                .existsDuplicateReservationWithSameUser(newReservation.getDate(), newReservation.getTime(), newReservation.getName());
 
         if (existsBySameUserAtSameTime) {
             throw new ReservationException("이미 동일한 시간에 동일한 이름으로 예약건이 있어요!");

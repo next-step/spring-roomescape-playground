@@ -37,7 +37,8 @@ public class JdbcReservationRepository {
 
     public Optional<Reservation> getReservationById(Long id) {
         String query = "SELECT id, name, date, time FROM reservation WHERE id=?";
-        return jdbcTemplate.query(query, rowMapper, id).stream().findFirst();
+
+        return Optional.ofNullable(jdbcTemplate.queryForObject(query, rowMapper));
     }
 
     public Long createReservation(Reservation reservation) {
@@ -56,8 +57,19 @@ public class JdbcReservationRepository {
         return Objects.requireNonNull(keyHolder.getKey()).longValue();
     }
 
+    public int getReservationCountInTimeSlot(LocalDate date, LocalTime time) {
+        String sql = "SELECT COUNT(*) FROM reservation WHERE date = ? AND time = ? FOR UPDATE SKIP LOCKED";
+        return jdbcTemplate.queryForObject(sql, Integer.class, date, time);
+    }
+
     public int deleteReservationById(Long id) {
         String query = "DELETE FROM reservation WHERE id=?";
         return jdbcTemplate.update(query, id);
+    }
+
+    public boolean existsDuplicateReservationWithSameUser(LocalDate date, LocalTime time, String name) {
+        String query = "SELECT COUNT(*) FROM reservation WHERE date = ? AND time = ? and name =?";
+        int affectedRowsCount = jdbcTemplate.queryForObject(query, Integer.class, date, time, name);
+        return affectedRowsCount > 0;
     }
 }
