@@ -1,59 +1,17 @@
-# Reservation API 명세
-___
+## 5단계 요구사항
 
-## Request
-```GET /reservations HTTP/1.1```
+### h2 데이터베이스를 활용하여 데이터 저장
 
-## Response
-```HTTP/1.1 200
-Content-Type: application/json
+1. gradle 의존성 추가
+2. schema 정의
+3. 데이베이스 설정
 
-[
-{
-"id": 1,
-"name": "브라운",
-"date": "2023-01-01",
-"time": "10:00"
-},
-{
-"id": 2,
-"name": "브라운",
-"date": "2023-01-02",
-"time": "11:00"
-}
-]
-```
-___
+## 6단계 요구사항
 
-## 예약 추가 Request
-```POST /reservations HTTP/1.1
-content-type: application/json
+### 예약 조회 API 처리 로직에서 저장된 예약을 조회할 때 데이터베이스를 활용하도록 수정
 
-{
-    "date": "2023-08-05",
-    "name": "브라운",
-    "time": "15:40"
-}
-```
+## 7단계 요구사항
 
-## 예약 추가 Response
-```HTTP/1.1 201 
-Location: /reservations/1
-Content-Type: application/json
-
-{
-    "id": 1,
-    "name": "브라운",
-    "date": "2023-08-05",
-    "time": "15:40"
-}
-```
-## 예약 취소 Request
-```
-DELETE /reservations/1 HTTP/1.1
-```
-
-## 예약 취소 Response
-```
-HTTP/1.1 204 No Content
-```
+1. 예약 추가/취소 API 처리 로직에서 데이터베이스를 활용하도록 수정
+2. 기존에 사용하던 List 및 AtomicLong 을 제거
+3. 예약 관리 기능이 정상 동작하도록 기능 완성

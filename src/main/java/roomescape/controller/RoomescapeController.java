@@ -5,9 +5,7 @@ import java.net.URI;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,16 +14,20 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
+import roomescape.domain.Reservation;
 import roomescape.dto.ReservationRequest;
 import roomescape.dto.ReservationResponse;
-import roomescape.domain.Reservation;
 import roomescape.exception.BadRequestException;
+import roomescape.repository.ReservationRepository;
 
 @Controller
 public class RoomescapeController {
 
-    private List<Reservation> reservations = new ArrayList<>();
-    private AtomicLong index = new AtomicLong(1);
+    private final ReservationRepository reservationRepository;
+
+    public RoomescapeController(ReservationRepository reservationRepository) {
+        this.reservationRepository = reservationRepository;
+    }
 
     @GetMapping("/reservation")
     public String showReservationPage() {
@@ -35,7 +37,7 @@ public class RoomescapeController {
     @GetMapping("/reservations")
     @ResponseBody
     public List<ReservationResponse> showReservations() {
-        return reservations.stream()
+        return reservationRepository.findAll().stream()
                 .map(ReservationResponse::from)
                 .toList();
     }
@@ -45,42 +47,29 @@ public class RoomescapeController {
     public ResponseEntity<ReservationResponse> addReservation(@RequestBody @Valid ReservationRequest request) {
         validateReservationDateTime(request.date(), request.time());
 
-        Long id = index.getAndIncrement();
-
         Reservation reservation = new Reservation(
-                id,
+                null,
                 request.name(),
                 request.date(),
                 request.time()
         );
 
-        validateDuplicate(reservation);
-        reservations.add(reservation);
+        Reservation savedReservation = reservationRepository.save(reservation);
 
         return ResponseEntity
-                .created(URI.create("/reservations/" + reservation.getId()))
-                .body(ReservationResponse.from(reservation));
+                .created(URI.create("/reservations/" + savedReservation.getId()))
+                .body(ReservationResponse.from(savedReservation));
     }
 
     @DeleteMapping("/reservations/{id}")
-    public  ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
-        boolean removed = reservations.removeIf(reservation -> reservation.getId().equals(id));
+    public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
+        boolean deleted = reservationRepository.deleteById(id);
 
-        if (!removed) {
+        if (!deleted) {
             throw new BadRequestException("예약번호가 " + id + "인 예약은 존재하지 않습니다.");
         }
 
         return ResponseEntity.noContent().build();
-    }
-
-    private void validateDuplicate(Reservation reservation) {
-        boolean duplicated = reservations.stream()
-                .anyMatch(savedReservation ->
-                        savedReservation.isSameSchedule(reservation));
-
-        if (duplicated) {
-            throw new BadRequestException("이미 예약된 날짜와 시간입니다.");
-        }
     }
 
     private void validateReservationDateTime(LocalDate date, LocalTime time) {
