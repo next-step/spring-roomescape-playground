@@ -66,7 +66,10 @@ HTTP/1.1 204 No Content
 - [x] 어드민 메인 페이지는 templates/reservation.html 파일을 이용하세요.
 - [x] 아래의 API 명세를 따라 예약 관리 페이지 로드 시 호출되는 예약 목록 조회 API도 함께 구현하세요.
 - [x] API 명세를 따라 예약 추가 API 와 삭제 API를 구현하세요.
-- [x] 아래 화면에서 예약 추가와 취소가 잘 동작해야합니다.
+- [x] 예약 관련 API 호출 시 에러가 발생하는 경우 중 요청의 문제인 경우 Status Code를 400으로 응답하세요.
+- [x] h2 데이터베이스를 활용하여 데이터를 저장하도록 수정하세요.
+- [x] 예약 조회 API 처리 로직에서 저장된 예약을 조회할 때 데이터베이스를 활용하도록 수정하세요.
+- [x] 예약 추가/취소 API 처리 로직에서 데이터베이스를 활용하도록 수정하세요.
 - [x] 예약 관련 API 호출 시 에러가 발생하는 경우 중 요청의 문제인 경우 Status Code를 400으로 응답하세요.
 
 ## 클래스 정리
@@ -87,17 +90,31 @@ ReservationRequest 정보와 새로운 id를 받았을 때, 이를 조합하여 
 ### ReservationRequest
 
 클라이언트의 요청 데이터를 담는 DTO로, 엔티티와 정체성을 분리하여 id가 없는 상태의 데이터를 관리한다.
+생성 시점에 필수 값 누락 여부를 검사한다.
 
 ### ReservationResponse
 
 클라이언트에게 전달할 응답 데이터를 담는 DTO로, @JsonFormat 등을 통해 노출할 데이터의 형식을 제어한다.
 
 ### RoomescapeController
+JdbcTemplate을 통해 DB와 직접 통신하며 예약 데이터를 관리한다.
 
 #### showHomePage / showReservationPage
 각각 home.html, reservation.html 화면을 보여준다.
 
 #### getReservations
+DB에서 전체 예약 목록을 조회하여 ReservationResponse로 변환하여 반환한다.
+
+#### addReservation
+예약을 추가하고, 생성된 예약 정보를 반환한다.
+- validateDuplicate를 호출하여 DB 기준으로 중복 예약을 먼저 확인한다.
+- Reservation.toEntity를 통해 객체를 생성하며, 이 과정에서 유효성 검증 실패 시 예외가 발생한다.
+- 성공 시 201 Created 코드와 Location 헤더를 포함하여 응답한다.
+
+
+#### deleteReservation
+id에 해당하는 예약을 DB에서 삭제한다.
+- jdbcTemplate.update()의 반환값(영향받은 행 수)이 0이면 NotFoundReservationException을 던진다.
 전체 예약 목록을 ReservationResponse로 변환하여 반환한다.
 
 #### addReservation
