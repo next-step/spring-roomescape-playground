@@ -4,10 +4,13 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 
@@ -15,6 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 import roomescape.reservation.domain.Reservation;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.hamcrest.Matchers.is;
 
@@ -161,4 +165,20 @@ public class MissionStepTest {
         assertThat(countAfterDelete).isEqualTo(0);
     }
 
+    @Test
+    void saveTooLongNameThrowsException() {
+        String name = "a".repeat(256);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("name", name);
+        params.put("date", "2026-08-05");
+        params.put("time", "10:00");
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(400);
+    }
 }
