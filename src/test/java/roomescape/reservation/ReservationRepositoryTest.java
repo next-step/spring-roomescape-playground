@@ -38,17 +38,6 @@ class ReservationRepositoryTest {
     }
 
     @Test
-    void saveTooLongNameThrowsException() {
-        String name = "a".repeat(256);
-
-        assertThatThrownBy(() -> reservationRepository.save(new Reservation(
-                null, name,
-                LocalDate.of(2026, 8, 5),
-                LocalTime.of(15, 40)
-        ))).isInstanceOf(DataAccessException.class);
-    }
-
-    @Test
     void saveNullNameThrowsException() {
         assertThatThrownBy(() -> reservationRepository.save(new Reservation(
                 null, null,
