@@ -23,12 +23,22 @@ class ReservationRepositoryTest {
 
     @Test
     void findAllReturnsAllReservations() {
-        reservationRepository.save(new Reservation(null, "브라운", LocalDate.of(2023, 8, 5), LocalTime.of(15, 40)));
-        reservationRepository.save(new Reservation(null, "포비", LocalDate.of(2023, 8, 6), LocalTime.of(16, 40)));
+        reservationRepository.save(new Reservation(null, "브라운", LocalDate.of(2026, 8, 5), LocalTime.of(15, 40)));
+        reservationRepository.save(new Reservation(null, "포비", LocalDate.of(2026, 8, 6), LocalTime.of(16, 40)));
 
         List<Reservation> reservations = reservationRepository.findAll();
 
-        assertThat(reservations).hasSize(2);
+        Reservation reservation = reservations.get(0);
+
+        assertThat(reservation.name()).isEqualTo("브라운");
+        assertThat(reservation.date()).isEqualTo(LocalDate.of(2026, 8, 5));
+        assertThat(reservation.time()).isEqualTo(LocalTime.of(15, 40));
+
+        reservation = reservations.get(1);
+
+        assertThat(reservation.name()).isEqualTo("포비");
+        assertThat(reservation.date()).isEqualTo(LocalDate.of(2026, 8, 6));
+        assertThat(reservation.time()).isEqualTo(LocalTime.of(16, 40));
     }
 
     @Test
