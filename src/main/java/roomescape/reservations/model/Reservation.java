@@ -12,22 +12,25 @@ public class Reservation {
 
     private Long id;
     private String name;
+    private String roomId;
     private LocalDate date;
     private LocalTime time;
 
     protected Reservation() {
         this.id = null;
         this.name = null;
+        this.roomId = null;
         this.date = null;
         this.time = null;
     }
 
-    public Reservation(Long id, String name, LocalDate date, LocalTime time) {
+    public Reservation(Long id, String name, String roomId, LocalDate date, LocalTime time) {
         validateReservationInBusinessHour(time);
         validateReservationTimeIsNotPast(date, time);
 
         this.id = id;
         this.name = name;
+        this.roomId = roomId;
         this.date = date;
         this.time = time;
     }
@@ -38,6 +41,10 @@ public class Reservation {
 
     public String getName() {
         return name;
+    }
+
+    public String getRoomId() {
+        return roomId;
     }
 
     public LocalDate getDate() {

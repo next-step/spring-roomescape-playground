@@ -40,12 +40,13 @@ public class ReservationService {
 
     @Transactional
     public ReservationResponse createReservation(ReservationRequest newReservation) {
-        int currentTimeReservationCount = jdbcReservationRepository.getReservationCountInTimeSlot(newReservation.date(), newReservation.time());
+        int currentTimeReservationCount = jdbcReservationRepository.getReservationCountInTimeSlot(newReservation.roomId(), newReservation.date(), newReservation.time());
         validateCapacityPerTime(currentTimeReservationCount);
 
         Reservation reservation = new Reservation(
                 null,
                 newReservation.name(),
+                newReservation.roomId(),
                 newReservation.date(),
                 newReservation.time()
         );
@@ -57,6 +58,7 @@ public class ReservationService {
         Reservation createdReservation = new Reservation(
                 createdReservationId,
                 reservation.getName(),
+                reservation.getRoomId(),
                 reservation.getDate(),
                 reservation.getTime()
         );
