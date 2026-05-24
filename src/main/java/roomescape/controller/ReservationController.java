@@ -40,10 +40,9 @@ public class ReservationController {
                 reservationRequest.getDate(),
                 reservationRequest.getTime()
         );
+        reservationRepository.insert(reservation);
 
-        reservations.add(reservation);
-
-        return ResponseEntity.created(URI.create("/reservations/" + reservation.getId()))
+        return ResponseEntity.created(URI.create("/reservations"))
                 .body(reservation);
     }
 
