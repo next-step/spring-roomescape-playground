@@ -34,21 +34,21 @@ public class ReservationRepository {
 
     public void insert(Reservation reservation) {
         String sql = """
-                INSERT INTO reservation (id, name, date, time)
+                INSERT INTO reservation (name, date, time)
                 VALUES (?, ?, ?)
                 """;
         jdbcTemplate.update(sql,
-                reservation.getId(),
                 reservation.getName(),
                 reservation.getDate(),
                 reservation.getTime()
         );
     }
 
-    public void delete(Long id) {
+    public boolean delete(Long id) {
         String sql = """
-                DELETE FROM reservation WHERE id = 1
+                DELETE FROM reservation WHERE id = ?
                 """;
-        jdbcTemplate.update(sql, id);
+        int result = jdbcTemplate.update(sql, id);
+        return result > 0;
     }
 }
