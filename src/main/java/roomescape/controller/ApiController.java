@@ -1,6 +1,10 @@
 package roomescape.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.web.bind.annotation.*;
 import roomescape.Reservation;
 import roomescape.ReservationRequest;
@@ -8,6 +12,7 @@ import roomescape.exception.BadRequestException;
 import roomescape.exception.NotFoundReservationException;
 
 import java.net.URI;
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -16,40 +21,75 @@ import java.util.concurrent.atomic.AtomicLong;
 @RestController
 public class ApiController {
 
-    private final List<Reservation> reservations = new CopyOnWriteArrayList<>();
-    private final AtomicLong index = new AtomicLong(0);
+    private final JdbcTemplate jdbcTemplate;
 
-    @GetMapping("/reservations")
-    public List<Reservation> getReservations() {//예약 목록을 조회
-        return reservations; //현재 저장된 예약 리스트 전체를 응답으로 보냄
+    // 데이터베이스 접근을 위한 JdbcTemplate 주입 (메모리 자료구조 영구 제거)
+    public ApiController(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
+    // 데이터베이스 조회 결과를 Reservation 객체로 매핑하는 규칙 정의
+    private final RowMapper<Reservation> rowMapper = (rs, rowNum) -> new Reservation(
+            rs.getLong("id"),
+            rs.getString("name"),
+            rs.getString("date"),
+            rs.getString("time")
+    );
+
+    // 6단계: 데이터베이스 기반 예약 목록 조회 API
+    @GetMapping("/reservations")
+    public List<Reservation> getReservations() {
+        String sql = "SELECT id, name, date, time FROM reservation";
+        return jdbcTemplate.query(sql, rowMapper);
+    }
+
+    // 7단계: 데이터베이스 기반 예약 추가 API (KeyHolder 사용)
     @PostMapping("/reservations")
-    public ResponseEntity<Reservation> createReservation(@RequestBody ReservationRequest request) {//reservation객체로 바꿔서 받음
-        if(request.getName().isEmpty() || request.getDate().isEmpty() || request.getTime().isEmpty()){
-            throw new BadRequestException(("필수 입력 값이 누락되었습니다."));
+    public ResponseEntity<Reservation> createReservation(@RequestBody ReservationRequest request) {
+        if (request.getName().isEmpty() || request.getDate().isEmpty() || request.getTime().isEmpty()) {
+            throw new BadRequestException("필수 입력 값이 누락되었습니다.");
         }
-        Reservation reservation = new Reservation(//새 예약 객체 만듦
-                index.incrementAndGet(), //id를 1 증가시키고 값을 가져옴
+
+        String sql = "INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
+            ps.setString(1, request.getName());
+            ps.setString(2, request.getDate());
+            ps.setString(3, request.getTime());
+            return ps;
+        }, keyHolder);
+
+        // 생성된 고유 ID값 추출
+        Long generatedId = keyHolder.getKey().longValue();
+
+        Reservation reservation = new Reservation(
+                generatedId,
                 request.getName(),
                 request.getDate(),
                 request.getTime()
         );
-        reservations.add(reservation);
+
         return ResponseEntity
-                .created(URI.create("/reservations/" + reservation.getId())) //http 상태코드 201을 응답하고, 새로 만든 예약 위치를 /reservations/1같은 주소로 알려줌
-                .body(reservation);//응답 본문에 새로 생성된 예약 객체를 담아서 보냄
+                .created(URI.create("/reservations/" + generatedId))
+                .body(reservation);
     }
 
-    @DeleteMapping("/reservations/{id}") //삭제 요청
-    public ResponseEntity<Void> deleteReservation(@PathVariable Long id){//주소에 있는 id값을 꺼내서 변수 id에 넣음
-        Reservation reservation = reservations.stream()
-                        .filter(it -> it.getId().equals(id))
-                                .findFirst()
-                                        .orElseThrow(() -> new NotFoundReservationException("삭제할 예약을 찾을 수 없습니다."));
+    // 7단계: 데이터베이스 기반 예약 취소 API
+    @DeleteMapping("/reservations/{id}")
+    public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
+        // 데이터가 존재하는지 확인 후 카운트가 0이면 예외 발생
+        String checkSql = "SELECT count(1) FROM reservation WHERE id = ?";
+        Integer count = jdbcTemplate.queryForObject(checkSql, Integer.class, id);
 
+        if (count == null || count == 0) {
+            throw new NotFoundReservationException("삭제할 예약을 찾을 수 없습니다.");
+        }
 
-        reservations.remove(reservation);
-        return ResponseEntity.noContent().build(); //삭제 성공 후 응답 보내기. 204 no content 상태 코드를 반환
+        String deleteSql = "DELETE FROM reservation WHERE id = ?";
+        jdbcTemplate.update(deleteSql, id);
+
+        return ResponseEntity.noContent().build();
     }
 }
