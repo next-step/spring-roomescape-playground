@@ -52,6 +52,7 @@ public class ReservationController {
         if (!removed) {
             throw new NotFoundReservationException("존재하지 않는 예약을 지울 수 없습니다.");
         }
+        reservationRepository.delete(id);
         return ResponseEntity.noContent().build();
     }
 }
