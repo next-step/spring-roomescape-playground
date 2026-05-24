@@ -12,14 +12,10 @@ import roomescape.dto.ReservationRequest;
 import roomescape.exception.NotFoundReservationException;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 @RestController
 public class ReservationController {
-    private final List<Reservation> reservations = new ArrayList<>();
-    private final AtomicLong index = new AtomicLong(0);
     private final ReservationRepository reservationRepository;
 
     public ReservationController(ReservationRepository reservationRepository) {
@@ -33,15 +29,13 @@ public class ReservationController {
 
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> createReservation(@RequestBody ReservationRequest reservationRequest) {
-
+        long id = reservationRepository.insert(reservationRequest);
         Reservation reservation = new Reservation(
-                index.incrementAndGet(),
+                id,
                 reservationRequest.getName(),
                 reservationRequest.getDate(),
                 reservationRequest.getTime()
         );
-        reservationRepository.insert(reservation);
-
         return ResponseEntity.created(URI.create("/reservations/" + reservation.getId()))
                 .body(reservation);
     }
