@@ -20,10 +20,15 @@ import java.util.concurrent.atomic.AtomicLong;
 public class ReservationController {
     private final List<Reservation> reservations = new ArrayList<>();
     private final AtomicLong index = new AtomicLong(0);
+    private final ReservationRepository reservationRepository;
+
+    public ReservationController(ReservationRepository reservationRepository) {
+        this.reservationRepository = reservationRepository;
+    }
 
     @GetMapping("/reservations")
     public ResponseEntity<List<Reservation>> getAllReservations() {
-        return ResponseEntity.ok(reservations);
+        return ResponseEntity.ok(reservationRepository.findAll());
     }
 
     @PostMapping("/reservations")
