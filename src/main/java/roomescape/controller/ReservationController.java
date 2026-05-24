@@ -42,17 +42,16 @@ public class ReservationController {
         );
         reservationRepository.insert(reservation);
 
-        return ResponseEntity.created(URI.create("/reservations"))
+        return ResponseEntity.created(URI.create("/reservations/" + reservation.getId()))
                 .body(reservation);
     }
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
-        boolean removed = reservations.removeIf(reservation -> reservation.getId().equals(id));
-        if (!removed) {
-            throw new NotFoundReservationException("존재하지 않는 예약을 지울 수 없습니다.");
+        boolean isRemoved = reservationRepository.delete(id);
+        if (!isRemoved) {
+            throw new NotFoundReservationException("존재하지 않는 예약을 지울 수 없음");
         }
-        reservationRepository.delete(id);
         return ResponseEntity.noContent().build();
     }
 }
