@@ -31,4 +31,17 @@ public class ReservationRepository {
                 )
         );
     }
+
+    public void insert(Reservation reservation){
+        String sql= """
+                INSERT INTO reservation (id, name, date, time)
+                VALUES (?, ?, ?)
+                """;
+        jdbcTemplate.update(sql,
+                reservation.getId(),
+                reservation.getName(),
+                reservation.getDate(),
+                reservation.getTime()
+                );
+    }
 }
