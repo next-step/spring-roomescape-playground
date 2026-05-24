@@ -32,8 +32,8 @@ public class ReservationRepository {
         );
     }
 
-    public void insert(Reservation reservation){
-        String sql= """
+    public void insert(Reservation reservation) {
+        String sql = """
                 INSERT INTO reservation (id, name, date, time)
                 VALUES (?, ?, ?)
                 """;
@@ -42,6 +42,13 @@ public class ReservationRepository {
                 reservation.getName(),
                 reservation.getDate(),
                 reservation.getTime()
-                );
+        );
+    }
+
+    public void delete(Long id) {
+        String sql = """
+                DELETE FROM reservation WHERE id = 1
+                """;
+        jdbcTemplate.update(sql, id);
     }
 }
