@@ -60,10 +60,13 @@ public class ReservationRepository {
     }
 
     private RowMapper<Reservation> reservationRowMapper() {
-        return (resultSet, rowNum) -> Reservation.of(
-                resultSet.getString("name"),
-                LocalDate.parse(resultSet.getString("date")),
-                LocalTime.parse(resultSet.getString("time"))
+        return (resultSet, rowNum) -> Reservation.withId(
+                Reservation.of(
+                        resultSet.getString("name"),
+                        LocalDate.parse(resultSet.getString("date")),
+                        LocalTime.parse(resultSet.getString("time"))
+                ),
+                resultSet.getLong("id")
         );
     }
 }
