@@ -10,13 +10,11 @@ import java.util.List;
 
 @Repository
 public class Reservations {
-    private final List<Reservation> reservations;
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired
     public Reservations(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.reservations = new ArrayList<Reservation>();
     }
 
     public List<Reservation> getReservationList() {
@@ -29,11 +27,11 @@ public class Reservations {
     }
 
     public void removeById(long deletingId) throws ReservationNotFoundException {
-        Reservation toDelete = this.reservations.stream()
-                .filter(reservation -> deletingId == reservation.id())
-                .findFirst()
-                .orElseThrow(ReservationNotFoundException::new);
-        this.reservations.remove(toDelete);
+        try {
+            jdbcTemplate.update("DELETE FROM reservation WHERE id = ?",deletingId);
+        } catch (Exception e) {
+            throw new ReservationNotFoundException();
+        }
     }
 }
 
