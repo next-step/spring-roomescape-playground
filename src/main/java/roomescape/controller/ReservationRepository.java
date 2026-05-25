@@ -38,10 +38,10 @@ public class ReservationRepository {
                 VALUES (?, ?, ?)
                 """;
         jdbcTemplate.update(sql,
-                reservation.getId(),
-                reservation.getName(),
-                reservation.getDate(),
-                reservation.getTime()
+                reservation.id(),
+                reservation.name(),
+                reservation.date(),
+                reservation.time()
         );
     }
 

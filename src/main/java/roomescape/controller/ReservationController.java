@@ -48,7 +48,7 @@ public class ReservationController {
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
-        boolean removed = reservations.removeIf(reservation -> reservation.getId().equals(id));
+        boolean removed = reservations.removeIf(reservation -> reservation.id().equals(id));
         if (!removed) {
             throw new NotFoundReservationException("존재하지 않는 예약을 지울 수 없습니다.");
         }
