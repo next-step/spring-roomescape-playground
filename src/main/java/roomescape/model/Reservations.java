@@ -1,5 +1,7 @@
 package roomescape.model;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import roomescape.model.errors.ReservationNotFoundException;
 
@@ -9,17 +11,26 @@ import java.util.List;
 @Repository
 public class Reservations {
     private final List<Reservation> reservations;
+    private final JdbcTemplate jdbcTemplate;
 
-    public Reservations() {
+    @Autowired
+    public Reservations(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
         this.reservations = new ArrayList<Reservation>();
     }
 
     public List<Reservation> getReservationList() {
-        List<Reservation> copiedReservation = new ArrayList<>();
-        for (Reservation reservation : this.reservations) {
-            copiedReservation.add(reservation.copy());
-        }
-        return List.copyOf(copiedReservation);
+
+        return jdbcTemplate.query("SELECT * FROM reservation",
+                (resultSet, rowNum) -> {
+                    return (Reservation) new Reservation(
+                            resultSet.getLong("id"),
+                            resultSet.getString("name"),
+                            resultSet.getString("date"),
+                            resultSet.getString("time")
+                    );
+                }
+        );
     }
 
     public void add(Reservation reservation) {
