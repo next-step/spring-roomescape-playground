@@ -36,9 +36,9 @@ public class ReservationController {
 
         Reservation reservation = new Reservation(
                 index.incrementAndGet(),
-                reservationRequest.getName(),
-                reservationRequest.getDate(),
-                reservationRequest.getTime()
+                reservationRequest.name(),
+                reservationRequest.date(),
+                reservationRequest.time()
         );
         reservationRepository.insert(reservation);
 
