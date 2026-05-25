@@ -2,21 +2,17 @@ package roomescape.dto;
 
 import roomescape.exception.InvalidReservationException;
 
-public class ReservationRequest {
-    private final Long id;
-    private final String name;
-    private final String date;
-    private final String time;
-
-    public ReservationRequest(Long id, String name, String date, String time) {
-        this.id = id;
-        this.name = name;
-        this.date = date;
-        this.time = time;
-        validateReservationRequest();
+public record ReservationRequest(
+        Long id,
+        String name,
+        String date,
+        String time
+) {
+    public ReservationRequest {
+        validateReservationRequest(name, date, time);
     }
 
-    private void validateReservationRequest() {
+    private void validateReservationRequest(String name, String date, String time) {
         if (name == null || name.isBlank()) {
             throw new InvalidReservationException("ERROR: 이름을 작성하여야 합니다.");
         }
@@ -26,21 +22,5 @@ public class ReservationRequest {
         if (time == null || time.isBlank()) {
             throw new InvalidReservationException("ERROR: 시간을 작성하여야 합니다.");
         }
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public String getTime() {
-        return time;
     }
 }
