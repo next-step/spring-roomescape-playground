@@ -20,17 +20,7 @@ public class Reservations {
     }
 
     public List<Reservation> getReservationList() {
-
-        return jdbcTemplate.query("SELECT * FROM reservation",
-                (resultSet, rowNum) -> {
-                    return (Reservation) new Reservation(
-                            resultSet.getLong("id"),
-                            resultSet.getString("name"),
-                            resultSet.getString("date"),
-                            resultSet.getString("time")
-                    );
-                }
-        );
+        return jdbcTemplate.query("SELECT * FROM reservation", Reservation::new);
     }
 
     public void add(Reservation reservation) {
