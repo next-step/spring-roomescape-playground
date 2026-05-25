@@ -19,13 +19,11 @@ import roomescape.model.errors.ReservationNotFoundException;
 
 import java.net.URI;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 @RestController
 @RequestMapping(ReservationController.RESERVATION_API_ENDPOINT_ROOT)
 public class ReservationController {
     public final static String RESERVATION_API_ENDPOINT_ROOT = "/reservations";
-    private final AtomicLong index = new AtomicLong(1);
     private final Reservations reservations;
 
     @Autowired
@@ -41,12 +39,10 @@ public class ReservationController {
 
     @PostMapping
     public ResponseEntity<Reservation> createReservation(@RequestBody @Valid ReservationDto reservationDto) {
-        long newIndex = this.index.getAndIncrement();
-        Reservation newReservation = new Reservation(newIndex, reservationDto);
-        this.reservations.add(newReservation);
+        Reservation newReservation = this.reservations.add(reservationDto);
 
         return ResponseEntity
-                .created(URI.create(RESERVATION_API_ENDPOINT_ROOT + "/" + newIndex))
+                .created(URI.create(RESERVATION_API_ENDPOINT_ROOT + "/" + newReservation.id()))
                 .body(newReservation);
     }
 
