@@ -20,5 +20,6 @@
 - 예약 관리 기능이 정상 동작하도록 기능을 완성하세요.
 - 
 ### 구현 사항
-- [ ] Reservations의 add() 메소드 수정 
-- [ ] Reservations의 removeById() 메소드 수정 
+- [x] Reservations의 add() 메소드 수정 
+- [x] Reservations의 removeById() 메소드 수정 
+- [x] ReservationController가 더이상 atomic에 의존하지 않도록 수정 
