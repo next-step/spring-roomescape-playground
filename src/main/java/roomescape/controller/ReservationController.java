@@ -32,11 +32,11 @@ public class ReservationController {
         long id = reservationRepository.insert(reservationRequest);
         Reservation reservation = new Reservation(
                 id,
-                reservationRequest.getName(),
-                reservationRequest.getDate(),
-                reservationRequest.getTime()
+                reservationRequest.name(),
+                reservationRequest.date(),
+                reservationRequest.time()
         );
-        return ResponseEntity.created(URI.create("/reservations/" + reservation.getId()))
+        return ResponseEntity.created(URI.create("/reservations/" + reservation.id()))
                 .body(reservation);
     }
 
