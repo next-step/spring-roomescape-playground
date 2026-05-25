@@ -49,64 +49,8 @@ src/main/resources
     ├── reservation.html
     ├── new-reservation.html
     └── time.html
-```
 
-## 실행 방법
 
-```bash
-./gradlew bootRun
-```
-
-Windows PowerShell에서는 다음 명령을 사용할 수 있습니다.
-
-```powershell
-.\gradlew.bat bootRun
-```
-
-애플리케이션 실행 후 아래 주소로 접속합니다.
-
-- 홈: `http://localhost:8080/`
-- 예약 관리: `http://localhost:8080/reservation`
-- H2 Console: `http://localhost:8080/h2-console`
-
-H2 Console 접속 정보는 다음과 같습니다.
-
-- JDBC URL: `jdbc:h2:mem:database`
-- User Name: `sa`
-- Password: 비워둠
-
-## 테스트 실행
-
-```bash
-./gradlew test
-```
-
-Windows PowerShell에서는 다음 명령을 사용할 수 있습니다.
-
-```powershell
-.\gradlew.bat test
-```
-
-## API
-
-### 예약 목록 조회
-
-```http
-GET /reservations
-```
-
-응답 예시:
-
-```json
-[
-  {
-    "id": 1,
-    "name": "브라운",
-    "date": "2099-08-05",
-    "time": "11:40"
-  }
-]
-```
 
 ### 예약 생성
 
@@ -114,30 +58,6 @@ GET /reservations
 POST /reservations
 Content-Type: application/json
 ```
-
-요청 예시:
-
-```json
-{
-  "name": "브라운",
-  "date": "2099-08-05",
-  "time": "11:40"
-}
-```
-
-성공 시 `201 Created`를 반환하고, `Location` 헤더에 생성된 예약 경로를 포함합니다.
-
-```http
-Location: /reservations/1
-```
-
-### 예약 삭제
-
-```http
-DELETE /reservations/{id}
-```
-
-성공 시 `204 No Content`를 반환합니다.
 
 ## 검증 정책
 
@@ -168,5 +88,4 @@ CREATE TABLE reservation
 ```
 
 ## 참고
-
 현재 백엔드에서 구현된 API는 예약 관리(`/reservations`)입니다. 정적 리소스와 템플릿에는 시간 관리 화면 및 관련 JavaScript도 포함되어 있지만, `/times` API는 아직 구현되어 있지 않습니다.
