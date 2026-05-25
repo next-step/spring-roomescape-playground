@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import roomescape.dto.ReservationDto;
 import roomescape.model.Reservation;
 import roomescape.model.Reservations;
+import roomescape.model.errors.ReservationNotFoundException;
 
 import java.net.URI;
 import java.util.List;
@@ -51,7 +52,7 @@ public class ReservationController {
 
     @DeleteMapping("/{deletingId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteReservation(@PathVariable Long deletingId) {
+    public void deleteReservation(@PathVariable Long deletingId) throws ReservationNotFoundException {
         this.reservations.removeById(deletingId);
     }
 }

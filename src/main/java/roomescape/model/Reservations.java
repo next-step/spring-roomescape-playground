@@ -26,7 +26,7 @@ public class Reservations {
         this.reservations.add(reservation);
     }
 
-    public void removeById(long deletingId) {
+    public void removeById(long deletingId) throws ReservationNotFoundException {
         Reservation toDelete = this.reservations.stream()
                 .filter(reservation -> deletingId == reservation.id())
                 .findFirst()
