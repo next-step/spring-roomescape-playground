@@ -1,9 +1,13 @@
 package roomescape.controller;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
+import roomescape.dto.ReservationRequest;
 
+import java.sql.PreparedStatement;
 import java.util.List;
 
 @Repository
@@ -32,23 +36,33 @@ public class ReservationRepository {
         );
     }
 
-    public void insert(Reservation reservation) {
+    public long insert(ReservationRequest reservation) {
         String sql = """
-                INSERT INTO reservation (id, name, date, time)
+                INSERT INTO reservation (name, date, time)
                 VALUES (?, ?, ?)
                 """;
-        jdbcTemplate.update(sql,
-                reservation.id(),
-                reservation.name(),
-                reservation.date(),
-                reservation.time()
-        );
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(
+                    sql,
+                    new String[]{"id"}
+            );
+            ps.setString(1, reservation.name());
+            ps.setString(2, reservation.date());
+            ps.setString(3, reservation.time());
+
+            return ps;
+        }, keyHolder);
+
+        return keyHolder.getKey().longValue();
     }
 
-    public void delete(Long id) {
+    public boolean delete(Long id) {
         String sql = """
-                DELETE FROM reservation WHERE id = 1
+                DELETE FROM reservation WHERE id = ?
                 """;
-        jdbcTemplate.update(sql, id);
+        int result = jdbcTemplate.update(sql, id);
+        return result > 0;
     }
 }
