@@ -24,7 +24,8 @@ public class Reservations {
     }
 
     public void add(Reservation reservation) {
-        this.reservations.add(reservation);
+        jdbcTemplate.update("INSERT INTO reservation (name, date, time) values (?, ? ,?)",
+                reservation.name(), reservation.date(), reservation.time());
     }
 
     public void removeById(long deletingId) throws ReservationNotFoundException {
