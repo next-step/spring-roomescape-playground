@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import roomescape.dto.ReservationRequest;
 import roomescape.exception.NotFoundReservationException;
 import roomescape.model.Reservation;
+import roomescape.repository.ReservationRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,9 +14,14 @@ import java.util.concurrent.atomic.AtomicLong;
 public class ReservationService {
     private final List<Reservation> reservations = new ArrayList<>();
     private final AtomicLong index = new AtomicLong(1);
+    private final ReservationRepository reservationRepository;
+
+    public ReservationService(ReservationRepository reservationRepository) {
+        this.reservationRepository = reservationRepository;
+    }
 
     public List<Reservation> findReservations() {
-        return reservations;
+        return reservationRepository.findAll();
     }
 
     public Reservation createReservation(ReservationRequest reservationRequest) {
