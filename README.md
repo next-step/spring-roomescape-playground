@@ -1,7 +1,7 @@
 # 단계별 설명
 
 ## 5단계
-    1. spring-boot-starter-jdbc 와 h2 의존성 추가
+    1. spgring-boot-starter-jdbc 와 h2 의존성 추가
     2. 테이블 스키마 정의
     3. 데이터 베이스 설정
 ## 6단계
