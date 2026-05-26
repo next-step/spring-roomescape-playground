@@ -48,11 +48,23 @@ public class TimeDao {
     }
 
     public int deleteById(Long id) {
-        String deleteSql = """
-                DELETE FROM time 
+        String deleteSql = "DELETE FROM time WHERE id = ?";
+        return jdbcTemplate.update(deleteSql, id);
+    }
+
+    public Time findById(Long id) {
+        String sql = """
+                SELECT id, time 
+                FROM time 
                 WHERE id = ?
                 """;
-
-        return jdbcTemplate.update(deleteSql, id);
+        try {
+            return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> new Time(
+                    rs.getLong("id"),
+                    java.time.LocalTime.parse(rs.getString("time"))
+            ), id);
+        } catch (org.springframework.dao.EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 }
