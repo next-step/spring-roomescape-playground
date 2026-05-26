@@ -37,8 +37,7 @@ public class Reservations {
         }, keyHolder);
 
         long newId = keyHolder.getKey().longValue();
-        return jdbcTemplate.queryForObject("SELECT * FROM reservation WHERE id = ?", Reservation::new, newId);
-
+        return new Reservation(newId, reservationDto);
     }
 
     public void removeById(long deletingId) throws ReservationNotFoundException {

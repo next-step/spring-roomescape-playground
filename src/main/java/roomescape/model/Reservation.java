@@ -6,10 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public record Reservation(long id, String name, String date, String time) {
-    public Reservation(long id, ReservationDto reservationDto) {
-        this(id, reservationDto.name(), reservationDto.date(), reservationDto.time());
-    }
-
     public Reservation(ResultSet resultSet, int rowNum) throws SQLException {
         this(resultSet.getLong("id"),
                 resultSet.getString("name"),
@@ -17,7 +13,7 @@ public record Reservation(long id, String name, String date, String time) {
                 resultSet.getString("time"));
     }
 
-    public Reservation copy() {
-        return new Reservation(this.id, this.name, this.date, this.time);
+    public Reservation(long id, ReservationDto reservationDto) {
+        this(id, reservationDto.name(), reservationDto.date(), reservationDto.time());
     }
 }
