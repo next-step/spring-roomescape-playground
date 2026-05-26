@@ -13,6 +13,6 @@ public class RoomescapeWebController {
 
     @GetMapping("/reservation")
     public String showReservationPage() {
-        return "reservation";
+        return "new-reservation";
     }
 }

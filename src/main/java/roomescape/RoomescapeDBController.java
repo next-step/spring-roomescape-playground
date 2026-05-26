@@ -1,7 +1,10 @@
 package roomescape;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
+import java.util.stream.IntStream;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,13 +30,14 @@ public class RoomescapeDBController {
     @GetMapping("/reservations")
     @ResponseBody
     public ResponseEntity<List<Reservation>> showAllReservations() {
-        String sqlQuery = "SELECT * from Reservations";
+        String sqlQuery = "SELECT r.id, r.name, r.date, t.time from Reservations as r INNER JOIN Times as t on r.id = t.time_id";
         List<Reservation> reservations = jdbcTemplate.query(
                 sqlQuery, (resultSet, rowNum) -> {
                     Reservation reservation = new Reservation(
                             resultSet.getInt("id"),
                             resultSet.getString("name"),
-                            resultSet.getTimestamp("datetime").toLocalDateTime()
+                            resultSet.getDate("date").toLocalDate(),
+                            resultSet.getTime("t.time").toLocalTime()
                     );
                     return reservation;
                 });
@@ -43,22 +47,29 @@ public class RoomescapeDBController {
     @PostMapping("/reservations")
     @ResponseBody
     public ResponseEntity<Reservation> createReservation(@RequestBody Reservation request) {
-        String selectQuery = "SELECT datetime from Reservations";
-        List<LocalDateTime> reservationTime = jdbcTemplate.query(
-                selectQuery, (resultSet, rowNum) -> resultSet.getObject("datetime", LocalDateTime.class)
+        String selectQuery = "SELECT r.date, t.time from Reservations as r INNER JOIN Times as t on r.id = t.time_id";
+        List<LocalDate> reservationDates = jdbcTemplate.query(
+                selectQuery, (rs, rowNum) -> rs.getDate("date").toLocalDate()
         );
-        checkDuplicateException(request.getDateTime(), reservationTime);
+        List<LocalTime> reservationTimes = jdbcTemplate.query(
+                selectQuery, (rs, rowNum) -> rs.getTime("time").toLocalTime()
+        );
+        checkDuplicateException(request.getDate(), request.getTime(), reservationDates, reservationTimes);
 
-        String sqlQuery = "INSERT INTO Reservations(name, datetime) VALUES (?, ?)";
-        jdbcTemplate.update(sqlQuery, request.getName(), request.getDateTime());
+        String sqlQuery = "INSERT INTO Reservations(name, date) VALUES (?, ?)";
+        jdbcTemplate.update(sqlQuery, request.getName(), request.getDate());
 
-        sqlQuery = "SELECT * FROM Reservations ORDER BY id DESC LIMIT 1";
-        Reservation reservation = jdbcTemplate.queryForObject(sqlQuery, (rs, rowNum) ->
-                new Reservation(
-                        rs.getInt("id"),
-                        rs.getString("name"),
-                        rs.getTimestamp("datetime").toLocalDateTime()
-                )
+        String latestIdQuery = "SELECT id FROM Reservations ORDER BY id DESC LIMIT 1";
+        Integer latestId = jdbcTemplate.queryForObject(latestIdQuery, Integer.class);
+
+        String insertTimeQuery = "INSERT INTO Times(time_id, time) VALUES (?, ?)";
+        jdbcTemplate.update(insertTimeQuery, latestId, request.getTime());
+
+        Reservation reservation = new Reservation(
+                latestId,
+                request.getName(),
+                request.getDate(),
+                request.getTime()
         );
 
         HttpHeaders headers = new HttpHeaders();
@@ -69,6 +80,9 @@ public class RoomescapeDBController {
     @DeleteMapping("/reservations/{id}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void deleteReservation(@PathVariable int id) {
+        String deleteTimeQuery = "DELETE FROM Times WHERE time_id = ?";
+        jdbcTemplate.update(deleteTimeQuery, id);
+
         String sqlQuery = "DELETE FROM Reservations WHERE id = ?";
         int deletedRows = jdbcTemplate.update(sqlQuery, id);
         if (deletedRows == 0) {
@@ -77,9 +91,14 @@ public class RoomescapeDBController {
 
     }
 
-    private void checkDuplicateException(LocalDateTime requestTime, List<LocalDateTime> reservationTimes) {
-        boolean isDuplicate = reservationTimes.stream()
-                .anyMatch(reservationTime -> reservationTime.isEqual(requestTime));
+    private void checkDuplicateException(LocalDate requestDate, LocalTime requestTime,
+                                         List<LocalDate> reservationDates, List<LocalTime> reservationTimes) {
+        LocalDateTime requestDateTime = LocalDateTime.of(requestDate, requestTime);
+        List<LocalDateTime> reservationDateTimes = IntStream.range(0, reservationDates.size())
+                .mapToObj(i -> LocalDateTime.of(reservationDates.get(i), reservationTimes.get(i)))
+                .toList();
+        boolean isDuplicate = reservationDateTimes.stream()
+                .anyMatch(reservationTime -> reservationTime.isEqual(requestDateTime));
 
         if (isDuplicate) {
             throw new ReservationException.DuplicateTimeException();
