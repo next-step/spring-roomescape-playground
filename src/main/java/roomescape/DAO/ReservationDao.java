@@ -30,12 +30,12 @@ public class ReservationDao {
         return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> rs.getDate("date").toLocalDate());
     }
 
-    public List<LocalTime> findAllTimes() {
+    public List<LocalTime> findAllReservationTimes() {
         String sqlQuery = "SELECT t.time FROM Reservations AS r INNER JOIN Times AS t ON r.id = t.time_id";
         return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> rs.getTime("time").toLocalTime());
     }
 
-    public Reservation save(Reservation reservation) {
+    public Reservation saveReservation(Reservation reservation) {
         String insertReservationQuery = "INSERT INTO Reservations(name, date) VALUES (?, ?)";
         jdbcTemplate.update(insertReservationQuery, reservation.getName(), reservation.getDate());
 
@@ -46,6 +46,17 @@ public class ReservationDao {
         jdbcTemplate.update(insertTimeQuery, latestId, reservation.getTime());
 
         return new Reservation(latestId, reservation.getName(), reservation.getDate(), reservation.getTime());
+    }
+
+    public LocalTime findTimeById(int id) {
+        String sqlQuery = "SELECT t.time FROM Reservations AS r " +
+                "INNER JOIN Times AS t ON r.id = t.time_id " +
+                "WHERE r.id = ?";
+        try {
+            return jdbcTemplate.queryForObject(sqlQuery, LocalTime.class, id);
+        } catch (org.springframework.dao.EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 
     public int deleteById(int id) {

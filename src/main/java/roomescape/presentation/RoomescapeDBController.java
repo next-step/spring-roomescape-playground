@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import roomescape.DAO.ReservationDao;
+import roomescape.DAO.TimeDao;
 import roomescape.domain.Reservation;
 import roomescape.service.ReservationException;
 import roomescape.service.ValidTimeChecker;
@@ -23,10 +24,12 @@ import roomescape.service.ValidTimeChecker;
 public class RoomescapeDBController {
 
     private final ReservationDao reservationDao;
+    private final TimeDao timeDao;
     private final ValidTimeChecker timeChecker;
 
-    public RoomescapeDBController(ReservationDao reservationDao) {
+    public RoomescapeDBController(ReservationDao reservationDao, TimeDao timeDao) {
         this.reservationDao = reservationDao;
+        this.timeDao = timeDao;
         this.timeChecker = new ValidTimeChecker();
     }
 
@@ -39,8 +42,8 @@ public class RoomescapeDBController {
 
     @GetMapping("/times")
     @ResponseBody
-    public ResponseEntity<List<LocalTime>> showAllTimes() {
-        List<LocalTime> times = reservationDao.findAllTimes();
+    public ResponseEntity<List<LocalTime>> showAllValidTimes() {
+        List<LocalTime> times = timeDao.findAllValidTimes();
         return ResponseEntity.ok().body(times);
     }
 
@@ -48,23 +51,28 @@ public class RoomescapeDBController {
     @ResponseBody
     public ResponseEntity<Reservation> createReservation(@RequestBody Reservation request) {
         List<LocalDate> reservationDates = reservationDao.findAllDates();
-        List<LocalTime> reservationTimes = reservationDao.findAllTimes();
+        List<LocalTime> reservationTimes = reservationDao.findAllReservationTimes();
 
         timeChecker.checkDuplicateException(request.getDate(), request.getTime(), reservationDates, reservationTimes);
 
-        Reservation savedReservation = reservationDao.save(request);
+        Reservation savedReservation = reservationDao.saveReservation(request);
+        timeDao.deleteValidTime(request.getTime());
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Location", "/reservations/" + savedReservation.getId());
         return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(savedReservation);
     }
 
+
     @DeleteMapping("/reservations/{id}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void deleteReservation(@PathVariable int id) {
-        int deletedRows = reservationDao.deleteById(id);
-        if (deletedRows == 0) {
+        LocalTime reservedTime = reservationDao.findTimeById(id);
+        if (reservedTime == null) {
             throw new ReservationException.NotFoundReservationException("해당 예약이 존재하지 않습니다.");
         }
+
+        reservationDao.deleteById(id);
+        timeDao.saveValidTime(reservedTime);
     }
 }
