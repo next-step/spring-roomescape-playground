@@ -52,9 +52,9 @@ public class Reservations {
 
     private Reservation extractReservationFromResultSet(ResultSet resultSet, int rowNum) throws SQLException {
         return new Reservation(resultSet.getLong("id"),
-                    resultSet.getString("name"),
-                    resultSet.getString("date"),
-                    resultSet.getString("time"));
+                resultSet.getString("name"),
+                resultSet.getString("date"),
+                resultSet.getString("time"));
     }
 }
 
