@@ -128,4 +128,21 @@ class DatabaseTest {
                 .statusCode(400);
     }
 
+    @Autowired
+    private roomescape.ReservationController reservationController;
+
+    @Test
+    void verifyController_DoesNotHaveJdbcTemplateDependency() {
+        boolean isJdbcTemplateInjected = false;
+
+        for (java.lang.reflect.Field field : reservationController.getClass().getDeclaredFields()) {
+            if (field.getType().equals(org.springframework.jdbc.core.JdbcTemplate.class)) {
+                isJdbcTemplateInjected = true;
+                break;
+            }
+        }
+
+        org.assertj.core.api.Assertions.assertThat(isJdbcTemplateInjected).isFalse();
+    }
+
 }
