@@ -12,6 +12,8 @@ import roomescape.timeslot.model.Timeslot;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @Repository
@@ -39,5 +41,10 @@ public class TimeslotRespository {
 
         namedParameterJdbcTemplate.update(query, parameterSource, keyHolder);
         return Objects.requireNonNull(keyHolder.getKey()).longValue();
+    }
+
+    public List<Timeslot> getAllTimeslots() {
+        String query = "SELECT * FROM timeslot";
+        return namedParameterJdbcTemplate.query(query, Map.of(), rowMapper);
     }
 }
