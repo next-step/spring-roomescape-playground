@@ -40,7 +40,7 @@ public class JdbcReservationRepository {
         String query = "SELECT r.id as reservation_id, r.name, r.roomId, r.date, " +
                 "t.id as time_id, t.time as time_value " +
                 "FROM reservation as r " +
-                "INNER JOIN time as t ON r.time_id = t.id";
+                "INNER JOIN timeslot as t ON r.time_id = t.id";
 
         return namedParameterJdbcTemplate.query(query, Map.of(), rowMapper);
     }
@@ -49,7 +49,7 @@ public class JdbcReservationRepository {
         String query = "SELECT r.id as reservation_id, r.name, r.roomId, r.date, " +
                 "t.id as time_id, t.time as time_value " +
                 "FROM reservation as r " +
-                "INNER JOIN time as t ON r.time_id = t.id " +
+                "INNER JOIN timeslot as t ON r.time_id = t.id " +
                 "WHERE r.id = :id";
 
         MapSqlParameterSource parameterSource = new MapSqlParameterSource()
