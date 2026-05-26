@@ -44,7 +44,7 @@ public class TimeslotService {
     }
 
     public TimeslotResponse getTimeslotById(Long timeId) {
-        Timeslot timeslot = timeslotRespository.getTimeslotById(id);
+        Timeslot timeslot = timeslotRespository.getTimeslotById(timeId);
         return convertIntoTimeslotDTO(timeslot);
     }
 

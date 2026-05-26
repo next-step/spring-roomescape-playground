@@ -1,3 +1,11 @@
+CREATE TABLE timeslot
+(
+    id       BIGINT NOT NULL AUTO_INCREMENT,
+    timeslot TIME   NOT NULL,
+
+    PRIMARY KEY (id)
+);
+
 CREATE TABLE reservation
 (
     id     BIGINT       NOT NULL AUTO_INCREMENT,
@@ -13,10 +21,3 @@ CREATE TABLE reservation
 
 CREATE INDEX reservation_date_time ON reservation (date, time);
 
-CREATE TABLE timeslot
-(
-    id       BIGINT NOT NULL AUTO_INCREMENT,
-    timeslot TIME   NOT NULL,
-
-    PRIMARY KEY (id)
-);
