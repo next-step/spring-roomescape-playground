@@ -27,8 +27,8 @@ public class ReservationDao {
                     WHERE date = ? AND time_id = ?
                 )
                 """;
-        return jdbcTemplate.queryForObject(
-                sqlForDuplicateCheck, Boolean.class, date.toString(), timeId);
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(
+                sqlForDuplicateCheck, Boolean.class, date.toString(), timeId));
     }
 
     public Long insert(Reservation reservation) {
