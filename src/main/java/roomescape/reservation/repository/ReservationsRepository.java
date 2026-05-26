@@ -1,4 +1,4 @@
-package roomescape.reservation.dao;
+package roomescape.reservation.repository;
 
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
@@ -22,10 +22,10 @@ import java.util.List;
 import java.util.Objects;
 
 @Repository
-public class ReservationsDao {
+public class ReservationsRepository {
     private final JdbcTemplate jdbcTemplate;
 
-    public ReservationsDao(@Nonnull JdbcTemplate jdbcTemplate) {
+    public ReservationsRepository(@Nonnull JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 

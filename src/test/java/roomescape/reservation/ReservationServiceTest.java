@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import roomescape.global.DatabaseInitialization;
-import roomescape.reservation.dao.ReservationsDao;
+import roomescape.reservation.repository.ReservationsRepository;
 import roomescape.reservation.domain.ReservationId;
 import roomescape.reservation.domain.Reservations;
 import roomescape.reservation.dto.CreateReservationRequest;
@@ -31,7 +31,7 @@ public class ReservationServiceTest {
 		DatabaseInitialization databaseInitialization = new DatabaseInitialization(jdbcTemplate);
 		databaseInitialization.initializeTables();
 		
-		Reservations reservations = new Reservations(new ReservationsDao(jdbcTemplate));
+		Reservations reservations = new Reservations(new ReservationsRepository(jdbcTemplate));
 		this.service = new ReservationService(reservations);
 	}
 	

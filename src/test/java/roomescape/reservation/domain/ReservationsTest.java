@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import roomescape.global.DatabaseInitialization;
-import roomescape.reservation.dao.ReservationsDao;
+import roomescape.reservation.repository.ReservationsRepository;
 
 import java.time.LocalDateTime;
 
@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.*;
 
 @JdbcTest
 public class ReservationsTest {
-	private ReservationsDao reservationsDao;
+	private ReservationsRepository reservationsRepository;
 	private Reservations reservations;
 	
 	@Autowired
@@ -21,8 +21,8 @@ public class ReservationsTest {
 		DatabaseInitialization databaseInitialization = new DatabaseInitialization(jdbcTemplate);
 		databaseInitialization.initializeTables();
 		
-		reservationsDao = new ReservationsDao(jdbcTemplate);
-		reservations = new Reservations(reservationsDao);
+		reservationsRepository = new ReservationsRepository(jdbcTemplate);
+		reservations = new Reservations(reservationsRepository);
 	}
 	
 	@Test
@@ -76,7 +76,7 @@ public class ReservationsTest {
 	
 	@Test
 	void 존재하지_않는_예약을_삭제할_수_없다() {
-		long nonExistingId = reservationsDao.getAll().stream()
+		long nonExistingId = reservationsRepository.getAll().stream()
 				.mapToLong(reservation -> reservation.getId().id())
 				.max().orElse(0) + 1;
 		
@@ -87,9 +87,9 @@ public class ReservationsTest {
 	
 	
 	private Reservation createFresh(CreateReservationInfo reservation) {
-		Reservation previous = reservationsDao.getByTime(reservation.time());
+		Reservation previous = reservationsRepository.getByTime(reservation.time());
 		if(previous != null) {
-			reservationsDao.delete(previous.getId());
+			reservationsRepository.delete(previous.getId());
 		}
 		return reservations.create(reservation);
 	}
