@@ -22,6 +22,6 @@ public class RoomescapeApplication implements CommandLineRunner {
         jdbcTemplate.execute(
                 "CREATE TABLE Reservations(id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255) NOT NULL, date DATE NOT NULL)");
         jdbcTemplate.execute(
-                "CREATE TABLE Times(time_id INT FOREIGN KEY REFERENCES Reservations(id), time TIME NOT NULL)");
+                "CREATE TABLE Times(time_id INT, time TIME NOT NULL, FOREIGN KEY (time_id) REFERENCES Reservations(id))");
     }
 }
