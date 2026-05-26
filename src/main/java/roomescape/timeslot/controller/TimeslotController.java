@@ -33,4 +33,10 @@ public class TimeslotController {
     public ResponseEntity<List<TimeslotResponse>> getAllTimeslots() {
         return ResponseEntity.ok(timeslotService.getAllTimeslots());
     }
+
+    @DeleteMapping
+    public ResponseEntity<Void> deleteTimeslotById(@PathVariable Long id) {
+        timeslotService.deleteTimeslotById(id);
+        return ResponseEntity.noContent().build();
+    }
 }

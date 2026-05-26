@@ -43,6 +43,16 @@ public class TimeslotRespository {
         return Objects.requireNonNull(keyHolder.getKey()).longValue();
     }
 
+    public int deleteTimeslotById(Long id) {
+        String query = "DELETE FROM timeslot " +
+                "WHERE id = :id";
+
+        MapSqlParameterSource parameterSource = new MapSqlParameterSource()
+                .addValue("id", id);
+
+        namedParameterJdbcTemplate.update(query, parameterSource);
+    }
+
     public List<Timeslot> getAllTimeslots() {
         String query = "SELECT * FROM timeslot";
         return namedParameterJdbcTemplate.query(query, Map.of(), rowMapper);

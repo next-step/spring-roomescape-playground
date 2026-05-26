@@ -8,6 +8,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import roomescape.reservations.exception.*;
+import roomescape.timeslot.exception.TimeslotException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -27,7 +28,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ReservationException.class)
     public ResponseEntity<String> handleReservationException(ReservationException e) {
         log.error("[error] Reservation 진행중 오류. 오류 데이터 원본: {}, 에러 메시지: {}", e.getDebugData(), e.getMessage());
-        return ResponseEntity.badRequest().body(e.getMessage());
+        return ResponseEntity.badRequest().body("무언가 잘못됐어요! 다시 시도해주세요.");
+    }
+
+    @ExceptionHandler(TimeslotException.class)
+    public ResponseEntity<String> handleTimeslotException(TimeslotException e) {
+        log.error("[error]: Timeslot 진행중 오류. 오류 데이터 원본: {}, 에러 메시지: {}", e.getDebugData(), e.getMessage());
+        return ResponseEntity.badRequest().body("무언가 잘못됐어요! 다시 시도해주세요.");
     }
 
     @ExceptionHandler(Exception.class)
