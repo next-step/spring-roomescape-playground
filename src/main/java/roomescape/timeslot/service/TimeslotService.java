@@ -43,6 +43,11 @@ public class TimeslotService {
                 .toList();
     }
 
+    public TimeslotResponse getTimeslotById(Long timeId) {
+        Timeslot timeslot = timeslotRespository.getTimeslotById(id);
+        return convertIntoTimeslotDTO(timeslot);
+    }
+
     public void deleteTimeslotById(Long id) {
         int deletedRowCount = timeslotRespository.deleteTimeslotById(id);
         if (deletedRowCount == 0) {

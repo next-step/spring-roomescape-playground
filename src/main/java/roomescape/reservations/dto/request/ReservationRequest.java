@@ -14,7 +14,7 @@ public record ReservationRequest(
         String roomId,
 
         @NotNull(message = "예약 시간은 필수로 입력해주셔야 해요!")
-        LocalTime time,
+        Long timeId,
 
         @NotNull(message = "예약 날짜는 필수로 입력해주셔야 해요!")
         LocalDate date

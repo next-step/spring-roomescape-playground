@@ -1,6 +1,7 @@
 package roomescape.reservations.model;
 
 import roomescape.reservations.exception.ReservationException;
+import roomescape.timeslot.model.Timeslot;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -14,19 +15,14 @@ public class Reservation {
     private String name;
     private String roomId;
     private LocalDate date;
-    private LocalTime time;
+    private Timeslot time;
 
     protected Reservation() {
-        this.id = null;
-        this.name = null;
-        this.roomId = null;
-        this.date = null;
-        this.time = null;
     }
 
-    public Reservation(Long id, String name, String roomId, LocalDate date, LocalTime time) {
-        validateReservationInBusinessHour(time);
-        validateReservationTimeIsNotPast(date, time);
+    public Reservation(Long id, String name, String roomId, LocalDate date, Timeslot time) {
+        validateReservationInBusinessHour(time.getTimeslot());
+        validateReservationTimeIsNotPast(date, time.getTimeslot());
 
         this.id = id;
         this.name = name;
@@ -51,7 +47,7 @@ public class Reservation {
         return date;
     }
 
-    public LocalTime getTime() {
+    public Timeslot getTime() {
         return time;
     }
 

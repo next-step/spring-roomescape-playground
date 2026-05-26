@@ -7,9 +7,9 @@ import roomescape.reservations.dto.request.ReservationRequest;
 import roomescape.reservations.dto.response.ReservationResponse;
 import roomescape.reservations.model.Reservation;
 import roomescape.reservations.repository.JdbcReservationRepository;
+import roomescape.timeslot.model.Timeslot;
+import roomescape.timeslot.repository.TimeslotRespository;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -18,9 +18,11 @@ public class ReservationService {
     private static final int MAX_CAPACITY_PER_TIME = 5;
 
     private final JdbcReservationRepository jdbcReservationRepository;
+    private final TimeslotRespository timeslotRespository;
 
-    public ReservationService(JdbcReservationRepository jdbcReservationRepository) {
+    public ReservationService(JdbcReservationRepository jdbcReservationRepository, TimeslotRespository timeslotRespository) {
         this.jdbcReservationRepository = jdbcReservationRepository;
+        this.timeslotRespository = timeslotRespository;
     }
 
     public List<ReservationResponse> getAllReservations() {
@@ -40,15 +42,17 @@ public class ReservationService {
 
     @Transactional
     public ReservationResponse createReservation(ReservationRequest newReservation) {
-        int currentTimeReservationCount = jdbcReservationRepository.getReservationCountInTimeSlot(newReservation.roomId(), newReservation.date(), newReservation.time());
+        int currentTimeReservationCount = jdbcReservationRepository.getReservationCountInTimeSlot(newReservation.roomId(), newReservation.date(), newReservation.timeId());
         validateCapacityPerTime(currentTimeReservationCount);
+
+        Timeslot timeslot = timeslotRespository.getTimeslotById(newReservation.timeId());
 
         Reservation reservation = new Reservation(
                 null,
                 newReservation.name(),
                 newReservation.roomId(),
                 newReservation.date(),
-                newReservation.time()
+                timeslot
         );
 
         validateDuplicateReservation(reservation);
@@ -81,7 +85,7 @@ public class ReservationService {
 
     private void validateDuplicateReservation(Reservation newReservation) {
         boolean existsBySameUserAtSameTime = jdbcReservationRepository
-                .existsDuplicateReservationWithSameUser(newReservation.getDate(), newReservation.getTime(), newReservation.getName());
+                .existsDuplicateReservationWithSameUser(newReservation.getDate(), newReservation.getTime().getId(), newReservation.getName());
 
         if (existsBySameUserAtSameTime) {
             throw new ReservationException("이미 동일한 시간에 동일한 이름으로 예약건이 있어요!");

@@ -1,6 +1,5 @@
 package roomescape.reservations.repository;
 
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -8,8 +7,8 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.reservations.model.Reservation;
+import roomescape.timeslot.model.Timeslot;
 
-import java.sql.PreparedStatement;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -23,11 +22,14 @@ public class JdbcReservationRepository {
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     private final RowMapper<Reservation> rowMapper = (rs, rowNum) -> new Reservation(
-            rs.getLong("id"),
+            rs.getLong("reservation_id"),
             rs.getString("name"),
             rs.getString("roomId"),
             rs.getObject("date", LocalDate.class),
-            rs.getObject("time", LocalTime.class)
+            new Timeslot(
+                    rs.getLong("time_id"),
+                    rs.getObject("time_value", LocalTime.class)
+            )
     );
 
     public JdbcReservationRepository(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
@@ -35,13 +37,20 @@ public class JdbcReservationRepository {
     }
 
     public List<Reservation> getAllReservations() {
-        String query = "SELECT id, name, roomId, date, time FROM reservation";
+        String query = "SELECT r.id as reservation_id, r.name, r.roomId, r.date, " +
+                "t.id as time_id, t.time as time_value " +
+                "FROM reservation as r " +
+                "INNER JOIN time as t ON r.time_id = t.id";
+
         return namedParameterJdbcTemplate.query(query, Map.of(), rowMapper);
     }
 
     public Optional<Reservation> getReservationById(Long id) {
-        String query = "SELECT id, name, roomId, date, time FROM reservation " +
-                "WHERE id =:id";
+        String query = "SELECT r.id as reservation_id, r.name, r.roomId, r.date, " +
+                "t.id as time_id, t.time as time_value " +
+                "FROM reservation as r " +
+                "INNER JOIN time as t ON r.time_id = t.id " +
+                "WHERE r.id = :id";
 
         MapSqlParameterSource parameterSource = new MapSqlParameterSource()
                 .addValue("id", id);
@@ -50,8 +59,8 @@ public class JdbcReservationRepository {
     }
 
     public Long createReservation(Reservation reservation) {
-        String query = "INSERT INTO reservation(name, roomId, date, time) " +
-                "VALUES(:name, :roomId, :date, :time)";
+        String query = "INSERT INTO reservation(name, roomId, date, time_id) " +
+                "VALUES(:name, :roomId, :date, :timeId)";
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
@@ -59,21 +68,21 @@ public class JdbcReservationRepository {
                 .addValue("name", reservation.getName())
                 .addValue("roomId", reservation.getRoomId())
                 .addValue("date", reservation.getDate())
-                .addValue("time", reservation.getTime());
+                .addValue("timeId", reservation.getTime().getId());
 
         namedParameterJdbcTemplate.update(query, parameterSource, keyHolder);
 
         return Objects.requireNonNull(keyHolder.getKey()).longValue();
     }
 
-    public Integer getReservationCountInTimeSlot(String roomId, LocalDate date, LocalTime time) {
+    public Integer getReservationCountInTimeSlot(String roomId, LocalDate date, Long timeId) {
         String sql = "SELECT COUNT(*) FROM reservation " +
-                "WHERE roomId = :roomId AND date = :date AND time = :time";
+                "WHERE roomId = :roomId AND date = :date AND time_id = :timeId";
 
         MapSqlParameterSource parameterSource = new MapSqlParameterSource()
                 .addValue("roomId", roomId)
                 .addValue("date", date)
-                .addValue("time", time);
+                .addValue("timeId", timeId);
 
         return namedParameterJdbcTemplate.queryForObject(sql, parameterSource, Integer.class);
     }
@@ -88,13 +97,13 @@ public class JdbcReservationRepository {
         return namedParameterJdbcTemplate.update(query, parameterSource);
     }
 
-    public boolean existsDuplicateReservationWithSameUser(LocalDate date, LocalTime time, String name) {
+    public boolean existsDuplicateReservationWithSameUser(LocalDate date, Long timeId, String name) {
         String query = "SELECT COUNT(*) FROM reservation " +
-                "WHERE date = :date AND time = :time and name = :name";
+                "WHERE date = :date AND time_id = :timeId and name = :name";
 
         MapSqlParameterSource parameterSource = new MapSqlParameterSource()
                 .addValue("date", date)
-                .addValue("time", time)
+                .addValue("timeId", timeId)
                 .addValue("name", name);
 
         Integer affectedRowsCount = namedParameterJdbcTemplate.queryForObject(query, parameterSource, Integer.class);

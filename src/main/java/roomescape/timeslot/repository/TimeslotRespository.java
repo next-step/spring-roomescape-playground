@@ -57,4 +57,14 @@ public class TimeslotRespository {
         String query = "SELECT * FROM timeslot";
         return namedParameterJdbcTemplate.query(query, Map.of(), rowMapper);
     }
+
+    public Timeslot getTimeslotById(Long id) {
+        String query = "SELECT * FROM timeslot " +
+                "WHERE id = :id";
+
+        MapSqlParameterSource parameterSource = new MapSqlParameterSource()
+                .addValue("id", id);
+
+        return namedParameterJdbcTemplate.queryForObject(query, parameterSource, rowMapper);
+    }
 }

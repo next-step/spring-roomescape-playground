@@ -34,6 +34,11 @@ public class TimeslotController {
         return ResponseEntity.ok(timeslotService.getAllTimeslots());
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<TimeslotResponse> getTimeslotById(@PathVariable Long timeId) {
+        return ResponseEntity.ok(timeslotService.getTimeslotById(timeId));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTimeslotById(@PathVariable Long id) {
         timeslotService.deleteTimeslotById(id);
