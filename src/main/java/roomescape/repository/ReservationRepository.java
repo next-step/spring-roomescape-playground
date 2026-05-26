@@ -24,16 +24,16 @@ public class ReservationRepository {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public List<Reservation> findAllReservation() {
+    public List<Reservation> findAll() {
         return jdbcTemplate.query("SELECT * FROM reservation", reservationRowMapper());
     }
 
-    public Optional<Reservation> findReservationWithId(Long id) {
+    public Optional<Reservation> findWithId(Long id) {
         return jdbcTemplate.query("SELECT * FROM reservation WHERE id = ?", reservationRowMapper(), id)
                 .stream().findFirst();
     }
 
-    public Reservation insertReservation(Reservation reservation) {
+    public Reservation insert(Reservation reservation) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(
@@ -55,7 +55,7 @@ public class ReservationRepository {
         return Reservation.withId(reservation, key);
     }
 
-    public void deleteReservation(Reservation reservation) {
+    public void delete(Reservation reservation) {
         jdbcTemplate.update("DELETE FROM reservation WHERE id = ?", reservation.getId());
     }
 

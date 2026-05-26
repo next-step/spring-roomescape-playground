@@ -19,20 +19,20 @@ public class ReservationService {
     }
 
     public List<ReservationResponse> getAllReservations() {
-        return reservationRepository.findAllReservation().stream()
+        return reservationRepository.findAll().stream()
                 .map(ReservationResponse::from)
                 .toList();
     }
 
     public ReservationResponse createReservation(ReservationRequest request) {
         Reservation validatedReservation = Reservation.of(request.name(), request.date(), request.time());
-        Reservation reservation = reservationRepository.insertReservation(validatedReservation);
+        Reservation reservation = reservationRepository.insert(validatedReservation);
         return ReservationResponse.from(reservation);
     }
 
     public void deleteReservation(Long id) {
-        Reservation reservation = reservationRepository.findReservationWithId(id)
+        Reservation reservation = reservationRepository.findWithId(id)
                         .orElseThrow(() -> new ReservationNotFoundException(id));
-        reservationRepository.deleteReservation(reservation);
+        reservationRepository.delete(reservation);
     }
 }
