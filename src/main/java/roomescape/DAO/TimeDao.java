@@ -26,7 +26,7 @@ public class TimeDao {
     }
 
     public void deleteValidTime(LocalTime requestTime) {
-        String deleteQuery = "DELETE FROM ValidTimes WHERE requestTime = ?";
+        String deleteQuery = "DELETE FROM ValidTimes WHERE time = ?";
         jdbcTemplate.update(deleteQuery, requestTime);
     }
 }

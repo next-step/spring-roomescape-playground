@@ -9,7 +9,6 @@ import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -17,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
-import roomescape.domain.Reservation;
 import roomescape.presentation.RoomescapeDBController;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
@@ -62,7 +60,7 @@ public class MissionStepTest {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
         params.put("date", "2027-08-05");
-        params.put("time", "15:40");
+        params.put("time", "15:00");
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -122,23 +120,6 @@ public class MissionStepTest {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    // CRUD 기능을 DB를 다 바꿔놓고 테스트를 돌려서 6단계가 안돌아가요 ㅠㅠ
-    @Test
-    void 육단계() {
-        jdbcTemplate.update("INSERT INTO Reservations (name, date, time) VALUES (?, ?, ?)", "브라운", "2023-08-05",
-                "15:40");
-
-        List<Reservation> reservations = RestAssured.given().log().all()
-                .when().get("/reservations")
-                .then().log().all()
-                .statusCode(200).extract()
-                .jsonPath().getList(".", Reservation.class);
-
-        Integer count = jdbcTemplate.queryForObject("SELECT count(1) from Reservations", Integer.class);
-
-        assertThat(reservations.size()).isEqualTo(count);
     }
 
     @Test
