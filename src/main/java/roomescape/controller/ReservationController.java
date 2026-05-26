@@ -18,6 +18,7 @@ import roomescape.model.Reservations;
 import roomescape.model.errors.ReservationNotFoundException;
 
 import java.net.URI;
+import java.sql.ResultSet;
 import java.util.List;
 
 @RestController

@@ -9,6 +9,8 @@ import roomescape.dto.ReservationDto;
 import roomescape.model.errors.ReservationNotFoundException;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 @Repository
@@ -21,7 +23,7 @@ public class Reservations {
     }
 
     public List<Reservation> getReservationList() {
-        return jdbcTemplate.query("SELECT * FROM reservation", Reservation::new);
+        return jdbcTemplate.query("SELECT * FROM reservation", this::extractReservationFromResultSet);
     }
 
     public Reservation add(ReservationDto reservationDto) {
@@ -46,6 +48,13 @@ public class Reservations {
         if (deletedRowCounts == 0) {
             throw new ReservationNotFoundException();
         }
+    }
+
+    private Reservation extractReservationFromResultSet(ResultSet resultSet, int rowNum) throws SQLException {
+        return new Reservation(resultSet.getLong("id"),
+                    resultSet.getString("name"),
+                    resultSet.getString("date"),
+                    resultSet.getString("time"));
     }
 }
 
