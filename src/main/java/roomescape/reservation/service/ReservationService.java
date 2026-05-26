@@ -1,8 +1,11 @@
-package roomescape.reservation;
+package roomescape.reservation.service;
 
 import jakarta.annotation.Nonnull;
 import org.springframework.stereotype.Service;
 import roomescape.global.controller.InternalErrorException;
+import roomescape.reservation.ReservationDoesNotExistException;
+import roomescape.reservation.ReservationDuplicateTimeException;
+import roomescape.reservation.ReservationInputFormatException;
 import roomescape.reservation.domain.*;
 import roomescape.reservation.dto.CreateReservationRequest;
 import roomescape.reservation.dto.ReservationResponse;

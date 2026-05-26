@@ -10,6 +10,7 @@ import roomescape.reservation.domain.ReservationId;
 import roomescape.reservation.domain.Reservations;
 import roomescape.reservation.dto.CreateReservationRequest;
 import roomescape.reservation.dto.ReservationResponse;
+import roomescape.reservation.service.ReservationService;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
