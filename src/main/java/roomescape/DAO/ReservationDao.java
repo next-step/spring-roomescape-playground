@@ -48,12 +48,20 @@ public class ReservationDao {
         return new Reservation(latestId, reservation.getName(), reservation.getDate(), reservation.getTime());
     }
 
-    public LocalTime findTimeById(int id) {
-        String sqlQuery = "SELECT t.time FROM Reservations AS r " +
-                "INNER JOIN Times AS t ON r.id = t.time_id " +
+    public Reservation findById(int id) {
+        String sql = "SELECT r.id, r.name, r.date, t.time " +
+                "FROM Reservations r " +
+                "INNER JOIN Times t ON r.id = t.time_id " +
                 "WHERE r.id = ?";
         try {
-            return jdbcTemplate.queryForObject(sqlQuery, LocalTime.class, id);
+            return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
+                int reservationId = rs.getInt("id");
+                String name = rs.getString("name");
+                java.time.LocalDate date = rs.getDate("date").toLocalDate();
+                java.time.LocalTime time = rs.getTime("time").toLocalTime();
+
+                return new Reservation(reservationId, name, date, time);
+            }, id);
         } catch (org.springframework.dao.EmptyResultDataAccessException e) {
             return null;
         }

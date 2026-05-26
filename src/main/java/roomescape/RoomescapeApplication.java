@@ -20,11 +20,15 @@ public class RoomescapeApplication implements CommandLineRunner {
         jdbcTemplate.execute("DROP TABLE Times IF EXISTS");
         jdbcTemplate.execute("DROP TABLE Reservations IF EXISTS");
         jdbcTemplate.execute("DROP TABLE ValidTimes IF EXISTS");
-        jdbcTemplate.execute("CREATE TABLE ValidTimes(time TIME NOT NULL)");
         jdbcTemplate.execute(
-                "INSERT INTO ValidTimes(time) " +
-                        "SELECT PARSEDATETIME(X || ':00:00', 'H:mm:ss') " +
-                        "FROM SYSTEM_RANGE(8, 22)"
+                "CREATE TABLE ValidTimes(date DATE NOT NULL, time TIME NOT NULL, PRIMARY KEY(date, time))");
+        jdbcTemplate.execute(
+                "INSERT INTO ValidTimes(date, time) " +
+                        "SELECT " +
+                        "  DATEADD('DAY', d.X, CURRENT_DATE), " +
+                        "  PARSEDATETIME(t.X || ':00:00', 'H:mm:ss') " +
+                        "FROM SYSTEM_RANGE(0, 7) AS d " +
+                        "CROSS JOIN SYSTEM_RANGE(8, 21) AS t"
         );
         jdbcTemplate.execute(
                 "CREATE TABLE Reservations(id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255) NOT NULL, date DATE NOT NULL)");
