@@ -2,42 +2,21 @@ package roomescape;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDate;
-import java.time.LocalTime;
-import roomescape.exception.InvalidReservationException;
 
 public class Reservation {
     private Long id;
     private String name;
-
-    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
-
-    @JsonFormat(pattern = "HH:mm")
-    private LocalTime time;
+    private Time time;
 
     public Reservation() {
     }
 
-    public Reservation(Long id, String name, LocalDate date, LocalTime time) {
-        validateBasic(name, date, time);
+    public Reservation(Long id, String name, LocalDate date, Time time) {
         this.id = id;
         this.name = name;
         this.date = date;
         this.time = time;
-    }
-
-    public Reservation(String name, LocalDate date, LocalTime time) {
-        this(null, name, date, time);
-
-        if (date.isBefore(LocalDate.now())) {
-            throw new InvalidReservationException("과거 날짜로는 예약할 수 없습니다.");
-        }
-    }
-
-    private void validateBasic(String name, LocalDate date, LocalTime time) {
-        if (name == null || name.isBlank() || date == null || time == null) {
-            throw new InvalidReservationException("필수 예약 정보가 누락되었습니다.");
-        }
     }
 
     public static Reservation toEntity(Reservation reservation, Long id) {
@@ -47,17 +26,26 @@ public class Reservation {
     public Long getId() { return id; }
     public String getName() { return name; }
     public LocalDate getDate() { return date; }
-    public LocalTime getTime() { return time; }
+    public Time getTime() { return time; }
+
+    public static class Request {
+        private String name;
+        @JsonFormat(pattern = "yyyy-MM-dd")
+        private LocalDate date;
+        private Long timeId;
+
+        public Request() {}
+        public String getName() { return name; }
+        public LocalDate getDate() { return date; }
+        public Long getTimeId() { return timeId; }
+    }
 
     public static class Response {
         private Long id;
         private String name;
-
         @JsonFormat(pattern = "yyyy-MM-dd")
         private LocalDate date;
-
-        @JsonFormat(pattern = "HH:mm")
-        private LocalTime time;
+        private Time time;
 
         public Response(Reservation reservation) {
             this.id = reservation.getId();
@@ -65,10 +53,9 @@ public class Reservation {
             this.date = reservation.getDate();
             this.time = reservation.getTime();
         }
-
         public Long getId() { return id; }
         public String getName() { return name; }
         public LocalDate getDate() { return date; }
-        public LocalTime getTime() { return time; }
+        public Time getTime() { return time; }
     }
 }
