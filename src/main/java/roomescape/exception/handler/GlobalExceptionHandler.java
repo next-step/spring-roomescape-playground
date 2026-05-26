@@ -32,6 +32,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler
     public ProblemDetail handleUnHandledException(Exception e) {
         ErrorCode errorCode = ErrorCode.UNEXPECTED_ERROR;
+        System.out.println(e);
         return ProblemDetail.forStatusAndDetail(errorCode.getHttpStatus(), errorCode.getMessage());
     }
 }
