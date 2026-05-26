@@ -33,4 +33,24 @@ public class TimeDao {
         String sqlQuery = "DELETE FROM ValidTimes WHERE date = ? AND time = ?";
         jdbcTemplate.update(sqlQuery, date, time);
     }
+
+    public void refreshValidTimesScheduler() {
+        String deleteSql = "DELETE FROM ValidTimes WHERE date < CURRENT_DATE";
+        jdbcTemplate.update(deleteSql);
+
+        String insertSql =
+                "INSERT INTO ValidTimes(date, time) " +
+                        "SELECT " +
+                        "  DATEADD('DAY', d.X, CURRENT_DATE), " +
+                        "  PARSEDATETIME(t.X || ':00:00', 'H:mm:ss') " +
+                        "FROM SYSTEM_RANGE(0, 7) AS d " +
+                        "CROSS JOIN SYSTEM_RANGE(8, 21) AS t " +
+                        "WHERE NOT EXISTS (" +
+                        "  SELECT 1 FROM ValidTimes v " +
+                        "  WHERE v.date = DATEADD('DAY', d.X, CURRENT_DATE) " +
+                        "  AND v.time = PARSEDATETIME(t.X || ':00:00', 'H:mm:ss')" +
+                        ")";
+
+        jdbcTemplate.update(insertSql);
+    }
 }

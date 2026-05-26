@@ -46,6 +46,8 @@ public class RoomescapeDBController {
     @ResponseBody
     public ResponseEntity<List<LocalTime>> showAllValidTimes(
             @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        timeDao.refreshValidTimesScheduler();
+
         List<LocalTime> times = timeDao.findAllValidTimes(date);
         return ResponseEntity.ok().body(times);
     }
