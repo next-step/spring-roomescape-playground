@@ -109,4 +109,10 @@ public class JdbcReservationRepository {
         Integer affectedRowsCount = namedParameterJdbcTemplate.queryForObject(query, parameterSource, Integer.class);
         return affectedRowsCount != null && affectedRowsCount > 0;
     }
+
+    public boolean existsDuplicateReservationWithSameUser(LocalDate date, LocalTime time, String name) {
+        String query = "SELECT COUNT(*) FROM reservation WHERE date = ? AND time = ? and name =?";
+        int affectedRowsCount = jdbcTemplate.queryForObject(query, Integer.class, date, time, name);
+        return affectedRowsCount > 0;
+    }
 }
