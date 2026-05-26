@@ -37,6 +37,13 @@ public class RoomescapeDBController {
         return ResponseEntity.ok().body(reservations);
     }
 
+    @GetMapping("/times")
+    @ResponseBody
+    public ResponseEntity<List<LocalTime>> showAllTimes() {
+        List<LocalTime> times = reservationDao.findAllTimes();
+        return ResponseEntity.ok().body(times);
+    }
+
     @PostMapping("/reservations")
     @ResponseBody
     public ResponseEntity<Reservation> createReservation(@RequestBody Reservation request) {
