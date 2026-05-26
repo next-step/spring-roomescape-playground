@@ -50,7 +50,7 @@ public class TimeslotRespository {
         MapSqlParameterSource parameterSource = new MapSqlParameterSource()
                 .addValue("id", id);
 
-        namedParameterJdbcTemplate.update(query, parameterSource);
+        return namedParameterJdbcTemplate.update(query, parameterSource);
     }
 
     public List<Timeslot> getAllTimeslots() {

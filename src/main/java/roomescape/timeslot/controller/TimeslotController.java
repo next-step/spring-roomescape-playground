@@ -24,7 +24,7 @@ public class TimeslotController {
     @PostMapping()
     public ResponseEntity<TimeslotResponse> addTimeslot(@Valid @RequestBody TimeslotRequest request) {
         TimeslotResponse newTimeslot = timeslotService.addTimeslot(request);
-        URI location = URI.create("times/" + newTimeslot.id());
+        URI location = URI.create("/times/" + newTimeslot.id());
 
         return ResponseEntity.created(location).body(newTimeslot);
     }
@@ -34,7 +34,7 @@ public class TimeslotController {
         return ResponseEntity.ok(timeslotService.getAllTimeslots());
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTimeslotById(@PathVariable Long id) {
         timeslotService.deleteTimeslotById(id);
         return ResponseEntity.noContent().build();

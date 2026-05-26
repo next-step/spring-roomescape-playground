@@ -14,8 +14,8 @@ CREATE INDEX reservation_date_time ON reservation (date, time);
 
 CREATE TABLE timeslot
 (
-    id       BIGINT   NOT NULL AUTO_INCREMENT,
-    timeslot DATETIME NOT NULL,
+    id       BIGINT NOT NULL AUTO_INCREMENT,
+    timeslot TIME   NOT NULL,
 
     PRIMARY KEY (id)
 );
