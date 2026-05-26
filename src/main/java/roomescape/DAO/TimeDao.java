@@ -38,19 +38,18 @@ public class TimeDao {
         String deleteSql = "DELETE FROM ValidTimes WHERE date < CURRENT_DATE";
         jdbcTemplate.update(deleteSql);
 
-        String insertSql =
+        String insertFutureSql =
                 "INSERT INTO ValidTimes(date, time) " +
                         "SELECT " +
-                        "  DATEADD('DAY', d.X, CURRENT_DATE), " +
+                        "  DATEADD('DAY', 7, CURRENT_DATE), " +
                         "  PARSEDATETIME(t.X || ':00:00', 'H:mm:ss') " +
-                        "FROM SYSTEM_RANGE(0, 7) AS d " +
-                        "CROSS JOIN SYSTEM_RANGE(8, 21) AS t " +
+                        "FROM SYSTEM_RANGE(8, 21) AS t " +
                         "WHERE NOT EXISTS (" +
                         "  SELECT 1 FROM ValidTimes v " +
-                        "  WHERE v.date = DATEADD('DAY', d.X, CURRENT_DATE) " +
+                        "  WHERE v.date = DATEADD('DAY', 7, CURRENT_DATE) " +
                         "  AND v.time = PARSEDATETIME(t.X || ':00:00', 'H:mm:ss')" +
                         ")";
 
-        jdbcTemplate.update(insertSql);
+        jdbcTemplate.update(insertFutureSql);
     }
 }
