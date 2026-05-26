@@ -1,4 +1,4 @@
-package roomescape.dto;
+package roomescape.reservation.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonFormat.Shape;
@@ -7,8 +7,8 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import roomescape.domain.Reservation;
 import roomescape.exception.customexception.PastDateTimeException;
+import roomescape.reservation.domain.Reservation;
 
 public record ReservationRequest(
         @NotBlank(message = "이름이 비어 있을 수 없습니다.")

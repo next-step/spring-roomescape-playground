@@ -1,6 +1,6 @@
-package roomescape.repository;
+package roomescape.reservation.repository;
 
-import static roomescape.domain.Reservation.RESERVATION_LENGTH_MINUTES;
+import static roomescape.reservation.domain.Reservation.RESERVATION_LENGTH_MINUTES;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -11,7 +11,7 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import roomescape.domain.Reservation;
+import roomescape.reservation.domain.Reservation;
 
 @Repository
 public class ReservationRepository {
