@@ -1,6 +1,7 @@
 package roomescape.reservation.repository;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -18,7 +19,7 @@ public class ReservationRepository {
         Reservation reservation = new Reservation(
                 resultSet.getString("name"),
                 resultSet.getObject("date", LocalDate.class),
-                resultSet.getObject("time", Time.class).withId(resultSet.getLong("time_id"))
+                new Time(resultSet.getObject("time", LocalTime.class)).withId(resultSet.getLong("time_id"))
         );
         return reservation.withId(resultSet.getLong("reservation_id"));
     };
@@ -43,7 +44,7 @@ public class ReservationRepository {
     }
 
     public List<Reservation> findAllReservations() {
-        String sql = "SELECT r.id AS reservation_id, r.name, r.date, t.id AS time_id, t.time AS time_value FROM reservation AS r INNER JOIN time AS t on r.time_id = t.id";
+        String sql = "SELECT r.id AS reservation_id, r.name, r.date, t.id AS time_id, t.time FROM reservation AS r INNER JOIN time AS t on r.time_id = t.id";
         return jdbcTemplate.query(sql, reservationRowMapper);
     }
 

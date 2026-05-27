@@ -34,7 +34,7 @@ public class TimeRepository {
 
     public Time saveTime(Time time) {
         SqlParameterSource params = new MapSqlParameterSource()
-                .addValue("time", time.getValue());
+                .addValue("time", time.getTime());
         Long id = simpleJdbcInsert.executeAndReturnKey(params).longValue();
         return time.withId(id);
     }

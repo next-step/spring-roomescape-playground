@@ -26,7 +26,7 @@ public record ReservationRequest(
     }
 
     private void validate(LocalDate date, Time time) {
-        LocalDateTime dateTime = LocalDateTime.of(date, time.getValue());
+        LocalDateTime dateTime = LocalDateTime.of(date, time.getTime());
         if (dateTime.isBefore(LocalDateTime.now())) {
             throw new ReservationPastException();
         }

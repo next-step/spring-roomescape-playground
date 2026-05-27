@@ -39,7 +39,7 @@ public class TimeService {
     }
 
     private void checkConflict(Time newTime) {
-        if (timeRepository.countConflictingTimes(newTime.getValue()) > 0) {
+        if (timeRepository.countConflictingTimes(newTime.getTime()) > 0) {
             throw new TimeConflictException();
         }
     }
