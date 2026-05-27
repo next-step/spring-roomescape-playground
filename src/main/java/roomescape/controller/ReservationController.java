@@ -13,6 +13,7 @@ import roomescape.dto.ReservationRequest;
 import roomescape.exception.InvalidReservationException;
 import roomescape.exception.NotFoundReservationException;
 import roomescape.exception.UnableReservationTimeException;
+import roomescape.repository.ReservationRepository;
 
 import java.net.URI;
 import java.time.LocalDate;
