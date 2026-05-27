@@ -9,13 +9,17 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public record ReservationResponse(
+        @Nonnull
         ReservationId id,
 
+        @Nonnull
         String name,
 
+        @Nonnull
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
         LocalDate date,
 
+        @Nonnull
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
         LocalTime time
 ) {

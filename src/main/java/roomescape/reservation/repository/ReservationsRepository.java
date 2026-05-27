@@ -69,7 +69,7 @@ public class ReservationsRepository {
 
     @Transactional
     public @Nonnull Reservation create(@Nonnull CreateReservationInfo info) {
-        ReservationId id = insert(info);
+        ReservationId id = createAndGetId(info);
         Reservation reservation = get(id);
         if (reservation == null) {
             throw new DomainException.UnknownError("예약을 생성했지만, 해당 예약을 찾을 수 없습니다.");
@@ -77,7 +77,7 @@ public class ReservationsRepository {
         return reservation;
     }
 
-    private @Nonnull ReservationId insert(@Nonnull CreateReservationInfo info) {
+    private @Nonnull ReservationId createAndGetId(@Nonnull CreateReservationInfo info) {
         String insertSql = "INSERT INTO reservations (name, time) VALUES (?, ?)";
         KeyHolder keyHolder;
 
