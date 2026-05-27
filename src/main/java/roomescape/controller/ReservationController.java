@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import roomescape.domain.Reservation;
 import roomescape.dto.ReservationRequest;
+import roomescape.exception.AlreadyReservedTimeException;
 import roomescape.exception.NotFoundReservationException;
 
 import java.net.URI;
@@ -32,12 +33,20 @@ public class ReservationController {
     @PostMapping
     public ResponseEntity<Reservation> createReservation(@RequestBody ReservationRequest reservationRequest) {
         long id = reservationRepository.insert(reservationRequest);
+        boolean isUnavailableTime=reservationRepository.findAll().stream()
+                .anyMatch(reservation ->
+                        reservation.date().equals(reservationRequest.date())
+                        &&reservation.time().equals(reservationRequest.time()));
+        if(isUnavailableTime){
+            throw new AlreadyReservedTimeException();
+        }
         Reservation reservation = new Reservation(
                 id,
                 reservationRequest.name(),
                 reservationRequest.date(),
                 reservationRequest.time()
         );
+
         return ResponseEntity.created(URI.create("/reservations/" + reservation.id()))
                 .body(reservation);
     }
