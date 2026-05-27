@@ -2,7 +2,7 @@ package roomescape.reservation.service;
 
 import java.util.List;
 import org.springframework.stereotype.Service;
-import roomescape.exception.customexception.AlreadyReservedException;
+import roomescape.exception.customexception.ReservationConflictException;
 import roomescape.exception.customexception.ReservationNotFoundException;
 import roomescape.reservation.domain.Reservation;
 import roomescape.reservation.dto.ReservationRequest;
@@ -40,7 +40,7 @@ public class ReservationService {
 
     private void checkConflict(Reservation newReservation) {
         if (reservationRepository.countConflictingReservations(newReservation.getDateTime()) > 0) {
-            throw new AlreadyReservedException();
+            throw new ReservationConflictException();
         }
     }
 }

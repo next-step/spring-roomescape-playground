@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import roomescape.exception.customexception.PastDateTimeException;
+import roomescape.exception.customexception.ReservationPastException;
 import roomescape.reservation.domain.Reservation;
 
 public record ReservationRequest(
@@ -29,7 +29,7 @@ public record ReservationRequest(
 
     private void validate(LocalDateTime dateTime) {
         if (dateTime.isBefore(LocalDateTime.now())) {
-            throw new PastDateTimeException();
+            throw new ReservationPastException();
         }
     }
 }

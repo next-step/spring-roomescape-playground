@@ -2,7 +2,7 @@ package roomescape.time.service;
 
 import java.util.List;
 import org.springframework.stereotype.Service;
-import roomescape.exception.customexception.TimeAlreadyExistsException;
+import roomescape.exception.customexception.TimeConflictException;
 import roomescape.exception.customexception.TimeNotFoundException;
 import roomescape.time.domain.Time;
 import roomescape.time.dto.TimeRequest;
@@ -40,7 +40,7 @@ public class TimeService {
 
     private void checkConflict(Time newTime) {
         if (timeRepository.countConflictingTimes(newTime.getTime()) > 0) {
-            throw new TimeAlreadyExistsException();
+            throw new TimeConflictException();
         }
     }
 }
