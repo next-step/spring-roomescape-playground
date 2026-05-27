@@ -1,4 +1,4 @@
-package roomescape.repository;
+package roomescape.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -16,11 +16,11 @@ import java.time.LocalTime;
 import java.util.List;
 
 @Repository
-public class H2ReservationRepository implements ReservationRepository {
+public class ReservationDao {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public H2ReservationRepository(JdbcTemplate jdbcTemplate) {
+    public ReservationDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
@@ -31,13 +31,11 @@ public class H2ReservationRepository implements ReservationRepository {
             rs.getTime("time").toLocalTime()
     );
 
-    @Override
     public List<Reservation> findAll() {
         String sql = "SELECT id, name, date, time FROM reservation";
         return jdbcTemplate.query(sql, reservationRowMapper);
     }
 
-    @Override
     public Reservation save(Reservation reservation) {
         String sql = "INSERT INTO reservation(name, date, time) VALUES (?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -59,14 +57,12 @@ public class H2ReservationRepository implements ReservationRepository {
         );
     }
 
-    @Override
     public boolean deleteById(Long id) {
         String sql = "DELETE FROM reservation WHERE id = ?";
         int affected = jdbcTemplate.update(sql, id);
         return affected > 0;
     }
 
-    @Override
     public boolean existsByDateAndTime(LocalDate date, LocalTime time) {
         String sql = "SELECT count(1) FROM reservation WHERE date = ? AND time = ?";
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class,

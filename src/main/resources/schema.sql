@@ -7,3 +7,12 @@ CREATE TABLE reservation
     PRIMARY KEY (id),
     UNIQUE (date, time)
 );
+
+CREATE TABLE time
+(
+    id   BIGINT       NOT NULL AUTO_INCREMENT,
+    time TIME NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE  (time)
+);
+

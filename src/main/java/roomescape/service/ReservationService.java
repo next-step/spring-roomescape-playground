@@ -1,21 +1,21 @@
 package roomescape.service;
 
 import org.springframework.stereotype.Service;
+import roomescape.dao.ReservationDao;
 import roomescape.domain.Reservation;
 import roomescape.dto.request.ReservationCreateRequest;
 import roomescape.dto.response.ReservationCreateResponse;
 import roomescape.dto.response.ReservationGetResponse;
 import roomescape.exception.DuplicateReservationException;
 import roomescape.exception.NotFoundReservationException;
-import roomescape.repository.ReservationRepository;
 
 import java.util.List;
 
 @Service
 public class ReservationService {
-    private final ReservationRepository repository;
+    private final ReservationDao repository;
 
-    public ReservationService(ReservationRepository repository) {
+    public ReservationService(ReservationDao repository) {
         this.repository = repository;
     }
 
