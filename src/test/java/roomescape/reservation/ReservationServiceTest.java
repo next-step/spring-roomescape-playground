@@ -20,7 +20,7 @@ import java.util.Objects;
 import static org.assertj.core.api.Assertions.*;
 
 @JdbcTest
-@Sql("/schema.sql")
+@Sql({"/initialize-test.sql", "/schema.sql"})
 public class ReservationServiceTest {
     private final JdbcTemplate jdbcTemplate;
 

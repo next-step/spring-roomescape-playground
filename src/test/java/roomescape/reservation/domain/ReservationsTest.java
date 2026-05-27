@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 import static org.assertj.core.api.Assertions.*;
 
 @JdbcTest
-@Sql("/schema.sql")
+@Sql({"/initialize-test.sql", "/schema.sql"})
 public class ReservationsTest {
     private final ReservationsRepository reservationsRepository;
     private final Reservations reservations;
