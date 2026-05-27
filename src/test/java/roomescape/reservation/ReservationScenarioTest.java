@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.http.ContentType;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -54,15 +55,12 @@ public class ReservationScenarioTest {
     @Test
     @Order(0)
     void 존재하지_않는_시간에_예약_생성_불가능() {
-        ReservationResponse created = RestAssured
+        RestAssured
                 .given().contentType(ContentType.JSON).body(createParams)
                 .when().post("/reservations")
                 .then()
-                .statusCode(201)
-                .header("Location", "/reservations/1")
-                .extract().as(ReservationResponse.class);
-
-        assertThat(created).isEqualTo(expected);
+                .statusCode(404)
+                .body("type", Matchers.equalTo("Reservation.TimeNotFound"));
     }
 
     @Test
@@ -86,7 +84,9 @@ public class ReservationScenarioTest {
     void 예약_중복_추가_불가능() {
         RestAssured.given().contentType(ContentType.JSON).body(createParams)
                 .when().post("/reservations")
-                .then().statusCode(409);
+                .then()
+                .statusCode(409)
+                .header("Location", "/reservations/1");
     }
 
     @Test

@@ -65,7 +65,7 @@ public class ReservationsTest {
     }
 
     @Test
-    void 예약을_삭제할_수_있다() throws ReservationException {
+    void 예약을_삭제할_수_있다() {
         CreateReservationInfo info = new CreateReservationInfo(
                 "aaa",
                 LocalDate.of(2026, 5, 7),
@@ -81,7 +81,19 @@ public class ReservationsTest {
     }
 
     @Test
-    void 같은_시간에_예약을_중복으로_추가할_수_없다() throws ReservationException {
+    void 존재하지_않는_시간에_예약을_추가할_수_없다() {
+        CreateReservationInfo info = new CreateReservationInfo(
+                "helloWorld",
+                LocalDate.of(2026, 11, 13),
+                new TimeId(12345)
+        );
+
+        assertThatThrownBy(() -> reservations.create(info))
+                .isInstanceOf(ReservationException.TimeNotFound.class);
+    }
+
+    @Test
+    void 같은_시간에_예약을_중복으로_추가할_수_없다() {
         CreateReservationInfo info = new CreateReservationInfo(
                 "bbb",
                 LocalDate.of(2026, 5, 7),

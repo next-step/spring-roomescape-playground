@@ -13,7 +13,7 @@
 **입력을 파싱하지 못할 경우 응답**
 
 ```http request
-HTTP 400
+HTTP 400 Bad Request
 Content-Type: application/json
 
 {
@@ -32,7 +32,7 @@ Content-Type: application/json
 **입력 형식이 잘못될 경우 응답**
 
 ```http request
-HTTP 400
+HTTP 400 Bad Request
 Content-Type: application/json
 
 {
@@ -51,7 +51,7 @@ Content-Type: application/json
 **내부적인 오류가 발생할 경우 응답**
 
 ```http request
-HTTP 500
+HTTP 500 Internal Server Error
 Content-Type: application/json
 
 {
@@ -74,7 +74,7 @@ Content-Type: application/json
 **정상 응답**
 
 ```http request
-HTTP 200
+HTTP 200 OK
 Content-Type: application/json
 
 [
@@ -100,6 +100,7 @@ Content-Type: application/json
 > `(body: CreateReservationBody) -> ReservationResponse`
 
 - 이름은 최대 20자만 가능하고, 한글, 영어 등의 문자만 가능합니다. (Unicode Letter Category)
+- 시간 관리 API에서 사전에 생성된 시간에 대해서만 예약을 추가할 수 있습니다.
 - 기존 예약과 중복되는 시간에 예약할 수 없습니다.
 
 **정상 요청**
@@ -130,15 +131,28 @@ Content-Type: application/json
 }
 ```
 
+**해당 시간이 존재하지 않을 경우 응답**
+
+```http request
+HTTP 404 Not Found
+Content-Type: application/json
+
+{
+  "type": "Reservation.TimeNotFound",
+  "message": "예약 시간이 사전에 정의되지 않았습니다. 필요하다면 시간 관리에서 해당 시간을 생성해주세요."
+}
+```
+
 **해당 시간에 중복되는 예약이 있을 경우 응답**
 
 ```http request
-HTTP 400
+HTTP 409 Conflict
+Location: /reservations/3 # (없을 수도 있음) 동일 날짜/시간에 존재하는 기존 예약
 Content-Type: application/json
 
 {
   "type": "Reservation.DuplicateTime",
-  "message": "해당 예약 시간에 이미 다른 예약이 있습니다."
+  "message": "해당 예약 날짜/시간에 이미 다른 예약이 있습니다."
 }
 ```
 
@@ -177,7 +191,7 @@ Content-Type: application/json
 **정상 응답**
 
 ```http request
-HTTP 200
+HTTP 200 OK
 Content-Type: application/json
 
 [
@@ -221,11 +235,11 @@ Content-Type: application/json
 
 ```http request
 HTTP 409 Conflict
-Location: /times/3 # optional
+Location: /times/3 # (없을 수도 있음) 기존에 존재하는 동일 시간
 Content-Type: application/json
 
 {
-  "type": "Time.AlreadyExists",
+  "type": "Time.Duplicate",
   "message": "해당 시간이 이미 존재합니다."
 }
 ```

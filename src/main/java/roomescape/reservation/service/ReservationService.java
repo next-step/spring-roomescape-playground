@@ -6,6 +6,7 @@ import roomescape.global.controller.InternalErrorException;
 import roomescape.reservation.ReservationDoesNotExistException;
 import roomescape.reservation.ReservationDuplicateTimeException;
 import roomescape.reservation.ReservationInputFormatException;
+import roomescape.reservation.ReservationTimeNotFoundException;
 import roomescape.reservation.domain.*;
 import roomescape.reservation.dto.CreateReservationRequest;
 import roomescape.reservation.dto.ReservationResponse;
@@ -36,11 +37,15 @@ public class ReservationService {
             info = request.convertToDomain(times);
         } catch (ReservationException.InputFormat e) {
             throw new ReservationInputFormatException(e.getField(), e.getMessage());
+        } catch (ReservationException.TimeNotFound e) {
+            throw new ReservationTimeNotFoundException();
         }
 
         try {
             Reservation reservation = reservations.create(info);
             return ReservationResponse.from(reservation);
+        } catch (ReservationException.TimeNotFound e) {
+            throw new ReservationTimeNotFoundException();
         } catch (ReservationException.DuplicateDateTime e) {
             throw new ReservationDuplicateTimeException(e.previous);
         } catch (ReservationException e) {

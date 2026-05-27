@@ -10,7 +10,7 @@ public class ReservationDuplicateTimeException extends ApiException {
     private final ReservationId previous;
 
     public ReservationDuplicateTimeException(@Nullable ReservationId previous) {
-        super("해당 예약 시간에 이미 다른 예약이 있습니다.");
+        super("해당 예약 날짜/시간에 이미 다른 예약이 있습니다.");
         this.previous = previous;
     }
 
