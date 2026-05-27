@@ -22,7 +22,7 @@ public class ReservationRepository {
     public List<Reservation> findAll() {
 
         String sql = """
-                SELECT id, name, date, time 
+                SELECT id, name, date, time
                 FROM reservation
                 """;
 
