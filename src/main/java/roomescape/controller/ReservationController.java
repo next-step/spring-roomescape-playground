@@ -10,10 +10,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import roomescape.domain.Reservation;
 import roomescape.dto.ReservationRequest;
-import roomescape.exception.AlreadyReservedTimeException;
+import roomescape.exception.InvalidReservationException;
 import roomescape.exception.NotFoundReservationException;
+import roomescape.exception.UnableReservationTimeException;
 
 import java.net.URI;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @RestController
@@ -33,13 +37,9 @@ public class ReservationController {
     @PostMapping
     public ResponseEntity<Reservation> createReservation(@RequestBody ReservationRequest reservationRequest) {
         long id = reservationRepository.insert(reservationRequest);
-        boolean isUnavailableTime=reservationRepository.findAll().stream()
-                .anyMatch(reservation ->
-                        reservation.date().equals(reservationRequest.date())
-                        &&reservation.time().equals(reservationRequest.time()));
-        if(isUnavailableTime){
-            throw new AlreadyReservedTimeException();
-        }
+        validateDuplicateTimeReservation(reservationRequest);
+        validateReservationAfterLocalTime(reservationRequest);
+
         Reservation reservation = new Reservation(
                 id,
                 reservationRequest.name(),
@@ -49,6 +49,30 @@ public class ReservationController {
 
         return ResponseEntity.created(URI.create("/reservations/" + reservation.id()))
                 .body(reservation);
+    }
+
+    private void validateDuplicateTimeReservation(ReservationRequest reservationRequest) {
+        boolean isUnavailableTime = reservationRepository.findAll().stream()
+                .anyMatch(reservation ->
+                        reservation.date().equals(reservationRequest.date())
+                                && reservation.time().equals(reservationRequest.time()));
+        if (isUnavailableTime) {
+            throw new UnableReservationTimeException("중복된 예약이 존재합니다.");
+        }
+    }
+
+    private void validateReservationAfterLocalTime(ReservationRequest reservationRequest) {
+        LocalDate date = LocalDate.parse(reservationRequest.date());
+        LocalTime time = LocalTime.parse(reservationRequest.time());
+
+        LocalDateTime reservationDateTime =
+                LocalDateTime.of(date, time);
+
+        if (reservationDateTime.isBefore(LocalDateTime.now())) {
+            throw new InvalidReservationException(
+                    "현재 시간 이전으로 예약할 수 없습니다."
+            );
+        }
     }
 
     @DeleteMapping("/{id}")
