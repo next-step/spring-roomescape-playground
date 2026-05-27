@@ -2,7 +2,9 @@ package roomescape.service;
 
 import org.springframework.stereotype.Service;
 import roomescape.dao.ReservationDao;
+import roomescape.dao.TimeDao;
 import roomescape.domain.Reservation;
+import roomescape.domain.Time;
 import roomescape.dto.request.ReservationCreateRequest;
 import roomescape.dto.response.ReservationCreateResponse;
 import roomescape.dto.response.ReservationGetResponse;
@@ -14,9 +16,11 @@ import java.util.List;
 @Service
 public class ReservationService {
     private final ReservationDao repository;
+    private final TimeDao timeDao;
 
-    public ReservationService(ReservationDao repository) {
+    public ReservationService(ReservationDao repository, TimeDao timeDao) {
         this.repository = repository;
+        this.timeDao = timeDao;
     }
 
 
@@ -38,7 +42,10 @@ public class ReservationService {
     }
 
     public ReservationCreateResponse addReservation(ReservationCreateRequest reservationCreateRequest) {
-        boolean exists = repository.existsByDateAndTime(reservationCreateRequest.getDate(), reservationCreateRequest.getTime());
+        Time time = timeDao.findById(reservationCreateRequest.getTime())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 시간입니다."));
+
+        boolean exists = repository.existsByDateAndTime(reservationCreateRequest.getDate(), time.getTime());
         if (exists) {
             throw new DuplicateReservationException("이미 예약된 시간입니다.");
         }
@@ -47,7 +54,7 @@ public class ReservationService {
                 null,
                 reservationCreateRequest.getName(),
                 reservationCreateRequest.getDate(),
-                reservationCreateRequest.getTime());
+                time);
 
         newReservation = repository.save(newReservation);
 

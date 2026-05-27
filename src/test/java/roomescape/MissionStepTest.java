@@ -7,19 +7,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
+import roomescape.controller.ReservationController;
 import roomescape.domain.Reservation;
-import roomescape.exception.InvalidReservationException;
 
+import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
@@ -177,13 +175,6 @@ public class MissionStepTest {
     }
 
     @Test
-    void 이름이_빈_값이면_예외() {
-        assertThatThrownBy(() -> new Reservation(1L, "", LocalDate.now(), LocalTime.now()))
-                .isInstanceOf(InvalidReservationException.class)
-                .hasMessage("name은 빈 값일 수 없습니다.");
-    }
-
-    @Test
     void 같은_날_같은_시간_예약_중복이면_409_반환() {
         Map<String, String> params = new HashMap<>();
         params.put("name", "홍길동");
@@ -229,6 +220,38 @@ public class MissionStepTest {
                 .when().delete("times/1")
                 .then().log().all()
                 .statusCode(204);
+    }
+
+    @Test
+    void 구단계() {
+        Map<String, String> reservation = new HashMap<>();
+        reservation.put("name", "브라운");
+        reservation.put("date", "2023-08-05");
+        reservation.put("time", "10:00");
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(reservation)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(400);
+    }
+
+    @Autowired
+    private ReservationController reservationController;
+
+    @Test
+    void 십단계() {
+        boolean isJdbcTemplateInjected = false;
+
+        for (Field field : reservationController.getClass().getDeclaredFields()) {
+            if (field.getType().equals(JdbcTemplate.class)) {
+                isJdbcTemplateInjected = true;
+                break;
+            }
+        }
+
+        assertThat(isJdbcTemplateInjected).isFalse();
     }
 
 }

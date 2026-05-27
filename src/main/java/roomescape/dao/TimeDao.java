@@ -11,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class TimeDao {
@@ -49,6 +50,13 @@ public class TimeDao {
         String sql = "DELETE FROM time WHERE id = ?";
         int affected = jdbcTemplate.update(sql, id);
         return affected > 0;
+    }
+
+    public Optional<Time> findById(Long id) {
+        String sql = "SELECT id, time FROM time WHERE id = ?";
+        return jdbcTemplate.query(sql, timeRowMapper, id)
+                .stream()
+                .findFirst();
     }
 
     public boolean existsByTime(LocalTime time) {
