@@ -15,4 +15,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleNotFoundReservationException(NotFoundReservationException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
+
+    @ExceptionHandler(AlreadyReservedTimeException.class)
+    public ResponseEntity<String> handleAlreadyReservedTimeException(NotFoundReservationException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
 }
