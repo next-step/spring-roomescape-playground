@@ -3,7 +3,6 @@ package roomescape.reservation.repository;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.springframework.dao.DataAccessException;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -62,7 +61,7 @@ public class ReservationsRepository {
         String findUniqueSql = SELECT_RESERVATION_QUERY + " WHERE r.id = ?";
         try {
             Reservation reservation = jdbcTemplate.queryForObject(findUniqueSql, rowToReservation, id.id());
-            if(reservation == null) {
+            if (reservation == null) {
                 throw new ReservationException.DoesNotExist();
             }
             return reservation;
@@ -108,9 +107,6 @@ public class ReservationsRepository {
             if (affectedRows != 1) {
                 throw new DomainException.UnknownError("reservation 행을 삽입할 수 없습니다.");
             }
-        } catch(DataIntegrityViolationException e) {
-            // TODO: 그 timeId가 있다던가, UNIQUE 제약 미충족이라던가
-            throw new DomainException.UnknownError(e);
         } catch (DataAccessException e) {
             throw new DomainException.UnknownError(e);
         }
