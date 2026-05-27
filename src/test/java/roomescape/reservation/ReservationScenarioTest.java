@@ -34,11 +34,6 @@ public class ReservationScenarioTest {
     Map<String, String> createParams;
     ReservationResponse expected;
 
-    @BeforeAll
-    static void initialize(@Autowired Times times) {
-        times.create(new CreateTimeInfo(LocalTime.of(15, 40)));
-    }
-
     @Autowired
     ReservationScenarioTest(Times times) {
         createParams = new HashMap<>();
@@ -57,8 +52,24 @@ public class ReservationScenarioTest {
     }
 
     @Test
+    @Order(0)
+    void 존재하지_않는_시간에_예약_생성_불가능() {
+        ReservationResponse created = RestAssured
+                .given().contentType(ContentType.JSON).body(createParams)
+                .when().post("/reservations")
+                .then()
+                .statusCode(201)
+                .header("Location", "/reservations/1")
+                .extract().as(ReservationResponse.class);
+
+        assertThat(created).isEqualTo(expected);
+    }
+
+    @Test
     @Order(1)
-    void 예약_생성() {
+    void 예약_생성(@Autowired Times times) {
+        times.create(new CreateTimeInfo(LocalTime.of(15, 40)));
+
         ReservationResponse created = RestAssured
                 .given().contentType(ContentType.JSON).body(createParams)
                 .when().post("/reservations")
