@@ -1,4 +1,4 @@
-package roomescape.reservation;
+package roomescape.reservation.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -6,12 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
+import roomescape.reservation.ReservationDoesNotExistException;
+import roomescape.reservation.ReservationDuplicateTimeException;
+import roomescape.reservation.ReservationInputFormatException;
 import roomescape.reservation.domain.ReservationId;
 import roomescape.reservation.domain.Reservations;
 import roomescape.reservation.dto.CreateReservationRequest;
 import roomescape.reservation.dto.ReservationResponse;
 import roomescape.reservation.repository.ReservationsRepository;
-import roomescape.reservation.service.ReservationService;
 import roomescape.time.domain.CreateTimeInfo;
 import roomescape.time.domain.Times;
 import roomescape.time.repository.TimesRepository;
@@ -24,7 +26,7 @@ import java.util.Objects;
 import static org.assertj.core.api.Assertions.*;
 
 @JdbcTest
-@Sql({"/initialize-test.sql", "/schema.sql"})
+@Sql({"/drop-tables.sql", "/schema.sql"})
 public class ReservationServiceTest {
     private final JdbcTemplate jdbcTemplate;
     private final Times times;

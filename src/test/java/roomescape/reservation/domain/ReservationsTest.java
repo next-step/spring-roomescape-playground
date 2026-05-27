@@ -18,7 +18,7 @@ import java.time.LocalTime;
 import static org.assertj.core.api.Assertions.*;
 
 @JdbcTest
-@Sql({"/initialize-test.sql", "/schema.sql"})
+@Sql({"/drop-tables.sql", "/schema.sql"})
 public class ReservationsTest {
     private final ReservationsRepository reservationsRepository;
     private final Reservations reservations;

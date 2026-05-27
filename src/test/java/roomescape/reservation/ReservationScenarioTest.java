@@ -35,8 +35,7 @@ public class ReservationScenarioTest {
     Map<String, String> createParams;
     ReservationResponse expected;
 
-    @Autowired
-    ReservationScenarioTest(Times times) {
+    ReservationScenarioTest() {
         createParams = new HashMap<>();
         createParams.put("name", "브라운");
         createParams.put("date", LocalDate.now().plusDays(5).format(DateTimeFormatter.ISO_LOCAL_DATE));
