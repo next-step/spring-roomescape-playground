@@ -2,6 +2,7 @@ package roomescape.exception.handler;
 
 import java.util.List;
 import org.springframework.http.ProblemDetail;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -21,6 +22,12 @@ public class GlobalExceptionHandler {
         detail.setProperty("messages", messages);
 
         return detail;
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ProblemDetail handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
+        ErrorCode errorCode = ErrorCode.HTTP_MESSAGE_NOT_READABLE;
+        return ProblemDetail.forStatusAndDetail(errorCode.getHttpStatus(), errorCode.getMessage());
     }
 
     @ExceptionHandler(CustomException.class)

@@ -4,26 +4,26 @@ import java.time.LocalTime;
 
 public class Time {
     private Long id;
-    private LocalTime time;
+    private LocalTime value;
 
-    public Time(LocalTime time) {
-        this.time = time;
+    public Time(LocalTime value) {
+        this.value = value;
     }
 
-    private Time(Long id, LocalTime time) {
+    private Time(Long id, LocalTime value) {
         this.id = id;
-        this.time = time;
+        this.value = value;
     }
 
     public Time withId(Long id) {
-        return new Time(id, this.time);
+        return new Time(id, this.value);
     }
 
     public Long getId() {
         return id;
     }
 
-    public LocalTime getTime() {
-        return time;
+    public LocalTime getValue() {
+        return value;
     }
 }

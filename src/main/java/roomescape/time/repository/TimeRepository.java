@@ -34,9 +34,14 @@ public class TimeRepository {
 
     public Time saveTime(Time time) {
         SqlParameterSource params = new MapSqlParameterSource()
-                .addValue("time", time.getTime());
+                .addValue("time", time.getValue());
         Long id = simpleJdbcInsert.executeAndReturnKey(params).longValue();
         return time.withId(id);
+    }
+
+    public Time findTimeById(Long id) {
+        String sql = "SELECT id, time FROM time WHERE id = ?";
+        return jdbcTemplate.queryForObject(sql, timeRowMapper, id);
     }
 
     public List<Time> findAllTimes() {

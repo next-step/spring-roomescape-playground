@@ -8,17 +8,22 @@ import roomescape.reservation.domain.Reservation;
 import roomescape.reservation.dto.ReservationRequest;
 import roomescape.reservation.dto.ReservationResponse;
 import roomescape.reservation.repository.ReservationRepository;
+import roomescape.time.domain.Time;
+import roomescape.time.repository.TimeRepository;
 
 @Service
 public class ReservationService {
     private final ReservationRepository reservationRepository;
+    private final TimeRepository timeRepository;
 
-    public ReservationService(ReservationRepository reservationRepository) {
+    public ReservationService(ReservationRepository reservationRepository, TimeRepository timeRepository) {
         this.reservationRepository = reservationRepository;
+        this.timeRepository = timeRepository;
     }
 
     public synchronized ReservationResponse createReservation(ReservationRequest reservationRequest) {
-        Reservation reservation = reservationRequest.toReservation();
+        Time time = timeRepository.findTimeById(reservationRequest.time());
+        Reservation reservation = reservationRequest.toReservation(time);
         checkConflict(reservation);
         Reservation createdReservation = reservationRepository.saveReservation(reservation);
         return ReservationResponse.fromReservation(createdReservation);
@@ -39,7 +44,8 @@ public class ReservationService {
     }
 
     private void checkConflict(Reservation newReservation) {
-        if (reservationRepository.countConflictingReservations(newReservation.getDateTime()) > 0) {
+        if (reservationRepository.countConflictingReservations(newReservation.getDate(), newReservation.getTime())
+                > 0) {
             throw new ReservationConflictException();
         }
     }
