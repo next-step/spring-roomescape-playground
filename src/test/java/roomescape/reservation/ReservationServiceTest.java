@@ -1,5 +1,6 @@
 package roomescape.reservation;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
@@ -11,6 +12,9 @@ import roomescape.reservation.dto.CreateReservationRequest;
 import roomescape.reservation.dto.ReservationResponse;
 import roomescape.reservation.repository.ReservationsRepository;
 import roomescape.reservation.service.ReservationService;
+import roomescape.time.domain.CreateTimeInfo;
+import roomescape.time.domain.Times;
+import roomescape.time.repository.TimesRepository;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -23,6 +27,7 @@ import static org.assertj.core.api.Assertions.*;
 @Sql({"/initialize-test.sql", "/schema.sql"})
 public class ReservationServiceTest {
     private final JdbcTemplate jdbcTemplate;
+    private final Times times;
 
     ReservationService service;
 
@@ -30,8 +35,18 @@ public class ReservationServiceTest {
     public ReservationServiceTest(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
 
-        Reservations reservations = new Reservations(new ReservationsRepository(jdbcTemplate));
-        this.service = new ReservationService(reservations);
+        times = new Times(new TimesRepository(jdbcTemplate));
+        Reservations reservations = new Reservations(new ReservationsRepository(jdbcTemplate), times);
+        this.service = new ReservationService(reservations, times);
+    }
+
+    LocalTime time1 = LocalTime.of(10, 11);
+    LocalTime time2 = LocalTime.of(23, 50);
+
+    @BeforeEach
+    void setup() {
+        times.create(new CreateTimeInfo(time1));
+        times.create(new CreateTimeInfo(time2));
     }
 
     @Test
@@ -40,7 +55,7 @@ public class ReservationServiceTest {
             CreateReservationRequest request = new CreateReservationRequest(
                     "pony",
                     LocalDate.of(2027, 3, 20),
-                    LocalTime.of(10, 11)
+                    time1
             );
 
             ReservationResponse response = service.createReservation(request);
@@ -53,20 +68,20 @@ public class ReservationServiceTest {
         CreateReservationRequest request1 = new CreateReservationRequest(
                 "이현우",
                 LocalDate.of(2011, 3, 20),
-                LocalTime.of(10, 11)
+                time1
         );
 
         CreateReservationRequest request2 = new CreateReservationRequest(
                 "우끾끾",
                 LocalDate.of(2011, 4, 21),
-                LocalTime.of(23, 50)
+                time2
         );
 
         service.createReservation(request1);
         service.createReservation(request2);
 
         List<ReservationResponse> reservations = service.getReservations();
-        Integer currentSize = jdbcTemplate.queryForObject("SELECT count(*) FROM reservations", Integer.class);
+        Integer currentSize = jdbcTemplate.queryForObject("SELECT count(*) FROM reservation", Integer.class);
 
         assertThat(reservations)
                 .hasSize(Objects.requireNonNull(currentSize))
@@ -79,7 +94,7 @@ public class ReservationServiceTest {
         CreateReservationRequest request = new CreateReservationRequest(
                 "이현우",
                 LocalDate.of(2087, 3, 20),
-                LocalTime.of(10, 11)
+                time1
         );
         service.createReservation(request);
 
@@ -96,7 +111,7 @@ public class ReservationServiceTest {
             CreateReservationRequest request = new CreateReservationRequest(
                     "d a", // space
                     LocalDate.of(2037, 3, 20),
-                    LocalTime.of(10, 11)
+                    time2
             );
             service.createReservation(request);
         })
@@ -106,9 +121,9 @@ public class ReservationServiceTest {
 
         assertThatThrownBy(() -> {
             CreateReservationRequest request = new CreateReservationRequest(
-                    "나는이름이길어서슬픈생물나는이름이길어서슬픈생물나는이름이길어서슬픈생물", // length
+                    "나는이름이길어서슬픈생물나는이름이길어서흑", // length=21 > 20
                     LocalDate.of(2037, 3, 20),
-                    LocalTime.of(10, 11)
+                    time1
             );
             service.createReservation(request);
         })
@@ -122,7 +137,7 @@ public class ReservationServiceTest {
         CreateReservationRequest request = new CreateReservationRequest(
                 "이현우",
                 LocalDate.of(2047, 3, 20),
-                LocalTime.of(10, 11)
+                time1
         );
         service.createReservation(request);
 

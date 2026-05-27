@@ -10,7 +10,6 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import roomescape.global.domain.DomainException;
 import roomescape.time.domain.CreateTimeInfo;
 import roomescape.time.domain.Time;
@@ -30,6 +29,9 @@ public class TimesRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    private final RowMapper<TimeId> rowToTimeId = (result, rowNum) ->
+            new TimeId(result.getLong("id"));
+
     private final RowMapper<Time> rowToTime = (result, rowNum) -> new Time(
             new TimeId(result.getLong("id")),
             result.getTime("time").toLocalTime()
@@ -37,27 +39,50 @@ public class TimesRepository {
 
     public @Nonnull List<Time> getAll() {
         try {
-            String querySql = "SELECT id, time FROM times";
+            String querySql = "SELECT id, time FROM time";
             return jdbcTemplate.query(querySql, rowToTime);
         } catch (DataAccessException e) {
             throw new DomainException.UnknownError(e);
         }
     }
 
-    public @Nullable Time get(@Nonnull TimeId id) {
-        String findUniqueSql = "SELECT id, time FROM times WHERE id = ?";
+    public @Nonnull Time get(@Nonnull TimeId id) {
+        String findUniqueSql = "SELECT id, time FROM time WHERE id = ?";
         try {
-            return jdbcTemplate.queryForObject(findUniqueSql, rowToTime, id.id());
+            Time time = jdbcTemplate.queryForObject(findUniqueSql, rowToTime, id.id());
+            if(time == null) {
+                throw new TimeException.DoesNotExist();
+            }
+            return time;
+        } catch (EmptyResultDataAccessException emptyResultData) {
+            throw new TimeException.DoesNotExist();
+        } catch (DataAccessException e) {
+            throw new DomainException.UnknownError(e);
+        }
+    }
+
+    public boolean has(@Nonnull TimeId id) {
+        String existsSql = "SELECT EXISTS (SELECT * FROM time WHERE id = ?)";
+        try {
+            return jdbcTemplate.queryForObject(existsSql, Boolean.TYPE, id.id());
+        } catch (DataAccessException e) {
+            throw new DomainException.UnknownError(e);
+        }
+    }
+
+    public @Nullable TimeId getIdAt(@Nonnull LocalTime time) {
+        String findSql = "SELECT id FROM time WHERE time = ?";
+        try {
+            return jdbcTemplate.queryForObject(findSql, rowToTimeId, time);
         } catch (EmptyResultDataAccessException emptyResultData) {
             return null;
         } catch (DataAccessException e) {
             throw new DomainException.UnknownError(e);
         }
-
     }
 
-    public @Nullable Time getByTime(@Nonnull LocalTime time) {
-        String findSql = "SELECT id, time FROM times WHERE time = ?";
+    public @Nullable Time getAt(@Nonnull LocalTime time) {
+        String findSql = "SELECT id, time FROM time WHERE time = ?";
         try {
             return jdbcTemplate.queryForObject(findSql, rowToTime, time);
         } catch (EmptyResultDataAccessException emptyResultData) {
@@ -69,15 +94,11 @@ public class TimesRepository {
 
     public @Nonnull Time create(@Nonnull CreateTimeInfo info) {
         TimeId id = createAndGetId(info);
-        Time reservation = get(id);
-        if (reservation == null) {
-            throw new DomainException.UnknownError("예약을 생성했지만, 해당 예약을 찾을 수 없습니다.");
-        }
-        return reservation;
+        return get(id);
     }
 
     private @Nonnull TimeId createAndGetId(@Nonnull CreateTimeInfo info) {
-        String insertSql = "INSERT INTO times (time) VALUES (?)";
+        String insertSql = "INSERT INTO time (time) VALUES (?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         try {
@@ -90,9 +111,9 @@ public class TimesRepository {
             if (affectedRows != 1) {
                 throw new DomainException.UnknownError("reservation 행을 삽입할 수 없습니다.");
             }
-        } catch(DuplicateKeyException e) {
+        } catch (DuplicateKeyException e) {
             throw new TimeException.DuplicateTime();
-        } catch(DataAccessException e) {
+        } catch (DataAccessException e) {
             throw new DomainException.UnknownError(e);
         }
 
@@ -101,7 +122,7 @@ public class TimesRepository {
     }
 
     public void delete(@Nonnull TimeId id) {
-        String deleteSql = "DELETE FROM times WHERE id = ?";
+        String deleteSql = "DELETE FROM time WHERE id = ?";
         int affectedRows;
         try {
             affectedRows = jdbcTemplate.update(deleteSql, id.id());

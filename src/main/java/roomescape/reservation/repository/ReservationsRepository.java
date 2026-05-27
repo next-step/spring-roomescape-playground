@@ -3,6 +3,7 @@ package roomescape.reservation.repository;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -15,9 +16,10 @@ import roomescape.reservation.domain.CreateReservationInfo;
 import roomescape.reservation.domain.Reservation;
 import roomescape.reservation.domain.ReservationException;
 import roomescape.reservation.domain.ReservationId;
+import roomescape.time.domain.Time;
+import roomescape.time.domain.TimeId;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
@@ -29,37 +31,53 @@ public class ReservationsRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    private final RowMapper<Reservation> rowToReservation = (result, rowNum) -> new Reservation(
-            new ReservationId(result.getLong("id")),
-            result.getString("name"),
-            result.getTimestamp("time").toLocalDateTime()
-    );
+    private static final String SELECT_RESERVATION_QUERY = """
+            SELECT r.id, r.name, r.date, t.id as time_id, t.time as time_value
+            FROM reservation AS r
+            INNER JOIN time AS t ON r.time_id = t.id
+            """;
+
+    private final RowMapper<Reservation> rowToReservation = (result, rowNum) -> {
+        Time time = new Time(
+                new TimeId(result.getLong("time_id")),
+                result.getTime("time_value").toLocalTime()
+        );
+        return new Reservation(
+                new ReservationId(result.getLong("id")),
+                result.getString("name"),
+                result.getDate("date").toLocalDate(),
+                time
+        );
+    };
 
     public @Nonnull List<Reservation> getAll() {
         try {
-            String querySql = "SELECT id, name, time FROM reservations";
-            return jdbcTemplate.query(querySql, rowToReservation);
+            return jdbcTemplate.query(SELECT_RESERVATION_QUERY, rowToReservation);
         } catch (DataAccessException e) {
             throw new DomainException.UnknownError(e);
         }
     }
 
-    public @Nullable Reservation get(@Nonnull ReservationId id) {
-        String findUniqueSql = "SELECT id, name, time FROM reservations WHERE id = ?";
+    public @Nonnull Reservation get(@Nonnull ReservationId id) {
+        String findUniqueSql = SELECT_RESERVATION_QUERY + " WHERE r.id = ?";
         try {
-            return jdbcTemplate.queryForObject(findUniqueSql, rowToReservation, id.id());
+            Reservation reservation = jdbcTemplate.queryForObject(findUniqueSql, rowToReservation, id.id());
+            if(reservation == null) {
+                throw new ReservationException.DoesNotExist();
+            }
+            return reservation;
         } catch (EmptyResultDataAccessException emptyResultData) {
-            return null;
+            throw new ReservationException.DoesNotExist();
         } catch (DataAccessException e) {
             throw new DomainException.UnknownError(e);
         }
 
     }
 
-    public @Nullable Reservation getByTime(@Nonnull LocalDateTime time) {
-        String findSql = "SELECT id, name, time FROM reservations WHERE time = ?";
+    public @Nullable Reservation getByDateTime(@Nonnull LocalDate date, @Nonnull TimeId timeId) {
+        String findSql = SELECT_RESERVATION_QUERY + " WHERE date = ? AND time_id = ?";
         try {
-            return jdbcTemplate.queryForObject(findSql, rowToReservation, time);
+            return jdbcTemplate.queryForObject(findSql, rowToReservation, date, timeId.id());
         } catch (EmptyResultDataAccessException emptyResultData) {
             return null;
         } catch (DataAccessException e) {
@@ -70,15 +88,11 @@ public class ReservationsRepository {
     @Transactional
     public @Nonnull Reservation create(@Nonnull CreateReservationInfo info) {
         ReservationId id = createAndGetId(info);
-        Reservation reservation = get(id);
-        if (reservation == null) {
-            throw new DomainException.UnknownError("예약을 생성했지만, 해당 예약을 찾을 수 없습니다.");
-        }
-        return reservation;
+        return get(id);
     }
 
     private @Nonnull ReservationId createAndGetId(@Nonnull CreateReservationInfo info) {
-        String insertSql = "INSERT INTO reservations (name, time) VALUES (?, ?)";
+        String insertSql = "INSERT INTO reservation (name, date, time_id) VALUES (?, ?, ?)";
         KeyHolder keyHolder;
 
         try {
@@ -86,13 +100,17 @@ public class ReservationsRepository {
             int affectedRows = jdbcTemplate.update((connection) -> {
                 var statement = connection.prepareStatement(insertSql, new String[]{"id"});
                 statement.setString(1, info.name());
-                statement.setTimestamp(2, Timestamp.valueOf(info.time()));
+                statement.setDate(2, java.sql.Date.valueOf(info.date()));
+                statement.setLong(3, info.timeId().id());
                 return statement;
             }, keyHolder);
 
             if (affectedRows != 1) {
                 throw new DomainException.UnknownError("reservation 행을 삽입할 수 없습니다.");
             }
+        } catch(DataIntegrityViolationException e) {
+            // TODO: 그 timeId가 있다던가, UNIQUE 제약 미충족이라던가
+            throw new DomainException.UnknownError(e);
         } catch (DataAccessException e) {
             throw new DomainException.UnknownError(e);
         }
@@ -102,7 +120,7 @@ public class ReservationsRepository {
     }
 
     public void delete(@Nonnull ReservationId id) {
-        String deleteSql = "DELETE FROM reservations WHERE id = ?";
+        String deleteSql = "DELETE FROM reservation WHERE id = ?";
         int affectedRows;
         try {
             affectedRows = jdbcTemplate.update(deleteSql, id.id());
