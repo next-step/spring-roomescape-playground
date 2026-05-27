@@ -47,6 +47,22 @@ h2 데이터베이스를 활용하여 데이터를 저장하도록 수정하세�
 - 기존에 사용하던 List 및 AtomicLong 을 제거하세요.
 - 예약 관리 기능이 정상 동작하도록 기능을 완성하세요.
 
+## 8단계 요구사항
+
+- 방탈출 시간표가 정해져 있는데 직접 입력하기 번거로워서 선택하는 방식으로 수정하려합니다.
+- API 명세를 따라 시간 관리 API를 구현하세요.
+- 아래 화면에서 시간 관리 기능이 잘 동작해야합니다.
+
+## 9단계 요구사항
+
+- 기존에 구현한 예약 기능에서 시간을 시간 테이블에 저장된 값만 선택할 수 있도록 수정하세요.
+- templates/reservation.html 대신 templates/new-reservation.html 파일을 활용하세요.
+
+## 10단계 요구사항
+
+- 레이어드 아키텍처를 적용하여 레이어별 책임과 역할에 따라 클래스 분리를 해보세요.
+- 분리한 클래스는 매번 새로 생성하지 않고 스프링 빈으로 등록해서 사용해보세요.
+
 # API 명세
 
 #### 예약 조회 Request
@@ -112,6 +128,62 @@ DELETE /reservations/1 HTTP/1.1
 ```
 
 #### 예약 취소 Response
+
+```http
+HTTP/1.1 204 No Content
+```
+
+#### 시간 추가 Request
+
+```http
+POST /times HTTP/1.1
+content-type: application/json
+
+{
+    "time": "10:00"
+}
+```
+
+#### 시간 추가 Response
+
+```http
+HTTP/1.1 201 Created
+Content-Type: application/json
+Location: /times/1
+
+{
+    "id": 1,
+    "time": "10:00"
+}
+```
+
+#### 시간 조회 Request
+
+```http
+GET /times HTTP/1.1
+```
+
+#### 시간 조회 Response
+
+```http
+HTTP/1.1 200 
+Content-Type: application/json
+
+[
+   {
+    "id": 1,
+    "time": "10:00"
+    }
+]
+```
+
+#### 시간 삭제 Request
+
+```http
+DELETE /times/1 HTTP/1.1
+```
+
+#### 시간 삭제 Response
 
 ```http
 HTTP/1.1 204 No Content
