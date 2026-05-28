@@ -3,9 +3,7 @@ package roomescape.dto;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 public record ReservationRequest(
         @NotBlank(message = "이름은 비어 있을 수 없습니다.")
@@ -16,6 +14,6 @@ public record ReservationRequest(
         LocalDate date,
 
         @NotNull(message = "시간은 비어 있을 수 없습니다.")
-        LocalTime time
+        Long timeId
 ) {
 }

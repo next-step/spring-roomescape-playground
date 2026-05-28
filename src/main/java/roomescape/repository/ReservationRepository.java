@@ -12,6 +12,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
+import roomescape.domain.Time;
 import roomescape.exception.BadRequestException;
 
 @Repository
@@ -24,13 +25,22 @@ public class ReservationRepository {
     }
 
     public List<Reservation> findAll() {
-        String sql = "SELECT id, name, date, time FROM reservation";
+        String sql = """
+                SELECT
+                    r.id as reservation_id,
+                    r.name,
+                    r.date,
+                    t.id as time_id,
+                    t.time as time_value
+                FROM reservation as r
+                INNER JOIN time as t ON r.time_id = t.id
+                """;
 
         return jdbcTemplate.query(sql, reservationRowMapper());
     }
 
     public Reservation save(Reservation reservation) {
-        String sql = "INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO reservation (name, date, time_id) VALUES (?, ?, ?)";
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
@@ -39,7 +49,7 @@ public class ReservationRepository {
                 PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
                 ps.setString(1, reservation.getName());
                 ps.setDate(2, java.sql.Date.valueOf(reservation.getDate()));
-                ps.setTime(3, java.sql.Time.valueOf(reservation.getTime()));
+                ps.setTime(3, java.sql.Time.valueOf(reservation.getTime().getTime()));
                 return ps;
             }, keyHolder);
         } catch (DuplicateKeyException e) {
@@ -66,11 +76,18 @@ public class ReservationRepository {
     }
 
     private RowMapper<Reservation> reservationRowMapper() {
-        return (rs, rowNum) -> new Reservation(
-                rs.getLong("id"),
-                rs.getString("name"),
-                rs.getDate("date").toLocalDate(),
-                rs.getTime("time").toLocalTime()
-        );
+        return (rs, rowNum) -> {
+            Time time = new Time(
+                    rs.getLong("time_id"),
+                    LocalTime.parse(rs.getString("time_value"))
+            );
+
+            return new Reservation(
+                    rs.getLong("reservation_id"),
+                    rs.getString("name"),
+                    LocalDate.parse(rs.getString("date")),
+                    time
+            );
+        };
     }
 }
