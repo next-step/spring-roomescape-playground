@@ -13,7 +13,7 @@ public class ReservationValidator {
     private static final int MIN_RESERVATION_HOUR = 0;
     private static final int MAX_RESERVATION_HOUR = 23; 
 
-    public void validateReservationTime(ReservationRequest request) {
+    public void validateReservationDateTime(ReservationRequest request) {
         LocalTime reservationTime = LocalTime.parse(request.time());
 
         validateReservationHour(reservationTime.getHour());
