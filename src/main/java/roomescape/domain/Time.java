@@ -1,4 +1,4 @@
-package roomescape;
+package roomescape.domain;
 import java.time.LocalTime;
 import java.util.Objects;
 import roomescape.exception.InvalidReservationException;

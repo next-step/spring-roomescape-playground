@@ -1,17 +1,16 @@
-package roomescape;
+package roomescape.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDate;
-import java.time.LocalTime;
+import roomescape.domain.Time;
+import roomescape.domain.Reservation;
 
 public class ReservationResponse {
     private Long id;
     private String name;
     private LocalDate date;
-    @JsonFormat(pattern = "HH:mm")
-    private LocalTime time;
+    private Time time;
 
-    public ReservationResponse(Long id, String name, LocalDate date, LocalTime time) {
+    public ReservationResponse(Long id, String name, LocalDate date, Time time) {
         this.id = id;
         this.name = name;
         this.date = date;
@@ -23,12 +22,12 @@ public class ReservationResponse {
                 reservation.getId(),
                 reservation.getName(),
                 reservation.getDate(),
-                reservation.getTime()
+                reservation.getTimeInfo()
         );
     }
 
     public Long getId() { return id; }
     public String getName() { return name; }
     public LocalDate getDate() { return date; }
-    public LocalTime getTime() { return time; }
+    public Time getTime() { return time; }
 }

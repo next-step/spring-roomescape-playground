@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.is;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -15,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
+import roomescape.controller.ReservationController;
+import roomescape.domain.Reservation;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -43,11 +46,13 @@ public class MissionStepTest {
     }
 
     @Test
-    void 삼단계() {
-        Map<String, String> params = new HashMap<>();
+    void 삼단계_수정() {
+        jdbcTemplate.update("INSERT INTO time (time) VALUES (?)", "15:40");
+
+        Map<String, Object> params = new HashMap<>();
         params.put("name", "브라운");
         params.put("date", "2026-08-05");
-        params.put("time", "15:40");
+        params.put("time", "1");
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -75,6 +80,7 @@ public class MissionStepTest {
                 .statusCode(200)
                 .body("size()", is(0));
     }
+
     @Test
     void 사단계() {
         Map<String, String> params = new HashMap<>();
@@ -96,48 +102,6 @@ public class MissionStepTest {
                 .then().log().all()
                 .statusCode(404);
     }
-    @Test
-    void 예외_케이스_테스트() {
-        // 케이스 1: 과거 날짜로 예약 생성 시도 (400 Bad Request 예상)
-        Map<String, String> pastDateParams = new HashMap<>();
-        pastDateParams.put("name", "브라운");
-        pastDateParams.put("date", "2020-01-01"); // 확실한 과거 날짜
-        pastDateParams.put("time", "13:00");
-
-        RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
-                .body(pastDateParams)
-                .when().post("/reservations")
-                .then().log().all()
-                .statusCode(400);
-
-        // 케이스 2: 동일한 날짜와 시간에 중복 예약 시도 (409 Conflict 예상)
-        Map<String, String> firstReservation = new HashMap<>();
-        firstReservation.put("name", "브라운");
-        firstReservation.put("date", "2026-08-05");
-        firstReservation.put("time", "13:00");
-
-        // 첫 번째 정상 예약 등록 (201 Created)
-        RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
-                .body(firstReservation)
-                .when().post("/reservations")
-                .then().log().all()
-                .statusCode(201);
-
-        Map<String, String> duplicateReservation = new HashMap<>();
-        duplicateReservation.put("name", "클로이");
-        duplicateReservation.put("date", "2026-08-05"); // 동일 날짜
-        duplicateReservation.put("time", "13:00");       // 동일 시간
-
-        // 동일 시간 예약 시도 시 중복 예외 차단 검증 (409 Conflict)
-        RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
-                .body(duplicateReservation)
-                .when().post("/reservations")
-                .then().log().all()
-                .statusCode(409);
-    }
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -152,9 +116,11 @@ public class MissionStepTest {
             throw new RuntimeException(e);
         }
     }
+
     @Test
-    void 육단계() {
-        jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "브라운", "2026-08-05", "15:40");
+    void 육단계_수정() {
+        jdbcTemplate.update("INSERT INTO time (time) VALUES (?)", "15:40");
+        jdbcTemplate.update("INSERT INTO reservation (name, date, time_id) VALUES (?, ?, ?)", "브라운", "2026-08-05", 1);
 
         List<Reservation> reservations = RestAssured.given().log().all()
                 .when().get("/reservations")
@@ -166,12 +132,15 @@ public class MissionStepTest {
 
         assertThat(reservations.size()).isEqualTo(count);
     }
+
     @Test
-    void 칠단계() {
-        Map<String, String> params = new HashMap<>();
+    void 칠단계_수정() {
+        jdbcTemplate.update("INSERT INTO time (time) VALUES (?)", "10:00");
+
+        Map<String, Object> params = new HashMap<>();
         params.put("name", "브라운");
         params.put("date", "2026-08-05");
-        params.put("time", "10:00");
+        params.put("time", "1");
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -192,7 +161,6 @@ public class MissionStepTest {
         Integer countAfterDelete = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
         assertThat(countAfterDelete).isEqualTo(0);
     }
-
     @Test
     void 팔단계() {
         Map<String, String> params = new HashMap<>();
@@ -217,4 +185,77 @@ public class MissionStepTest {
                 .then().log().all()
                 .statusCode(204);
     }
+
+    @Test
+    void 구단계() {
+        Map<String, String> reservation = new HashMap<>();
+        reservation.put("name", "브라운");
+        reservation.put("date", "2026-08-05");
+        reservation.put("time", "10:00");
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(reservation)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(400);
+    }
+
+    private ReservationController reservationController;
+
+    @Test
+    void 십단계() {
+        boolean isJdbcTemplateInjected = false;
+
+        for (Field field : reservationController.getClass().getDeclaredFields()) {
+            if (field.getType().equals(JdbcTemplate.class)) {
+                isJdbcTemplateInjected = true;
+                break;
+            }
+        }
+
+        assertThat(isJdbcTemplateInjected).isFalse();
+    }
+
+    @Test
+    void 예외_케이스_테스트_수정() {
+        jdbcTemplate.update("INSERT INTO time (time) VALUES (?)", "13:00");
+
+        Map<String, Object> pastDateParams = new HashMap<>();
+        pastDateParams.put("name", "브라운");
+        pastDateParams.put("date", "2020-01-01");
+        pastDateParams.put("time", "1");
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(pastDateParams)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(400);
+
+        Map<String, Object> firstReservation = new HashMap<>();
+        firstReservation.put("name", "브라운");
+        firstReservation.put("date", "2026-08-05");
+        firstReservation.put("time", "1");
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(firstReservation)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(201);
+
+        Map<String, Object> duplicateReservation = new HashMap<>();
+        duplicateReservation.put("name", "클로이");
+        duplicateReservation.put("date", "2026-08-05");
+        duplicateReservation.put("time", "1");
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(duplicateReservation)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(409);
+    }
+
 }
