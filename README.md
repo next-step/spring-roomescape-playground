@@ -1,16 +1,25 @@
 # Spring MVC
-## 4단계 - 예외 처리
-
+## 5단계 - 데이터베이스 적용하기
 ### 요구사항
-- 예약 관련 API 호출 시 에러가 발생하는 경우 중 요청의 문제인 경우 Status Code를 400으로 응답하세요
-- 예를 들면 예약 추가 시 필요한 인자값이 비어있는 경우 혹은 삭제 할 예약의 식별자로 저장된 예약을 찾을 수 없는 경우가 있습니다.
+- h2 데이터베이스를 활용하여 데이터를 저장하도록 수정하세요.
+### 구현 사항
+- [x] gradle 의존성 추가
+- [x] 테이블 스키마 정의
+- [x] 데이터베이스 설정
 
-### 구현 목록
-- "필요한 인자값이 비어있는 경우"
-  - [x] 각 항목이 비어있는지 확인 `@Valid` 활용
-    - `ReservationDto` 필드에 `@NotBlank` 적용, 컨트롤러에서 `@Valid`로 검증
-    - `MethodArgumentNotValidException`은 `@ControllerAdvice`(`IncorrectAttributeError`)에서 글로벌 처리 → 필드별 에러 Map 반환
-- "삭제 할 예약의 식별자로 저장된 예약을 찾을 수 없는 경우"
-  - [x] @ExceptionHandler를 활용해 예외 처리
-    - `Reservations#removeById`에서 미존재 시 `IllegalArgumentException` throw
-    - `ReservationController`의 `@ExceptionHandler`가 잡아 400 응답 (예약 도메인 한정이라 로컬 핸들러로 분리)
+## 6단계 - 데이터 조회하기
+### 요구사항
+- 예약 조회 API 처리 로직에서 저장된 예약을 조회할 때 데이터베이스를 활용하도록 수정하세요.
+### 구현 사항
+- [x] Reservations 수정 
+
+## 7단계 - 데이터 추가/삭제하기
+### 요구사항
+- 예약 추가/취소 API 처리 로직에서 데이터베이스를 활용하도록 수정하세요.
+    - 기존에 사용하던 List 및 AtomicLong 을 제거하세요.
+- 예약 관리 기능이 정상 동작하도록 기능을 완성하세요.
+- 
+### 구현 사항
+- [x] Reservations의 add() 메소드 수정 
+- [x] Reservations의 removeById() 메소드 수정 
+- [x] ReservationController가 더이상 atomic에 의존하지 않도록 수정 

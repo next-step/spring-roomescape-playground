@@ -1,4 +1,4 @@
-package roomescape.model.handler;
+package roomescape.exceptionHandler;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import roomescape.model.errors.ReservationNotFoundException;
 
 @RestControllerAdvice
-public class ReservationExceptionHandler {
+public class ModelExceptionHandler {
     @ExceptionHandler(ReservationNotFoundException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String handleReservationNotFoundError(ReservationNotFoundException exception) {

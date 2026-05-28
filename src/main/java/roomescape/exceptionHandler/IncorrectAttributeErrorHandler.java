@@ -1,4 +1,4 @@
-package roomescape.controller.handler;
+package roomescape.exceptionHandler;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
