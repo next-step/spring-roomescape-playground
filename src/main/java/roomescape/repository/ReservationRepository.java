@@ -7,6 +7,8 @@ import org.springframework.stereotype.Repository;
 import roomescape.Reservation;
 
 import java.sql.PreparedStatement;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 @Repository
@@ -21,8 +23,8 @@ public class ReservationRepository {
     private final RowMapper<Reservation> rowMapper = (rs, rowNum) -> new Reservation(
             rs.getLong("id"),
             rs.getString("name"),
-            rs.getString("date"),
-            rs.getString("time")
+            rs.getObject("date", LocalDate.class),
+            rs.getObject("time", LocalTime.class)
     );
 
     public List<Reservation> findAll() {
@@ -30,15 +32,15 @@ public class ReservationRepository {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public Long save(String name, String date, String time) {
+    public Long save(String name, LocalDate date, LocalTime time) {
         String sql = "INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
             ps.setString(1, name);
-            ps.setString(2, date);
-            ps.setString(3, time);
+            ps.setObject(2, date);
+            ps.setObject(3, time);
             return ps;
         }, keyHolder);
 

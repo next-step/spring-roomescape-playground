@@ -58,7 +58,7 @@ public class MissionStepTest {
                 "time VARCHAR(255) NOT NULL, " +
                 "PRIMARY KEY (id))");
 
-        jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "브라운", "2023-08-05", "15:40");
+        jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "브라운", java.sql.Date.valueOf("2023-08-05"), java.sql.Time.valueOf("15:40:00"));
 
         List<Reservation> reservations = RestAssured.given().log().all()
                 .when().get("/reservations")
