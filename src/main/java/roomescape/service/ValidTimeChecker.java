@@ -3,7 +3,7 @@ package roomescape.service;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import roomescape.DAO.TimeDao;
+import roomescape.dao.TimeDao;
 
 public class ValidTimeChecker {
     private final TimeDao timeDao;
