@@ -57,4 +57,10 @@ public class ReservationRepository {
         String sql = "DELETE FROM reservation WHERE id = ?";
         jdbcTemplate.update(sql, id);
     }
+
+    public int countByDateAndTime(LocalDate date, LocalTime time) {
+        String sql = "SELECT COUNT(1) FROM reservation WHERE date = ? AND time = ?";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, date, time);
+        return count != null ? count : 0;
+    }
 }

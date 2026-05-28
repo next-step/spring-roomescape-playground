@@ -39,6 +39,10 @@ public class ApiController {
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> createReservation(@RequestBody @Valid ReservationRequest request) {
 
+        if (reservationRepository.countByDateAndTime(request.getDate(), request.getTime()) > 0) {
+            throw new BadRequestException("이미 해당 시간대에 예약이 존재합니다.");
+        }
+
         Long generatedId = reservationRepository.save(request.getName(), request.getDate(), request.getTime());
 
         Reservation reservation = new Reservation(
