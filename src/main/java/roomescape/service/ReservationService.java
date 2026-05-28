@@ -24,8 +24,8 @@ public class ReservationService {
     }
 
     public Reservation createReservation(ReservationRequest request) {
-        validator.validateReservationDateTime(request);
-        validator.validateDuplicatedReservation(request, reservationRepository.findAll());
+        validator.validateReservationDateTime(request.date(), request.time());
+        validator.validateDuplicatedReservation(request.date(), request.time(), reservationRepository.findAll());
 
         Reservation newReservation = new Reservation(
                 null,
