@@ -5,4 +5,3 @@ public record TimeResponse (
         String time
 ) {
 }
-
