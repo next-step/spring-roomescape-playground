@@ -3,9 +3,13 @@ package roomescape.reservation;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
@@ -55,4 +59,15 @@ class ReservationRepositoryTest {
                 LocalTime.of(15, 40)
         ))).isInstanceOf(DataAccessException.class);
     }
+
+    @Test
+    void saveTooLongNameThrowsException() {
+        assertThatThrownBy(() -> reservationRepository.save(new Reservation(
+                null, "a".repeat(256),
+                LocalDate.of(2026, 8, 5),
+                LocalTime.of(15, 40)
+        ))).isInstanceOf(DataAccessException.class);
+    }
+
+
 }
