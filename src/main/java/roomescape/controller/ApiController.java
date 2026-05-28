@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import roomescape.Reservation;
 import roomescape.ReservationRequest;
@@ -59,6 +60,7 @@ public class ApiController {
 
     // 7단계: 데이터베이스 기반 예약 취소 API
     @DeleteMapping("/reservations/{id}")
+    @Transactional
     public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
         if (reservationRepository.countById(id) == 0) {
             throw new NotFoundReservationException("삭제할 예약을 찾을 수 없습니다.");
