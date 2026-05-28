@@ -21,7 +21,7 @@ import java.util.concurrent.atomic.AtomicLong;
 @RestController
 public class ApiController {
 
-    private final JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate; //자바 코드에서 SQL을 실행하게 해주는 도구
 
     // 데이터베이스 접근을 위한 JdbcTemplate 주입 (메모리 자료구조 영구 제거)
     public ApiController(JdbcTemplate jdbcTemplate) {
@@ -50,12 +50,12 @@ public class ApiController {
             throw new BadRequestException("필수 입력 값이 누락되었습니다.");
         }
 
-        String sql = "INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)"; //?는 나중에 값이 들어갈 자리
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
-            ps.setString(1, request.getName());
+            ps.setString(1, request.getName()); //각 물음표 몇번째 자리에 어떤 값을 넣을지
             ps.setString(2, request.getDate());
             ps.setString(3, request.getTime());
             return ps;
