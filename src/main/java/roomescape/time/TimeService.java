@@ -1,7 +1,6 @@
 package roomescape.time;
 
 import java.util.Collection;
-import java.util.List;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import roomescape.time.dto.TimeCreateRequest;
@@ -27,13 +26,12 @@ public class TimeService {
         }
     }
 
-    public Void deleteById(Long id) {
+    public void deleteById(Long id) {
         int deleteCount = timeRepository.deleteById(id);
 
         if (deleteCount == 0) {
             throw new IllegalArgumentException("존재하지 않는 id입니다.");
         }
 
-        return null;
     }
 }

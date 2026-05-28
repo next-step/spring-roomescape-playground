@@ -4,12 +4,12 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import roomescape.reservation.domain.Reservation;
-import roomescape.reservation.domain.ReservationId;
 
 import java.net.URI;
 import java.util.Collection;
-import roomescape.reservation.dto.ReservationRequest;
+import roomescape.reservation.dto.ReservationCreateRequest;
+import roomescape.reservation.dto.ReservationCreateResponse;
+import roomescape.reservation.dto.ReservationSelectResponse;
 
 @Controller
 public class ReservationController {
@@ -21,30 +21,29 @@ public class ReservationController {
 	
 	@GetMapping("/reservation")
 	public String reservationPage() {
-		return "reservation";
+		return "new-reservation";
 	}
 	
 	@GetMapping("/reservations")
-	public ResponseEntity<Collection<Reservation>> getReservations() {
+	public ResponseEntity<Collection<ReservationSelectResponse>> getReservations() {
 		return ResponseEntity.ok(reservationRepository.findAll());
 	}
 
 	@PostMapping("/reservations")
-	public ResponseEntity<Reservation> createReservation(
-		@Valid @RequestBody ReservationRequest request
+	public ResponseEntity<ReservationCreateResponse> createReservation(
+		@Valid @RequestBody ReservationCreateRequest request
 	) {
 
-		Reservation newReservation = reservationRepository.save(request.toReservation());
+		ReservationCreateResponse response = reservationRepository.save(request);
 		
 		return ResponseEntity
-				.created(URI.create("/reservations/" + newReservation.getId()))
-				.body(newReservation);
+				.created(URI.create("/reservations/" + response.id()))
+				.body(response);
 	}
 	
 	@DeleteMapping("/reservations/{id}")
 	public ResponseEntity<Void> deleteReservation(@PathVariable long id) {
-		ReservationId reservationId = new ReservationId(id);
-		reservationRepository.deleteById(reservationId);
+		reservationRepository.deleteById(id);
 		
 		return ResponseEntity.noContent().build();
 	}

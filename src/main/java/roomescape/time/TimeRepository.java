@@ -1,19 +1,13 @@
 package roomescape.time;
 
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
-import java.sql.Time;
 import java.util.Collection;
-import java.util.Map;
 import java.util.Objects;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import roomescape.reservation.domain.Reservation;
-import roomescape.reservation.domain.ReservationId;
 import roomescape.time.dto.TimeResponse;
 
 @Repository

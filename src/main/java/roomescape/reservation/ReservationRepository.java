@@ -1,17 +1,17 @@
 package roomescape.reservation;
 
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
-import java.sql.Time;
-import java.util.List;
+import java.util.Collection;
 import java.util.Objects;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import roomescape.reservation.domain.Reservation;
-import roomescape.reservation.domain.ReservationId;
+import roomescape.reservation.dto.ReservationCreateRequest;
+import roomescape.reservation.dto.ReservationCreateResponse;
+import roomescape.reservation.dto.ReservationSelectResponse;
+import roomescape.time.dto.TimeResponse;
 
 @Repository
 public class ReservationRepository {
@@ -22,25 +22,33 @@ public class ReservationRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public List<Reservation> findAll() {
+    public Collection<ReservationSelectResponse> findAll() {
         String sql = """
-                SELECT id, name, date, time
-                FROM reservation
+                SELECT
+                    r.id as reservation_id,
+                    r.name,
+                    r.date,
+                    t.id as time_id,
+                    t.time as time_value
+                FROM reservation as r inner join time as t on r.time_id = t.id
                 """;
 
         return jdbcTemplate.query(sql, (rs, rowNum) ->
-                new Reservation(
-                        new ReservationId(rs.getLong("id")),
+                new ReservationSelectResponse(
+                        rs.getLong("reservation_id"),
                         rs.getString("name"),
-                        rs.getDate("date").toLocalDate(),
-                        rs.getTime("time").toLocalTime()
+                        rs.getString("date"),
+                        new TimeResponse(
+                                rs.getLong("time_id"),
+                                rs.getString("time_value")
+                        )
                 )
         );
     }
 
-    public Reservation save(Reservation reservation) {
+    public ReservationCreateResponse save(ReservationCreateRequest request) {
         String sql = """
-                INSERT INTO reservation(name, date, time)
+                INSERT INTO reservation(name, date, time_id)
                 VALUES (?, ?, ?)
                 """;
 
@@ -52,30 +60,30 @@ public class ReservationRepository {
                     Statement.RETURN_GENERATED_KEYS
             );
 
-            ps.setString(1, reservation.name());
-            ps.setDate(2, Date.valueOf(reservation.date()));
-            ps.setTime(3, Time.valueOf(reservation.time()));
+            ps.setString(1, request.name());
+            ps.setDate(2, request.date());
+            ps.setLong(3, request.time());
 
             return ps;
         }, keyHolder);
 
         long id = Objects.requireNonNull(keyHolder.getKey()).longValue();
 
-        return new Reservation(
-                new ReservationId(id),
-                reservation.name(),
-                reservation.date(),
-                reservation.time()
+        return new ReservationCreateResponse(
+                id,
+                request.name(),
+                request.date(),
+                request.time()
         );
     }
 
-    public void deleteById(ReservationId id) {
+    public void deleteById(Long id) {
         String sql = """
                 DELETE FROM reservation
                 WHERE id = ?
                 """;
 
-        int deleteCount = jdbcTemplate.update(sql, id.id());
+        int deleteCount = jdbcTemplate.update(sql, id);
 
         if (deleteCount == 0) {
             throw new IllegalArgumentException("존재하지 않는 예약입니다.");
