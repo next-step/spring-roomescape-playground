@@ -14,13 +14,11 @@ public class ReservationValidator {
     private static final int MAX_RESERVATION_HOUR = 23; 
 
     public void validateReservationTime(ReservationRequest request) {
-        String[] timeParts = request.time().split(":");
-        int hour = Integer.parseInt(timeParts[0]);
-        int minute = Integer.parseInt(timeParts[1]);
+        LocalTime reservationTime = LocalTime.parse(request.time());
 
-        validateReservationHour(hour);
+        validateReservationHour(reservationTime.getHour());
 
-        LocalDateTime reservationDateTime = LocalDateTime.of(request.date(), LocalTime.of(hour, minute));
+        LocalDateTime reservationDateTime = LocalDateTime.of(request.date(), reservationTime);
         LocalDateTime now = LocalDateTime.now();
 
         if (reservationDateTime.isBefore(now)) {
