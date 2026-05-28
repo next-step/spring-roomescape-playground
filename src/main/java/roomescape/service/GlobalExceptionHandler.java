@@ -13,7 +13,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NotFoundReservationException.class)
     public ResponseEntity<String> handleNotFoundException(NotFoundReservationException e) {
         return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
+                .status(HttpStatus.NOT_FOUND)
                 .body(e.getMessage());
     }
 
