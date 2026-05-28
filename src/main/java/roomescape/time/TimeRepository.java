@@ -1,0 +1,73 @@
+package roomescape.time;
+
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
+import java.sql.Time;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Objects;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
+import roomescape.reservation.domain.Reservation;
+import roomescape.reservation.domain.ReservationId;
+import roomescape.time.dto.TimeResponse;
+
+@Repository
+public class TimeRepository {
+    private final JdbcTemplate jdbcTemplate;
+
+    public TimeRepository(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
+    public Collection<TimeResponse> findAll() {
+        String sql = """
+                SELECT id, time
+                  FROM time
+                """;
+
+        return jdbcTemplate.query(sql, (rs, rowNum) ->
+                new TimeResponse(
+                        rs.getLong("id"),
+                        rs.getString("time")
+                )
+        );
+    }
+
+    public TimeResponse save(String time) {
+        String sql = """
+                INSERT INTO time(time)
+                VALUES (?)
+                """;
+
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(
+                    sql,
+                    Statement.RETURN_GENERATED_KEYS
+            );
+
+            ps.setString(1, time);
+
+            return ps;
+        }, keyHolder);
+
+        Long id = Objects.requireNonNull(keyHolder.getKey()).longValue();
+
+        return new TimeResponse(id, time);
+    }
+
+    public int deleteById(Long id) {
+        String sql = """
+                DELETE FROM TIME
+                 WHERE id = ?
+                """;
+
+        return jdbcTemplate.update(sql, id);
+    }
+}

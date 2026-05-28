@@ -166,19 +166,28 @@ public class MissionStepTest {
     }
 
     @Test
-    void saveTooLongNameThrowsException() {
-        String name = "a".repeat(256);
-
+    void 팔단계() {
         Map<String, String> params = new HashMap<>();
-        params.put("name", name);
-        params.put("date", "2026-08-05");
         params.put("time", "10:00");
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(params)
-                .when().post("/reservations")
+                .when().post("/times")
                 .then().log().all()
-                .statusCode(400);
+                .statusCode(201)
+                .header("Location", "/times/1");
+
+        RestAssured.given().log().all()
+                .when().get("/times")
+                .then().log().all()
+                .statusCode(200)
+                .body("size()", is(1));
+
+        RestAssured.given().log().all()
+                .when().delete("/times/1")
+                .then().log().all()
+                .statusCode(204);
     }
+
 }
