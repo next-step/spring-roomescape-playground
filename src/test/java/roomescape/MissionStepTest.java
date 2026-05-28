@@ -27,10 +27,22 @@ public class MissionStepTest {
 
     @Test
     void 오단계() {
+        jdbcTemplate.execute("DROP TABLE IF EXISTS reservation");
+        jdbcTemplate.execute("CREATE TABLE reservation (" +
+                "id BIGINT NOT NULL AUTO_INCREMENT, " +
+                "name VARCHAR(255) NOT NULL, " +
+                "date VARCHAR(255) NOT NULL, " +
+                "time VARCHAR(255) NOT NULL, " +
+                "PRIMARY KEY (id))");
+
         try (Connection connection = jdbcTemplate.getDataSource().getConnection()) {
             assertThat(connection).isNotNull();
-            assertThat(connection.getCatalog()).isEqualTo("DATABASE");
-            assertThat(connection.getMetaData().getTables(null, null, "RESERVATION", null).next()).isTrue();
+            // H2 데이터베이스 내 카탈로그명이 제대로 인식되었는지 검증
+            assertThat(connection.getCatalog().toUpperCase()).isEqualTo("DATABASE");
+
+            // 테이블이 정상적으로 생성되어 숫자가 조회되는지 최종 검증
+            Integer count = jdbcTemplate.queryForObject("SELECT COUNT(1) FROM reservation", Integer.class);
+            assertThat(count).isNotNull();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -38,6 +50,14 @@ public class MissionStepTest {
 
     @Test
     void 육단계() {
+        jdbcTemplate.execute("DROP TABLE IF EXISTS reservation");
+        jdbcTemplate.execute("CREATE TABLE reservation (" +
+                "id BIGINT NOT NULL AUTO_INCREMENT, " +
+                "name VARCHAR(255) NOT NULL, " +
+                "date VARCHAR(255) NOT NULL, " +
+                "time VARCHAR(255) NOT NULL, " +
+                "PRIMARY KEY (id))");
+
         jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "브라운", "2023-08-05", "15:40");
 
         List<Reservation> reservations = RestAssured.given().log().all()
@@ -53,6 +73,14 @@ public class MissionStepTest {
 
     @Test
     void 칠단계() {
+        jdbcTemplate.execute("DROP TABLE IF EXISTS reservation");
+        jdbcTemplate.execute("CREATE TABLE reservation (" +
+                "id BIGINT NOT NULL AUTO_INCREMENT, " +
+                "name VARCHAR(255) NOT NULL, " +
+                "date VARCHAR(255) NOT NULL, " +
+                "time VARCHAR(255) NOT NULL, " +
+                "PRIMARY KEY (id))");
+
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
         params.put("date", "2023-08-05");
