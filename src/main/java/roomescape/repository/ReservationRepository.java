@@ -25,6 +25,12 @@ public class ReservationRepository {
         return jdbcTemplate.query(sql, reservationRowMapper());
     }
 
+    public boolean existsByDateAndTime(String date, String time) {
+        String sql = "SELECT COUNT(1) FROM reservation WHERE date = ? AND time = ?";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, date, time);
+        return count != null && count > 0;
+    }
+
     public Reservation save(Reservation reservation) {
         String sql = "INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();

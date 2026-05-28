@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.List;
 
 @Component
 public class ReservationValidator {
@@ -29,18 +28,6 @@ public class ReservationValidator {
     private void validateReservationHour(int hour) {
         if (hour < MIN_RESERVATION_HOUR || hour > MAX_RESERVATION_HOUR) {
             throw new IllegalArgumentException("예약 시간은 0시부터 23시 사이여야 합니다.");
-        }
-    }
-
-    public void validateDuplicatedReservation(LocalDate date, String time, List<Reservation> reservations) {
-        boolean isDuplicated = reservations.stream()
-                .anyMatch(reservation -> 
-                    reservation.getDate().equals(date.toString()) && 
-                    reservation.getTime().equals(time)
-                );
-
-        if (isDuplicated) {
-            throw new IllegalArgumentException("이미 예약된 시간입니다.");
         }
     }
 }
