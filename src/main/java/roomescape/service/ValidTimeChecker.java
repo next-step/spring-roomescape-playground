@@ -3,8 +3,10 @@ package roomescape.service;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import org.springframework.stereotype.Component;
 import roomescape.dao.TimeDao;
 
+@Component
 public class ValidTimeChecker {
     private final TimeDao timeDao;
 

@@ -16,10 +16,10 @@ public class ReservationService {
     private final TimeDao timeDao;
     private final ValidTimeChecker timeChecker;
 
-    public ReservationService(ReservationDao reservationDao, TimeDao timeDao) {
+    public ReservationService(ReservationDao reservationDao, TimeDao timeDao, ValidTimeChecker validTimeChecker) {
         this.reservationDao = reservationDao;
         this.timeDao = timeDao;
-        this.timeChecker = new ValidTimeChecker(timeDao);
+        this.timeChecker = validTimeChecker;
     }
 
     @Transactional(readOnly = true)
