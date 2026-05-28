@@ -1,5 +1,6 @@
 package roomescape.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -45,10 +46,7 @@ public class ApiController {
 
     // 7단계: 데이터베이스 기반 예약 추가 API (KeyHolder 사용)
     @PostMapping("/reservations")
-    public ResponseEntity<Reservation> createReservation(@RequestBody ReservationRequest request) {
-        if (request.getName().isEmpty() || request.getDate().isEmpty() || request.getTime().isEmpty()) {
-            throw new BadRequestException("필수 입력 값이 누락되었습니다.");
-        }
+    public ResponseEntity<Reservation> createReservation(@RequestBody @Valid ReservationRequest request) {
 
         String sql = "INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)"; //?는 나중에 값이 들어갈 자리
         KeyHolder keyHolder = new GeneratedKeyHolder();
