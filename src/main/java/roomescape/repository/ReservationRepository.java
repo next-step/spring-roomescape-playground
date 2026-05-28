@@ -49,8 +49,7 @@ public class ReservationRepository {
 
     public int countById(Long id) {
         String sql = "SELECT COUNT(1) FROM reservation WHERE id = ?";
-        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, id);
-        return count != null ? count : 0;
+        return jdbcTemplate.queryForObject(sql, Integer.class, id);
     }
 
     public void deleteById(Long id) {
