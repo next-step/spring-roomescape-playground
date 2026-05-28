@@ -50,12 +50,10 @@ public class ReservationRepository {
         return new Reservation(key.longValue(), reservation.getName(), reservation.getDate(), reservation.getTime());
     }
 
-    public void deleteById(Long id) {
+    public boolean deleteById(Long id) {
         String sql = "DELETE FROM reservation WHERE id = ?";
         int updatedRows = jdbcTemplate.update(sql, id);
-        if (updatedRows == 0) {
-            throw new IllegalArgumentException("존재하지 않는 예약입니다.");
-        }
+        return updatedRows > 0;
     }
 
     private RowMapper<Reservation> reservationRowMapper() {
