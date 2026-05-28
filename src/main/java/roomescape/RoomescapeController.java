@@ -12,20 +12,26 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import roomescape.exception.InvalidReservationException;
 import roomescape.exception.NotFoundReservationException;
+import roomescape.exception.NotFoundTimeException;
 import roomescape.exception.ReservationConflictException;
 
 @Controller
 public class RoomescapeController {
 
     private final JdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsert simpleJdbcInsert;
+    private final SimpleJdbcInsert reservationInsert;
+    private final SimpleJdbcInsert timeInsert;
     private final ReservationValidator reservationValidator;
 
     public RoomescapeController(JdbcTemplate jdbcTemplate, ReservationValidator reservationValidator) {
         this.jdbcTemplate = jdbcTemplate;
         this.reservationValidator = reservationValidator;
-        this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+        this.reservationInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("reservation")
+                .usingGeneratedKeyColumns("id");
+
+        this.timeInsert = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("time")
                 .usingGeneratedKeyColumns("id");
     }
 
@@ -37,6 +43,11 @@ public class RoomescapeController {
     @GetMapping("/reservation")
     public String showReservationPage() {
         return "reservation";
+    }
+
+    @GetMapping("/time")
+    public String showTimePage() {
+        return "time";
     }
 
     @GetMapping("/reservations")
@@ -52,6 +63,42 @@ public class RoomescapeController {
                 )));
     }
 
+    @GetMapping("/times")
+    @ResponseBody
+    public List<TimeResponse> getTimes() {
+        return jdbcTemplate.query(
+                "SELECT id, time FROM time",
+                (rs, rowNum) -> TimeResponse.from(new Time(
+                        rs.getLong("id"),
+                        rs.getTime("time").toLocalTime()
+                )));
+    }
+
+    @PostMapping("/times")
+    public ResponseEntity<TimeResponse> addTime(@RequestBody TimeRequest request) {
+        Time tempTime = request.toEntity(null);
+
+        SqlParameterSource params = new MapSqlParameterSource()
+                .addValue("time", java.sql.Time.valueOf(tempTime.getTime()));
+
+        Long id = timeInsert.executeAndReturnKey(params).longValue();
+
+        Time savedTime = request.toEntity(id);
+        TimeResponse response = TimeResponse.from(savedTime);
+
+        return ResponseEntity.created(URI.create("/times/" + id)).body(response);
+    }
+
+    @DeleteMapping("/times/{id}")
+    public ResponseEntity<Void> deleteTime(@PathVariable Long id) {
+        int deleted = jdbcTemplate.update("DELETE FROM time WHERE id = ?", id);
+
+        if (deleted == 0) {
+            throw new NotFoundTimeException();
+        }
+        return ResponseEntity.noContent().build();
+    }
+
     @PostMapping("/reservations")
     public ResponseEntity<ReservationResponse> addReservation(@RequestBody ReservationRequest request) {
         Reservation tempReservation = request.toEntity(null); //DB들어가기 전, 식별자 없는 객체 검증
@@ -62,7 +109,7 @@ public class RoomescapeController {
                 .addValue("date", java.sql.Date.valueOf(tempReservation.getDate()))
                 .addValue("time", java.sql.Time.valueOf(tempReservation.getTime()));
 
-        Long id = simpleJdbcInsert.executeAndReturnKey(params).longValue();
+        Long id = reservationInsert.executeAndReturnKey(params).longValue();
 
         Reservation savedReservation = request.toEntity(id);//검증을 모두 통과한 객체
         ReservationResponse response = ReservationResponse.from(savedReservation);
@@ -82,6 +129,11 @@ public class RoomescapeController {
 
     @ExceptionHandler(NotFoundReservationException.class)
     public ResponseEntity<String> handleException(NotFoundReservationException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+
+    @ExceptionHandler(NotFoundTimeException.class)
+    public ResponseEntity<String> handleNotFoundTimeException(NotFoundTimeException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 
