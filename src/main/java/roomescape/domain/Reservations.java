@@ -18,4 +18,8 @@ public class Reservations {
             throw new ReservationConflictException("중복된 예약이 존재합니다.");
         }
     }
+
+    public List<Reservation> getReservations(){
+        return reservations;
+    }
 }

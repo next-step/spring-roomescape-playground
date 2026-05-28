@@ -201,6 +201,7 @@ public class MissionStepTest {
                 .statusCode(400);
     }
 
+    @Autowired
     private ReservationController reservationController;
 
     @Test
@@ -216,6 +217,7 @@ public class MissionStepTest {
 
         assertThat(isJdbcTemplateInjected).isFalse();
     }
+
 
     @Test
     void 예외_케이스_테스트_수정() {
