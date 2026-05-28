@@ -22,7 +22,6 @@ public class ReservationService {
     }
 
     public ReservationResponse createReservation(ReservationRequest request) {
-
         Time time = timeDao.findById(request.getTimeId())
                 .orElseThrow(() -> new NotFoundTimeException(request.getTimeId()));
 
@@ -30,7 +29,7 @@ public class ReservationService {
             throw new DuplicateReservationException(request.getDate().toString(), time.getTime().toString());
         }
 
-        Reservation reservation = new Reservation(null, request.getName(), request.getDate(), time);
+        Reservation reservation = Reservation.createNew(request.getName(), request.getDate(), time);
         Long generatedId = reservationDao.insert(reservation);
 
         TimeResponse timeResponse = new TimeResponse(time.getId(), time.getTime().toString());
