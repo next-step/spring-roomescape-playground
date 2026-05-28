@@ -35,8 +35,8 @@ public class RoomescapeDBController {
 
     @GetMapping("/times")
     public ResponseEntity<List<LocalTime>> showAllValidTimes(
-            @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-        List<LocalTime> times = reservationService.getValidTimesByDate(date);
+            @RequestParam(value = "date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        List<LocalTime> times = reservationService.getInvalidTimes(date);
         return ResponseEntity.ok().body(times);
     }
 

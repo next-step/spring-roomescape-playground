@@ -6,19 +6,16 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import roomescape.dao.ReservationDao;
-import roomescape.dao.TimeDao;
 import roomescape.domain.Reservation;
 
 @Service
 public class ReservationService {
 
     private final ReservationDao reservationDao;
-    private final TimeDao timeDao;
     private final ValidTimeChecker timeChecker;
 
-    public ReservationService(ReservationDao reservationDao, TimeDao timeDao, ValidTimeChecker validTimeChecker) {
+    public ReservationService(ReservationDao reservationDao, ValidTimeChecker validTimeChecker) {
         this.reservationDao = reservationDao;
-        this.timeDao = timeDao;
         this.timeChecker = validTimeChecker;
     }
 
@@ -27,20 +24,16 @@ public class ReservationService {
         return reservationDao.findAll();
     }
 
-    @Transactional
-    public List<LocalTime> getValidTimesByDate(LocalDate date) {
-        timeDao.refreshValidTimesScheduler();
-        return timeDao.findAllValidTimes(date);
+    @Transactional(readOnly = true)
+    public List<LocalTime> getInvalidTimes(LocalDate date) {
+        return reservationDao.findAllReservationTimesByDate(date);
     }
 
     @Transactional
     public Reservation createReservation(Reservation request) {
         timeChecker.checkReservationable(request.getDate(), request.getTime());
 
-        Reservation savedReservation = reservationDao.saveReservation(request);
-        timeDao.deleteValidTime(request.getDate(), request.getTime());
-
-        return savedReservation;
+        return reservationDao.saveReservation(request);
     }
 
     @Transactional
@@ -51,6 +44,5 @@ public class ReservationService {
         }
 
         reservationDao.deleteById(id);
-        timeDao.saveValidTime(reservation.getDate(), reservation.getTime());
     }
 }

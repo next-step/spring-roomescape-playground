@@ -19,20 +19,9 @@ public class RoomescapeApplication implements CommandLineRunner {
     public void run(String... strings) throws Exception {
         jdbcTemplate.execute("DROP TABLE Times IF EXISTS");
         jdbcTemplate.execute("DROP TABLE Reservations IF EXISTS");
-        jdbcTemplate.execute("DROP TABLE ValidTimes IF EXISTS");
-        jdbcTemplate.execute(
-                "CREATE TABLE ValidTimes(date DATE NOT NULL, time TIME NOT NULL, PRIMARY KEY(date, time))");
-        jdbcTemplate.execute(
-                "INSERT INTO ValidTimes(date, time) " +
-                        "SELECT " +
-                        "  DATEADD('DAY', d.X, CURRENT_DATE), " +
-                        "  PARSEDATETIME(t.X || ':00:00', 'H:mm:ss') " +
-                        "FROM SYSTEM_RANGE(0, 7) AS d " +
-                        "CROSS JOIN SYSTEM_RANGE(8, 21) AS t"
-        );
         jdbcTemplate.execute(
                 "CREATE TABLE Reservations(id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255) NOT NULL, date DATE NOT NULL)");
         jdbcTemplate.execute(
-                "CREATE TABLE Times(time_id INT, time TIME NOT NULL, FOREIGN KEY (time_id) REFERENCES Reservations(id) ON DELETE CASCADE)");
+                "CREATE TABLE Times(reservation_id INT, time TIME NOT NULL, FOREIGN KEY (reservation_id) REFERENCES Reservations(id) ON DELETE CASCADE)");
     }
 }
