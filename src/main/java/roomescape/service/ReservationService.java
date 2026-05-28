@@ -25,7 +25,7 @@ public class ReservationService {
 
     public Reservation createReservation(ReservationRequest request) {
         validator.validateReservationDateTime(request.date(), request.time());
-        validator.validateDuplicatedReservation(request.date(), request.time(), reservationRepository.findAll());
+        validateDuplicatedReservation(request);
 
         Reservation newReservation = new Reservation(
                 null,
@@ -38,5 +38,11 @@ public class ReservationService {
 
     public void deleteReservation(Long id) {
         reservationRepository.deleteById(id);
+    }
+
+    private void validateDuplicatedReservation(ReservationRequest request) {
+        if (reservationRepository.existsByDateAndTime(request.date().toString(), request.time())) {
+            throw new IllegalArgumentException("이미 예약된 시간입니다.");
+        }
     }
 }
