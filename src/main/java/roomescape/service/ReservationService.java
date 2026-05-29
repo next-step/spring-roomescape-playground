@@ -20,7 +20,15 @@ public class ReservationService {
     }
 
     public Reservation createReservation(ReservationRequest reservationRequest) {
-        return reservationRepository.save(reservationRequest);
+        Reservation reservation =
+                new Reservation(
+                        null,
+                        reservationRequest.name(),
+                        reservationRequest.date(),
+                        reservationRequest.time()
+                );
+
+        return reservationRepository.save(reservation);
     }
 
     public void deleteReservation(Long id) {

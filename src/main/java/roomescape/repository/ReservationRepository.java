@@ -4,7 +4,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import roomescape.dto.ReservationRequest;
 import roomescape.exception.NotFoundReservationException;
 import roomescape.model.Reservation;
 
@@ -39,7 +38,7 @@ public class ReservationRepository {
         );
     }
 
-    public Reservation save(ReservationRequest request) {
+    public Reservation save(Reservation reservation) {
 
         String sql = """
                 INSERT INTO reservation(name, date, time)
@@ -50,9 +49,9 @@ public class ReservationRepository {
 
         jdbcTemplate.update(connection -> {
             PreparedStatement statement = connection.prepareStatement(sql, new String[]{"id"});
-            statement.setString(1, request.name());
-            statement.setString(2, request.date());
-            statement.setString(3, request.time());
+            statement.setString(1, reservation.name());
+            statement.setString(2, reservation.date());
+            statement.setString(3, reservation.time());
 
             return statement;
         }, keyHolder);
@@ -61,9 +60,9 @@ public class ReservationRepository {
 
         return new Reservation(
                 id,
-                request.name(),
-                request.date(),
-                request.time()
+                reservation.name(),
+                reservation.date(),
+                reservation.time()
         );
     }
 
