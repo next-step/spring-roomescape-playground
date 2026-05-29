@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import roomescape.exception.NotFoundException;
 import roomescape.reservation.dto.ReservationCreateRequest;
 import roomescape.reservation.dto.ReservationCreateResponse;
 import roomescape.reservation.dto.ReservationSelectResponse;
@@ -86,7 +87,7 @@ public class ReservationRepository {
         int deleteCount = jdbcTemplate.update(sql, id);
 
         if (deleteCount == 0) {
-            throw new IllegalArgumentException("존재하지 않는 예약입니다.");
+            throw new NotFoundException("존재하지 않는 예약입니다.");
         }
     }
 }

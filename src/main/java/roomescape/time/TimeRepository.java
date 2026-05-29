@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import roomescape.time.dto.TimeCreateRequest;
 import roomescape.time.dto.TimeResponse;
 
 @Repository
@@ -32,7 +33,7 @@ public class TimeRepository {
         );
     }
 
-    public TimeResponse save(String time) {
+    public TimeResponse save(TimeCreateRequest timeRequest) {
         String sql = """
                 INSERT INTO time(time)
                 VALUES (?)
@@ -46,14 +47,14 @@ public class TimeRepository {
                     Statement.RETURN_GENERATED_KEYS
             );
 
-            ps.setString(1, time);
+            ps.setString(1, timeRequest.time());
 
             return ps;
         }, keyHolder);
 
         Long id = Objects.requireNonNull(keyHolder.getKey()).longValue();
 
-        return new TimeResponse(id, time);
+        return new TimeResponse(id, timeRequest.time());
     }
 
     public int deleteById(Long id) {

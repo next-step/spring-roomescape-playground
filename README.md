@@ -85,13 +85,19 @@ Content-Type: application/json
     "id": 1,
     "name": "브라운",
     "date": "2023-01-01",
-    "time": "10:00"
+    "time": { 
+      "id": 1, 
+      "time": "15:40"
+    }
   },
   {
     "id": 2,
     "name": "브라운",
     "date": "2023-01-02",
-    "time": "11:00"
+    "time": { 
+      "id": 2, 
+      "time": "10:00"
+    }
   }
 ]
 ```
@@ -108,12 +114,14 @@ Content-Type: application/json
 ```
 
 ```json
-{
-  "date": "2023-08-05",
-  "name": "브라운",
-  "time": "15:40"
+{ 
+  "id": 1, 
+  "name": "브라운", 
+  "date": "2023-08-05", 
+  "time": 1
 }
 ```
+
 
 ### Response
 
@@ -128,9 +136,13 @@ Content-Type: application/json
   "id": 1,
   "name": "브라운",
   "date": "2023-08-05",
-  "time": "15:40"
+  "time": {
+    "id": 1,
+    "time": "15:40"
+  }
 }
 ```
+
 
 ---
 
