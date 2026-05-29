@@ -58,7 +58,13 @@ public class ReservationRepository {
             return statement;
         }, keyHolder);
 
-        Long id = keyHolder.getKey().longValue();
+        Number key = keyHolder.getKey();
+
+        if (key == null) {
+            throw new IllegalStateException("생성된 ID를 가져올 수 없습니다.");
+        }
+
+        Long id = key.longValue();
 
         return new Reservation(
                 id,
