@@ -7,7 +7,9 @@ import org.springframework.stereotype.Repository;
 import roomescape.exception.NotFoundReservationException;
 import roomescape.model.Reservation;
 
+import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.Time;
 import java.util.List;
 
 @Repository
@@ -32,8 +34,8 @@ public class ReservationRepository {
                         new Reservation(
                                 resultSet.getLong("id"),
                                 resultSet.getString("name"),
-                                resultSet.getString("date"),
-                                resultSet.getString("time")
+                                resultSet.getDate("date").toLocalDate(),
+                                resultSet.getTime("time").toLocalTime()
                         )
         );
     }
@@ -50,8 +52,8 @@ public class ReservationRepository {
         jdbcTemplate.update(connection -> {
             PreparedStatement statement = connection.prepareStatement(sql, new String[]{"id"});
             statement.setString(1, reservation.name());
-            statement.setString(2, reservation.date());
-            statement.setString(3, reservation.time());
+            statement.setDate(2, Date.valueOf((reservation.date())));
+            statement.setTime(3, Time.valueOf(reservation.time()));
 
             return statement;
         }, keyHolder);
