@@ -5,12 +5,16 @@ import static roomescape.reservation.domain.Reservation.RESERVATION_LENGTH_MINUT
 import java.time.LocalTime;
 import java.util.List;
 import javax.sql.DataSource;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import roomescape.exception.customexception.TimeInUseException;
+import roomescape.exception.customexception.TimeNotFoundException;
 import roomescape.time.domain.Time;
 
 @Repository
@@ -41,7 +45,11 @@ public class TimeRepository {
 
     public Time findTimeById(Long id) {
         String sql = "SELECT id, time FROM time WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, timeRowMapper, id);
+        try {
+            return jdbcTemplate.queryForObject(sql, timeRowMapper, id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new TimeNotFoundException();
+        }
     }
 
     public List<Time> findAllTimes() {
@@ -51,7 +59,11 @@ public class TimeRepository {
 
     public int deleteTimeById(Long id) {
         String sql = "DELETE FROM time WHERE id = ?";
-        return jdbcTemplate.update(sql, id);
+        try {
+            return jdbcTemplate.update(sql, id);
+        } catch (DataIntegrityViolationException e) {
+            throw new TimeInUseException();
+        }
     }
 
     public int countConflictingTimes(LocalTime time) {
