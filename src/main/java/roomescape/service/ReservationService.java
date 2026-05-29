@@ -2,6 +2,7 @@ package roomescape.service;
 
 import org.springframework.stereotype.Service;
 import roomescape.dto.ReservationRequest;
+import roomescape.exception.NotFoundReservationException;
 import roomescape.model.Reservation;
 import roomescape.repository.ReservationRepository;
 
@@ -32,6 +33,10 @@ public class ReservationService {
     }
 
     public void deleteReservation(Long id) {
-        reservationRepository.delete(id);
+        int affectedRows = reservationRepository.delete(id);
+
+        if (affectedRows == 0) {
+            throw new NotFoundReservationException();
+        }
     }
 }

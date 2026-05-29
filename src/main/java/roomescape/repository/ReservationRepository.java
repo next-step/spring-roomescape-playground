@@ -4,7 +4,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import roomescape.exception.NotFoundReservationException;
 import roomescape.model.Reservation;
 
 import java.sql.Date;
@@ -74,17 +73,13 @@ public class ReservationRepository {
         );
     }
 
-    public void delete(Long id) {
+    public int delete(Long id) {
 
         String sql = """
                 DELETE FROM reservation
                 WHERE id = ?
                 """;
 
-        int affectedRows = jdbcTemplate.update(sql, id);
-
-        if (affectedRows == 0) {
-            throw new NotFoundReservationException();
-        }
+        return jdbcTemplate.update(sql, id);
     }
 }
