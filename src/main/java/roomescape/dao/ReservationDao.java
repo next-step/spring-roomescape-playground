@@ -1,9 +1,13 @@
 package roomescape.dao;
 
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
 
@@ -25,11 +29,6 @@ public class ReservationDao {
         ));
     }
 
-    public List<LocalDate> findAllDates() {
-        String sqlQuery = "SELECT r.date FROM Reservations AS r INNER JOIN Times AS t ON r.id = t.reservation_id";
-        return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> rs.getDate("date").toLocalDate());
-    }
-
     public List<LocalTime> findAllReservationTimesByDate(LocalDate date) {
         String sqlQuery = "SELECT t.time FROM Reservations AS r INNER JOIN Times AS t ON r.id = t.reservation_id WHERE r.date = ?";
         return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> rs.getTime("time").toLocalTime(), date);
@@ -37,10 +36,16 @@ public class ReservationDao {
 
     public Reservation saveReservation(Reservation reservation) {
         String insertReservationQuery = "INSERT INTO Reservations(name, date) VALUES (?, ?)";
-        jdbcTemplate.update(insertReservationQuery, reservation.getName(), reservation.getDate());
+        KeyHolder keyHolder = new GeneratedKeyHolder();
 
-        String latestIdQuery = "SELECT id FROM Reservations ORDER BY id DESC LIMIT 1";
-        Integer latestId = jdbcTemplate.queryForObject(latestIdQuery, Integer.class);
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(insertReservationQuery, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, reservation.getName());
+            ps.setObject(2, reservation.getDate());
+            return ps;
+        }, keyHolder);
+
+        int latestId = keyHolder.getKey().intValue();
 
         String insertTimeQuery = "INSERT INTO Times(reservation_id, time) VALUES (?, ?)";
         jdbcTemplate.update(insertTimeQuery, latestId, reservation.getTime());
