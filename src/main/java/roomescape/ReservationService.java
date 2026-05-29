@@ -1,40 +1,54 @@
 package roomescape;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.List;
 import org.springframework.stereotype.Service;
+import roomescape.dto.ReservationRequest;
+import roomescape.dto.ReservationResponse;
+import roomescape.dto.TimeResponse;
+
+import java.util.List;
 import roomescape.exception.DuplicateReservationException;
 import roomescape.exception.NotFoundReservationException;
+import roomescape.exception.NotFoundTimeException;
 
 @Service
 public class ReservationService {
 
     private final ReservationDao reservationDao;
+    private final TimeDao timeDao;
 
-    public ReservationService(ReservationDao reservationDao) {
+    public ReservationService(ReservationDao reservationDao, TimeDao timeDao) {
         this.reservationDao = reservationDao;
+        this.timeDao = timeDao;
     }
 
-    public Reservation createReservation(Reservation reservation) {
-        LocalDate date = reservation.getDate();
-        LocalTime time = reservation.getTime();
+    public ReservationResponse createReservation(ReservationRequest request) {
+        Time time = timeDao.findById(request.getTimeId())
+                .orElseThrow(() -> new NotFoundTimeException(request.getTimeId()));
 
-        if (reservationDao.existsByDateAndTime(date, time)) {
-            throw new DuplicateReservationException(date.toString(), time.toString());
+        if (reservationDao.existsByDateAndTimeId(request.getDate(), time.getId())) {
+            throw new DuplicateReservationException(request.getDate().toString(), time.getTime().toString());
         }
 
+        Reservation reservation = Reservation.createNew(request.getName(), request.getDate(), time);
         Long generatedId = reservationDao.insert(reservation);
-        return Reservation.toEntity(reservation, generatedId);
+
+        TimeResponse timeResponse = new TimeResponse(time.getId(), time.getTime().toString());
+        return new ReservationResponse(generatedId, reservation.getName(), reservation.getDate(), timeResponse);
     }
 
-    public List<Reservation> findAllReservations() {
-        return reservationDao.findAll();
+    public List<ReservationResponse> findAllReservations() {
+        return reservationDao.findAll().stream()
+                .map(res -> new ReservationResponse(
+                        res.getId(),
+                        res.getName(),
+                        res.getDate(),
+                        new TimeResponse(res.getTime().getId(), res.getTime().getTime().toString())
+                ))
+                .toList();
     }
 
     public void deleteReservation(Long id) {
         int updatedRows = reservationDao.deleteById(id);
-
         if (updatedRows == 0) {
             throw new NotFoundReservationException(id);
         }
