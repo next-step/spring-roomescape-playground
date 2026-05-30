@@ -121,7 +121,7 @@ public class MissionStepTest {
     @Test
     @DisplayName("jdbc - 예약(일괄, id기반 개별건) 조회 요청이 잘 수행되는지 테스트한다.")
     void testStep6() {
-        jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "브라운", "2026-08-05", "15:40");
+        jdbcTemplate.update("INSERT INTO reservation (name, date, timeId, roomId) VALUES (?, ?, ?, ?)", "브라운", "2026-08-05", "1", "1");
 
         List<Reservation> reservations = RestAssured.given().log().all()
                 .when().get("/reservations")
@@ -140,7 +140,8 @@ public class MissionStepTest {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
         params.put("date", "2026-08-05");
-        params.put("time", "10:00");
+        params.put("timeId", "1");
+        params.put("roomId", "1");
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -148,10 +149,10 @@ public class MissionStepTest {
                 .when().post("/reservations")
                 .then().log().all()
                 .statusCode(201)
-                .header("Location", "/reservations/1");
+                .header("Location", "/reservations/4");
 
         Integer count = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
-        assertThat(count).isEqualTo(1);
+        assertThat(count).isEqualTo(4);
 
         RestAssured.given().log().all()
                 .when().delete("/reservations/1")
@@ -159,7 +160,7 @@ public class MissionStepTest {
                 .statusCode(204);
 
         Integer countAfterDelete = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
-        assertThat(countAfterDelete).isEqualTo(0);
+        assertThat(countAfterDelete).isEqualTo(3);
     }
 
     @Test
@@ -173,13 +174,13 @@ public class MissionStepTest {
                 .when().post("/times")
                 .then().log().all()
                 .statusCode(201)
-                .header("Location", "/times/1");
+                .header("Location", "/times/4");
 
         RestAssured.given().log().all()
                 .when().get("/times")
                 .then().log().all()
                 .statusCode(200)
-                .body("size()", is(1));
+                .body("size()", is(4));
 
         RestAssured.given().log().all()
                 .when().delete("/times/1")
