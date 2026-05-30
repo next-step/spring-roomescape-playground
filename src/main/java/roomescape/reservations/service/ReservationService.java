@@ -2,14 +2,15 @@ package roomescape.reservations.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import roomescape.reservations.exception.ReservationException;
 import roomescape.reservations.dto.request.ReservationRequest;
 import roomescape.reservations.dto.response.ReservationResponse;
+import roomescape.reservations.exception.ReservationException;
 import roomescape.reservations.model.Reservation;
-import roomescape.reservations.repository.JdbcReservationRepository;
+import roomescape.reservations.repository.ReservationRepository;
+import roomescape.timeslot.dto.response.TimeslotResponse;
+import roomescape.timeslot.model.Timeslot;
+import roomescape.timeslot.service.TimeslotService;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -17,14 +18,16 @@ public class ReservationService {
 
     private static final int MAX_CAPACITY_PER_TIME = 5;
 
-    private final JdbcReservationRepository jdbcReservationRepository;
+    private final ReservationRepository reservationRepository;
+    private final TimeslotService timeslotService;
 
-    public ReservationService(JdbcReservationRepository jdbcReservationRepository) {
-        this.jdbcReservationRepository = jdbcReservationRepository;
+    public ReservationService(ReservationRepository reservationRepository, TimeslotService timeslotService) {
+        this.reservationRepository = reservationRepository;
+        this.timeslotService = timeslotService;
     }
 
     public List<ReservationResponse> getAllReservations() {
-        List<Reservation> reservations = jdbcReservationRepository.getAllReservations();
+        List<Reservation> reservations = reservationRepository.getAllReservations();
 
         return reservations.stream()
                 .map(this::convertIntoResponseDTO)
@@ -32,7 +35,7 @@ public class ReservationService {
     }
 
     public ReservationResponse getReservationById(Long id) {
-        Reservation reservation = jdbcReservationRepository.getReservationById(id)
+        Reservation reservation = reservationRepository.getReservationById(id)
                 .orElseThrow(() -> new ReservationException("일치하는 예약건이 없어요! 다시 확인해주세요!"));
 
         return convertIntoResponseDTO(reservation);
@@ -40,32 +43,36 @@ public class ReservationService {
 
     @Transactional
     public ReservationResponse createReservation(ReservationRequest newReservation) {
-        int currentTimeReservationCount = jdbcReservationRepository.getReservationCountInTimeSlot(newReservation.date(), newReservation.time());
+        int currentTimeReservationCount = reservationRepository.getReservationCountInTimeSlot(newReservation.roomId(), newReservation.date(), newReservation.timeId());
         validateCapacityPerTime(currentTimeReservationCount);
+
+        Timeslot timeslot = timeslotService.getTimeslotObjectById(newReservation.timeId());
 
         Reservation reservation = new Reservation(
                 null,
                 newReservation.name(),
+                newReservation.roomId(),
                 newReservation.date(),
-                newReservation.time()
+                timeslot
         );
 
         validateDuplicateReservation(reservation);
 
-        Long createdReservationId = jdbcReservationRepository.createReservation(reservation);
+        Long createdReservationId = reservationRepository.createReservation(reservation);
 
         Reservation createdReservation = new Reservation(
                 createdReservationId,
                 reservation.getName(),
+                reservation.getRoomId(),
                 reservation.getDate(),
-                reservation.getTime()
+                reservation.getTimeslot_id()
         );
 
         return convertIntoResponseDTO(createdReservation);
     }
 
     public void deleteReservationById(Long id) {
-        int changedRowsCount = jdbcReservationRepository.deleteReservationById(id);
+        int changedRowsCount = reservationRepository.deleteReservationById(id);
         if (changedRowsCount == 0) {
             throw new ReservationException("일치하는 예약건이 없어요!");
         }
@@ -78,8 +85,8 @@ public class ReservationService {
     }
 
     private void validateDuplicateReservation(Reservation newReservation) {
-        boolean existsBySameUserAtSameTime = jdbcReservationRepository
-                .existsDuplicateReservationWithSameUser(newReservation.getDate(), newReservation.getTime(), newReservation.getName());
+        boolean existsBySameUserAtSameTime = reservationRepository
+                .existsDuplicateReservationWithSameUser(newReservation.getDate(), newReservation.getTimeslot_id().getId(), newReservation.getName());
 
         if (existsBySameUserAtSameTime) {
             throw new ReservationException("이미 동일한 시간에 동일한 이름으로 예약건이 있어요!");
@@ -87,6 +94,6 @@ public class ReservationService {
     }
 
     private ReservationResponse convertIntoResponseDTO(Reservation reservation) {
-        return new ReservationResponse(reservation.getId(), reservation.getName(), reservation.getDate(), reservation.getTime());
+        return new ReservationResponse(reservation.getId(), reservation.getName(), reservation.getDate(), reservation.getTimeslot_id());
     }
 }

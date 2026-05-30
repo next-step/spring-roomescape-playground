@@ -13,6 +13,11 @@ public class ReservationViewController {
 
     @GetMapping("/reservation")
     public String showReservationPage() {
-        return "reservation";
+        return "new-reservation";
+    }
+
+    @GetMapping("/time")
+    public String showTimeManagementPage() {
+        return "time";
     }
 }

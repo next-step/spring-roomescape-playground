@@ -1,40 +1,112 @@
 package roomescape.reservations.repository;
 
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import roomescape.reservations.exception.ReservationException;
 import roomescape.reservations.model.Reservation;
+import roomescape.timeslot.model.Timeslot;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 @Repository
 public class ReservationRepository {
 
-    private final List<Reservation> reservations = Collections.synchronizedList(new ArrayList<>());
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+
+    private final RowMapper<Reservation> rowMapper = (rs, rowNum) -> new Reservation(
+            rs.getLong("reservation_id"),
+            rs.getString("name"),
+            rs.getString("roomId"),
+            rs.getObject("date", LocalDate.class),
+            new Timeslot(
+                    rs.getLong("time_id"),
+                    rs.getObject("time_value", LocalTime.class)
+            )
+    );
+
+    public ReservationRepository(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
+    }
 
     public List<Reservation> getAllReservations() {
-        return new ArrayList<>(reservations);
+        String query = "SELECT r.id as reservation_id, r.name, r.roomId, r.date, " +
+                "t.id as time_id, t.timeslot as time_value " +
+                "FROM reservation as r " +
+                "INNER JOIN timeslot as t ON r.timeslot_id = t.id";
+
+        return namedParameterJdbcTemplate.query(query, Map.of(), rowMapper);
     }
 
     public Optional<Reservation> getReservationById(Long id) {
-        return reservations.stream()
-                .filter(reservation -> reservation.getId().equals(id))
-                .findFirst();
+        String query = "SELECT r.id as reservation_id, r.name, r.roomId, r.date, " +
+                "t.id as time_id, t.timeslot as time_value " +
+                "FROM reservation as r " +
+                "INNER JOIN timeslot as t ON r.timeslot_id = t.id " +
+                "WHERE r.id = :id";
+
+        MapSqlParameterSource parameterSource = new MapSqlParameterSource()
+                .addValue("id", id);
+
+        return Optional.ofNullable(namedParameterJdbcTemplate.queryForObject(query, parameterSource, rowMapper));
     }
 
     public Long createReservation(Reservation reservation) {
-        reservations.add(reservation);
-        return reservation.getId();
+        String query = "INSERT INTO reservation(name, roomId, date, timeslot_id) " +
+                "VALUES(:name, :roomId, :date, :timeId)";
+
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        MapSqlParameterSource parameterSource = new MapSqlParameterSource()
+                .addValue("name", reservation.getName())
+                .addValue("roomId", reservation.getRoomId())
+                .addValue("date", reservation.getDate())
+                .addValue("timeId", reservation.getTimeslot_id().getId());
+
+        namedParameterJdbcTemplate.update(query, parameterSource, keyHolder);
+
+        return Objects.requireNonNull(keyHolder.getKey()).longValue();
     }
 
-    public void deleteReservationById(Long id) {
-        Reservation reservationTobeDeleted = reservations.stream()
-                .filter(reservation -> reservation.getId().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new ReservationException("일치하는 예약건이 없어요! 다시 확인해주세요!"));
+    public Integer getReservationCountInTimeSlot(String roomId, LocalDate date, Long timeId) {
+        String sql = "SELECT COUNT(*) FROM reservation " +
+                "WHERE roomId = :roomId AND date = :date AND timeslot_id = :timeId";
 
-        reservations.remove(reservationTobeDeleted);
+        MapSqlParameterSource parameterSource = new MapSqlParameterSource()
+                .addValue("roomId", roomId)
+                .addValue("date", date)
+                .addValue("timeId", timeId);
+
+        return namedParameterJdbcTemplate.queryForObject(sql, parameterSource, Integer.class);
+    }
+
+    public int deleteReservationById(Long id) {
+        String query = "DELETE FROM reservation " +
+                "WHERE id = :id";
+
+        MapSqlParameterSource parameterSource = new MapSqlParameterSource()
+                .addValue("id", id);
+
+        return namedParameterJdbcTemplate.update(query, parameterSource);
+    }
+
+    public boolean existsDuplicateReservationWithSameUser(LocalDate date, Long timeId, String name) {
+        String query = "SELECT COUNT(*) FROM reservation " +
+                "WHERE date = :date AND timeslot_id = :timeId and name = :name";
+
+        MapSqlParameterSource parameterSource = new MapSqlParameterSource()
+                .addValue("date", date)
+                .addValue("timeId", timeId)
+                .addValue("name", name);
+
+        Integer affectedRowsCount = namedParameterJdbcTemplate.queryForObject(query, parameterSource, Integer.class);
+        return affectedRowsCount != null && affectedRowsCount > 0;
     }
 }
