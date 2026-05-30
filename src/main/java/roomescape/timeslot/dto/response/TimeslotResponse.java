@@ -4,6 +4,6 @@ import java.time.LocalTime;
 
 public record TimeslotResponse(
         Long id,
-        LocalTime time
+        LocalTime timeId
 ) {
 }

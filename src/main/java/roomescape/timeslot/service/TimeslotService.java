@@ -47,6 +47,10 @@ public class TimeslotService {
         return convertIntoTimeslotDTO(timeslot);
     }
 
+    public Timeslot getTimeslotObjectById(Long timeId) {
+        return timeslotRepository.getTimeslotById(timeId);
+    }
+
     public void deleteTimeslotById(Long id) {
         int deletedRowCount = timeslotRepository.deleteTimeslotById(id);
         if (deletedRowCount == 0) {

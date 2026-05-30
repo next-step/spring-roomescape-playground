@@ -2,13 +2,14 @@ package roomescape.reservations.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import roomescape.reservations.exception.ReservationException;
 import roomescape.reservations.dto.request.ReservationRequest;
 import roomescape.reservations.dto.response.ReservationResponse;
+import roomescape.reservations.exception.ReservationException;
 import roomescape.reservations.model.Reservation;
 import roomescape.reservations.repository.ReservationRepository;
+import roomescape.timeslot.dto.response.TimeslotResponse;
 import roomescape.timeslot.model.Timeslot;
-import roomescape.timeslot.repository.TimeslotRepository;
+import roomescape.timeslot.service.TimeslotService;
 
 import java.util.List;
 
@@ -18,11 +19,11 @@ public class ReservationService {
     private static final int MAX_CAPACITY_PER_TIME = 5;
 
     private final ReservationRepository reservationRepository;
-    private final TimeslotRepository timeslotRepository;
+    private final TimeslotService timeslotService;
 
-    public ReservationService(ReservationRepository reservationRepository, TimeslotRepository timeslotRepository) {
+    public ReservationService(ReservationRepository reservationRepository, TimeslotService timeslotService) {
         this.reservationRepository = reservationRepository;
-        this.timeslotRepository = timeslotRepository;
+        this.timeslotService = timeslotService;
     }
 
     public List<ReservationResponse> getAllReservations() {
@@ -45,7 +46,7 @@ public class ReservationService {
         int currentTimeReservationCount = reservationRepository.getReservationCountInTimeSlot(newReservation.roomId(), newReservation.date(), newReservation.timeId());
         validateCapacityPerTime(currentTimeReservationCount);
 
-        Timeslot timeslot = timeslotRepository.getTimeslotById(newReservation.timeId());
+        Timeslot timeslot = timeslotService.getTimeslotObjectById(newReservation.timeId());
 
         Reservation reservation = new Reservation(
                 null,
