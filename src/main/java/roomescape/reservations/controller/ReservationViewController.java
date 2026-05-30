@@ -15,4 +15,9 @@ public class ReservationViewController {
     public String showReservationPage() {
         return "new-reservation";
     }
+
+    @GetMapping("/time")
+    public String showTimeManagementPage() {
+        return "time";
+    }
 }
