@@ -1,15 +1,21 @@
 package roomescape.reservation.service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import roomescape.exception.customexception.ReservationConflictException;
 import roomescape.exception.customexception.ReservationNotFoundException;
+import roomescape.exception.customexception.ReservationPastException;
 import roomescape.reservation.domain.Reservation;
 import roomescape.reservation.dto.ReservationRequest;
 import roomescape.reservation.dto.ReservationResponse;
 import roomescape.reservation.repository.ReservationRepository;
 import roomescape.time.domain.Time;
 import roomescape.time.repository.TimeRepository;
+import roomescape.time.service.TimeService;
 
 @Service
 public class ReservationService {
@@ -22,17 +28,19 @@ public class ReservationService {
     }
 
     public ReservationResponse createReservation(ReservationRequest reservationRequest) {
-        Time time = timeRepository.findTimeById(reservationRequest.time());
-        Reservation reservation = reservationRequest.toReservation(time);
-        checkConflict(reservation);
-        Reservation createdReservation = reservationRepository.saveReservation(reservation);
-        return ReservationResponse.fromReservation(createdReservation);
+        Reservation reservation = toReservation(reservationRequest);
+        try {
+            Reservation createdReservation = reservationRepository.saveReservation(reservation);
+            return toReservationResponse(createdReservation);
+        } catch (DataIntegrityViolationException e) {
+            throw new ReservationConflictException();
+        }
     }
 
     public List<ReservationResponse> readAllReservations() {
         List<Reservation> reservations = reservationRepository.findAllReservations();
         return reservations.stream()
-                .map(ReservationResponse::fromReservation)
+                .map(ReservationService::toReservationResponse)
                 .toList();
     }
 
@@ -43,10 +51,21 @@ public class ReservationService {
         }
     }
 
-    private void checkConflict(Reservation newReservation) {
-        if (reservationRepository.countConflictingReservations(newReservation.getDate(), newReservation.getTime())
-                > 0) {
-            throw new ReservationConflictException();
+    public Reservation toReservation(ReservationRequest reservationRequest) {
+        Time time = timeRepository.findTimeById(reservationRequest.time());
+        validateNotPast(reservationRequest.date(), time.getTime());
+        return new Reservation(reservationRequest.name(), reservationRequest.date(), time);
+    }
+
+    private void validateNotPast(LocalDate date, LocalTime time) {
+        LocalDateTime dateTime = LocalDateTime.of(date, time);
+        if (dateTime.isBefore(LocalDateTime.now())) {
+            throw new ReservationPastException();
         }
+    }
+
+    public static ReservationResponse toReservationResponse(Reservation reservation) {
+        return new ReservationResponse(reservation.getId(), reservation.getName(), reservation.getDate().toString(),
+                TimeService.toTimeResponse(reservation.getTime()));
     }
 }

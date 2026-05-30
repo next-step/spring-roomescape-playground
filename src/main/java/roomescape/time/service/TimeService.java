@@ -18,16 +18,16 @@ public class TimeService {
     }
 
     public synchronized TimeResponse createTime(TimeRequest timeRequest) {
-        Time time = timeRequest.toTime();
+        Time time = toTime(timeRequest);
         checkConflict(time);
         Time createdTime = timeRepository.saveTime(time);
-        return TimeResponse.fromTime(createdTime);
+        return toTimeResponse(createdTime);
     }
 
     public List<TimeResponse> readAllTimes() {
         List<Time> times = timeRepository.findAllTimes();
         return times.stream()
-                .map(TimeResponse::fromTime)
+                .map(TimeService::toTimeResponse)
                 .toList();
     }
 
@@ -42,5 +42,13 @@ public class TimeService {
         if (timeRepository.countConflictingTimes(newTime.getTime()) > 0) {
             throw new TimeConflictException();
         }
+    }
+
+    public Time toTime(TimeRequest timeRequest) {
+        return new Time(timeRequest.time());
+    }
+
+    public static TimeResponse toTimeResponse(Time time) {
+        return new TimeResponse(time.getId(), time.getTime().toString());
     }
 }
