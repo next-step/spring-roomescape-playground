@@ -6,18 +6,15 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import roomescape.reservations.model.Reservation;
-import roomescape.timeslot.dto.request.TimeslotRequest;
 import roomescape.timeslot.model.Timeslot;
 
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 @Repository
-public class TimeslotRespository {
+public class TimeslotRepository {
 
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
@@ -26,7 +23,7 @@ public class TimeslotRespository {
             rs.getObject("timeslot", LocalTime.class)
     );
 
-    public TimeslotRespository(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+    public TimeslotRepository(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
 

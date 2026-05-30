@@ -17,7 +17,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Repository
-public class JdbcReservationRepository {
+public class ReservationRepository {
 
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
@@ -32,7 +32,7 @@ public class JdbcReservationRepository {
             )
     );
 
-    public JdbcReservationRepository(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+    public ReservationRepository(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
 

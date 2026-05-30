@@ -6,9 +6,9 @@ import roomescape.reservations.exception.ReservationException;
 import roomescape.reservations.dto.request.ReservationRequest;
 import roomescape.reservations.dto.response.ReservationResponse;
 import roomescape.reservations.model.Reservation;
-import roomescape.reservations.repository.JdbcReservationRepository;
+import roomescape.reservations.repository.ReservationRepository;
 import roomescape.timeslot.model.Timeslot;
-import roomescape.timeslot.repository.TimeslotRespository;
+import roomescape.timeslot.repository.TimeslotRepository;
 
 import java.util.List;
 
@@ -17,16 +17,16 @@ public class ReservationService {
 
     private static final int MAX_CAPACITY_PER_TIME = 5;
 
-    private final JdbcReservationRepository jdbcReservationRepository;
-    private final TimeslotRespository timeslotRespository;
+    private final ReservationRepository reservationRepository;
+    private final TimeslotRepository timeslotRepository;
 
-    public ReservationService(JdbcReservationRepository jdbcReservationRepository, TimeslotRespository timeslotRespository) {
-        this.jdbcReservationRepository = jdbcReservationRepository;
-        this.timeslotRespository = timeslotRespository;
+    public ReservationService(ReservationRepository reservationRepository, TimeslotRepository timeslotRepository) {
+        this.reservationRepository = reservationRepository;
+        this.timeslotRepository = timeslotRepository;
     }
 
     public List<ReservationResponse> getAllReservations() {
-        List<Reservation> reservations = jdbcReservationRepository.getAllReservations();
+        List<Reservation> reservations = reservationRepository.getAllReservations();
 
         return reservations.stream()
                 .map(this::convertIntoResponseDTO)
@@ -34,7 +34,7 @@ public class ReservationService {
     }
 
     public ReservationResponse getReservationById(Long id) {
-        Reservation reservation = jdbcReservationRepository.getReservationById(id)
+        Reservation reservation = reservationRepository.getReservationById(id)
                 .orElseThrow(() -> new ReservationException("일치하는 예약건이 없어요! 다시 확인해주세요!"));
 
         return convertIntoResponseDTO(reservation);
@@ -42,10 +42,10 @@ public class ReservationService {
 
     @Transactional
     public ReservationResponse createReservation(ReservationRequest newReservation) {
-        int currentTimeReservationCount = jdbcReservationRepository.getReservationCountInTimeSlot(newReservation.roomId(), newReservation.date(), newReservation.timeId());
+        int currentTimeReservationCount = reservationRepository.getReservationCountInTimeSlot(newReservation.roomId(), newReservation.date(), newReservation.timeId());
         validateCapacityPerTime(currentTimeReservationCount);
 
-        Timeslot timeslot = timeslotRespository.getTimeslotById(newReservation.timeId());
+        Timeslot timeslot = timeslotRepository.getTimeslotById(newReservation.timeId());
 
         Reservation reservation = new Reservation(
                 null,
@@ -57,7 +57,7 @@ public class ReservationService {
 
         validateDuplicateReservation(reservation);
 
-        Long createdReservationId = jdbcReservationRepository.createReservation(reservation);
+        Long createdReservationId = reservationRepository.createReservation(reservation);
 
         Reservation createdReservation = new Reservation(
                 createdReservationId,
@@ -71,7 +71,7 @@ public class ReservationService {
     }
 
     public void deleteReservationById(Long id) {
-        int changedRowsCount = jdbcReservationRepository.deleteReservationById(id);
+        int changedRowsCount = reservationRepository.deleteReservationById(id);
         if (changedRowsCount == 0) {
             throw new ReservationException("일치하는 예약건이 없어요!");
         }
@@ -84,7 +84,7 @@ public class ReservationService {
     }
 
     private void validateDuplicateReservation(Reservation newReservation) {
-        boolean existsBySameUserAtSameTime = jdbcReservationRepository
+        boolean existsBySameUserAtSameTime = reservationRepository
                 .existsDuplicateReservationWithSameUser(newReservation.getDate(), newReservation.getTime().getId(), newReservation.getName());
 
         if (existsBySameUserAtSameTime) {

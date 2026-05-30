@@ -1,7 +1,6 @@
 package roomescape.timeslot.controller;
 
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import roomescape.timeslot.dto.request.TimeslotRequest;
@@ -34,7 +33,7 @@ public class TimeslotController {
         return ResponseEntity.ok(timeslotService.getAllTimeslots());
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{timeId}")
     public ResponseEntity<TimeslotResponse> getTimeslotById(@PathVariable Long timeId) {
         return ResponseEntity.ok(timeslotService.getTimeslotById(timeId));
     }
