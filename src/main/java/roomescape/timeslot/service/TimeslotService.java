@@ -54,7 +54,7 @@ public class TimeslotService {
         }
     }
 
-    public TimeslotResponse convertIntoTimeslotDTO(Timeslot timeslot) {
+    private TimeslotResponse convertIntoTimeslotDTO(Timeslot timeslot) {
         return new TimeslotResponse(timeslot.getId(), timeslot.getTimeslot());
     }
 }
