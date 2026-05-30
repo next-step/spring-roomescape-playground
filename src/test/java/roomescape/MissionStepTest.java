@@ -3,97 +3,107 @@ package roomescape;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
+import roomescape.Reservation;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT) //스프링 서버를 실제 포트로 실행해서 테스트
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-//각 테스트 메서드가 실행되기 전에 스프링 상태를 새로 초기화 > 각 1,2,3단계 테스트가 서로 영향을 주지 않음
 public class MissionStepTest {
 
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
     @Test
-    void 일단계() {
-        RestAssured.given().log().all()//HTTP 요청 준비, 요청 정보를 콘솔에 전부 출력
-                .when().get("/")
-                .then().log().all()//응답 결과 전부 로그로 출력
-                .statusCode(200);//응답 상태 코드가 200인지 확인
+    void 오단계() {
+        jdbcTemplate.execute("DROP TABLE IF EXISTS reservation");
+        jdbcTemplate.execute("CREATE TABLE reservation (" +
+                "id BIGINT NOT NULL AUTO_INCREMENT, " +
+                "name VARCHAR(255) NOT NULL, " +
+                "date VARCHAR(255) NOT NULL, " +
+                "time VARCHAR(255) NOT NULL, " +
+                "PRIMARY KEY (id))");
+
+        try (Connection connection = jdbcTemplate.getDataSource().getConnection()) {
+            assertThat(connection).isNotNull();
+            // H2 데이터베이스 내 카탈로그명이 제대로 인식되었는지 검증
+            assertThat(connection.getCatalog().toUpperCase()).isEqualTo("DATABASE");
+
+            // 테이블이 정상적으로 생성되어 숫자가 조회되는지 최종 검증
+            Integer count = jdbcTemplate.queryForObject("SELECT COUNT(1) FROM reservation", Integer.class);
+            assertThat(count).isNotNull();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
-    @Test
-    void 이단계() {
-        RestAssured.given().log().all()
-                .when().get("/reservation")
-                .then().log().all()
-                .statusCode(200);
-
-        RestAssured.given().log().all()
-                .when().get("/reservations") //예약 목록 조회 api
-                .then().log().all()
-                .statusCode(200)
-                .body("size()", is(0)); // 초기 데이터가 없으므로 0개인지 확인
-    }
 
     @Test
-    void 삼단계() {
-        Map<String, String> params = new HashMap<>(); //예약 생성 요청에 보낼 데이터를 담을 Map을 만듦
-        params.put("name", "브라운");
-        params.put("date", "2023-08-05");
-        params.put("time", "15:40");
+    void 육단계() {
+        jdbcTemplate.execute("DROP TABLE IF EXISTS reservation");
+        jdbcTemplate.execute("CREATE TABLE reservation (" +
+                "id BIGINT NOT NULL AUTO_INCREMENT, " +
+                "name VARCHAR(255) NOT NULL, " +
+                "date VARCHAR(255) NOT NULL, " +
+                "time VARCHAR(255) NOT NULL, " +
+                "PRIMARY KEY (id))");
 
-        // 생성 요청
-        RestAssured.given().log().all()
-                .contentType(ContentType.JSON) //보내는 데이터 형식이 JSON임을 알려줌
-                .body(params) //params 데이터를 body에 담음
-                .when().post("/reservations")
-                .then().log().all()
-                .statusCode(201)
-                .header("Location", "/reservations/1") //응답 헤더의 Location 값이 /reservations/1인지 확인
-                .body("id", is(1)); //응답 body 안의 id 값이 1인지 확인
+        jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "브라운", java.sql.Date.valueOf("2023-08-05"), java.sql.Time.valueOf("15:40:00"));
 
-        // 목록 조회 확인
-        RestAssured.given().log().all()
+        List<Reservation> reservations = RestAssured.given().log().all()
                 .when().get("/reservations")
                 .then().log().all()
-                .statusCode(200)
-                .body("size()", is(1));
+                .statusCode(200).extract()
+                .jsonPath().getList(".", Reservation.class);
 
-        // 삭제 요청
-        RestAssured.given().log().all()
-                .when().delete("/reservations/1")
-                .then().log().all()
-                .statusCode(204);
+        Integer count = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
 
-        // 삭제 후 목록 확인
-        RestAssured.given().log().all()
-                .when().get("/reservations")
-                .then().log().all()
-                .statusCode(200)
-                .body("size()", is(0));
+        assertThat(reservations.size()).isEqualTo(count);
     }
 
     @Test
-    void 사단계() {
+    void 칠단계() {
+        jdbcTemplate.execute("DROP TABLE IF EXISTS reservation");
+        jdbcTemplate.execute("CREATE TABLE reservation (" +
+                "id BIGINT NOT NULL AUTO_INCREMENT, " +
+                "name VARCHAR(255) NOT NULL, " +
+                "date VARCHAR(255) NOT NULL, " +
+                "time VARCHAR(255) NOT NULL, " +
+                "PRIMARY KEY (id))");
+
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
-        params.put("date", "");
-        params.put("time", "");
+        params.put("date", "2023-08-05");
+        params.put("time", "10:00");
 
-        // 필요한 인자가 없는 경우
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(params)
                 .when().post("/reservations")
                 .then().log().all()
-                .statusCode(400);
+                .statusCode(201)
+                .header("Location", "/reservations/1");
 
-        // 삭제할 예약이 없는 경우
+        Integer count = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
+        assertThat(count).isEqualTo(1);
+
         RestAssured.given().log().all()
                 .when().delete("/reservations/1")
                 .then().log().all()
-                .statusCode(400);
+                .statusCode(204);
+
+        Integer countAfterDelete = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
+        assertThat(countAfterDelete).isEqualTo(0);
     }
+
 }
