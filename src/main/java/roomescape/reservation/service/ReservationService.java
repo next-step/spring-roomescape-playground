@@ -21,7 +21,7 @@ public class ReservationService {
         this.timeRepository = timeRepository;
     }
 
-    public synchronized ReservationResponse createReservation(ReservationRequest reservationRequest) {
+    public ReservationResponse createReservation(ReservationRequest reservationRequest) {
         Time time = timeRepository.findTimeById(reservationRequest.time());
         Reservation reservation = reservationRequest.toReservation(time);
         checkConflict(reservation);
