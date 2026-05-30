@@ -68,7 +68,7 @@ public class ReservationRepository {
                 .addValue("name", reservation.getName())
                 .addValue("roomId", reservation.getRoomId())
                 .addValue("date", reservation.getDate())
-                .addValue("timeId", reservation.getTime().getId());
+                .addValue("timeId", reservation.getTimeslot_id().getId());
 
         namedParameterJdbcTemplate.update(query, parameterSource, keyHolder);
 
