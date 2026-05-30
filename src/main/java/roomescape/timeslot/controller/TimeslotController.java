@@ -20,7 +20,7 @@ public class TimeslotController {
         this.timeslotService = timeslotService;
     }
 
-    @PostMapping()
+    @PostMapping
     public ResponseEntity<TimeslotResponse> addTimeslot(@Valid @RequestBody TimeslotRequest request) {
         TimeslotResponse newTimeslot = timeslotService.addTimeslot(request);
         URI location = URI.create("/times/" + newTimeslot.id());
@@ -28,7 +28,7 @@ public class TimeslotController {
         return ResponseEntity.created(location).body(newTimeslot);
     }
 
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<List<TimeslotResponse>> getAllTimeslots() {
         return ResponseEntity.ok(timeslotService.getAllTimeslots());
     }
