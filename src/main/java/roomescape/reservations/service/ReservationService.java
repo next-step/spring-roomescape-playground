@@ -64,7 +64,7 @@ public class ReservationService {
                 reservation.getName(),
                 reservation.getRoomId(),
                 reservation.getDate(),
-                reservation.getTime()
+                reservation.getTimeslot_id()
         );
 
         return convertIntoResponseDTO(createdReservation);
@@ -85,7 +85,7 @@ public class ReservationService {
 
     private void validateDuplicateReservation(Reservation newReservation) {
         boolean existsBySameUserAtSameTime = reservationRepository
-                .existsDuplicateReservationWithSameUser(newReservation.getDate(), newReservation.getTime().getId(), newReservation.getName());
+                .existsDuplicateReservationWithSameUser(newReservation.getDate(), newReservation.getTimeslot_id().getId(), newReservation.getName());
 
         if (existsBySameUserAtSameTime) {
             throw new ReservationException("이미 동일한 시간에 동일한 이름으로 예약건이 있어요!");
@@ -93,6 +93,6 @@ public class ReservationService {
     }
 
     private ReservationResponse convertIntoResponseDTO(Reservation reservation) {
-        return new ReservationResponse(reservation.getId(), reservation.getName(), reservation.getDate(), reservation.getTime());
+        return new ReservationResponse(reservation.getId(), reservation.getName(), reservation.getDate(), reservation.getTimeslot_id());
     }
 }

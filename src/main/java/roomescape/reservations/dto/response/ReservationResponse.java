@@ -5,7 +5,6 @@ import jakarta.validation.constraints.PositiveOrZero;
 import roomescape.timeslot.model.Timeslot;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 public record ReservationResponse(
         @NotNull
@@ -13,6 +12,6 @@ public record ReservationResponse(
         Long id,
         String name,
         LocalDate date,
-        Timeslot time
+        Timeslot timeslotId
 ) {
 }

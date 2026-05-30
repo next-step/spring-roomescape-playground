@@ -15,7 +15,7 @@ public class Reservation {
     private String name;
     private String roomId;
     private LocalDate date;
-    private Timeslot time;
+    private Timeslot timeslot_id;
 
     protected Reservation() {
     }
@@ -28,7 +28,7 @@ public class Reservation {
         this.name = name;
         this.roomId = roomId;
         this.date = date;
-        this.time = time;
+        this.timeslot_id = time;
     }
 
     public Long getId() {
@@ -47,8 +47,8 @@ public class Reservation {
         return date;
     }
 
-    public Timeslot getTime() {
-        return time;
+    public Timeslot getTimeslot_id() {
+        return timeslot_id;
     }
 
     private void validateReservationInBusinessHour(LocalTime reservationTime) {

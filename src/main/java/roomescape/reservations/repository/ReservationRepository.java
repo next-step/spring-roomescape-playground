@@ -40,7 +40,7 @@ public class ReservationRepository {
         String query = "SELECT r.id as reservation_id, r.name, r.roomId, r.date, " +
                 "t.id as time_id, t.timeslot as time_value " +
                 "FROM reservation as r " +
-                "INNER JOIN timeslot as t ON r.time = t.id";
+                "INNER JOIN timeslot as t ON r.timeslot_id = t.id";
 
         return namedParameterJdbcTemplate.query(query, Map.of(), rowMapper);
     }
@@ -49,7 +49,7 @@ public class ReservationRepository {
         String query = "SELECT r.id as reservation_id, r.name, r.roomId, r.date, " +
                 "t.id as time_id, t.timeslot as time_value " +
                 "FROM reservation as r " +
-                "INNER JOIN timeslot as t ON r.time = t.id " +
+                "INNER JOIN timeslot as t ON r.timeslot_id = t.id " +
                 "WHERE r.id = :id";
 
         MapSqlParameterSource parameterSource = new MapSqlParameterSource()
@@ -59,7 +59,7 @@ public class ReservationRepository {
     }
 
     public Long createReservation(Reservation reservation) {
-        String query = "INSERT INTO reservation(name, roomId, date, time) " +
+        String query = "INSERT INTO reservation(name, roomId, date, timeslot_id) " +
                 "VALUES(:name, :roomId, :date, :timeId)";
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -77,7 +77,7 @@ public class ReservationRepository {
 
     public Integer getReservationCountInTimeSlot(String roomId, LocalDate date, Long timeId) {
         String sql = "SELECT COUNT(*) FROM reservation " +
-                "WHERE roomId = :roomId AND date = :date AND time = :timeId";
+                "WHERE roomId = :roomId AND date = :date AND timeslot_id = :timeId";
 
         MapSqlParameterSource parameterSource = new MapSqlParameterSource()
                 .addValue("roomId", roomId)
@@ -99,7 +99,7 @@ public class ReservationRepository {
 
     public boolean existsDuplicateReservationWithSameUser(LocalDate date, Long timeId, String name) {
         String query = "SELECT COUNT(*) FROM reservation " +
-                "WHERE date = :date AND time = :timeId and name = :name";
+                "WHERE date = :date AND timeslot_id = :timeId and name = :name";
 
         MapSqlParameterSource parameterSource = new MapSqlParameterSource()
                 .addValue("date", date)
@@ -108,11 +108,5 @@ public class ReservationRepository {
 
         Integer affectedRowsCount = namedParameterJdbcTemplate.queryForObject(query, parameterSource, Integer.class);
         return affectedRowsCount != null && affectedRowsCount > 0;
-    }
-
-    public boolean existsDuplicateReservationWithSameUser(LocalDate date, LocalTime time, String name) {
-        String query = "SELECT COUNT(*) FROM reservation WHERE date = ? AND time = ? and name =?";
-        int affectedRowsCount = jdbcTemplate.queryForObject(query, Integer.class, date, time, name);
-        return affectedRowsCount > 0;
     }
 }
