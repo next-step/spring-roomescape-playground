@@ -10,6 +10,10 @@ public class Time {
     private final Long id;
     private final LocalTime time;
 
+    public Time(LocalTime time) {
+        this(null, time);
+    }
+
     public Time(Long id, LocalTime time) {
         validate(id, time);
         this.id = id;

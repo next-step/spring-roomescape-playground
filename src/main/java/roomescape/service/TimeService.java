@@ -42,7 +42,6 @@ public class TimeService {
         }
 
         Time newTime = new Time(
-                null,
                 request.getTime());
 
         newTime = repository.save(newTime);

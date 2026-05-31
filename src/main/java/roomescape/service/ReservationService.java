@@ -46,7 +46,6 @@ public class ReservationService {
         }
 
         Reservation newReservation = new Reservation(
-                null,
                 reservationCreateRequest.getName(),
                 reservationCreateRequest.getDate(),
                 time);

@@ -13,6 +13,10 @@ public class Reservation {
     private final LocalDate date;
     private final Time time;
 
+    public Reservation(String name, LocalDate date, Time time) {
+        this(null, name, date, time);
+    }
+
     public Reservation(Long id, String name, LocalDate date, Time time) {
         validate(name, date, time);
         this.id = id;
