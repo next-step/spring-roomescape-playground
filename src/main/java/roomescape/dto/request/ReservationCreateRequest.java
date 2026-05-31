@@ -17,5 +17,5 @@ public class ReservationCreateRequest {
     private LocalDate date;
 
     @NotNull(message = "시간은 필수 입력값입니다.")
-    private Long time;
+    private Long timeId;
 }

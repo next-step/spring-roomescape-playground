@@ -42,7 +42,7 @@ public class ReservationService {
     }
 
     public ReservationCreateResponse addReservation(ReservationCreateRequest reservationCreateRequest) {
-        Time time = timeDao.findById(reservationCreateRequest.getTime())
+        Time time = timeDao.findById(reservationCreateRequest.getTimeId())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 시간입니다."));
 
         boolean exists = repository.existsByDateAndTime(reservationCreateRequest.getDate(), time.getTime());
