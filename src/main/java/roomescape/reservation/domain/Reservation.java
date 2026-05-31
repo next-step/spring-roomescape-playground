@@ -2,21 +2,26 @@ package roomescape.reservation.domain;
 
 import jakarta.annotation.Nonnull;
 import jakarta.validation.constraints.NotNull;
+import roomescape.time.domain.Time;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public final class Reservation {
     private final ReservationId id;
     private final String name;
-    private final LocalDateTime time;
+    private final LocalDate date;
+    private final Time time;
 
     public Reservation(
             @Nonnull ReservationId id,
             @Nonnull String name,
-            @Nonnull LocalDateTime time
+            @Nonnull LocalDate date,
+            @Nonnull Time time
     ) {
         this.id = id;
         this.name = name;
+        this.date = date;
         this.time = time;
     }
 
@@ -28,7 +33,11 @@ public final class Reservation {
         return name;
     }
 
-    public @NotNull LocalDateTime getTime() {
+    public @NotNull LocalDate getDate() {
+        return date;
+    }
+
+    public @NotNull Time getTime() {
         return time;
     }
 }

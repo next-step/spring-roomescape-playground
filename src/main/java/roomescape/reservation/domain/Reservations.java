@@ -2,32 +2,39 @@ package roomescape.reservation.domain;
 
 import jakarta.annotation.Nonnull;
 import org.springframework.stereotype.Component;
-import roomescape.reservation.dao.ReservationsDao;
+import roomescape.reservation.repository.ReservationsRepository;
+import roomescape.time.domain.Times;
 
 import java.util.List;
 
 @Component
 public class Reservations {
-    private final ReservationsDao reservationsDao;
+    private final ReservationsRepository reservationsRepository;
+    private final Times times;
 
-    public Reservations(ReservationsDao reservationsDao) {
-        this.reservationsDao = reservationsDao;
+    public Reservations(ReservationsRepository reservationsRepository, Times times) {
+        this.reservationsRepository = reservationsRepository;
+        this.times = times;
     }
 
     public @Nonnull List<Reservation> getAll() {
-        return reservationsDao.getAll();
+        return reservationsRepository.getAll();
     }
 
     public @Nonnull Reservation create(@Nonnull CreateReservationInfo info) {
-        Reservation previous = reservationsDao.getByTime(info.time());
-        if (previous != null) {
-            throw new ReservationException.DuplicateTime();
+        if(!times.has(info.timeId())) {
+            throw new ReservationException.TimeNotFound();
         }
 
-        return reservationsDao.create(info);
+        Reservation previous = reservationsRepository.getByDateTime(info.date(), info.timeId());
+        if (previous != null) {
+            throw new ReservationException.DuplicateDateTime(previous.getId());
+        }
+
+        return reservationsRepository.create(info);
     }
 
     public void delete(@Nonnull ReservationId id) {
-        reservationsDao.delete(id);
+        reservationsRepository.delete(id);
     }
 }

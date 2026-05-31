@@ -1,10 +1,10 @@
-package roomescape.reservation.domain;
+package roomescape.time.domain;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public record ReservationId(@JsonValue long id) {
+public record TimeId(@JsonValue long id) {
     @JsonCreator
-    public ReservationId {
+    public TimeId {
     }
 }

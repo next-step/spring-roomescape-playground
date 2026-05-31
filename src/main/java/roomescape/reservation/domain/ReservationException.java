@@ -36,9 +36,19 @@ public abstract class ReservationException extends DomainException {
     }
 
 
-    public static class DuplicateTime extends ReservationException {
-        public DuplicateTime() {
-            super("해당 시간에 다른 예약이 이미 존재합니다.");
+    public static class DuplicateDateTime extends ReservationException {
+        public final ReservationId previous;
+
+        public DuplicateDateTime(ReservationId previous) {
+            super("해당 날짜의 시간에 다른 예약이 이미 존재합니다.");
+            this.previous = previous;
+        }
+    }
+
+
+    public static class TimeNotFound extends ReservationException {
+        public TimeNotFound() {
+            super("해당 시간이 정의되지 않았습니다.");
         }
     }
 

@@ -1,0 +1,24 @@
+package roomescape.time;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import roomescape.global.controller.ApiException;
+
+public class TimeDoesNotExistException extends ApiException {
+    public TimeDoesNotExistException() {
+        super("해당 시간이 존재하지 않습니다.");
+    }
+
+    @Override
+    public ResponseEntity<? extends Dto> getResponse() {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new Dto());
+    }
+
+    public class Dto extends ApiException.Dto {
+        @Override
+        public String getType() {
+            return "Time.DoestNotExist";
+        }
+    }
+}

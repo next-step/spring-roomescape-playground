@@ -9,13 +9,17 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public record ReservationResponse(
+        @Nonnull
         ReservationId id,
 
+        @Nonnull
         String name,
 
+        @Nonnull
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
         LocalDate date,
 
+        @Nonnull
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
         LocalTime time
 ) {
@@ -23,8 +27,8 @@ public record ReservationResponse(
         return new ReservationResponse(
                 reservation.getId(),
                 reservation.getName(),
-                reservation.getTime().toLocalDate(),
-                reservation.getTime().toLocalTime()
+                reservation.getDate(),
+                reservation.getTime().getTime()
         );
     }
 }

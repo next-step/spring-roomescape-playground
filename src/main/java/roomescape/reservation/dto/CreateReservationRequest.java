@@ -3,6 +3,9 @@ package roomescape.reservation.dto;
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Length;
 import roomescape.reservation.domain.CreateReservationInfo;
+import roomescape.reservation.domain.ReservationException;
+import roomescape.time.domain.TimeId;
+import roomescape.time.domain.Times;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -19,7 +22,12 @@ public record CreateReservationRequest(
         @NotNull
         LocalTime time
 ) {
-    public CreateReservationInfo convertToDomain() {
-        return new CreateReservationInfo(name, LocalDateTime.of(date, time));
+    public CreateReservationInfo convertToDomain(Times times) {
+        TimeId timeId = times.getIdAt(time);
+        if (timeId == null) {
+            throw new ReservationException.TimeNotFound();
+        }
+
+        return new CreateReservationInfo(name, date, timeId);
     }
 }

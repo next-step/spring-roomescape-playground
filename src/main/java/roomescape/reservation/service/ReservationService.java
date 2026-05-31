@@ -1,20 +1,27 @@
-package roomescape.reservation;
+package roomescape.reservation.service;
 
 import jakarta.annotation.Nonnull;
 import org.springframework.stereotype.Service;
 import roomescape.global.controller.InternalErrorException;
+import roomescape.reservation.ReservationDoesNotExistException;
+import roomescape.reservation.ReservationDuplicateTimeException;
+import roomescape.reservation.ReservationInputFormatException;
+import roomescape.reservation.ReservationTimeNotFoundException;
 import roomescape.reservation.domain.*;
 import roomescape.reservation.dto.CreateReservationRequest;
 import roomescape.reservation.dto.ReservationResponse;
+import roomescape.time.domain.Times;
 
 import java.util.List;
 
 @Service
 public class ReservationService {
     private final Reservations reservations;
+    private final Times times;
 
-    public ReservationService(Reservations reservations) {
+    public ReservationService(Reservations reservations, Times times) {
         this.reservations = reservations;
+        this.times = times;
     }
 
     public List<ReservationResponse> getReservations() {
@@ -27,18 +34,21 @@ public class ReservationService {
         CreateReservationInfo info;
 
         try {
-            info = request.convertToDomain();
+            info = request.convertToDomain(times);
         } catch (ReservationException.InputFormat e) {
             throw new ReservationInputFormatException(e.getField(), e.getMessage());
+        } catch (ReservationException.TimeNotFound e) {
+            throw new ReservationTimeNotFoundException();
         }
 
         try {
             Reservation reservation = reservations.create(info);
             return ReservationResponse.from(reservation);
+        } catch (ReservationException.TimeNotFound e) {
+            throw new ReservationTimeNotFoundException();
+        } catch (ReservationException.DuplicateDateTime e) {
+            throw new ReservationDuplicateTimeException(e.previous);
         } catch (ReservationException e) {
-            if (e instanceof ReservationException.DuplicateTime)
-                throw new ReservationDuplicateTimeException();
-
             throw new InternalErrorException(e);
         }
     }
