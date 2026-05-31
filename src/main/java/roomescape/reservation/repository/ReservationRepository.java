@@ -1,8 +1,7 @@
-package roomescape.repository;
+package roomescape.reservation.repository;
 
-import static roomescape.domain.Reservation.RESERVATION_LENGTH_MINUTES;
-
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -11,16 +10,18 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import roomescape.domain.Reservation;
+import roomescape.reservation.domain.Reservation;
+import roomescape.time.domain.Time;
 
 @Repository
 public class ReservationRepository {
     private static final RowMapper<Reservation> reservationRowMapper = (resultSet, rowNum) -> {
         Reservation reservation = new Reservation(
                 resultSet.getString("name"),
-                resultSet.getObject("datetime", LocalDateTime.class)
+                resultSet.getObject("date", LocalDate.class),
+                new Time(resultSet.getObject("time", LocalTime.class)).withId(resultSet.getLong("time_id"))
         );
-        return reservation.withId(resultSet.getLong("id"));
+        return reservation.withId(resultSet.getLong("reservation_id"));
     };
 
     private final JdbcTemplate jdbcTemplate;
@@ -36,13 +37,14 @@ public class ReservationRepository {
     public Reservation saveReservation(Reservation reservation) {
         SqlParameterSource params = new MapSqlParameterSource()
                 .addValue("name", reservation.getName())
-                .addValue("datetime", reservation.getDateTime());
+                .addValue("date", reservation.getDate())
+                .addValue("time_id", reservation.getTime().getId());
         Long id = simpleJdbcInsert.executeAndReturnKey(params).longValue();
         return reservation.withId(id);
     }
 
     public List<Reservation> findAllReservations() {
-        String sql = "SELECT id, name, datetime FROM reservation";
+        String sql = "SELECT r.id AS reservation_id, r.name, r.date, t.id AS time_id, t.time FROM reservation AS r INNER JOIN time AS t on r.time_id = t.id";
         return jdbcTemplate.query(sql, reservationRowMapper);
     }
 
@@ -51,9 +53,8 @@ public class ReservationRepository {
         return jdbcTemplate.update(sql, id);
     }
 
-    public int countConflictingReservations(LocalDateTime dateTime) {
-        String sql = "SELECT COUNT(*) FROM reservation WHERE CAST(? AS TIMESTAMP) BETWEEN DATEADD(MINUTE, -CAST(? AS INT), datetime) AND DATEADD(MINUTE, CAST(? AS INT), datetime)";
-        return jdbcTemplate.queryForObject(sql, Integer.class, dateTime, RESERVATION_LENGTH_MINUTES,
-                RESERVATION_LENGTH_MINUTES);
+    public int countConflictingReservations(LocalDate date, Time time) {
+        String sql = "SELECT COUNT(*) FROM reservation WHERE date = CAST(? AS DATE) AND time_id = CAST(? AS BIGINT)";
+        return jdbcTemplate.queryForObject(sql, Integer.class, date, time.getId());
     }
 }

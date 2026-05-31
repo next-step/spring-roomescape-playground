@@ -1,7 +1,10 @@
 package roomescape.exception.handler;
 
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ProblemDetail;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -11,6 +14,8 @@ import roomescape.exception.model.ErrorCode;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ProblemDetail handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         ErrorCode errorCode = ErrorCode.METHOD_ARGUMENT_NOT_VALID;
@@ -23,6 +28,12 @@ public class GlobalExceptionHandler {
         return detail;
     }
 
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ProblemDetail handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
+        ErrorCode errorCode = ErrorCode.HTTP_MESSAGE_NOT_READABLE;
+        return ProblemDetail.forStatusAndDetail(errorCode.getHttpStatus(), errorCode.getMessage());
+    }
+
     @ExceptionHandler(CustomException.class)
     public ProblemDetail handleCustomException(CustomException e) {
         ErrorCode errorCode = e.getErrorCode();
@@ -32,6 +43,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler
     public ProblemDetail handleUnHandledException(Exception e) {
         ErrorCode errorCode = ErrorCode.UNEXPECTED_ERROR;
+        logger.error(e.toString());
         return ProblemDetail.forStatusAndDetail(errorCode.getHttpStatus(), errorCode.getMessage());
     }
 }
