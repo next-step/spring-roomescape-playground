@@ -25,20 +25,15 @@ public class ReservationService {
 
 
     public List<ReservationGetResponse> getReservations() {
-        List<Reservation> reservations;
-        List<ReservationGetResponse> response;
-
-        reservations = repository.findAll();
-
-        response = reservations.stream()
+        List<Reservation> reservations = repository.findAll();
+        return reservations.stream()
                 .map(it -> new ReservationGetResponse(
                         it.getId(),
                         it.getName(),
                         it.getDate(),
-                        it.getTime()))
+                        it.getTime().getId(),
+                        it.getTime().getTime()))
                 .toList();
-
-        return response;
     }
 
     public ReservationCreateResponse addReservation(ReservationCreateRequest reservationCreateRequest) {
