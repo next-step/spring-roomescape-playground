@@ -13,15 +13,6 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(NotFoundReservationException.class)
-    public ResponseEntity<ProblemDetail> handleNotFound(NotFoundReservationException e) {
-        ProblemDetail problem = ProblemDetail.forStatusAndDetail(
-                HttpStatus.NOT_FOUND,
-                e.getMessage()
-        );
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(problem);
-    }
-
     @ExceptionHandler(InvalidReservationException.class)
     public ResponseEntity<ProblemDetail> handleInvalidInput(InvalidReservationException e) {
         ProblemDetail problem = ProblemDetail.forStatusAndDetail(
@@ -54,12 +45,18 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(problem);
     }
 
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<ProblemDetail> handleNotFound(NotFoundException e) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(problem);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ProblemDetail> handleUnexpected(Exception e) {
         e.printStackTrace();
         ProblemDetail problem = ProblemDetail.forStatusAndDetail(
                 HttpStatus.INTERNAL_SERVER_ERROR,
-                "서버 오류가 발생했습니다."
+                e.getMessage()
         );
         return ResponseEntity.internalServerError().body(problem);
     }
