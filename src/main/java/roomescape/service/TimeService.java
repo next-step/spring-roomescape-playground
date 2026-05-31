@@ -1,8 +1,6 @@
 package roomescape.service;
 
-import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 import roomescape.dao.TimeDao;
 import roomescape.domain.Time;
 import roomescape.dto.request.TimeCreateRequest;
@@ -37,7 +35,7 @@ public class TimeService {
         return response;
     }
 
-    public TimeCreateResponse addTime(@RequestBody @Valid TimeCreateRequest request) {
+    public TimeCreateResponse addTime(TimeCreateRequest request) {
         boolean exists = repository.existsByTime(request.getTime());
         if (exists) {
             throw new DuplicateReservationException("이미 예약된 시간입니다.");
