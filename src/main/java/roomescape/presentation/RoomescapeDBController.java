@@ -36,6 +36,9 @@ public class RoomescapeDBController {
     @GetMapping("/times")
     public ResponseEntity<List<LocalTime>> showAllValidTimes(
             @RequestParam(value = "date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        if (date == null) {
+            return ResponseEntity.ok().body(reservationService.getAllRegisteredTimes());
+        }
         List<LocalTime> times = reservationService.getInvalidTimes(date);
         return ResponseEntity.ok().body(times);
     }
@@ -47,6 +50,18 @@ public class RoomescapeDBController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Location", "/reservations/" + savedReservation.getId());
         return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(savedReservation);
+    }
+
+    @PostMapping("/times")
+    public ResponseEntity<LocalTime> createTime(@RequestBody LocalTime requestTime) {
+        LocalTime savedTime = reservationService.registerNewTime(requestTime);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedTime);
+    }
+
+    @DeleteMapping("/times/{id}")
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void deleteTime(@PathVariable int id) {
+        reservationService.removeTime(id);
     }
 
     @DeleteMapping("/reservations/{id}")

@@ -36,6 +36,21 @@ public class ReservationService {
         return reservationDao.saveReservation(request);
     }
 
+    @Transactional(readOnly = true)
+    public List<LocalTime> getAllRegisteredTimes() {
+        return reservationDao.findAllTimes();
+    }
+
+    @Transactional
+    public LocalTime registerNewTime(LocalTime time) {
+        return reservationDao.saveTime(time);
+    }
+
+    @Transactional
+    public void removeTime(int timeId) {
+        reservationDao.deleteTimeById(timeId);
+    }
+
     @Transactional
     public void deleteReservation(int id) {
         Reservation reservation = reservationDao.findById(id);
