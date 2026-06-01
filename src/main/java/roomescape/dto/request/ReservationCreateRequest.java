@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 @Getter
 @NoArgsConstructor
@@ -18,5 +17,5 @@ public class ReservationCreateRequest {
     private LocalDate date;
 
     @NotNull(message = "시간은 필수 입력값입니다.")
-    private LocalTime time;
+    private Long timeId;
 }

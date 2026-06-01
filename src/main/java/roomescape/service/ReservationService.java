@@ -1,53 +1,54 @@
 package roomescape.service;
 
 import org.springframework.stereotype.Service;
+import roomescape.dao.ReservationDao;
+import roomescape.dao.TimeDao;
 import roomescape.domain.Reservation;
+import roomescape.domain.Time;
 import roomescape.dto.request.ReservationCreateRequest;
 import roomescape.dto.response.ReservationCreateResponse;
 import roomescape.dto.response.ReservationGetResponse;
 import roomescape.exception.DuplicateReservationException;
 import roomescape.exception.NotFoundReservationException;
-import roomescape.repository.ReservationRepository;
 
 import java.util.List;
 
 @Service
 public class ReservationService {
-    private final ReservationRepository repository;
+    private final ReservationDao repository;
+    private final TimeDao timeDao;
 
-    public ReservationService(ReservationRepository repository) {
+    public ReservationService(ReservationDao repository, TimeDao timeDao) {
         this.repository = repository;
+        this.timeDao = timeDao;
     }
 
 
     public List<ReservationGetResponse> getReservations() {
-        List<Reservation> reservations;
-        List<ReservationGetResponse> response;
-
-        reservations = repository.findAll();
-
-        response = reservations.stream()
+        List<Reservation> reservations = repository.findAll();
+        return reservations.stream()
                 .map(it -> new ReservationGetResponse(
                         it.getId(),
                         it.getName(),
                         it.getDate(),
-                        it.getTime()))
+                        it.getTime().getId(),
+                        it.getTime().getTime()))
                 .toList();
-
-        return response;
     }
 
     public ReservationCreateResponse addReservation(ReservationCreateRequest reservationCreateRequest) {
-        boolean exists = repository.existsByDateAndTime(reservationCreateRequest.getDate(), reservationCreateRequest.getTime());
+        Time time = timeDao.findById(reservationCreateRequest.getTimeId())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 시간입니다."));
+
+        boolean exists = repository.existsByDateAndTime(reservationCreateRequest.getDate(), time.getTime());
         if (exists) {
             throw new DuplicateReservationException("이미 예약된 시간입니다.");
         }
 
         Reservation newReservation = new Reservation(
-                null,
                 reservationCreateRequest.getName(),
                 reservationCreateRequest.getDate(),
-                reservationCreateRequest.getTime());
+                time);
 
         newReservation = repository.save(newReservation);
 
