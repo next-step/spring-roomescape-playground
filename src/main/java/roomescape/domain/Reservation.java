@@ -1,7 +1,6 @@
-package roomescape;
+package roomescape.domain;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -11,8 +10,9 @@ public class Reservation {
 
     private int reservationId;
     private String nameOfUser;
-    @JsonIgnore
-    private LocalDateTime dateTime;
+    private LocalDate date;
+    private LocalTime time;
+
 
     @JsonCreator
     public Reservation(
@@ -26,14 +26,16 @@ public class Reservation {
         checkValidDateTime(dateTime);
 
         this.nameOfUser = name;
-        this.dateTime = dateTime;
+        this.date = date;
+        this.time = time;
         this.reservationId = 0;
     }
 
-    public Reservation(int id, String name, LocalDateTime dateTime) {
+    public Reservation(int id, String name, LocalDate date, LocalTime time) {
         this.reservationId = id;
         this.nameOfUser = name;
-        this.dateTime = dateTime;
+        this.date = date;
+        this.time = time;
     }
 
     private static void checkValidName(String nameOfUser) {
@@ -55,12 +57,12 @@ public class Reservation {
 
     @JsonProperty("date")
     public LocalDate getDate() {
-        return dateTime.toLocalDate();
+        return date;
     }
 
     @JsonProperty("time")
     public LocalTime getTime() {
-        return dateTime.toLocalTime();
+        return time;
     }
 
     public int getId() {
@@ -69,9 +71,5 @@ public class Reservation {
 
     public String getName() {
         return nameOfUser;
-    }
-
-    public LocalDateTime getDateTime() {
-        return dateTime;
     }
 }

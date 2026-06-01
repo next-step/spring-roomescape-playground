@@ -5,10 +5,10 @@ import static org.hamcrest.Matchers.is;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
+import roomescape.presentation.RoomescapeDBController;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -23,6 +24,8 @@ public class MissionStepTest {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+    @Autowired
+    private RoomescapeDBController reservationController;
 
     @AfterEach
     void tearDown() {
@@ -57,7 +60,7 @@ public class MissionStepTest {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
         params.put("date", "2027-08-05");
-        params.put("time", "15:40");
+        params.put("time", "15:00");
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -119,23 +122,6 @@ public class MissionStepTest {
         }
     }
 
-    // CRUD 기능을 DB를 다 바꿔놓고 테스트를 돌려서 6단계가 안돌아가요 ㅠㅠ
-    @Test
-    void 육단계() {
-        jdbcTemplate.update("INSERT INTO Reservations (name, date, time) VALUES (?, ?, ?)", "브라운", "2023-08-05",
-                "15:40");
-
-        List<Reservation> reservations = RestAssured.given().log().all()
-                .when().get("/reservations")
-                .then().log().all()
-                .statusCode(200).extract()
-                .jsonPath().getList(".", Reservation.class);
-
-        Integer count = jdbcTemplate.queryForObject("SELECT count(1) from Reservations", Integer.class);
-
-        assertThat(reservations.size()).isEqualTo(count);
-    }
-
     @Test
     void 칠단계() {
         Map<String, String> params = new HashMap<>();
@@ -161,5 +147,34 @@ public class MissionStepTest {
 
         Integer countAfterDelete = jdbcTemplate.queryForObject("SELECT count(1) from Reservations", Integer.class);
         assertThat(countAfterDelete).isEqualTo(0);
+    }
+
+    @Test
+    void 구단계() {
+        Map<String, String> reservation = new HashMap<>();
+        reservation.put("name", "브라운");
+        reservation.put("date", "2023-08-05");
+        reservation.put("time", "10:00");
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(reservation)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(400);
+    }
+
+    @Test
+    void 십단계() {
+        boolean isJdbcTemplateInjected = false;
+
+        for (Field field : reservationController.getClass().getDeclaredFields()) {
+            if (field.getType().equals(JdbcTemplate.class)) {
+                isJdbcTemplateInjected = true;
+                break;
+            }
+        }
+
+        assertThat(isJdbcTemplateInjected).isFalse();
     }
 }

@@ -1,157 +1,126 @@
-let isEditing = false;
-const TIME_API_ENDPOINT = '/times';
+(function () {
+    let isTimeEditing = false;
+    const TIME_API_ENDPOINT = '/times';
 
-document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('add-time').addEventListener('click', addEditableRow);
-  fetchTimes();
-});
+    document.addEventListener('DOMContentLoaded', () => {
+        const addTimeBtn = document.getElementById('add-time');
+        if (addTimeBtn) addTimeBtn.addEventListener('click', addTimeEditableRow);
+        fetchTimesList();
+    });
 
-function addEditableRow() {
+    function addTimeEditableRow() {
+        if (isTimeEditing) return;
 
-  if (isEditing) return;  // 이미 편집 중인 경우 추가하지 않음
+        const tableBody = document.getElementById('time-table-body');
+        if (!tableBody) return;
+        const row = tableBody.insertRow();
+        isTimeEditing = true;
 
-  const tableBody = document.getElementById('time-table-body');
-  const row = tableBody.insertRow();
-  isEditing = true;
+        row.insertCell(0).textContent = '';
 
-  createEditableFieldsFor(row);
-  addSaveAndCancelButtonsToRow(row);
-}
+        const timeInput = document.createElement('input');
+        timeInput.type = 'time';
+        timeInput.className = 'form-control';
+        row.insertCell(1).appendChild(timeInput);
 
-function createEditableFieldsFor(row) {
-  const fields = ['', createInput('time')];
-  fields.forEach((field, index) => {
-    const cell = row.insertCell(index);
-    if (typeof field === 'string') {
-      cell.textContent = field;
-    } else {
-      cell.appendChild(field);
+        const actionCell = row.insertCell(2);
+        actionCell.appendChild(createTimeActionButton('확인', 'btn-primary', (e) => saveTimeRowData(e, row, timeInput)));
+        actionCell.appendChild(createTimeActionButton('취소', 'btn-secondary', () => {
+            row.remove();
+            isTimeEditing = false;
+        }));
     }
-  });
-}
 
-function createInput(type) {
-  const input = document.createElement('input');
-  input.type = type;
-  input.className = 'form-control';
-  return input;
-}
-
-function addSaveAndCancelButtonsToRow(row) {
-  const actionCell = row.insertCell(2);
-  actionCell.appendChild(createActionButton('확인', 'btn-primary', saveRow));
-  actionCell.appendChild(createActionButton('취소', 'btn-secondary', () => {
-    row.remove();
-    isEditing = false;
-  }));
-}
-
-function createActionButton(label, className, eventListener) {
-  const button = document.createElement('button');
-  button.textContent = label;
-  button.classList.add('btn', className, 'mr-2');
-  button.addEventListener('click', eventListener);
-  return button;
-}
-
-function saveRow(event) {
-  const row = event.target.parentNode.parentNode;
-  const inputs = row.querySelectorAll('input');
-
-  const time = {
-    time: inputs[0].value,
-  };
-
-  requestCreate(time)
-      .then(data => updateRowWithTimeData(row, data))
-      .catch(error => console.error('Error:', error));
-
-  isEditing = false;  // isEditing 값을 false로 설정
-}
-
-function updateRowWithTimeData(row, data) {
-  const cells = row.cells;
-  cells[0].textContent = data.id;
-  cells[1].textContent = data.time;
-
-  // 버튼 변경: 삭제 버튼으로 변경
-  cells[2].innerHTML = '';
-  cells[2].appendChild(createActionButton('삭제', 'btn-danger', deleteRow));
-
-  isEditing = false;
-
-  // Remove the editable input fields and just show the saved data
-  for (let i = 1; i <= 1; i++) {
-    const inputElement = cells[i].querySelector('input');
-    if (inputElement) {
-      inputElement.remove();
+    function createTimeActionButton(label, className, eventListener) {
+        const button = document.createElement('button');
+        button.textContent = label;
+        button.classList.add('btn', className, 'mr-2');
+        button.addEventListener('click', eventListener);
+        return button;
     }
-  }
-}
 
-function deleteRow(event) {
-  const row = event.target.closest('tr');
-  const id = row.cells[0].textContent;
+    function saveTimeRowData(event, row, timeInput) {
+        if (!timeInput || !timeInput.value) {
+            alert("시간을 입력해주세요.");
+            return;
+        }
 
-  requestDelete(id)
-      .then(() => row.remove())
-      .catch(error => console.error('Error:', error));
-}
+        // 백엔드 Jackson LocalTime 역직렬화 규격에 맞게 전송 ("HH:mm" 형태로 패킹)
+        const timeValue = timeInput.value.substring(0, 5);
 
-function fetchTimes() {
-  requestRead()
-      .then(renderTimes)
-      .catch(error => console.error('Error fetching times:', error));
-}
+        requestCreateTime(timeValue)
+            .then(() => {
+                isTimeEditing = false;
+                fetchTimesList(); // 전체 스냅샷 새로고침 적용
+            })
+            .catch(error => console.error('Error:', error));
+    }
 
-function renderTimes(data) {
-  const tableBody = document.getElementById('time-table-body');
-  tableBody.innerHTML = '';
+    function fetchTimesList() {
+        requestReadTimes()
+            .then(renderTimesTable)
+            .catch(error => console.error('Error fetching times:', error));
+    }
 
-  data.forEach(time => {
-    const row = tableBody.insertRow();
-    insertTimeRow(row, time);
-  });
-}
+    function renderTimesTable(data) {
+        const tableBody = document.getElementById('time-table-body');
+        if (!tableBody) return;
+        tableBody.innerHTML = '';
 
-function insertTimeRow(row, time) {
-  ['id', 'time'].forEach((field, index) => {
-    row.insertCell(index).textContent = time[field];
-  });
+        data.forEach(time => {
+            const row = tableBody.insertRow();
+            insertTimeRowData(row, time);
+        });
+    }
 
-  const actionCell = row.insertCell(2);
-  actionCell.appendChild(createActionButton('삭제', 'btn-danger', deleteRow));
-}
+    function insertTimeRowData(row, time) {
+        // 백엔드 응답이 순수 문자열 배열이거나 시간풀 객체일 경우 통합 매핑
+        if (typeof time === 'string') {
+            row.insertCell(0).textContent = '-';
+            row.insertCell(1).textContent = time.substring(0, 5);
 
-function requestCreate(time) {
-  const requestOptions = {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify(time)
-  };
+            const actionCell = row.insertCell(2);
+            actionCell.appendChild(createTimeActionButton('삭제', 'btn-danger', () => deleteTimeRowData(time, row)));
+        } else {
+            row.insertCell(0).textContent = time.id || '-';
+            row.insertCell(1).textContent = time.time ? time.time.substring(0, 5) : '-';
 
-  return fetch(TIME_API_ENDPOINT, requestOptions)
-      .then(response => {
-        if (response.status === 201) return response.json();
-        throw new Error('Create failed');
-      });
-}
+            const actionCell = row.insertCell(2);
+            actionCell.appendChild(createTimeActionButton('삭제', 'btn-danger', () => deleteTimeRowData(time.id, row)));
+        }
+    }
 
-function requestRead() {
-  return fetch(TIME_API_ENDPOINT)
-      .then(response => {
-        if (response.status === 200) return response.json();
-        throw new Error('Read failed');
-      });
-}
+    function deleteTimeRowData(id, row) {
+        if (confirm("해당 시간대를 가용 풀에서 삭제하시겠습니까?\n(⚠️ CASCADE 설정에 의해 연관된 예약이 같이 지워질 수 있습니다.)")) {
+            requestDeleteTime(id)
+                .then(() => row.remove())
+                .catch(error => console.error('Error:', error));
+        }
+    }
 
-function requestDelete(id) {
-  const requestOptions = {
-    method: 'DELETE',
-  };
+    function requestCreateTime(timeValue) {
+        return fetch(TIME_API_ENDPOINT, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(timeValue)
+        }).then(response => {
+            if (response.status === 201) return response.json();
+            throw new Error('Create failed');
+        });
+    }
 
-  return fetch(`${TIME_API_ENDPOINT}/${id}`, requestOptions)
-      .then(response => {
-        if (response.status !== 204) throw new Error('Delete failed');
-      });
-}
+    function requestReadTimes() {
+        return fetch(TIME_API_ENDPOINT)
+            .then(response => {
+                if (response.status === 200) return response.json();
+                throw new Error('Read failed');
+            });
+    }
+
+    function requestDeleteTime(id) {
+        return fetch(`${TIME_API_ENDPOINT}/${id}`, {method: 'DELETE'})
+            .then(response => {
+                if (response.status !== 204) throw new Error('Delete failed');
+            });
+    }
+})();

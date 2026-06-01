@@ -1,4 +1,4 @@
-package roomescape;
+package roomescape.service;
 
 public class ReservationException extends RuntimeException {
 
@@ -22,6 +22,16 @@ public class ReservationException extends RuntimeException {
         }
 
         public DuplicateTimeException(String message) {
+            super(message);
+        }
+    }
+
+    public static class InvalidReservationException extends ReservationException {
+        public InvalidReservationException() {
+            super("유효하지 않은 예약입니다.");
+        }
+
+        public InvalidReservationException(String message) {
             super(message);
         }
     }
