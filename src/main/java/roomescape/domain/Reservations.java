@@ -1,7 +1,5 @@
-package roomescape;
+package roomescape.domain;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 import roomescape.exception.ReservationConflictException;
 
@@ -14,10 +12,14 @@ public class Reservations {
 
     public void validateDuplicate(Reservation target) {
         boolean isDuplicate = reservations.stream()
-                .anyMatch(reservation -> reservation.isSameTime(target.getDate(), target.getTime()));
+                .anyMatch(reservation -> reservation.isSameTime(target.getDate(), target.getTimeInfo()));
 
         if (isDuplicate) {
             throw new ReservationConflictException("중복된 예약이 존재합니다.");
         }
+    }
+
+    public List<Reservation> getReservations(){
+        return reservations;
     }
 }
