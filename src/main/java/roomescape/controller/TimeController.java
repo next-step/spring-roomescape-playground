@@ -25,6 +25,11 @@ public class TimeController {
         this.timeService = timeService;
     }
 
+    @GetMapping("/time")
+    public String showTimePage() {
+        return "time";
+    }
+
     @GetMapping("/times")
     @ResponseBody
     public List<TimeResponse> showTimes() {

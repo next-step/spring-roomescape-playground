@@ -48,8 +48,8 @@ public class ReservationRepository {
             jdbcTemplate.update(connection -> {
                 PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
                 ps.setString(1, reservation.getName());
-                ps.setDate(2, java.sql.Date.valueOf(reservation.getDate()));
-                ps.setTime(3, java.sql.Time.valueOf(reservation.getTime().getTime()));
+                ps.setString(2, reservation.getDate().toString());
+                ps.setLong(3, reservation.getTime().getId());
                 return ps;
             }, keyHolder);
         } catch (DuplicateKeyException e) {
