@@ -8,8 +8,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import roomescape.time.dto.TimeCreateRequest;
-import roomescape.time.dto.TimeResponse;
+import roomescape.time.domain.Time;
 
 @Repository
 public class TimeRepository {
@@ -19,21 +18,35 @@ public class TimeRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public Collection<TimeResponse> findAll() {
+    public Collection<Time> findAll() {
         String sql = """
                 SELECT id, time
                   FROM time
                 """;
 
         return jdbcTemplate.query(sql, (rs, rowNum) ->
-                new TimeResponse(
+                new Time(
                         rs.getLong("id"),
                         rs.getString("time")
                 )
         );
     }
 
-    public TimeResponse save(TimeCreateRequest timeRequest) {
+    public Time findById(Long id) {
+        String sql = """
+                SELECT id, time
+                  FROM time
+                 WHERE id = ?
+                """;
+
+        return jdbcTemplate.queryForObject(sql, (rs, rowNum) ->
+                new Time(
+                        rs.getLong("id"),
+                        rs.getString("time")
+                ), id);
+    }
+
+    public Time save(Time time) {
         String sql = """
                 INSERT INTO time(time)
                 VALUES (?)
@@ -47,14 +60,14 @@ public class TimeRepository {
                     Statement.RETURN_GENERATED_KEYS
             );
 
-            ps.setString(1, timeRequest.time());
+            ps.setString(1, time.getFormattedTime());
 
             return ps;
         }, keyHolder);
 
         Long id = Objects.requireNonNull(keyHolder.getKey()).longValue();
 
-        return new TimeResponse(id, timeRequest.time());
+        return new Time(id, time.getFormattedTime());
     }
 
     public int deleteById(Long id) {

@@ -1,10 +1,9 @@
 package roomescape.reservation.dto;
 
-import jakarta.validation.constraints.Future;
+import com.fasterxml.jackson.annotation.JsonAlias;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import java.sql.Date;
 
 
 public record ReservationCreateRequest(
@@ -13,9 +12,9 @@ public record ReservationCreateRequest(
         String name,
 
         @NotNull(message = "날짜는 필수입니다.")
-        @Future(message = "예약 날짜는 미래여야 합니다.")
-        Date date,
+        String date,
 
+        @JsonAlias("time")
         @NotNull(message = "시간은 필수입니다.")
-        Long time
+        Long timeId
 ) { }

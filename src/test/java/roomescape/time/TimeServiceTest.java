@@ -8,15 +8,21 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.jdbc.core.JdbcTemplate;
+import roomescape.exception.NotFoundException;
+import roomescape.reservation.ReservationRepository;
 import roomescape.time.dto.TimeCreateRequest;
 import roomescape.time.dto.TimeResponse;
 
 @JdbcTest
-@Import({TimeRepository.class, TimeService.class})
+@Import({TimeRepository.class, ReservationRepository.class, TimeService.class})
 class TimeServiceTest {
 
     @Autowired
     private TimeService timeService;
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @Test
     void createTime() {
@@ -57,9 +63,26 @@ class TimeServiceTest {
     }
 
     @Test
-    void deleteNonExistingTimeThrowsIllegalArgumentException() {
-        assertThatThrownBy(() -> timeService.deleteById(999L))
+    void deleteTimeWithReservationThrowsIllegalArgumentException() {
+        TimeResponse response = timeService.create(new TimeCreateRequest("10:00"));
+        jdbcTemplate.update(
+                "INSERT INTO reservation(name, date, time_id) VALUES (?, ?, ?)",
+                "브라운",
+                "2026-08-05",
+                response.id()
+        );
+
+        assertThatThrownBy(() -> timeService.deleteById(response.id()))
                 .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("예약이 존재하는 시간은 삭제할 수 없습니다.");
+
+        assertThat(timeService.findAll()).hasSize(1);
+    }
+
+    @Test
+    void deleteNonExistingTimeThrowsNotFoundException() {
+        assertThatThrownBy(() -> timeService.deleteById(999L))
+                .isInstanceOf(NotFoundException.class)
                 .hasMessage("존재하지 않는 id입니다.");
     }
 }
