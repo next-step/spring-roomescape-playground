@@ -38,4 +38,17 @@ class ReservationServiceTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("이미 예약된 날짜와 시간입니다.");
     }
+
+    @Test
+    void createPastDateThrowsIllegalArgumentException() {
+        Time time = timeRepository.save(new Time(null, "10:00"));
+
+        assertThatThrownBy(() -> reservationService.create(new ReservationCreateRequest(
+                "브라운",
+                "2023-08-05",
+                time.getId()
+        )))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("과거 날짜는 예약할 수 없습니다.");
+    }
 }
