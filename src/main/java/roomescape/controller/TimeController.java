@@ -4,19 +4,20 @@ import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import roomescape.domain.Time;
 import roomescape.dto.TimeRequest;
 import roomescape.dto.TimeResponse;
 import roomescape.service.TimeService;
 
-@Controller
+@RestController
+@RequestMapping("/times")
 public class TimeController {
 
     private final TimeService timeService;
@@ -25,21 +26,14 @@ public class TimeController {
         this.timeService = timeService;
     }
 
-    @GetMapping("/time")
-    public String showTimePage() {
-        return "time";
-    }
-
-    @GetMapping("/times")
-    @ResponseBody
+    @GetMapping
     public List<TimeResponse> showTimes() {
         return timeService.findAll().stream()
                 .map(TimeResponse::from)
                 .toList();
     }
 
-    @PostMapping("/times")
-    @ResponseBody
+    @PostMapping
     public ResponseEntity<TimeResponse> addTime(@RequestBody @Valid TimeRequest request) {
         Time savedTime = timeService.create(request.time());
 
@@ -48,10 +42,9 @@ public class TimeController {
                 .body(TimeResponse.from(savedTime));
     }
 
-    @DeleteMapping("/times/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTime(@PathVariable Long id) {
         timeService.delete(id);
-
         return ResponseEntity.noContent().build();
     }
 }
