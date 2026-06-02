@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<String> handleBadRequest(BadRequestException e) {
+    public ResponseEntity<List<String>> handleBadRequest(BadRequestException e) {
         return ResponseEntity
                 .badRequest()
-                .body(e.getMessage());
+                .body(List.of(e.getMessage()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -25,5 +25,12 @@ public class GlobalExceptionHandler {
                 .toList();
 
         return ResponseEntity.badRequest().body(messages);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<List<String>> handleIllegalArgumentException(IllegalArgumentException e) {
+        return ResponseEntity
+                .badRequest()
+                .body(List.of(e.getMessage()));
     }
 }
