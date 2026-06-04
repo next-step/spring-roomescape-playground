@@ -40,7 +40,7 @@ public class TimeRepository {
         String sql = "INSERT INTO time (time) VALUES (?)";
 
         Long id = updateAndGetId(sql, ps -> {
-            ps.setString(1, time.toString());
+            ps.setTime(1, java.sql.Time.valueOf(time));
         });
 
         return new Time(id, time);
@@ -67,7 +67,7 @@ public class TimeRepository {
     private RowMapper<Time> timeRowMapper() {
         return (rs, rowNum) -> new Time(
                 rs.getLong("id"),
-                LocalTime.parse(rs.getString("time"))
+                rs.getTime("time").toLocalTime()
         );
     }
 }

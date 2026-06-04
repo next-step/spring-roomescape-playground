@@ -48,7 +48,7 @@ public class ReservationRepository {
             jdbcTemplate.update(connection -> {
                 PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
                 ps.setString(1, reservation.getName());
-                ps.setString(2, reservation.getDate().toString());
+                ps.setDate(2, java.sql.Date.valueOf(reservation.getDate()));
                 ps.setLong(3, reservation.getTime().getId());
                 return ps;
             }, keyHolder);
@@ -79,13 +79,13 @@ public class ReservationRepository {
         return (rs, rowNum) -> {
             Time time = new Time(
                     rs.getLong("time_id"),
-                    LocalTime.parse(rs.getString("time_value"))
+                    rs.getTime("time_value").toLocalTime()
             );
 
             return new Reservation(
                     rs.getLong("reservation_id"),
                     rs.getString("name"),
-                    LocalDate.parse(rs.getString("date")),
+                    rs.getDate("date").toLocalDate(),
                     time
             );
         };
