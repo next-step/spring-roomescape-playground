@@ -1,28 +1,77 @@
 package roomescape.reservation.domain;
 
+import java.sql.Date;
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
+import roomescape.time.domain.Time;
 
-public record Reservation(
-		ReservationId id,
-		String name,
-		LocalDate date,
-		LocalTime time
-) {
-	public static Reservation toEntity(Reservation reservation, ReservationId id) {
-		return new Reservation(id, reservation.name, reservation.date, reservation.time);
-	}
-	
-	public long getId() {
-		return id.id();
-	}
-	
-	public String getDate() {
-		return date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-	}
-	
-	public String getTime() {
-		return time.format(DateTimeFormatter.ofPattern("HH:mm"));
-	}
+public class Reservation {
+
+    private final Long id;
+    private final String name;
+    private final Date date;
+    private final Time time;
+
+    public Reservation(
+            Long id,
+            String name,
+            Date date,
+            Time time
+    ) {
+        validateName(name);
+        validateDate(date);
+
+        this.id = id;
+        this.name = name;
+        this.date = date;
+        this.time = time;
+    }
+
+    public static Reservation of(
+            String name,
+            String date,
+            Time time
+    ) {
+        return new Reservation(
+                null,
+                name,
+                Date.valueOf(date),
+                time
+        );
+    }
+
+    private void validateName(String name) {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("예약자 이름은 필수입니다.");
+        }
+
+        if (name.length() > 10) {
+            throw new IllegalArgumentException("예약자 이름은 10자 이하여야 합니다.");
+        }
+    }
+
+    private void validateDate(Date date) {
+        if (date == null) {
+            throw new IllegalArgumentException("예약 날짜는 필수입니다.");
+        }
+
+        if (date.toLocalDate().isBefore(LocalDate.now())) {
+            throw new IllegalArgumentException("과거 날짜는 예약할 수 없습니다.");
+        }
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public Time getTime() {
+        return time;
+    }
 }
