@@ -2,7 +2,7 @@ package roomescape.service;
 
 import org.springframework.stereotype.Service;
 import roomescape.dto.ReservationRequest;
-import roomescape.exception.NotFoundReservationException;
+import roomescape.exception.NotFoundException;
 import roomescape.model.Reservation;
 import roomescape.repository.ReservationRepository;
 
@@ -36,7 +36,7 @@ public class ReservationService {
         int affectedRows = reservationRepository.delete(id);
 
         if (affectedRows == 0) {
-            throw new NotFoundReservationException();
+            throw new NotFoundException("예약을 찾을 수 없습니다.");
         }
     }
 }
