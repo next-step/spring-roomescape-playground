@@ -5,7 +5,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import roomescape.dto.ReservationDto;
+import roomescape.dto.TimeDto;
 import roomescape.model.errors.ReservationNotFoundException;
 
 import java.sql.PreparedStatement;
@@ -22,24 +22,22 @@ public class Times {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public List<Reservation> getTimes() {
-        return jdbcTemplate.query("SELECT * FROM time", this::extractReservationFromResultSet);
+    public List<Time> getTimes() {
+        return jdbcTemplate.query("SELECT * FROM time", this::extractTimeFromResultSet);
     }
 
-    public Reservation add(ReservationDto reservationDto) {
+    public Time add(TimeDto timeDto) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement("INSERT INTO reservation (name, date, time) values (?, ? ,?)",
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO time (time) values (?)",
                     new String[]{"id"});
-            ps.setString(1, reservationDto.name());
-            ps.setString(2, reservationDto.date());
-            ps.setString(3, reservationDto.time());
+            ps.setString(1, timeDto.time());
 
             return ps;
         }, keyHolder);
 
         long newId = keyHolder.getKey().longValue();
-        return new Reservation(newId, reservationDto);
+        return new Time(newId, timeDto);
     }
 
     public void removeById(long deletingId) throws ReservationNotFoundException {
@@ -50,10 +48,12 @@ public class Times {
         }
     }
 
-    private Reservation extractReservationFromResultSet(ResultSet resultSet, int rowNum) throws SQLException {
-        return new Reservation(resultSet.getLong("id"),
-                resultSet.getString("name"),
-                resultSet.getString("date"),
-                resultSet.getString("time"));
+    private Time extractTimeFromResultSet(ResultSet resultSet, int rowNum) {
+        try {
+            return new Time(resultSet.getLong("id"),
+                    resultSet.getString("time"));
+        } catch (SQLException e) {
+            throw new IllegalArgumentException("time 테이블과 형식이 다릅니다.");
+        }
     }
 }
