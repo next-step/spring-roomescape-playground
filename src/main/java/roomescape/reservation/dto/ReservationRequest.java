@@ -9,10 +9,14 @@ public class ReservationRequest {
     public String date;
     public String time;
 
-    public static Reservation toEntityFrom(ReservationRequest request) throws DateTimeParseException {
-        return new Reservation(
-                request.name,
-                LocalDate.parse(request.date)
-        );
+    public Reservation toEntity(){
+        try {
+            return new Reservation(
+                    this.name,
+                    LocalDate.parse(this.date)
+            );
+        } catch (DateTimeParseException e) {
+            throw e;
+        }
     }
 }

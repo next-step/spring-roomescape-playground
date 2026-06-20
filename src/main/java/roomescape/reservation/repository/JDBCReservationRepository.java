@@ -18,7 +18,7 @@ import java.util.Optional;
 @Repository
 public class JDBCReservationRepository implements ReservationRepository {
 
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
     private final RowMapper<Reservation> reservationRowMapper = (resultSet, rowNum) -> {
         Long id = resultSet.getLong("id");

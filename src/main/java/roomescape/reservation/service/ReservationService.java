@@ -30,7 +30,7 @@ public class ReservationService {
     }
 
     public ReservationResponse addReservation(ReservationRequest request) {
-        Reservation reservation = ReservationRequest.toEntityFrom(request);
+        Reservation reservation = request.toEntity();
 
         Time time = timeRepository.findTimeByValue(request.time)
                 .orElseThrow(() -> new NoSuchReservationTimeException("There is no time with value " + request.time));

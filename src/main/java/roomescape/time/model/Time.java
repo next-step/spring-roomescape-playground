@@ -9,7 +9,7 @@ import java.time.LocalTime;
 public class Time {
 
     @Setter
-    private Long  id;
+    private Long id;
     private LocalTime time;
 
     public Time(LocalTime time) {
