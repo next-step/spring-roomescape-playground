@@ -4,7 +4,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 public record ReservationRequest(
         @NotBlank(message = "이름은 필수입니다.")
@@ -14,6 +13,6 @@ public record ReservationRequest(
         LocalDate date,
 
         @NotNull(message = "시간은 필수입니다.")
-        LocalTime time
+        Long timeId
 ) {
 }

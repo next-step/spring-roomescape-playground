@@ -8,6 +8,7 @@ import roomescape.model.Time;
 
 import java.sql.PreparedStatement;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class TimeRepository {
@@ -73,5 +74,26 @@ public class TimeRepository {
                 """;
 
         return jdbcTemplate.update(sql, id);
+    }
+
+    public Optional<Time> findById(Long id) {
+
+        String sql = """
+                SELECT id, time
+                FROM time
+                WHERE id = ?
+                """;
+
+        List<Time> result = jdbcTemplate.query(
+                sql,
+                (resultSet, rowNum) ->
+                        new Time(
+                                resultSet.getLong("id"),
+                                resultSet.getTime("time").toLocalTime()
+                        ),
+                id
+        );
+
+        return result.stream().findFirst();
     }
 }

@@ -5,10 +5,10 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.model.Reservation;
+import roomescape.model.Time;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
-import java.sql.Time;
 import java.util.List;
 
 @Repository
@@ -23,8 +23,15 @@ public class ReservationRepository {
     public List<Reservation> findAll() {
 
         String sql = """
-                SELECT id, name, date, time
-                FROM reservation
+                SELECT 
+                    r.id AS reservation_id,
+                    r.name,
+                    r.date,
+                    t.id AS time_id,
+                    t.time AS time_value
+                FROM reservation r
+                INNER JOIN time t
+                ON r.time_id = t.id
                 """;
 
         return jdbcTemplate.query(
@@ -34,7 +41,10 @@ public class ReservationRepository {
                                 resultSet.getLong("id"),
                                 resultSet.getString("name"),
                                 resultSet.getDate("date").toLocalDate(),
-                                resultSet.getTime("time").toLocalTime()
+                                new Time(
+                                        resultSet.getLong("time_id"),
+                                        resultSet.getTime("time_value").toLocalTime()
+                                )
                         )
         );
     }
@@ -42,7 +52,7 @@ public class ReservationRepository {
     public Reservation save(Reservation reservation) {
 
         String sql = """
-                INSERT INTO reservation(name, date, time)
+                INSERT INTO reservation(name, date, time_id)
                 VALUES (?, ?, ?)
                 """;
 
@@ -52,7 +62,7 @@ public class ReservationRepository {
             PreparedStatement statement = connection.prepareStatement(sql, new String[]{"id"});
             statement.setString(1, reservation.name());
             statement.setDate(2, Date.valueOf((reservation.date())));
-            statement.setTime(3, Time.valueOf(reservation.time()));
+            statement.setLong(3, reservation.time().id());
 
             return statement;
         }, keyHolder);
