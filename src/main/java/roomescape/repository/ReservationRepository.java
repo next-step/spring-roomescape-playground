@@ -22,7 +22,7 @@ public class ReservationRepository {
     public List<Reservation> findAll() {
 
         String sql = """
-                SELECT id, name, date, time
+                SELECT id, name, date, time_id
                 FROM reservation
                 """;
 
@@ -31,14 +31,14 @@ public class ReservationRepository {
                         rs.getLong("id"),
                         rs.getString("name"),
                         rs.getString("date"),
-                        rs.getString("time")
+                        rs.getLong("time_id")
                 )
         );
     }
 
     public long insert(ReservationRequest reservation) {
         String sql = """
-                INSERT INTO reservation (name, date, time)
+                INSERT INTO reservation (name, date, time_id)
                 VALUES (?, ?, ?)
                 """;
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -50,7 +50,7 @@ public class ReservationRepository {
             );
             ps.setString(1, reservation.name());
             ps.setString(2, reservation.date());
-            ps.setString(3, reservation.time());
+            ps.setLong(3, reservation.timeId());
 
             return ps;
         }, keyHolder);
