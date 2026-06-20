@@ -48,8 +48,9 @@ public class MissionStepTest {
 
     @Test
     void 삼단계() {
-        Map<String, String> time = new HashMap<>();
+        Map<String, Object> time = new HashMap<>();
         time.put("time", "10:00");
+        time.put("id",1L);
 
         RestAssured.given()
                 .contentType(ContentType.JSON)
@@ -61,7 +62,7 @@ public class MissionStepTest {
         Map<String, Object> params = new HashMap<>();
         params.put("name", "브라운");
         params.put("date", "2023-08-05");
-        params.put("timeId", 1L);
+        params.put("time", time);
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -144,7 +145,8 @@ public class MissionStepTest {
 
     @Test
     void 칠단계() {
-        Map<String, String> time = new HashMap<>();
+        Map<String, Object> time = new HashMap<>();
+        time.put("id",1L);
         time.put("time", "10:00");
 
         RestAssured.given()
@@ -157,7 +159,7 @@ public class MissionStepTest {
         Map<String, Object> params = new HashMap<>();
         params.put("name", "브라운");
         params.put("date", "2023-08-05");
-        params.put("timeId", 1L);
+        params.put("time", time);
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
