@@ -181,5 +181,20 @@ public class MissionStepTest {
                 .then().log().all()
                 .statusCode(204);
     }
+
+    @Test
+    void 팔단계_범위_안에_있는_시간만_저장한다() {
+        Map<String, String> wrongParams= new HashMap<>();
+        wrongParams.put("time", "60:00");
+        wrongParams.put("time", "10:90");
+        wrongParams.put("time", "10:0000");
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(wrongParams)
+                .when().post("/times")
+                .then().log().all()
+                .statusCode(400);
+    }
 }
 

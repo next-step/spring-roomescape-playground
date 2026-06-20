@@ -12,7 +12,10 @@ import roomescape.model.errors.TimeNotFoundException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Repository
 public class Times {
@@ -28,6 +31,8 @@ public class Times {
     }
 
     public Time add(TimeDto timeDto) {
+        this.validateTime(timeDto.time());
+
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement("INSERT INTO time (time) values (?)",
@@ -40,6 +45,29 @@ public class Times {
         long newId = keyHolder.getKey().longValue();
         return new Time(newId, timeDto);
     }
+
+    private void validateTime(String givenTime) {
+        validateFormat(givenTime);
+        List<Integer> timeNumbers = Arrays.stream(givenTime.split(":"))
+                .map(Integer::parseInt)
+                .toList();
+
+        validateRange(timeNumbers.get(0),timeNumbers.get(1));
+    }
+
+    private void validateFormat(String givenTime) {
+        if (!Pattern.matches( "\\d{2}:\\d{2}",givenTime)) {
+            throw new IllegalArgumentException("시간은 hh:mm 형식이여야 합니다.");
+        }
+    }
+
+    private void validateRange(Integer hour, Integer minutes) {
+        boolean isInRange = 0<=hour && hour <24 && 0<= minutes && minutes <60;
+        if (!isInRange) {
+            throw new IllegalArgumentException("시는 00~23, 분은 00~60 사이의 숫자로 표현해야 합니다.");
+        }
+    }
+
 
     public void removeById(long deletingId) {
         int deletedRowCounts = jdbcTemplate.update("DELETE FROM time WHERE id = ?", deletingId);

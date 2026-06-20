@@ -12,42 +12,43 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import roomescape.dto.ReservationDto;
-import roomescape.model.Reservation;
-import roomescape.model.Reservations;
+import roomescape.dto.TimeDto;
+import roomescape.model.Times;
+import roomescape.model.Time;
 
 import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping(ReservationController.RESERVATION_API_ENDPOINT_ROOT)
-public class ReservationController {
-    public final static String RESERVATION_API_ENDPOINT_ROOT = "/reservations";
-    private final Reservations reservations;
+@RequestMapping(TimeController.TIME_API_ENDPOINT_ROOT)
+public class TimeController {
+
+    public final static String TIME_API_ENDPOINT_ROOT = "/times";
+    private final Times times;
 
     @Autowired
-    public ReservationController(Reservations reservations) {
-        this.reservations = reservations;
+    public TimeController(Times times) {
+        this.times = times;
     }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<Reservation> getAllBookings() {
-        return this.reservations.getReservationList();
+    public List<Time> getAllTimes() {
+        return this.times.getTimes();
     }
 
     @PostMapping
-    public ResponseEntity<Reservation> createReservation(@RequestBody @Valid ReservationDto reservationDto) {
-        Reservation newReservation = this.reservations.add(reservationDto);
+    public ResponseEntity<Time> createTime(@RequestBody @Valid TimeDto timeDto) {
+        Time newTIme= this.times.add(timeDto);
 
         return ResponseEntity
-                .created(URI.create(RESERVATION_API_ENDPOINT_ROOT + "/" + newReservation.id()))
-                .body(newReservation);
+                .created(URI.create(TIME_API_ENDPOINT_ROOT + "/" + newTIme.id()))
+                .body(newTIme);
     }
 
     @DeleteMapping("/{deletingId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteReservation(@PathVariable Long deletingId) {
-        this.reservations.removeById(deletingId);
+    public void deleteTime(@PathVariable Long deletingId) {
+        this.times.removeById(deletingId);
     }
 }
