@@ -7,6 +7,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.dto.TimeDto;
 import roomescape.model.errors.ReservationNotFoundException;
+import roomescape.model.errors.TimeNotFoundException;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -40,11 +41,11 @@ public class Times {
         return new Time(newId, timeDto);
     }
 
-    public void removeById(long deletingId) throws ReservationNotFoundException {
+    public void removeById(long deletingId) {
         int deletedRowCounts = jdbcTemplate.update("DELETE FROM time WHERE id = ?", deletingId);
 
         if (deletedRowCounts == 0) {
-            throw new ReservationNotFoundException();
+            throw new TimeNotFoundException("존재하지 않는 시간대 입니다.");
         }
     }
 

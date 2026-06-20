@@ -42,11 +42,11 @@ public class Reservations {
         return new Reservation(newId, reservationDto);
     }
 
-    public void removeById(long deletingId) throws ReservationNotFoundException {
+    public void removeById(long deletingId) {
         int deletedRowCounts = jdbcTemplate.update("DELETE FROM reservation WHERE id = ?", deletingId);
 
         if (deletedRowCounts == 0) {
-            throw new ReservationNotFoundException();
+            throw new ReservationNotFoundException("존재하지 않은 예약건입니다.");
         }
     }
 

@@ -1,4 +1,7 @@
 package roomescape.model.errors;
 
-public class ReservationNotFoundException extends Exception {
+public class ReservationNotFoundException extends IllegalArgumentException{
+    public ReservationNotFoundException(String s) {
+        super(s);
+    }
 }

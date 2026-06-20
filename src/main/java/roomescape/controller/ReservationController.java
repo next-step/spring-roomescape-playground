@@ -48,7 +48,7 @@ public class ReservationController {
 
     @DeleteMapping("/{deletingId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteReservation(@PathVariable Long deletingId) throws ReservationNotFoundException {
+    public void deleteReservation(@PathVariable Long deletingId) {
         this.reservations.removeById(deletingId);
     }
 }
