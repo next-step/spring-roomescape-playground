@@ -4,7 +4,7 @@ public record Reservation(
         Long id,
         String name,
         String date,
-        Long timeId
+        Time time
 ) {
 
 }

@@ -1,6 +1,7 @@
 package roomescape.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import roomescape.domain.Time;
 
 public record ReservationRequest(
         Long id,
@@ -8,6 +9,6 @@ public record ReservationRequest(
         String name,
         @NotBlank(message = "ERROR:날짜를 입력하시오.")
         String date,
-        Long timeId
+        Time time
 ) {
 }

@@ -31,7 +31,7 @@ public class ReservationService {
                 id,
                 reservationRequest.name(),
                 reservationRequest.date(),
-                reservationRequest.timeId()
+                reservationRequest.time()
         );
     }
 

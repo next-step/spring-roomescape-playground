@@ -5,6 +5,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
+import roomescape.domain.Time;
 import roomescape.dto.ReservationRequest;
 
 import java.sql.PreparedStatement;
@@ -22,20 +23,29 @@ public class ReservationRepository {
     public List<Reservation> findAll() {
 
         String sql = """
-                SELECT id, name, date, time_id
-                FROM reservation
+                SELECT\s
+                    r.id as reservation_id,\s
+                    r.name,\s
+                    r.date,\s
+                    t.id as time_id,\s
+                    t.time as time_value\s
+                FROM reservation as r inner join time as t on r.time_id = t.id
                 """;
 
-        return jdbcTemplate.query(sql, (rs, rowNum) ->
-                new Reservation(
-                        rs.getLong("id"),
-                        rs.getString("name"),
-                        rs.getString("date"),
-                        rs.getLong("time_id")
-                )
-        );
-    }
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
 
+            Time time = new Time(
+                    rs.getLong("time_id"),
+                    rs.getString("time_value")
+            );
+            return new Reservation(
+                    rs.getLong("id"),
+                    rs.getString("name"),
+                    rs.getString("date"),
+                    time
+            );
+        });
+    }
     public long insert(ReservationRequest reservation) {
         String sql = """
                 INSERT INTO reservation (name, date, time_id)
@@ -50,8 +60,7 @@ public class ReservationRepository {
             );
             ps.setString(1, reservation.name());
             ps.setString(2, reservation.date());
-            ps.setLong(3, reservation.timeId());
-
+            ps.setLong(3, reservation.time().id());
             return ps;
         }, keyHolder);
 
