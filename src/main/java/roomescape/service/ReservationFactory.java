@@ -20,11 +20,9 @@ public class ReservationFactory {
         this.timeFactory = timeFactory;
     }
 
-    public ReservationDto createReservation(ReservationDto reservationDto) {
+    public Reservation createReservation(ReservationDto reservationDto) {
         Long newReservationId = reservations.add(reservationDto);
-        Reservation newReservation = reservations.getReservationById(newReservationId);
-
-        return new ReservationDto(newReservation);
+        return reservations.getReservationById(newReservationId);
     }
 
     public List<Reservation> getReservationList(){

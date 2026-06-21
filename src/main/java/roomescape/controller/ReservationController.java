@@ -38,8 +38,8 @@ public class ReservationController {
     }
 
     @PostMapping
-    public ResponseEntity<ReservationDto> createReservation(@RequestBody @Valid ReservationDto reservationDto) {
-        ReservationDto newReservation = this.reservationFactory.createReservation(reservationDto);
+    public ResponseEntity<Reservation> createReservation(@RequestBody @Valid ReservationDto reservationDto) {
+        Reservation newReservation = this.reservationFactory.createReservation(reservationDto);
 
         return ResponseEntity
                 .created(URI.create(RESERVATION_API_ENDPOINT_ROOT + "/" + newReservation.id()))
