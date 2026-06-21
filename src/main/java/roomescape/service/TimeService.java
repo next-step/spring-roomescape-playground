@@ -1,13 +1,14 @@
 package roomescape.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import roomescape.dto.TimeDto;
+import org.springframework.stereotype.Service;
 import roomescape.dataLayer.TimeRepository;
+import roomescape.dto.TimeDto;
 import roomescape.model.Time;
+
 import java.util.List;
 
-@Component
+@Service
 public class TimeService {
     private final TimeRepository timeRepository;
 
