@@ -50,7 +50,7 @@ public class MissionStepTest {
     void 삼단계() {
         Map<String, Object> time = new HashMap<>();
         time.put("time", "10:00");
-        time.put("id",1L);
+        time.put("id", 1L);
 
         RestAssured.given()
                 .contentType(ContentType.JSON)
@@ -112,6 +112,7 @@ public class MissionStepTest {
                 .then().log().all()
                 .statusCode(400);
     }
+
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
@@ -146,7 +147,7 @@ public class MissionStepTest {
     @Test
     void 칠단계() {
         Map<String, Object> time = new HashMap<>();
-        time.put("id",1L);
+        time.put("id", 1L);
         time.put("time", "10:00");
 
         RestAssured.given()
@@ -205,6 +206,7 @@ public class MissionStepTest {
                 .then().log().all()
                 .statusCode(204);
     }
+
     @Test
     void 구단계() {
         Map<String, String> reservation = new HashMap<>();
@@ -219,6 +221,7 @@ public class MissionStepTest {
                 .then().log().all()
                 .statusCode(400);
     }
+
     @Autowired
     private ReservationController reservationController;
 

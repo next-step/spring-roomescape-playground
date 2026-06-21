@@ -1,12 +1,9 @@
 package roomescape.service;
 
 import org.springframework.stereotype.Service;
-import roomescape.domain.Reservation;
 import roomescape.domain.Time;
-import roomescape.dto.ReservationRequest;
 import roomescape.dto.TimeRequest;
 import roomescape.exception.NotFoundReservationException;
-import roomescape.repository.ReservationRepository;
 import roomescape.repository.TimeRepository;
 
 import java.util.List;
@@ -19,11 +16,11 @@ public class TimeService {
         this.timeRepository = timeRepository;
     }
 
-    public List<Time> findAll(){
+    public List<Time> findAll() {
         return timeRepository.findAll();
     }
 
-    public Time create(TimeRequest timeRequest){
+    public Time create(TimeRequest timeRequest) {
         long id = timeRepository.insert(timeRequest);
         return new Time(
                 id,
@@ -31,10 +28,10 @@ public class TimeService {
         );
     }
 
-    public void delete(Long id){
-        boolean isRemoved =timeRepository.delete(id);
+    public void delete(Long id) {
+        boolean isRemoved = timeRepository.delete(id);
 
-        if(!isRemoved){
+        if (!isRemoved) {
             throw new NotFoundReservationException("time not found");
         }
     }

@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 
 public record TimeRequest(
         Long id,
-        @NotBlank(message="time is blanck")
+        @NotBlank(message = "time is blanck")
         String time
 ) {
 }
