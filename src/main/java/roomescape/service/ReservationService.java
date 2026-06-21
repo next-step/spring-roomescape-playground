@@ -34,7 +34,7 @@ public class ReservationService {
         boolean isRemoved = reservationRepository.delete(id);
 
         if (!isRemoved) {
-            throw new NotFoundReservationException("Reservation not found");
+            throw new NotFoundReservationException();
         }
     }
 

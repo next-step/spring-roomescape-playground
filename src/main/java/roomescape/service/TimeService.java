@@ -32,7 +32,7 @@ public class TimeService {
         boolean isRemoved = timeRepository.delete(id);
 
         if (!isRemoved) {
-            throw new NotFoundReservationException("time not found");
+            throw new NotFoundReservationException();
         }
     }
 }

@@ -1,8 +1,8 @@
 package roomescape.exception;
 
 public class UnableReservationTimeException extends RuntimeException {
-    public UnableReservationTimeException(String message) {
-        super(message);
+    public UnableReservationTimeException() {
+        super("reservation time is unable.");
     }
 }
 
