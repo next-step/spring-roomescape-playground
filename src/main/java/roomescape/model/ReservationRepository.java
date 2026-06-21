@@ -14,11 +14,11 @@ import java.sql.SQLException;
 import java.util.List;
 
 @Repository
-public class Reservations {
+public class ReservationRepository {
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public Reservations(JdbcTemplate jdbcTemplate) {
+    public ReservationRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
@@ -60,9 +60,8 @@ public class Reservations {
         }
     }
 
-
     private Reservation extractReservationFromResultSet(ResultSet resultSet, int rowNum) throws SQLException {
-        Time reservationTime= new Time(resultSet.getLong("id"),
+        Time reservationTime = new Time(resultSet.getLong("id"),
                 resultSet.getString("time"));
 
         return new Reservation(resultSet.getLong("id"),

@@ -14,8 +14,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import roomescape.dto.ReservationDto;
 import roomescape.model.Reservation;
-import roomescape.model.Reservations;
-import roomescape.service.ReservationFactory;
+import roomescape.service.ReservationService;
 
 import java.net.URI;
 import java.util.List;
@@ -24,11 +23,11 @@ import java.util.List;
 @RequestMapping(ReservationController.RESERVATION_API_ENDPOINT_ROOT)
 public class ReservationController {
     public final static String RESERVATION_API_ENDPOINT_ROOT = "/reservations";
-    private final ReservationFactory reservationFactory;
+    private final ReservationService reservationFactory;
 
     @Autowired
-    public ReservationController(ReservationFactory reservationFactory) {
-        this.reservationFactory= reservationFactory;
+    public ReservationController(ReservationService reservationFactory) {
+        this.reservationFactory = reservationFactory;
     }
 
     @GetMapping
