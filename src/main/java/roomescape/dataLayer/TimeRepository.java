@@ -7,7 +7,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.dto.TimeDto;
 import roomescape.model.Time;
-import roomescape.model.errors.TimeNotFoundException;
+import roomescape.dataLayer.errors.TimeNotFoundException;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

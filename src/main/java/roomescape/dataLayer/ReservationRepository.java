@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import roomescape.dto.ReservationDto;
 import roomescape.model.Reservation;
 import roomescape.model.Time;
-import roomescape.model.errors.ReservationNotFoundException;
+import roomescape.dataLayer.errors.ReservationNotFoundException;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
