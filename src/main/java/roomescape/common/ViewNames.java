@@ -2,7 +2,7 @@ package roomescape.common;
 
 public enum ViewNames {
     HOME("home"),
-    RESERVATION("reservation");
+    RESERVATION("new-reservation");
 
     private final String viewName;
 

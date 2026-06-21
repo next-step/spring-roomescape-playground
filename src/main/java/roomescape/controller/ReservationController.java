@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import roomescape.dto.ReservationDto;
 import roomescape.model.Reservation;
 import roomescape.model.Reservations;
+import roomescape.service.ReservationFactory;
 
 import java.net.URI;
 import java.util.List;
@@ -23,22 +24,22 @@ import java.util.List;
 @RequestMapping(ReservationController.RESERVATION_API_ENDPOINT_ROOT)
 public class ReservationController {
     public final static String RESERVATION_API_ENDPOINT_ROOT = "/reservations";
-    private final Reservations reservations;
+    private final ReservationFactory reservationFactory;
 
     @Autowired
-    public ReservationController(Reservations reservations) {
-        this.reservations = reservations;
+    public ReservationController(ReservationFactory reservationFactory) {
+        this.reservationFactory= reservationFactory;
     }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<Reservation> getAllBookings() {
-        return this.reservations.getReservationList();
+        return this.reservationFactory.getReservationList();
     }
 
     @PostMapping
-    public ResponseEntity<Reservation> createReservation(@RequestBody @Valid ReservationDto reservationDto) {
-        Reservation newReservation = this.reservations.add(reservationDto);
+    public ResponseEntity<ReservationDto> createReservation(@RequestBody @Valid ReservationDto reservationDto) {
+        ReservationDto newReservation = this.reservationFactory.createReservation(reservationDto);
 
         return ResponseEntity
                 .created(URI.create(RESERVATION_API_ENDPOINT_ROOT + "/" + newReservation.id()))
@@ -48,6 +49,6 @@ public class ReservationController {
     @DeleteMapping("/{deletingId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteReservation(@PathVariable Long deletingId) {
-        this.reservations.removeById(deletingId);
+        this.reservationFactory.deleteReservationById(deletingId);
     }
 }
