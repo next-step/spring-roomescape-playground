@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import roomescape.dto.TimeDto;
 import roomescape.model.Time;
-import roomescape.model.Times;
+import roomescape.service.TimeService;
 
 import java.net.URI;
 import java.util.List;
@@ -24,22 +24,22 @@ import java.util.List;
 public class TimeController {
 
     public final static String TIME_API_ENDPOINT_ROOT = "/times";
-    private final Times times;
+    private final TimeService timeService;
 
     @Autowired
-    public TimeController(Times times) {
-        this.times = times;
+    public TimeController(TimeService timeService) {
+        this.timeService = timeService;
     }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<Time> getAllTimes() {
-        return this.times.getTimes();
+        return this.timeService.getTimeList();
     }
 
     @PostMapping
     public ResponseEntity<Time> createTime(@RequestBody @Valid TimeDto timeDto) {
-        Time newTIme = this.times.add(timeDto);
+        Time newTIme = this.timeService.add(timeDto);
 
         return ResponseEntity
                 .created(URI.create(TIME_API_ENDPOINT_ROOT + "/" + newTIme.id()))
@@ -49,6 +49,6 @@ public class TimeController {
     @DeleteMapping("/{deletingId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteTime(@PathVariable Long deletingId) {
-        this.times.removeById(deletingId);
+        this.timeService.deleteTimeById(deletingId);
     }
 }

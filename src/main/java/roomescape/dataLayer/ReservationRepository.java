@@ -1,4 +1,4 @@
-package roomescape.model;
+package roomescape.dataLayer;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -6,6 +6,8 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.dto.ReservationDto;
+import roomescape.model.Reservation;
+import roomescape.model.Time;
 import roomescape.model.errors.ReservationNotFoundException;
 
 import java.sql.PreparedStatement;

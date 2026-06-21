@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import roomescape.dto.ReservationDto;
 import roomescape.model.Reservation;
-import roomescape.model.ReservationRepository;
+import roomescape.dataLayer.ReservationRepository;
 
 import java.util.List;
 

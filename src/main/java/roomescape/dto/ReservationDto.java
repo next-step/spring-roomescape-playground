@@ -2,7 +2,6 @@ package roomescape.dto;
 
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
-import roomescape.model.Reservation;
 
 public record ReservationDto(
         @Nullable
@@ -17,7 +16,4 @@ public record ReservationDto(
         @NotBlank(message = "시간은 비어있으면 안됩니다")
         String time) {
 
-    public ReservationDto(Reservation reservation) {
-        this(reservation.id(), reservation.name(), reservation.date(), reservation.time().id().toString());
-    }
 }

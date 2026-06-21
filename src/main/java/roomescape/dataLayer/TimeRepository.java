@@ -1,4 +1,4 @@
-package roomescape.model;
+package roomescape.dataLayer;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -6,6 +6,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.dto.TimeDto;
+import roomescape.model.Time;
 import roomescape.model.errors.TimeNotFoundException;
 
 import java.sql.PreparedStatement;
@@ -16,11 +17,11 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 @Repository
-public class Times {
+public class TimeRepository {
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public Times(JdbcTemplate jdbcTemplate) {
+    public TimeRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
@@ -47,7 +48,7 @@ public class Times {
         }
     }
 
-    public Time add(TimeDto timeDto) {
+    public Long add(TimeDto timeDto) {
         this.validateTime(timeDto.time());
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -59,8 +60,7 @@ public class Times {
             return ps;
         }, keyHolder);
 
-        long newId = keyHolder.getKey().longValue();
-        return new Time(newId, timeDto);
+        return keyHolder.getKey().longValue();
     }
 
     private void validateTime(String givenTime) {
@@ -86,7 +86,7 @@ public class Times {
     }
 
 
-    public void removeById(long deletingId) {
+    public void deleteTimeById(long deletingId) {
         int deletedRowCounts = jdbcTemplate.update("DELETE FROM time WHERE id = ?", deletingId);
 
         if (deletedRowCounts == 0) {
