@@ -1,15 +1,29 @@
-# Spring Core
-## 8단계 - 시간 관리 기능
-### 요구사항
-- 방탈출 시간표가 정해져 있는데 직접 입력하기 번거로워서 선택하는 방식으로 수정하려합니다.
-- API 명세를 따라 시간 관리 API를 구현하세요.
-- 화면에서 시간 관리 기능이 잘 동작해야합니다.
-### 구현 사항
-- [x] 시간 스키마 추가
-    - [x] 시간 리포지토리 작성
-- [x] 시간 추가 API 구현
-- [x] 시간 조회 API 구현
-- [x] 시간 삭제 API 구현
+# Spring Core 8단계 ~ 10단계 구현 내용
 
-## 9단계 - 기존 코드 수정
-- 기존에 구현한 예약 기능에서 시간을 시간 테이블에 저장된 값만 선택할 수 있도록 수정하세요.
+## 레이어드 아키텍쳐 구현 방식
+```mermaid
+flowchart TD
+    client[클라이언트] --> |Request| controller[컨트롤러]
+    controller --> |Response| client
+    controller-->|DTO| service[서비스]
+    service -->|Model| controller
+    service -->|DTO| Data[데이터]
+    Data -->|Model|service
+```
+
+## 레이어별 직접 구현한 클래스
+
+### 컨트롤러
+`controller` 패키지에는 클라이언트의 요청을 수신하고, 요청 내용에 따라 적절한 서비스를 호출하는 컨트롤러가 위치한다. 요청을 처리한 후 그 결과를 클라이언트에 반환하는 역할을 담당한다.
+* `ReservationController`
+* `TimeController`
+
+### 서비스
+`service` 패키지는 컨트롤러로부터 전달받은 데이터를 기반으로 비즈니스 로직을 수행한다. 데이터 레이어와 상호작용하여 필요한 모델을 생성하거나 가져온 뒤, 그 결과를 컨트롤러에 반환한다.
+* `ReservationService`
+* `TimeService`
+
+### 데이터
+`dataLayer` 패키지는 `JdbcTemplate`을 활용하여 데이터베이스와 직접 통신하는 계층이다. 데이터배이스에 대한 작업을 담당한다.
+* `ReservationRepository`
+* `TimeRepository`
