@@ -7,9 +7,9 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
+import roomescape.domain.Time;
 
 import javax.sql.DataSource;
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
@@ -28,11 +28,16 @@ public class ReservationRepository {
     }
 
     public List<Reservation> findAll() {
-        return jdbcTemplate.query("SELECT * FROM reservation", reservationRowMapper());
+        return jdbcTemplate.query(
+                "SELECT r.id as reservation_id, r.name, r.date, t.id as time_id, t.time as time_value " +
+                        "FROM reservation as r inner join time as t on r.time_id = t.id", reservationRowMapper());
     }
 
     public Optional<Reservation> findWithId(Long id) {
-        return jdbcTemplate.query("SELECT * FROM reservation WHERE id = ?", reservationRowMapper(), id)
+        return jdbcTemplate.query(
+                        "SELECT r.id as reservation_id, r.name, r.date, t.id as time_id, t.time as time_value " +
+                                "FROM reservation as r inner join time as t on r.time_id = t.id " +
+                                "WHERE r.id = ?", reservationRowMapper(), id)
                 .stream().findFirst();
     }
 
@@ -40,7 +45,7 @@ public class ReservationRepository {
         SqlParameterSource source = new MapSqlParameterSource()
                 .addValue("name", reservation.getName())
                 .addValue("date", reservation.getDate())
-                .addValue("time", reservation.getTime());
+                .addValue("time_id", reservation.getTime().getId());
         Long key = simpleJdbcInsert.executeAndReturnKey(source).longValue();
         return Reservation.withId(reservation, key);
     }
@@ -50,13 +55,20 @@ public class ReservationRepository {
     }
 
     private RowMapper<Reservation> reservationRowMapper() {
-        return (resultSet, rowNum) -> Reservation.withId(
-                Reservation.of(
-                        resultSet.getString("name"),
-                        LocalDate.parse(resultSet.getString("date")),
-                        LocalTime.parse(resultSet.getString("time"))
-                ),
-                resultSet.getLong("id")
-        );
+        return (resultSet, rowNum) -> {
+            Time time = Time.withId(
+                    resultSet.getLong("time_id"),
+                    Time.from(LocalTime.parse(resultSet.getString("time_value")))
+            );
+
+            return Reservation.withId(
+                    Reservation.of(
+                            resultSet.getString("name"),
+                            resultSet.getString("date"),
+                            time
+                    ),
+                    resultSet.getLong("reservation_id")
+            );
+        };
     }
 }

@@ -2,10 +2,11 @@ package roomescape.service;
 
 import org.springframework.stereotype.Service;
 import roomescape.domain.Reservation;
+import roomescape.domain.Time;
 import roomescape.dto.ReservationRequest;
 import roomescape.dto.ReservationResponse;
-import roomescape.exception.ReservationNotFoundException;
 import roomescape.repository.ReservationRepository;
+import roomescape.repository.TimeRepository;
 
 import java.util.List;
 
@@ -13,9 +14,11 @@ import java.util.List;
 public class ReservationService {
 
     private final ReservationRepository reservationRepository;
+    private final TimeRepository timeRepository;
 
-    public ReservationService(ReservationRepository reservationRepository) {
+    public ReservationService(ReservationRepository reservationRepository, TimeRepository timeRepository) {
         this.reservationRepository = reservationRepository;
+        this.timeRepository = timeRepository;
     }
 
     public List<ReservationResponse> getAllReservations() {
@@ -25,14 +28,16 @@ public class ReservationService {
     }
 
     public ReservationResponse createReservation(ReservationRequest request) {
-        Reservation validatedReservation = Reservation.of(request.name(), request.date(), request.time());
+        Time selectedTime = timeRepository.findById(request.time())
+                .orElseThrow(() -> new IllegalArgumentException("잘못된 시간"));
+        Reservation validatedReservation = Reservation.of(request.name(), request.date(), selectedTime);
         Reservation reservation = reservationRepository.insert(validatedReservation);
         return ReservationResponse.from(reservation);
     }
 
     public void deleteReservation(Long id) {
         Reservation reservation = reservationRepository.findWithId(id)
-                        .orElseThrow(() -> new ReservationNotFoundException(id));
+                .orElseThrow(() -> new IllegalArgumentException("잘못된 예약"));
         reservationRepository.delete(reservation);
     }
 }
