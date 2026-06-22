@@ -82,25 +82,30 @@ public class MissionStepTest {
     }
     @Test
     void 팔단계() {
-        Map<String, String> params = new HashMap<>();
-        params.put("time", "10:00");
+        Integer initialCount = jdbcTemplate.queryForObject("SELECT count(1) from time", Integer.class);
 
-        RestAssured.given().log().all()
+        Map<String, String> params = new HashMap<>();
+        params.put("time", "20:00");
+
+        Integer timeId = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(params)
                 .when().post("/times")
                 .then().log().all()
                 .statusCode(201)
-                .header("Location", "/times/1");
+                .header("Location", "/times/" + (initialCount + 1))
+                .extract()
+                .jsonPath()
+                .getInt("id");
 
         RestAssured.given().log().all()
                 .when().get("/times")
                 .then().log().all()
                 .statusCode(200)
-                .body("size()", is(1));
+                .body("size()", is(initialCount + 1));
 
         RestAssured.given().log().all()
-                .when().delete("/times/1")
+                .when().delete("/times/" + timeId)
                 .then().log().all()
                 .statusCode(204);
     }
