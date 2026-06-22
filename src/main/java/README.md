@@ -2,17 +2,6 @@
 
 Spring Boot로 구현한 방탈출 예약 관리 애플리케이션입니다. 예약 가능한 시간을 관리하고, 사용자는 등록된 시간 중 하나를 선택해 예약을 생성할 수 있습니다. 웹 화면은 Thymeleaf 템플릿으로 제공하며, 데이터는 H2 인메모리 데이터베이스에 저장됩니다.
 
-## 기술 스택
-
-- Java 17
-- Spring Boot 3.2.0
-- Spring Web
-- Spring JDBC
-- Thymeleaf
-- Bean Validation
-- H2 Database
-- Gradle
-- JUnit 5, RestAssured
 
 ## 주요 기능
 
@@ -26,66 +15,6 @@ Spring Boot로 구현한 방탈출 예약 관리 애플리케이션입니다. �
 - 과거 날짜/시간 예약 방지
 - 같은 날짜와 같은 시간의 중복 예약 방지
 - H2 Console 제공
-
-## 실행 방법
-
-```bash
-./gradlew bootRun
-```
-
-Windows PowerShell에서는 다음 명령을 사용할 수 있습니다.
-
-```powershell
-.\gradlew.bat bootRun
-```
-
-애플리케이션은 기본적으로 `http://localhost:8080`에서 실행됩니다.
-
-## 테스트
-
-```bash
-./gradlew test
-```
-
-Windows PowerShell에서는 다음 명령을 사용할 수 있습니다.
-
-```powershell
-.\gradlew.bat test
-```
-
-## 화면 경로
-
-| 경로 | 설명 |
-| --- | --- |
-| `/` | 홈 화면 |
-| `/reservation` | 예약 관리 화면 |
-| `/time` | 예약 시간 관리 화면 |
-| `/h2-console` | H2 콘솔 |
-
-H2 접속 정보는 다음과 같습니다.
-
-```text
-JDBC URL: jdbc:h2:mem:database
-```
-
-## API
-
-### 예약 시간 목록 조회
-
-```http
-GET /times
-```
-
-응답 예시:
-
-```json
-[
-  {
-    "id": 1,
-    "time": "10:00"
-  }
-]
-```
 
 ### 예약 시간 생성
 
