@@ -160,10 +160,11 @@ src/main/java/roomescape
 │   ├── ReservationResponse.java
 │   ├── TimeRequest.java
 │   └── TimeResponse.java
-├── repository
+├── dao
 │   ├── ReservationDao.java
+│   └── TimeDao.java
+├── repository
 │   ├── ReservationRepository.java
-│   ├── TimeDao.java
 │   └── TimeRepository.java
 └── service
     ├── ReservationService.java

@@ -1,6 +1,7 @@
 package roomescape.repository;
 
 import org.springframework.stereotype.Repository;
+import roomescape.dao.TimeDao;
 import roomescape.domain.Time;
 
 import java.util.List;
