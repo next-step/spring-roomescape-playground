@@ -6,18 +6,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcOperations;
-<<<<<<< HEAD
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import roomescape.controller.ReservationController;
-=======
-import org.springframework.test.annotation.DirtiesContext;
-import roomescape.domain.Reservation;
->>>>>>> upstream/hapdaypy
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -69,13 +63,8 @@ public class MissionStepTest {
     void 사단계() {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
-<<<<<<< HEAD
         params.put("date", "");
         params.put("time", "");
-=======
-        params.put("date", "2099-08-05");
-        params.put("time", "11:40");
->>>>>>> upstream/hapdaypy
 
         // 필요한 인자가 없는 경우
         RestAssured.given().log().all()
@@ -187,7 +176,6 @@ public class MissionStepTest {
                 .body("size()", is(0));
     }
 
-<<<<<<< HEAD
     private Integer createTime(String time) {
         Map<String, String> params = new HashMap<>();
         params.put("time", time);
@@ -218,100 +206,5 @@ public class MissionStepTest {
         }
 
         assertThat(isJdbcTemplateInjected).isFalse();
-=======
-    @Test
-    void 예약_시간은_0시를_허용한다() {
-        Map<String, String> params = new HashMap<>();
-        params.put("name", "브라운");
-        params.put("date", "2099-08-05");
-        params.put("time", "00:40");
-
-        RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
-                .body(params)
-                .when().post("/reservations")
-                .then().log().all()
-                .statusCode(201);
-    }
-
-    @Test
-    void 예약_시간은_24시를_초과할_수_없다() {
-        Map<String, String> params = new HashMap<>();
-        params.put("name", "브라운");
-        params.put("date", "2099-08-05");
-        params.put("time", "25:40");
-
-        RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
-                .body(params)
-                .when().post("/reservations")
-                .then().log().all()
-                .statusCode(400);
-    }
-
-
-    @Test
-    void 사단계() {
-        Map<String, String> params = new HashMap<>();
-        params.put("name", "브라운");
-        params.put("date", "");
-        params.put("time", "");
-
-        // 필요한 인자가 없는 경우
-        RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
-                .body(params)
-                .when().post("/reservations")
-                .then().log().all()
-                .statusCode(400);
-
-        // 삭제할 예약이 없는 경우
-        RestAssured.given().log().all()
-                .when().delete("/reservations/1")
-                .then().log().all()
-                .statusCode(400);
-    }
-    @Test
-    void 육단계() {
-        jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "브라운", "2099-08-05", "15:40");
-
-        List<Reservation> reservations = RestAssured.given().log().all()
-                .when().get("/reservations")
-                .then().log().all()
-                .statusCode(200).extract()
-                .jsonPath().getList(".", Reservation.class);
-
-        Integer count = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
-
-        assertThat(reservations.size()).isEqualTo(count);
-    }
-    @Test
-    void 칠단계() {
-        Map<String, String> params = new HashMap<>();
-        params.put("name", "브라운");
-        params.put("date", "2999-08-05");
-        params.put("time", "10:00");
-
-
-        RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
-                .body(params)
-                .when().post("/reservations")
-                .then().log().all()
-                .statusCode(201)
-                .header("Location", "/reservations/1");
-
-
-        Integer count = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
-        assertThat(count).isEqualTo(1);
-
-        RestAssured.given().log().all()
-                .when().delete("/reservations/1")
-                .then().log().all()
-                .statusCode(204);
-
-        Integer countAfterDelete = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
-        assertThat(countAfterDelete).isEqualTo(0);
->>>>>>> upstream/hapdaypy
     }
 }

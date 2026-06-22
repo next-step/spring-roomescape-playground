@@ -7,10 +7,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class ReservationViewController {
     @GetMapping("/reservation")
     public String reservationPage() {
-<<<<<<< HEAD
         return "new-reservation";
-=======
-        return "reservation";
->>>>>>> upstream/hapdaypy
     }
 }
