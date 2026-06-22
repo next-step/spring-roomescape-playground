@@ -47,11 +47,6 @@ public class TimeRepository {
                 .findFirst();
     }
 
-    public Optional<Time> findByTime(LocalTime time) {
-        return jdbcTemplate.query("SELECT * FROM time WHERE time = ?", rowMapper(), time).stream()
-                .findFirst();
-    }
-
     public boolean existsByTime(LocalTime time) {
         String sql = "SELECT COUNT(*) FROM time WHERE time = ?";
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class, time.toString());
