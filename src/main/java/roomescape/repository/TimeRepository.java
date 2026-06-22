@@ -1,9 +1,10 @@
 package roomescape.repository;
 
 import org.springframework.stereotype.Repository;
-import roomescape.domain.ReservationTime;
+import roomescape.domain.Time;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class TimeRepository {
@@ -14,11 +15,15 @@ public class TimeRepository {
         this.timeDao = timeDao;
     }
 
-    public List<ReservationTime> findAll() {
+    public List<Time> findAll() {
         return timeDao.findAll();
     }
 
-    public ReservationTime save(ReservationTime reservationTime) {
+    public Optional<Time> findById(Long id) {
+        return timeDao.findById(id);
+    }
+
+    public Time save(Time reservationTime) {
         return timeDao.save(reservationTime);
     }
 

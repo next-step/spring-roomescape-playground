@@ -18,8 +18,8 @@ public class ReservationRepository {
         return reservationDao.findAll();
     }
 
-    public boolean existsByDateAndTime(String date, String time) {
-        return reservationDao.existsByDateAndTime(date, time);
+    public boolean existsByDateAndTimeId(String date, Long timeId) {
+        return reservationDao.existsByDateAndTimeId(date, timeId);
     }
 
     public Reservation save(Reservation reservation) {

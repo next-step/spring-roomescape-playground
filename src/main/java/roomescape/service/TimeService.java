@@ -1,7 +1,7 @@
 package roomescape.service;
 
 import org.springframework.stereotype.Service;
-import roomescape.domain.ReservationTime;
+import roomescape.domain.Time;
 import roomescape.dto.TimeRequest;
 import roomescape.repository.TimeRepository;
 
@@ -16,12 +16,12 @@ public class TimeService {
         this.timeRepository = timeRepository;
     }
 
-    public List<ReservationTime> getAllTimes() {
+    public List<Time> getAllTimes() {
         return timeRepository.findAll();
     }
 
-    public ReservationTime createTime(TimeRequest request) {
-        ReservationTime newTime = new ReservationTime(null, request.time());
+    public Time createTime(TimeRequest request) {
+        Time newTime = new Time(null, request.time());
         return timeRepository.save(newTime);
     }
 

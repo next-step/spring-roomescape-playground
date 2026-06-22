@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class ReservationViewController {
     @GetMapping("/reservation")
     public String reservationPage() {
-        return "reservation";
+        return "new-reservation";
     }
 }
