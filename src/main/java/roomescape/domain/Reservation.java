@@ -1,5 +1,8 @@
 package roomescape.domain;
 
+import roomescape.exception.ErrorCode;
+import roomescape.exception.RoomEscapeException;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -31,7 +34,7 @@ public class Reservation {
         LocalDateTime reservationDateTime = reservationDate.atTime(time.getTime());
 
         if (reservationDateTime.isBefore(LocalDateTime.now())) {
-            throw new IllegalArgumentException("과거 시간 예약 불가");
+            throw new RoomEscapeException(ErrorCode.INVALID_RESERVATION_TIME);
         }
     }
 
