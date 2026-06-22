@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
-import roomescape.controller.ReservationController;
+import roomescape.controller.ReservationApiController;
 import roomescape.domain.Reservation;
 
 import java.lang.reflect.Field;
@@ -27,6 +27,9 @@ public class MissionStepTest {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private ReservationApiController reservationController;
 
     @Test
     void 일단계() {
@@ -52,10 +55,12 @@ public class MissionStepTest {
 
     @Test
     void 삼단계() {
-        Map<String, String> params = new HashMap<>();
+        jdbcTemplate.update("INSERT INTO time (id, time) VALUES (?, ?)", 1, "15:40");
+
+        Map<String, Object> params = new HashMap<>();
         params.put("name", "브라운");
         params.put("date", LocalDate.now().plusDays(1).toString());
-        params.put("time", "15:40");
+        params.put("time", 1L);
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -119,7 +124,9 @@ public class MissionStepTest {
 
     @Test
     void 육단계() {
-        jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "브라운", "2026-08-05", "15:40");
+        jdbcTemplate.update("INSERT INTO time (id, time) VALUES (?, ?)", 1, "15:40");
+        jdbcTemplate.update("INSERT INTO reservation (name, date, time_id) VALUES (?, ?, ?)", "브라운", "2026-08-05", 1);
+
 
         List<Reservation> reservations = RestAssured.given().log().all()
                 .when().get("/reservations")
@@ -134,10 +141,12 @@ public class MissionStepTest {
 
     @Test
     void 칠단계() {
-        Map<String, String> params = new HashMap<>();
+        jdbcTemplate.update("INSERT INTO time (id, time) VALUES (?, ?)", 1, "10:00");
+
+        Map<String, Object> params = new HashMap<>();
         params.put("name", "브라운");
         params.put("date", "2026-08-05");
-        params.put("time", "10:00");
+        params.put("time", 1L); // "10:00"의 ID를 1로 가정
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -198,9 +207,6 @@ public class MissionStepTest {
                 .then().log().all()
                 .statusCode(400);
     }
-
-    @Autowired
-    private ReservationController reservationController;
 
     @Test
     void 십단계() {
