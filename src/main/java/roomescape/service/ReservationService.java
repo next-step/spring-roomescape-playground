@@ -5,6 +5,8 @@ import roomescape.domain.Reservation;
 import roomescape.domain.Time;
 import roomescape.dto.ReservationRequest;
 import roomescape.dto.ReservationResponse;
+import roomescape.exception.ErrorCode;
+import roomescape.exception.RoomEscapeException;
 import roomescape.repository.ReservationRepository;
 import roomescape.repository.TimeRepository;
 
@@ -29,7 +31,7 @@ public class ReservationService {
 
     public ReservationResponse createReservation(ReservationRequest request) {
         Time selectedTime = timeRepository.findById(request.time())
-                .orElseThrow(() -> new IllegalArgumentException("잘못된 시간"));
+                .orElseThrow(() -> new RoomEscapeException(ErrorCode.TIME_NOT_FOUND));
         Reservation validatedReservation = Reservation.of(request.name(), request.date(), selectedTime);
         Reservation reservation = reservationRepository.insert(validatedReservation);
         return ReservationResponse.from(reservation);
@@ -37,7 +39,7 @@ public class ReservationService {
 
     public void deleteReservation(Long id) {
         Reservation reservation = reservationRepository.findWithId(id)
-                .orElseThrow(() -> new IllegalArgumentException("잘못된 예약"));
+                .orElseThrow(() -> new RoomEscapeException(ErrorCode.RESERVATION_NOT_FOUND));
         reservationRepository.delete(reservation);
     }
 }

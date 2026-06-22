@@ -4,6 +4,8 @@ import org.springframework.stereotype.Service;
 import roomescape.domain.Time;
 import roomescape.dto.TimeRequest;
 import roomescape.dto.TimeResponse;
+import roomescape.exception.ErrorCode;
+import roomescape.exception.RoomEscapeException;
 import roomescape.repository.TimeRepository;
 
 import java.util.List;
@@ -26,14 +28,14 @@ public class TimeService {
     public TimeResponse insertTime(TimeRequest timeRequest) {
         Time time = Time.from(timeRequest.time());
         if (timeRepository.existsByTime(timeRequest.time())) {
-            throw new IllegalArgumentException("시간 중복");
+            throw new RoomEscapeException(ErrorCode.DUPLICATE_TIME);
         }
         return TimeResponse.from(timeRepository.insert(time));
     }
 
     public void deleteTime(Long id) {
         Time time = timeRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("시간 탐색 실패"));
+                .orElseThrow(() -> new IllegalArgumentException(""));
         timeRepository.delete(time);
     }
 }
