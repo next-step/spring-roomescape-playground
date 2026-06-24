@@ -47,7 +47,7 @@ public class ReservationRepository {
         });
     }
 
-    public long insert(ReservationRequest reservation) {
+    public long insert(Reservation reservation) {
         String sql = """
                 INSERT INTO reservation (name, date, time_id)
                 VALUES (?, ?, ?)
