@@ -9,6 +9,7 @@ import roomescape.dto.TimeRequest;
 
 import java.sql.PreparedStatement;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class TimeRepository {
@@ -31,6 +32,23 @@ public class TimeRepository {
                         rs.getString("time")
                 )
         );
+    }
+
+    public Optional<Time> findById(long id){
+        String sql = """
+                SELECT id,time
+                FROM reservation_time
+                where id = ?
+                """;
+        List<Time> result=jdbcTemplate.query(
+                sql,
+                (rs, rowNum) -> new Time(
+                        rs.getLong("id"),
+                        rs.getString("time")
+                ),
+                id
+        );
+        return result.stream().findFirst();
     }
 
     public long insert(TimeRequest time) {

@@ -3,7 +3,6 @@ package roomescape.service;
 import org.springframework.stereotype.Service;
 import roomescape.domain.Time;
 import roomescape.dto.TimeRequest;
-import roomescape.exception.NotFoundReservationException;
 import roomescape.exception.NotFoundTimeException;
 import roomescape.repository.TimeRepository;
 
@@ -22,7 +21,10 @@ public class TimeService {
     }
 
     public Time createTime(TimeRequest timeRequest) {
-        long id = timeRepository.insert(timeRequest);
+        Time time = timeRepository.findById(timeRequest.id())
+                .orElseThrow(NotFoundTimeException::new
+                );
+        long id = time.id();
         return new Time(
                 id,
                 timeRequest.time()
