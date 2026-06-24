@@ -51,7 +51,7 @@ public class TimeRepository {
         return result.stream().findFirst();
     }
 
-    public long insert(TimeRequest time) {
+    public long insert(Time time) {
         String sql = """
                 INSERT INTO time (time)
                 VALUES (?)
