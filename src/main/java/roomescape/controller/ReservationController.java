@@ -23,22 +23,22 @@ import java.util.List;
 @RequestMapping(ReservationController.RESERVATION_API_ENDPOINT_ROOT)
 public class ReservationController {
     public final static String RESERVATION_API_ENDPOINT_ROOT = "/reservations";
-    private final ReservationService reservationFactory;
+    private final ReservationService reservationService;
 
     @Autowired
-    public ReservationController(ReservationService reservationFactory) {
-        this.reservationFactory = reservationFactory;
+    public ReservationController(ReservationService reservationService) {
+        this.reservationService = reservationService;
     }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<Reservation> getAllBookings() {
-        return this.reservationFactory.getReservationList();
+        return this.reservationService.getReservationList();
     }
 
     @PostMapping
     public ResponseEntity<Reservation> createReservation(@RequestBody @Valid ReservationDto reservationDto) {
-        Reservation newReservation = this.reservationFactory.createReservation(reservationDto);
+        Reservation newReservation = this.reservationService.createReservation(reservationDto);
 
         return ResponseEntity
                 .created(URI.create(RESERVATION_API_ENDPOINT_ROOT + "/" + newReservation.id()))
@@ -48,6 +48,6 @@ public class ReservationController {
     @DeleteMapping("/{deletingId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteReservation(@PathVariable Long deletingId) {
-        this.reservationFactory.deleteReservationById(deletingId);
+        this.reservationService.deleteReservationById(deletingId);
     }
 }

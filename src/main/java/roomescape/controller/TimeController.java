@@ -39,11 +39,11 @@ public class TimeController {
 
     @PostMapping
     public ResponseEntity<Time> createTime(@RequestBody @Valid TimeDto timeDto) {
-        Time newTIme = this.timeService.add(timeDto);
+        Time newTime = this.timeService.add(timeDto);
 
         return ResponseEntity
-                .created(URI.create(TIME_API_ENDPOINT_ROOT + "/" + newTIme.id()))
-                .body(newTIme);
+                .created(URI.create(TIME_API_ENDPOINT_ROOT + "/" + newTime.id()))
+                .body(newTime);
     }
 
     @DeleteMapping("/{deletingId}")
