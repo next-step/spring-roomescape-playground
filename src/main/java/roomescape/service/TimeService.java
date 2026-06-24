@@ -16,11 +16,11 @@ public class TimeService {
         this.timeRepository = timeRepository;
     }
 
-    public List<Time> findAll() {
+    public List<Time> getTime() {
         return timeRepository.findAll();
     }
 
-    public Time create(TimeRequest timeRequest) {
+    public Time createTime(TimeRequest timeRequest) {
         long id = timeRepository.insert(timeRequest);
         return new Time(
                 id,
@@ -28,7 +28,7 @@ public class TimeService {
         );
     }
 
-    public void delete(Long id) {
+    public void cancelTime(Long id) {
         boolean isRemoved = timeRepository.delete(id);
 
         if (!isRemoved) {

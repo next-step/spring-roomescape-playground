@@ -27,19 +27,19 @@ public class TimeController {
 
     @PostMapping
     public ResponseEntity<Time> createTime(@Valid @RequestBody TimeRequest timeRequest) {
-        Time time = timeService.create(timeRequest);
+        Time time = timeService.createTime(timeRequest);
         return ResponseEntity.created(URI.create("/times/" + time.id()))
                 .body(time);
     }
 
     @GetMapping
     public ResponseEntity<List<Time>> getAllTimes() {
-        return ResponseEntity.ok(timeService.findAll());
+        return ResponseEntity.ok(timeService.getTime());
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTime(@PathVariable Long id) {
-        timeService.delete(id);
+        timeService.cancelTime(id);
         return ResponseEntity.noContent().build();
     }
 }
