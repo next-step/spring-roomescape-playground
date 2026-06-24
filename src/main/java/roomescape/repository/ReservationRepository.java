@@ -23,12 +23,12 @@ public class ReservationRepository {
     public List<Reservation> findAll() {
 
         String sql = """
-                SELECT\s
-                    r.id as reservation_id,\s
-                    r.name,\s
-                    r.date,\s
-                    t.id as time_id,\s
-                    t.time as time_value\s
+                SELECT
+                    r.id as reservation_id,
+                    r.name,
+                    r.date,
+                    t.id as time_id,
+                    t.time as time_value
                 FROM reservation as r inner join time as t on r.time_id = t.id
                 """;
 
@@ -39,7 +39,7 @@ public class ReservationRepository {
                     rs.getString("time_value")
             );
             return new Reservation(
-                    rs.getLong("id"),
+                    rs.getLong("reservation_id"),
                     rs.getString("name"),
                     rs.getString("date"),
                     time
