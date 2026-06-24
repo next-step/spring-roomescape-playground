@@ -1,49 +1,45 @@
 package roomescape.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import roomescape.exception.BadRequestException;
 
 import java.time.LocalDate;
 
-public class ReservationRequest {
+public record ReservationRequest(
+        @NotBlank(message = "이름은 비어있을 수 없습니다.")
+        String name,
 
-    @NotBlank(message = "이름은 비어있을 수 없습니다.")
-    private String name;
+        @NotNull(message = "날짜는 필수입니다.")
+        LocalDate date,
 
-    @NotNull(message = "날짜는 필수입니다.")
-    private LocalDate date;
+        Long timeId
+) {
 
-    private Long timeId;
+    @JsonCreator
+    public ReservationRequest(
+            @JsonProperty("name") String name,
+            @JsonProperty("date") LocalDate date,
+            @JsonProperty("timeId") Long timeId,
+            @JsonProperty("time") Object time
+    ) {
 
-    public ReservationRequest() {}
+this(
+    name,
+    date,
+    convertToTimeId(time, timeId)
+        );
+}
 
-    public ReservationRequest(String name, LocalDate date, Long timeId) {
-        this.name = name;
-        this.date = date;
-        this.timeId = timeId;
+private static Long convertToTimeId(Object time, Long timeId) {
+    if (time instanceof String) {
+        throw new BadRequestException("이제 시간은 문자열 형식을 지원하지 않습니다. 시간 ID를 입력해주세요.");
     }
-
-    @JsonProperty("time") //사용자가 예전 방식으로 time을 직접 지정해서 보냈을경우
-    public void setTime(Object time) {
-        // 들어온 값이 숫자가 아니라 문자열 형식이면 400 에러를 유도
-        if (time instanceof String) {
-            throw new BadRequestException("이제 시간은 문자열 형식을 지원하지 않습니다. 시간 ID를 입력해주세요.");
-        }
-        if (time instanceof Number) { //숫자가 들어온 경우
-            this.timeId = ((Number) time).longValue();
-            //Integer을 Long으로 바꿔줌
-        }
+    if (time instanceof Number) {
+        return ((Number) time).longValue();
     }
-
-    @JsonProperty("timeId")
-    public void setTimeId(Long timeId) {
-        this.timeId = timeId;
-    }
-
-    // Getters
-    public String getName() { return name; }
-    public LocalDate getDate() { return date; }
-    public Long getTimeId() { return timeId; }
+    return timeId;
+}
 }

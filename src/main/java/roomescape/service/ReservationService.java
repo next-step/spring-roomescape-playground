@@ -28,21 +28,21 @@ public class ReservationService {
     @Transactional
     public Reservation createReservation(ReservationRequest request) {//예약 생성 메서드
         // 사용자가 예약 생성할 때 timeId를 안 보냈는지 검사
-        if (request.getTimeId() == null) {
+        if (request.timeId() == null) {
             throw new BadRequestException("유효하지 않은 시간 ID 인프라 요청입니다.");
         }
         // 사용자가 보낸 timeId가 time 테이블에 존재하는지 확인
-        if (timeRepository.countById(request.getTimeId()) == 0) {
+        if (timeRepository.countById(request.timeId()) == 0) {
             throw new BadRequestException("존재하지 않는 시간입니다.");
         }
         // 예약 중복 차단 검증
-        if (reservationRepository.countByDateAndTimeId(request.getDate(), request.getTimeId()) > 0) {
+        if (reservationRepository.countByDateAndTimeId(request.date(), request.timeId()) > 0) {
             throw new BadRequestException("해당 시간대에 이미 예약이 가득 차 있습니다.");
         }
 
-        Long generatedId = reservationRepository.save(request.getName(), request.getDate(), request.getTimeId());
+        Long generatedId = reservationRepository.save(request.name(), request.date(), request.timeId());
         //검증을 다 통과하면 DB에 저장. Repository의 save()가 실행됨
-        return new Reservation(generatedId, request.getName(), request.getDate(), null);
+        return new Reservation(generatedId, request.name(), request.date(), null);
         // 응답으로 돌려줄 Reservation 객체 만들기
     }
 
