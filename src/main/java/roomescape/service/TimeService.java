@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import roomescape.domain.Time;
 import roomescape.dto.TimeRequest;
 import roomescape.exception.NotFoundReservationException;
+import roomescape.exception.NotFoundTimeException;
 import roomescape.repository.TimeRepository;
 
 import java.util.List;
@@ -30,9 +31,8 @@ public class TimeService {
 
     public void cancelTime(Long id) {
         boolean isRemoved = timeRepository.delete(id);
-
         if (!isRemoved) {
-            throw new NotFoundReservationException();
+            throw new NotFoundTimeException();
         }
     }
 }
