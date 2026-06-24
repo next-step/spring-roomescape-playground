@@ -5,16 +5,13 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import roomescape.dto.TimeDto;
-import roomescape.model.Time;
 import roomescape.dataLayer.errors.TimeNotFoundException;
+import roomescape.model.Time;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Pattern;
 
 @Repository
 public class TimeRepository {
@@ -44,16 +41,16 @@ public class TimeRepository {
             return new Time(resultSet.getLong("id"),
                     resultSet.getString("time"));
         } catch (SQLException e) {
-            throw new IllegalArgumentException("time 테이블과 형식이 다릅니다.");
+            throw new IllegalArgumentException("time_id 테이블과 형식이 다릅니다.");
         }
     }
 
-    public Long add(TimeDto timeDto) {
+    public Long add(String timeString) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement("INSERT INTO time (time) values (?)",
                     new String[]{"id"});
-            ps.setString(1, timeDto.time());
+            ps.setString(1, timeString);
 
             return ps;
         }, keyHolder);

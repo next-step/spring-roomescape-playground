@@ -5,10 +5,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import roomescape.dto.ReservationDto;
+import roomescape.dataLayer.errors.ReservationNotFoundException;
 import roomescape.model.Reservation;
 import roomescape.model.Time;
-import roomescape.dataLayer.errors.ReservationNotFoundException;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -29,14 +28,14 @@ public class ReservationRepository {
                 this::extractReservationFromResultSet);
     }
 
-    public Long add(ReservationDto reservationDto) {
+    public Long add(String name, String date, Long time_id) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement("INSERT INTO reservation (name, date, time_id) values (?, ? ,?)",
                     new String[]{"id"});
-            ps.setString(1, reservationDto.name());
-            ps.setString(2, reservationDto.date());
-            ps.setLong(3, Long.parseLong(reservationDto.time()));
+            ps.setString(1, name);
+            ps.setString(2, date);
+            ps.setLong(3, time_id);
 
             return ps;
         }, keyHolder);
@@ -64,7 +63,7 @@ public class ReservationRepository {
 
     private Reservation extractReservationFromResultSet(ResultSet resultSet, int rowNum) throws SQLException {
         Time reservationTime = new Time(resultSet.getLong("id"),
-                resultSet.getString("time"));
+                resultSet.getString("time_id"));
 
         return new Reservation(resultSet.getLong("id"),
                 resultSet.getString("name"),

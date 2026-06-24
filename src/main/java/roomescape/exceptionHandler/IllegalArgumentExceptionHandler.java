@@ -7,10 +7,11 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class IllegalArgumentExceptionHandler {
+
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String handleReservationNotFoundError(IllegalArgumentException exception) {
 //        return exception.getMessage();
-        return "this is exceptionHandler speaking" + exception.getMessage();
+        return "this is exceptionHandler speaking " + exception.getMessage();
     }
 }

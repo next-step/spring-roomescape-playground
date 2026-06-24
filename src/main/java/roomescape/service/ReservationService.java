@@ -18,7 +18,7 @@ public class ReservationService {
     }
 
     public Reservation createReservation(ReservationDto reservationDto) {
-        Long newReservationId = reservationRepository.add(reservationDto);
+        Long newReservationId = reservationRepository.add(reservationDto.name(), reservationDto.date(), reservationDto.time_id());
         return reservationRepository.getReservationById(newReservationId);
     }
 

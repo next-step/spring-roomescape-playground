@@ -25,7 +25,7 @@ public class TimeService {
 
     public Time add(TimeDto timeDto) {
         validateTime(timeDto.time());
-        Long newTimeId = timeRepository.add(timeDto);
+        Long newTimeId = timeRepository.add(timeDto.time());
         return timeRepository.getTimeById(newTimeId);
     }
 
