@@ -27,12 +27,12 @@ public class ReservationController {
 
     @GetMapping
     public ResponseEntity<List<Reservation>> getAllReservations() {
-        return ResponseEntity.ok(reservationService.findAll());
+        return ResponseEntity.ok(reservationService.getReservation());
     }
 
     @PostMapping
     public ResponseEntity<Reservation> createReservation(@Valid @RequestBody ReservationRequest reservationRequest) {
-        Reservation reservation = reservationService.create(reservationRequest);
+        Reservation reservation = reservationService.createReservation(reservationRequest);
 
         return ResponseEntity.created(URI.create("/reservations/" + reservation.id()))
                 .body(reservation);
@@ -40,7 +40,7 @@ public class ReservationController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
-        reservationService.delete(id);
+        reservationService.cancelReservation(id);
         return ResponseEntity.noContent().build();
     }
 }

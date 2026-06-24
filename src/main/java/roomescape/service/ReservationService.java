@@ -16,11 +16,11 @@ public class ReservationService {
         this.reservationRepository = reservationRepository;
     }
 
-    public List<Reservation> findAll() {
+    public List<Reservation> getReservation() {
         return reservationRepository.findAll();
     }
 
-    public Reservation create(ReservationRequest reservationRequest) {
+    public Reservation createReservation(ReservationRequest reservationRequest) {
         long id = reservationRepository.insert(reservationRequest);
         return new Reservation(
                 id,
@@ -30,7 +30,7 @@ public class ReservationService {
         );
     }
 
-    public void delete(Long id) {
+    public void cancelReservation(Long id) {
         boolean isRemoved = reservationRepository.delete(id);
 
         if (!isRemoved) {
