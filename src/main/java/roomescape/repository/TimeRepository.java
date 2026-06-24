@@ -1,6 +1,8 @@
 package roomescape.repository;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
@@ -8,6 +10,7 @@ import roomescape.model.Time;
 
 import java.sql.PreparedStatement;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Repository
@@ -26,14 +29,7 @@ public class TimeRepository {
                 FROM time
                 """;
 
-        return jdbcTemplate.query(
-                sql,
-                (resultSet, rowNum) ->
-                        new Time(
-                                resultSet.getLong("id"),
-                                resultSet.getTime("time").toLocalTime()
-                        )
-        );
+        return jdbcTemplate.query(sql, timeRowMapper);
     }
 
     public Time save(Time reservationTime) {
@@ -84,16 +80,22 @@ public class TimeRepository {
                 WHERE id = ?
                 """;
 
-        List<Time> result = jdbcTemplate.query(
-                sql,
-                (resultSet, rowNum) ->
-                        new Time(
-                                resultSet.getLong("id"),
-                                resultSet.getTime("time").toLocalTime()
-                        ),
-                id
-        );
+        try {
+            Time time = jdbcTemplate.queryForObject(
+                    sql,
+                    timeRowMapper,
+                    id
+            );
 
-        return result.stream().findFirst();
+            return Optional.of(Objects.requireNonNull(time));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
+
+    private final RowMapper<Time> timeRowMapper = (resultSet, rowNum) ->
+            new Time(
+                    resultSet.getLong("id"),
+                    resultSet.getTime("time").toLocalTime()
+            );
 }
