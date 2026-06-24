@@ -26,12 +26,12 @@ public class ReservationService {
     }
 
     @Transactional
-    public Reservation createReservation(ReservationRequest request) {
-        // 9단계: 기존 문자열 필드 입력 차단 검증
+    public Reservation createReservation(ReservationRequest request) {//예약 생성 메서드
+        // 사용자가 예약 생성할 때 timeId를 안 보냈는지 검사
         if (request.getTimeId() == null) {
             throw new BadRequestException("유효하지 않은 시간 ID 인프라 요청입니다.");
         }
-        // 시간 마스터 데이터 테이블에 실제 ID가 존재하는지 체크
+        // 사용자가 보낸 timeId가 time 테이블에 존재하는지 확인
         if (timeRepository.countById(request.getTimeId()) == 0) {
             throw new BadRequestException("존재하지 않는 시간입니다.");
         }
@@ -41,12 +41,14 @@ public class ReservationService {
         }
 
         Long generatedId = reservationRepository.save(request.getName(), request.getDate(), request.getTimeId());
+        //검증을 다 통과하면 DB에 저장. Repository의 save()가 실행됨
         return new Reservation(generatedId, request.getName(), request.getDate(), null);
+        // 응답으로 돌려줄 Reservation 객체 만들기
     }
 
     public List<Reservation> findReservations() {
         return reservationRepository.findAll();
-    }
+    } //예약 목록 조회
 
     @Transactional
     public void removeReservation(Long id) {
@@ -58,17 +60,17 @@ public class ReservationService {
 
 
     @Transactional
-    public Time createTime(TimeRequest request) {
+    public Time createTime(TimeRequest request) {//예약 가능한 시간을 새로 만듦
         Long generatedId = timeRepository.save(request.getTime());
         return new Time(generatedId, request.getTime());
     }
 
     public List<Time> findTimes() {
         return timeRepository.findAll();
-    }
+    } //타임테이블 전체 조회
 
     @Transactional
-    public void removeTime(Long id) {
+    public void removeTime(Long id) {//시간 삭제
         if (timeRepository.countById(id) == 0) {
             throw new BadRequestException("삭제할 시간표 카운트가 부재합니다.");
         }

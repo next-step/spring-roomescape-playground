@@ -11,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.time.LocalTime;
 import java.util.List;
 
+//예약 가능한 시간 관리
 @Repository
 public class TimeRepository {
     private final JdbcTemplate jdbcTemplate;
@@ -24,11 +25,11 @@ public class TimeRepository {
             LocalTime.parse(rs.getString("time"))
     );
 
-    public List<Time> findAll() {
+    public List<Time> findAll() {//time 테이블 전체 조회
         return jdbcTemplate.query("SELECT id, time FROM time", rowMapper);
     }
 
-    public Long save(LocalTime time) {
+    public Long save(LocalTime time) {//새로운 예약 시간 저장
         String sql = "INSERT INTO time (time) VALUES (?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {

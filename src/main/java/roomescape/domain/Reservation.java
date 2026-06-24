@@ -7,6 +7,7 @@ public class Reservation {
     private String name;
     private LocalDate date;
     private Time time; //이제 문자열이 아니라 Time 도메인 객체를 가짐
+    //id와 실제 시간 값을 둘다 가진 time 객체 전체를 뜻함
 
     public Reservation() {}
 
