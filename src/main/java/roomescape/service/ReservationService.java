@@ -54,10 +54,11 @@ public class ReservationService {
 
     @Transactional
     public void removeReservation(Long id) {
-        if (!reservationRepository.existsById(id)) {
+        int deletedRows = reservationRepository.deleteById(id);
+
+        if (deletedRows == 0) {
             throw new NotFoundReservationException("삭제할 예약을 식별할 수 없습니다.");
         }
-        reservationRepository.deleteById(id);
     }
 
 

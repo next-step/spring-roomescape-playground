@@ -69,8 +69,9 @@ public class ReservationRepository {
         return jdbcTemplate.queryForObject("SELECT COUNT(1) FROM reservation WHERE date = ? AND time_id = ?",
                 Integer.class, date.toString(), timeId);
     }
-    //예약 id로 예약을 삭제하는 메서드
-    public void deleteById(Long id) {
-        jdbcTemplate.update("DELETE FROM reservation WHERE id = ?", id);
+    //예약 id로 예약을 삭제하는 메서드(실제 삭제된 데이터의 개수를 반환함)
+    public int deleteById(Long id) {
+        String sql = "SELECT COUNT(1) FROM reservation WHERE id = ?";
+        return jdbcTemplate.update("DELETE FROM reservation WHERE id = ?", id);
     }
 }
