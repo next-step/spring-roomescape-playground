@@ -15,6 +15,7 @@ public record ReservationRequest(
         @NotNull(message = "날짜는 필수입니다.")
         LocalDate date,
 
+        @NotNull(message = "timeId는 필수입니다.")
         Long timeId
 ) {
 
