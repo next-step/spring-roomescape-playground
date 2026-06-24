@@ -1,12 +1,8 @@
 package roomescape.dto;
 
-import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
 
 public record ReservationDto(
-        @Nullable
-        Long id,
-
         @NotBlank(message = "이름은 비어있으면 안됩니다")
         String name,
 
