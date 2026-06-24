@@ -51,8 +51,11 @@ public class ReservationRepository {
         return keyHolder.getKey().longValue(); //DB가 자동으로 만든 예약 id를 Long 타입으로 반환
     }
 
-    public int countById(Long id) {//특정 id의 예약이 존재하는지 확인하는 메서드
-        return jdbcTemplate.queryForObject("SELECT COUNT(1) FROM reservation WHERE id = ?", Integer.class, id);
+    public boolean existsById(Long id) {//해당 id가 존재하는지
+        String sql = "SELECT COUNT(1) FROM reservation WHERE id = ?";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, id);
+
+        return count != null && count > 0;
     }
 
     public int countByDateAndTimeId(LocalDate date, Long timeId) {//특정 날짜+ 특정 시간에 이미 예약이 있는지 확인

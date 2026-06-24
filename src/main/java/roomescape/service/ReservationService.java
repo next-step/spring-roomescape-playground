@@ -32,7 +32,7 @@ public class ReservationService {
             throw new BadRequestException("유효하지 않은 시간 ID 인프라 요청입니다.");
         }
         // 사용자가 보낸 timeId가 time 테이블에 존재하는지 확인
-        if (timeRepository.countById(request.timeId()) == 0) {
+        if (!timeRepository.existsById(request.timeId())) {
             throw new BadRequestException("존재하지 않는 시간입니다.");
         }
         // 예약 중복 차단 검증
@@ -54,7 +54,7 @@ public class ReservationService {
 
     @Transactional
     public void removeReservation(Long id) {
-        if (reservationRepository.countById(id) == 0) {
+        if (!reservationRepository.existsById(id)) {
             throw new NotFoundReservationException("삭제할 예약을 식별할 수 없습니다.");
         }
         reservationRepository.deleteById(id);
@@ -73,7 +73,7 @@ public class ReservationService {
 
     @Transactional
     public void removeTime(Long id) {//시간 삭제
-        if (timeRepository.countById(id) == 0) {
+        if (!timeRepository.existsById(id)) {
             throw new BadRequestException("삭제할 시간표 카운트가 부재합니다.");
         }
         timeRepository.deleteById(id);

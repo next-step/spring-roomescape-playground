@@ -40,8 +40,10 @@ public class TimeRepository {
         return keyHolder.getKey().longValue();
     }
 
-    public int countById(Long id) {
-        return jdbcTemplate.queryForObject("SELECT COUNT(1) FROM time WHERE id = ?", Integer.class, id);
+    public boolean existsById(Long id) {
+        String sql = "SELECT COUNT(1) FROM time WHERE id = ?";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, id);
+        return count != null && count > 0;
     }
 
     public void deleteById(Long id) {
