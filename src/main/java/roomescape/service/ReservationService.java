@@ -76,6 +76,9 @@ public class ReservationService {
         if (!timeRepository.existsById(id)) {
             throw new BadRequestException("삭제할 시간표 카운트가 부재합니다.");
         }
+        if (reservationRepository.existsByTimeId(id)) {
+            throw new BadRequestException("이미 해당 시간으로 예약된 내역이 존재하여 시간표를 삭제할 수 없습니다.");
+        }
         timeRepository.deleteById(id);
     }
 }

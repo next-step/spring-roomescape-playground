@@ -58,6 +58,13 @@ public class ReservationRepository {
         return count != null && count > 0;
     }
 
+    // 특정 시간 ID(timeId)를 물고 있는 예약 데이터가 단 하나라도 존재하는지 확인
+    public boolean existsByTimeId(Long timeId) {
+        String sql = "SELECT COUNT(1) FROM reservation WHERE time_id = ?";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, timeId);
+        return count != null && count > 0;
+    }
+
     public int countByDateAndTimeId(LocalDate date, Long timeId) {//특정 날짜+ 특정 시간에 이미 예약이 있는지 확인
         return jdbcTemplate.queryForObject("SELECT COUNT(1) FROM reservation WHERE date = ? AND time_id = ?",
                 Integer.class, date.toString(), timeId);
