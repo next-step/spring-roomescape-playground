@@ -5,7 +5,6 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Time;
-import roomescape.dto.TimeRequest;
 
 import java.sql.PreparedStatement;
 import java.util.List;
@@ -34,13 +33,13 @@ public class TimeRepository {
         );
     }
 
-    public Optional<Time> findById(long id){
+    public Optional<Time> findById(long id) {
         String sql = """
                 SELECT id,time
                 FROM reservation_time
                 where id = ?
                 """;
-        List<Time> result=jdbcTemplate.query(
+        List<Time> result = jdbcTemplate.query(
                 sql,
                 (rs, rowNum) -> new Time(
                         rs.getLong("id"),

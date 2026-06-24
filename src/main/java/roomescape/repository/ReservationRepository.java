@@ -6,7 +6,6 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
 import roomescape.domain.Time;
-import roomescape.dto.ReservationRequest;
 
 import java.sql.PreparedStatement;
 import java.util.List;
