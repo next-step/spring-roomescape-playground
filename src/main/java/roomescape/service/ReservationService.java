@@ -42,7 +42,9 @@ public class ReservationService {
 
         Long generatedId = reservationRepository.save(request.name(), request.date(), request.timeId());
         //검증을 다 통과하면 DB에 저장. Repository의 save()가 실행됨
-        return new Reservation(generatedId, request.name(), request.date(), null);
+
+        Time time = timeRepository.findById(request.timeId());
+        return new Reservation(generatedId, request.name(), request.date(), time);
         // 응답으로 돌려줄 Reservation 객체 만들기
     }
 

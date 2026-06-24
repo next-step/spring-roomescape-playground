@@ -47,4 +47,12 @@ public class TimeRepository {
     public void deleteById(Long id) {
         jdbcTemplate.update("DELETE FROM time WHERE id = ?", id);
     }
+
+    public Time findById(Long id) {
+        String sql = "SELECT id, time FROM time WHERE id = ?";
+        return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> new Time(
+                rs.getLong("id"),
+                java.time.LocalTime.parse(rs.getString("time"))
+        ), id);
+    }
 }
