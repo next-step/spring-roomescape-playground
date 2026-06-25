@@ -30,7 +30,7 @@ public class TimeRepository {
         List<Time> possibleTime = jdbcTemplate.query("SELECT * FROM time WHERE id = ?", this::extractTimeFromResultSet, id);
 
         if (possibleTime.isEmpty()) {
-            throw new IllegalArgumentException("존재하지 않는 시간입니다");
+            throw new IllegalArgumentException("프로그램이 존재하지 않는 시간을 접근하려 했습니다.");
         }
 
         return possibleTime.get(0);

@@ -47,7 +47,7 @@ public class ReservationRepository {
         List<Reservation> possibleReservation = jdbcTemplate.query("SELECT * FROM reservation as r left join time as t on r.time_id = t.id WHERE r.id = ?", this::extractReservationFromResultSet, id);
 
         if (possibleReservation.isEmpty()) {
-            throw new IllegalArgumentException("존재하지 않는 예약입니다");
+            throw new IllegalArgumentException("프로그램이 존재하지 않는 예약을 접근하려 했습니다.");
         }
 
         return possibleReservation.get(0);
