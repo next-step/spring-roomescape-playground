@@ -22,8 +22,8 @@ public class ReservationService {
         return reservationRepository.getReservationById(newReservationId);
     }
 
-    public List<Reservation> getReservationList() {
-        return reservationRepository.getReservationList();
+    public List<Reservation> getReservations() {
+        return reservationRepository.getReservations();
     }
 
     public void deleteReservationById(Long deletingId) {

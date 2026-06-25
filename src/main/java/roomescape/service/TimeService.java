@@ -19,7 +19,7 @@ public class TimeService {
         this.timeRepository = timeRepository;
     }
 
-    public List<Time> getTimeList() {
+    public List<Time> getTimes() {
         return timeRepository.getTimes();
     }
 

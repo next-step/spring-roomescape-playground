@@ -34,7 +34,7 @@ public class TimeController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<Time> getAllTimes() {
-        return this.timeService.getTimeList();
+        return this.timeService.getTimes();
     }
 
     @PostMapping

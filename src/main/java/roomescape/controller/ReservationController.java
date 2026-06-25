@@ -33,7 +33,7 @@ public class ReservationController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<Reservation> getAllBookings() {
-        return this.reservationService.getReservationList();
+        return this.reservationService.getReservations();
     }
 
     @PostMapping

@@ -23,7 +23,7 @@ public class ReservationRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public List<Reservation> getReservationList() {
+    public List<Reservation> getReservations() {
         return jdbcTemplate.query("SELECT * FROM reservation left join time as t on reservation.time_id = t.id;",
                 this::extractReservationFromResultSet);
     }
