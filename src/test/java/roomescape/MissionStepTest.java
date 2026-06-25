@@ -58,13 +58,26 @@ public class MissionStepTest {
                 .statusCode(400);
     }
 
+    @Test
+    void 중복된_예약_시간은_추가할_수_없다() {
+        Map<String, String> params = new HashMap<>();
+        params.put("time", "10:00");
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/times")
+                .then().log().all()
+                .statusCode(400);
+    }
+
 
     @Test
     void 사단계() {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
         params.put("date", "");
-        params.put("time", "");
+        params.put("timeId", "");
 
         // 필요한 인자가 없는 경우
         RestAssured.given().log().all()
@@ -112,7 +125,7 @@ public class MissionStepTest {
 
     @Test
     void 구단계() {
-        Integer timeId = createTime("10:00");
+        Integer timeId = createTime("20:00");
 
         jdbcTemplate.update(
                 "INSERT INTO reservation (name, date, time_id) VALUES (?, ?, ?)",
@@ -129,7 +142,7 @@ public class MissionStepTest {
                 .statusCode(200)
                 .body("size()", is(count))
                 .body("[0].time.id", is(timeId))
-                .body("[0].time.time", is("10:00"));
+                .body("[0].time.time", is("20:00"));
 
         RestAssured.given().log().all()
                 .when().delete("/reservations/1")
@@ -142,7 +155,7 @@ public class MissionStepTest {
         Map<String, Object> reservation = new HashMap<>();
         reservation.put("name", "브라운");
         reservation.put("date", "2999-08-05");
-        reservation.put("time", timeId);
+        reservation.put("timeId", timeId);
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -153,7 +166,7 @@ public class MissionStepTest {
                 .header("Location", "/reservations/2")
                 .body("id", is(2))
                 .body("time.id", is(timeId))
-                .body("time.time", is("10:00"));
+                .body("time.time", is("20:00"));
 
         Integer countAfterCreate = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
         assertThat(countAfterCreate).isEqualTo(1);
