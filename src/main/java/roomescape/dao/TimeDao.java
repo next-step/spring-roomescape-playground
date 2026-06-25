@@ -35,6 +35,12 @@ public class TimeDao {
         return times.stream().findFirst();
     }
 
+    public boolean existsByTime(String time) {
+        String sql = "SELECT COUNT(1) FROM time WHERE time = ?";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, time);
+        return count != null && count > 0;
+    }
+
     public Time save(Time reservationTime) {
         Number key = simpleJdbcInsert.executeAndReturnKey(Map.of(
                 "time", reservationTime.getTime()

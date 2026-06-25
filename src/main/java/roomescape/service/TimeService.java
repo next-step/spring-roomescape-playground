@@ -21,6 +21,10 @@ public class TimeService {
     }
 
     public Time createTime(TimeRequest request) {
+        if (timeRepository.existsByTime(request.time())) {
+            throw new IllegalArgumentException("이미 존재하는 시간입니다.");
+        }
+
         Time newTime = new Time(null, request.time());
         return timeRepository.save(newTime);
     }

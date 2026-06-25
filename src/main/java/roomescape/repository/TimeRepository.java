@@ -24,6 +24,10 @@ public class TimeRepository {
         return timeDao.findById(id);
     }
 
+    public boolean existsByTime(String time) {
+        return timeDao.existsByTime(time);
+    }
+
     public Time save(Time reservationTime) {
         return timeDao.save(reservationTime);
     }
