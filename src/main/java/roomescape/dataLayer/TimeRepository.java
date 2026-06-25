@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import roomescape.dataLayer.errors.DuplicateTimeException;
 import roomescape.dataLayer.errors.TimeNotFoundException;
 import roomescape.model.Time;
 
@@ -47,13 +48,18 @@ public class TimeRepository {
 
     public Long add(String timeString) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement("INSERT INTO time (time) values (?)",
-                    new String[]{"id"});
-            ps.setString(1, timeString);
 
-            return ps;
-        }, keyHolder);
+        try {
+            jdbcTemplate.update(connection -> {
+                PreparedStatement ps = connection.prepareStatement("INSERT INTO time (time) values (?)",
+                        new String[]{"id"});
+                ps.setString(1, timeString);
+
+                return ps;
+            }, keyHolder);
+        } catch (Exception e) {
+            throw new DuplicateTimeException("이미 예약 가능 시간입니다.");
+        }
 
         return keyHolder.getKey().longValue();
     }
