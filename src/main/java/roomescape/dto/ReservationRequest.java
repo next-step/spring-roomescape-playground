@@ -15,6 +15,6 @@ public record ReservationRequest(
         LocalDate date,
 
         @NotNull(message = "시간은 필수 입력값입니다.")
-        Long time
+        Long timeId
 ) {
 }

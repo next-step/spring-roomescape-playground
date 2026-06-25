@@ -28,17 +28,18 @@ public class ReservationService {
     }
 
     public Reservation createReservation(ReservationRequest request) {
-        Time time = timeRepository.findById(request.time())
+        Long timeId = request.timeId();
+        Time reservationTime = timeRepository.findById(timeId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 시간입니다."));
 
-        validator.validateReservationDateTime(request.date(), time.getTime());
-        validateDuplicatedReservation(request.date().toString(), time.getId());
+        validator.validateReservationDateTime(request.date(), reservationTime.getTime());
+        validateDuplicatedReservation(request.date().toString(), reservationTime.getId());
 
         Reservation newReservation = new Reservation(
                 null,
                 request.name(),
                 request.date().toString(),
-                time
+                reservationTime
         );
         return reservationRepository.save(newReservation);
     }
