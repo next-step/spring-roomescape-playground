@@ -31,17 +31,6 @@ public class TimeRepository {
         return jdbcTemplate.query("SELECT * FROM time", rowMapper());
     }
 
-    public Time insert(Time time) {
-        SqlParameterSource source = new MapSqlParameterSource()
-                .addValue("time", time.getTime());
-        Long key = jdbcInsert.executeAndReturnKey(source).longValue();
-        return Time.withId(key, time);
-    }
-
-    public void delete(Time time) {
-        jdbcTemplate.update("DELETE FROM time WHERE id = ?", time.getId());
-    }
-
     public Optional<Time> findById(Long id) {
         return jdbcTemplate.query("SELECT * FROM time WHERE id = ?", rowMapper(), id).stream()
                 .findFirst();
@@ -51,6 +40,17 @@ public class TimeRepository {
         String sql = "SELECT COUNT(*) FROM time WHERE time = ?";
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class, time.toString());
         return count > 0;
+    }
+
+    public Time insert(Time time) {
+        SqlParameterSource source = new MapSqlParameterSource()
+                .addValue("time", time.getTime());
+        Long key = jdbcInsert.executeAndReturnKey(source).longValue();
+        return Time.withId(key, time);
+    }
+
+    public void delete(Time time) {
+        jdbcTemplate.update("DELETE FROM time WHERE id = ?", time.getId());
     }
 
     private RowMapper<Time> rowMapper() {
