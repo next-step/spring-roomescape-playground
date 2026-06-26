@@ -67,10 +67,11 @@ public class ReservationRepository {
         return keyHolder.getKey().longValue();
     }
 
-    public void delete(Long id) {
+    public boolean delete(Long id) {
         String sql = """
                 DELETE FROM reservation WHERE id = ?
                 """;
         int result = jdbcTemplate.update(sql, id);
+        return result > 0;
     }
 }

@@ -21,10 +21,11 @@ public class TimeService {
     }
 
     public Time createTime(TimeRequest timeRequest) {
-        Time time = timeRepository.findById(timeRequest.id())
-                .orElseThrow(NotFoundTimeException::new
-                );
-        long id = time.id();
+        Time time = new Time(
+                null,
+                timeRequest.time()
+        );
+        long id = timeRepository.insert(time);
         return new Time(
                 id,
                 timeRequest.time()

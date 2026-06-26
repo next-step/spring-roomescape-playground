@@ -36,7 +36,7 @@ public class TimeRepository {
     public Optional<Time> findById(long id) {
         String sql = """
                 SELECT id,time
-                FROM reservation_time
+                FROM time
                 where id = ?
                 """;
         List<Time> result = jdbcTemplate.query(
