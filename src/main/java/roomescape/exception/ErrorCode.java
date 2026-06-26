@@ -9,6 +9,7 @@ public enum ErrorCode {
 
     DUPLICATE_TIME(HttpStatus.CONFLICT, "이미 존재하는 시간입니다."),
     INVALID_RESERVATION_TIME(HttpStatus.CONFLICT, "과거 시간은 예약할 수 없습니다."),
+    TIME_IN_USE(HttpStatus.CONFLICT, "예약에서 사용 중인 시간은 삭제할 수 없습니다."),
 
     DATABASE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "데이터베이스 처리 중 오류가 발생했습니다.");
 

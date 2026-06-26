@@ -42,6 +42,12 @@ public class ReservationRepository {
                 .stream().findFirst();
     }
 
+    public boolean existsByTimeId(Long timeId) {
+        String sql = "SELECT COUNT(*) FROM reservation WHERE time_id = ?";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, timeId);
+        return count > 0;
+    }
+
     public Reservation insert(Reservation reservation) {
         SqlParameterSource source = new MapSqlParameterSource()
                 .addValue("name", reservation.getName())

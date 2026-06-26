@@ -6,6 +6,7 @@ import roomescape.dto.TimeRequest;
 import roomescape.dto.TimeResponse;
 import roomescape.exception.ErrorCode;
 import roomescape.exception.RoomEscapeException;
+import roomescape.repository.ReservationRepository;
 import roomescape.repository.TimeRepository;
 
 import java.util.List;
@@ -14,9 +15,11 @@ import java.util.List;
 public class TimeService {
 
     private final TimeRepository timeRepository;
+    private final ReservationRepository reservationRepository;
 
-    public TimeService(TimeRepository timeRepository) {
+    public TimeService(TimeRepository timeRepository, ReservationRepository reservationRepository) {
         this.timeRepository = timeRepository;
+        this.reservationRepository = reservationRepository;
     }
 
     public List<TimeResponse> getAllTime() {
@@ -35,7 +38,11 @@ public class TimeService {
 
     public void deleteTime(Long id) {
         Time time = timeRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException(""));
+                .orElseThrow(() -> new RoomEscapeException(ErrorCode.TIME_NOT_FOUND));
+        if (reservationRepository.existsByTimeId(id)) {
+            throw new RoomEscapeException(ErrorCode.TIME_IN_USE);
+        }
+
         timeRepository.delete(time);
     }
 }
