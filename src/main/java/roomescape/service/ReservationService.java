@@ -43,11 +43,7 @@ public class ReservationService {
     }
 
     public void cancelReservation(Long id) {
-        boolean isRemoved = reservationRepository.delete(id);
-
-        if (!isRemoved) {
-            throw new NotFoundReservationException();
-        }
+        reservationRepository.delete(id);
     }
 
 }
