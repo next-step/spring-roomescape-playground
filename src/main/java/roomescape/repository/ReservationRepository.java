@@ -4,8 +4,12 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+<<<<<<< HEAD
 import roomescape.domain.Reservation;
 import roomescape.domain.Time;
+=======
+import roomescape.Reservation;
+>>>>>>> next-step/haeun92e0
 
 import java.sql.PreparedStatement;
 import java.time.LocalDate;
@@ -15,11 +19,16 @@ import java.util.List;
 @Repository
 public class ReservationRepository {
 
+<<<<<<< HEAD
     private final JdbcTemplate jdbcTemplate; //SQL을 쉽게 실행하게 해주는 스프링 도구
+=======
+    private final JdbcTemplate jdbcTemplate;
+>>>>>>> next-step/haeun92e0
 
     public ReservationRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
+<<<<<<< HEAD
     // 스프링이 JdbcTemplate 객체를 만들어서 Repository에 넣어줌
 
     //DB에서 가져온 한 줄을 자바 객체로 바꿔줌
@@ -73,5 +82,49 @@ public class ReservationRepository {
     public int deleteById(Long id) {
         String sql = "SELECT COUNT(1) FROM reservation WHERE id = ?";
         return jdbcTemplate.update("DELETE FROM reservation WHERE id = ?", id);
+=======
+
+    private final RowMapper<Reservation> rowMapper = (rs, rowNum) -> new Reservation(
+            rs.getLong("id"),
+            rs.getString("name"),
+            rs.getObject("date", LocalDate.class),
+            rs.getObject("time", LocalTime.class)
+    );
+
+    public List<Reservation> findAll() {
+        String sql = "SELECT id, name, date, time FROM reservation";
+        return jdbcTemplate.query(sql, rowMapper);
+    }
+
+    public Long save(String name, LocalDate date, LocalTime time) {
+        String sql = "INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
+            ps.setString(1, name);
+            ps.setObject(2, date);
+            ps.setObject(3, time);
+            return ps;
+        }, keyHolder);
+
+        return keyHolder.getKey().longValue();
+    }
+
+    public int countById(Long id) {
+        String sql = "SELECT COUNT(1) FROM reservation WHERE id = ?";
+        return jdbcTemplate.queryForObject(sql, Integer.class, id);
+    }
+
+    public void deleteById(Long id) {
+        String sql = "DELETE FROM reservation WHERE id = ?";
+        jdbcTemplate.update(sql, id);
+    }
+
+    public int countByDateAndTime(LocalDate date, LocalTime time) {
+        String sql = "SELECT COUNT(1) FROM reservation WHERE date = ? AND time = ?";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, date, time);
+        return count != null ? count : 0;
+>>>>>>> next-step/haeun92e0
     }
 }
