@@ -10,17 +10,17 @@ public class Reservation {
 
     private final Long id;
     private final String name;
-    private final String date;
+    private final LocalDate date;
     private final Time time;
 
-    private Reservation(String name, String date, Time time, Long id) {
+    private Reservation(String name, LocalDate date, Time time, Long id) {
         this.id = id;
         this.name = name;
         this.date = date;
         this.time = time;
     }
 
-    public static Reservation of(String name, String date, Time time) {
+    public static Reservation of(String name, LocalDate date, Time time) {
         validateReservationDateTime(date, time);
         return new Reservation(name, date, time, null);
     }
@@ -29,9 +29,8 @@ public class Reservation {
         return new Reservation(reservation.name, reservation.date, reservation.time, id);
     }
 
-    private static void validateReservationDateTime(String date, Time time) {
-        LocalDate reservationDate = LocalDate.parse(date);
-        LocalDateTime reservationDateTime = reservationDate.atTime(time.getTime());
+    private static void validateReservationDateTime(LocalDate date, Time time) {
+        LocalDateTime reservationDateTime = date.atTime(time.getTime());
 
         if (reservationDateTime.isBefore(LocalDateTime.now())) {
             throw new RoomEscapeException(ErrorCode.INVALID_RESERVATION_TIME);
@@ -46,7 +45,7 @@ public class Reservation {
         return name;
     }
 
-    public String getDate() {
+    public LocalDate getDate() {
         return date;
     }
 

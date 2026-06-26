@@ -10,6 +10,7 @@ import roomescape.domain.Reservation;
 import roomescape.domain.Time;
 
 import javax.sql.DataSource;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
@@ -64,7 +65,7 @@ public class ReservationRepository {
             return Reservation.withId(
                     Reservation.of(
                             resultSet.getString("name"),
-                            resultSet.getString("date"),
+                            LocalDate.parse(resultSet.getString("date")),
                             time
                     ),
                     resultSet.getLong("reservation_id")
