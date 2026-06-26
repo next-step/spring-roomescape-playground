@@ -26,12 +26,12 @@ public class TimeApiController {
 
     @GetMapping("/times")
     public List<TimeResponse> get() {
-        return timeService.getAll();
+        return timeService.getAllTime();
     }
 
     @PostMapping("/times")
     public ResponseEntity<TimeResponse> createTime(@Valid @RequestBody TimeRequest timeRequest) {
-        TimeResponse timeResponse = timeService.insertTime(timeRequest);
+        TimeResponse timeResponse = timeService.createTime(timeRequest);
         return ResponseEntity.created(URI.create("/times/" + timeResponse.id()))
                 .body(timeResponse);
     }

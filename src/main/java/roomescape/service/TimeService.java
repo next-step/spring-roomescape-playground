@@ -19,13 +19,13 @@ public class TimeService {
         this.timeRepository = timeRepository;
     }
 
-    public List<TimeResponse> getAll() {
+    public List<TimeResponse> getAllTime() {
         return timeRepository.findAll().stream()
                 .map(TimeResponse::from)
                 .toList();
     }
 
-    public TimeResponse insertTime(TimeRequest timeRequest) {
+    public TimeResponse createTime(TimeRequest timeRequest) {
         Time time = Time.from(timeRequest.time());
         if (timeRepository.existsByTime(timeRequest.time())) {
             throw new RoomEscapeException(ErrorCode.DUPLICATE_TIME);
