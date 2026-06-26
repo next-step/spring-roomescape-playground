@@ -2,18 +2,22 @@ package roomescape.service;
 
 import org.springframework.stereotype.Service;
 import roomescape.domain.Reservation;
+import roomescape.domain.Time;
 import roomescape.dto.ReservationRequest;
 import roomescape.exception.NotFoundReservationException;
+import roomescape.exception.NotFoundTimeException;
 import roomescape.repository.ReservationRepository;
+import roomescape.repository.TimeRepository;
 
 import java.util.List;
 
 @Service
 public class ReservationService {
     private final ReservationRepository reservationRepository;
-
-    public ReservationService(ReservationRepository reservationRepository) {
+    private final TimeRepository timeRepository;
+    public ReservationService(ReservationRepository reservationRepository,TimeRepository timeRepository) {
         this.reservationRepository = reservationRepository;
+        this.timeRepository = timeRepository;
     }
 
     public List<Reservation> getReservation() {
@@ -21,6 +25,8 @@ public class ReservationService {
     }
 
     public Reservation createReservation(ReservationRequest reservationRequest) {
+        Time time = timeRepository.findById(reservationRequest.time().id())
+                .orElseThrow(()->new NotFoundTimeException());
         Reservation reservation = new Reservation(
                 null,
                 reservationRequest.name(),
