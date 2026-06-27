@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import roomescape.common.ExceptionMessage;
 import roomescape.dataLayer.errors.ReservationNotFoundException;
 import roomescape.model.Reservation;
 import roomescape.model.Time;
@@ -57,7 +58,7 @@ public class ReservationRepository {
         int deletedRowCounts = jdbcTemplate.update("DELETE FROM reservation WHERE id = ?", deletingId);
 
         if (deletedRowCounts == 0) {
-            throw new ReservationNotFoundException("존재하지 않은 예약건입니다.");
+            throw new ReservationNotFoundException(ExceptionMessage.BAD_REQUEST_REQUEST_FOR_NON_EXISTENT_DATA.getMessage());
         }
     }
 

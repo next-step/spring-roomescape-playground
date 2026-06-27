@@ -2,6 +2,7 @@ package roomescape.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import roomescape.common.ExceptionMessage;
 import roomescape.dataLayer.TimeRepository;
 import roomescape.dto.TimeDto;
 import roomescape.model.Time;
@@ -40,14 +41,14 @@ public class TimeService {
 
     private void validateFormat(String givenTime) {
         if (!Pattern.matches("\\d{2}:\\d{2}", givenTime)) {
-            throw new IllegalArgumentException("시간은 hh:mm 형식이여야 합니다.");
+            throw new IllegalArgumentException(ExceptionMessage.BAD_TIME_FORMAT.getMessage());
         }
     }
 
     private void validateRange(Integer hour, Integer minutes) {
         boolean isInRange = 0 <= hour && hour < 24 && 0 <= minutes && minutes < 60;
         if (!isInRange) {
-            throw new IllegalArgumentException("시는 00~23, 분은 00~60 사이의 숫자로 표현해야 합니다.");
+            throw new IllegalArgumentException(ExceptionMessage.BAD_TIME_RANGE.getMessage());
         }
     }
 

@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import roomescape.common.ExceptionMessage;
 import roomescape.dataLayer.errors.DuplicateTimeException;
 import roomescape.dataLayer.errors.TimeNotFoundException;
 import roomescape.model.Time;
@@ -42,7 +43,7 @@ public class TimeRepository {
             return new Time(resultSet.getLong("id"),
                     resultSet.getString("time"));
         } catch (SQLException e) {
-            throw new IllegalArgumentException("time_id 테이블과 형식이 다릅니다.");
+            throw new IllegalArgumentException(ExceptionMessage.BAD_REQUEST_REQUEST_BODY_VALID.getMessage());
         }
     }
 
@@ -58,7 +59,7 @@ public class TimeRepository {
                 return ps;
             }, keyHolder);
         } catch (Exception e) {
-            throw new DuplicateTimeException("이미 예약 가능 시간입니다.");
+            throw new DuplicateTimeException(ExceptionMessage.BAD_REQUEST_REQUEST_FOR_DUPLICATE_CREATION_OF_UNIQUE_DATA.getMessage());
         }
 
         return keyHolder.getKey().longValue();
@@ -69,7 +70,7 @@ public class TimeRepository {
         int deletedRowCounts = jdbcTemplate.update("DELETE FROM time WHERE id = ?", deletingId);
 
         if (deletedRowCounts == 0) {
-            throw new TimeNotFoundException("존재하지 않는 시간대 입니다.");
+            throw new TimeNotFoundException(ExceptionMessage.BAD_REQUEST_REQUEST_FOR_NON_EXISTENT_DATA.getMessage());
         }
     }
 }
