@@ -8,6 +8,8 @@ import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
 import roomescape.domain.Time;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 
@@ -39,7 +41,7 @@ public class ReservationDao {
         return jdbcTemplate.query(sql, reservationRowMapper());
     }
 
-    public boolean existsByDateAndTimeId(String date, Long timeId) {
+    public boolean existsByDateAndTimeId(LocalDate date, Long timeId) {
         String sql = "SELECT COUNT(1) FROM reservation WHERE date = ? AND time_id = ?";
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class, date, timeId);
         return count != null && count > 0;
@@ -64,10 +66,10 @@ public class ReservationDao {
         return (resultSet, rowNum) -> new Reservation(
                 resultSet.getLong("reservation_id"),
                 resultSet.getString("name"),
-                resultSet.getString("date"),
+                resultSet.getObject("date", LocalDate.class),
                 new Time(
                         resultSet.getLong("time_id"),
-                        resultSet.getString("time_value")
+                        resultSet.getObject("time_value", LocalTime.class)
                 )
         );
     }

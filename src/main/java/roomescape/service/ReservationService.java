@@ -8,6 +8,7 @@ import roomescape.dto.ReservationRequest;
 import roomescape.repository.ReservationRepository;
 import roomescape.repository.TimeRepository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -33,12 +34,12 @@ public class ReservationService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 시간입니다."));
 
         validator.validateReservationDateTime(request.date(), reservationTime.getTime());
-        validateDuplicatedReservation(request.date().toString(), reservationTime.getId());
+        validateDuplicatedReservation(request.date(), reservationTime.getId());
 
         Reservation newReservation = new Reservation(
                 null,
                 request.name(),
-                request.date().toString(),
+                request.date(),
                 reservationTime
         );
         return reservationRepository.save(newReservation);
@@ -50,7 +51,7 @@ public class ReservationService {
         }
     }
 
-    private void validateDuplicatedReservation(String date, Long timeId) {
+    private void validateDuplicatedReservation(LocalDate date, Long timeId) {
         if (reservationRepository.existsByDateAndTimeId(date, timeId)) {
             throw new IllegalArgumentException("이미 예약된 시간입니다.");
         }

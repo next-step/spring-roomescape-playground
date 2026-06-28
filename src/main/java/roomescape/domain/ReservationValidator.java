@@ -12,12 +12,10 @@ public class ReservationValidator {
     private static final int MIN_RESERVATION_HOUR = 0;
     private static final int MAX_RESERVATION_HOUR = 23; 
 
-    public void validateReservationDateTime(LocalDate date, String time) {
-        LocalTime reservationTime = LocalTime.parse(time);
+    public void validateReservationDateTime(LocalDate date, LocalTime time) {
+        validateReservationHour(time.getHour());
 
-        validateReservationHour(reservationTime.getHour());
-
-        LocalDateTime reservationDateTime = LocalDateTime.of(date, reservationTime);
+        LocalDateTime reservationDateTime = LocalDateTime.of(date, time);
         LocalDateTime now = LocalDateTime.now();
 
         if (reservationDateTime.isBefore(now)) {

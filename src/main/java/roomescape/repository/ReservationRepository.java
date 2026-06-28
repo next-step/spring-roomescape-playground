@@ -4,6 +4,7 @@ import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
 import roomescape.dao.ReservationDao;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
@@ -19,7 +20,7 @@ public class ReservationRepository {
         return reservationDao.findAll();
     }
 
-    public boolean existsByDateAndTimeId(String date, Long timeId) {
+    public boolean existsByDateAndTimeId(LocalDate date, Long timeId) {
         return reservationDao.existsByDateAndTimeId(date, timeId);
     }
 

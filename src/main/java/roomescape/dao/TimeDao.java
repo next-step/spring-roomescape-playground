@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Time;
 
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -35,7 +36,7 @@ public class TimeDao {
         return times.stream().findFirst();
     }
 
-    public boolean existsByTime(String time) {
+    public boolean existsByTime(LocalTime time) {
         String sql = "SELECT COUNT(1) FROM time WHERE time = ?";
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class, time);
         return count != null && count > 0;
@@ -57,7 +58,7 @@ public class TimeDao {
     private RowMapper<Time> timeRowMapper() {
         return (resultSet, rowNum) -> new Time(
                 resultSet.getLong("id"),
-                resultSet.getString("time")
+                resultSet.getObject("time", LocalTime.class)
         );
     }
 }

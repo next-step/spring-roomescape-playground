@@ -4,6 +4,7 @@ import org.springframework.stereotype.Repository;
 import roomescape.dao.TimeDao;
 import roomescape.domain.Time;
 
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,7 +25,7 @@ public class TimeRepository {
         return timeDao.findById(id);
     }
 
-    public boolean existsByTime(String time) {
+    public boolean existsByTime(LocalTime time) {
         return timeDao.existsByTime(time);
     }
 

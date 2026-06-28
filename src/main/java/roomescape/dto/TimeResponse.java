@@ -1,15 +1,19 @@
 package roomescape.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import roomescape.domain.Time;
+
+import java.time.LocalTime;
 
 @Getter
 @AllArgsConstructor
 public class TimeResponse {
 
     private Long id;
-    private String time;
+    @JsonFormat(pattern = "HH:mm")
+    private LocalTime time;
 
     public static TimeResponse from(Time reservationTime) {
         return new TimeResponse(
