@@ -55,7 +55,8 @@ public class MissionStepTest {
                 .body(params)
                 .when().post("/times")
                 .then()
-                .statusCode(400);
+                .statusCode(400)
+                .body("message", is("잘못된 요청 본문입니다."));
     }
 
     @Test
@@ -68,7 +69,8 @@ public class MissionStepTest {
                 .body(params)
                 .when().post("/times")
                 .then()
-                .statusCode(400);
+                .statusCode(400)
+                .body("message", is("이미 존재하는 시간입니다."));
     }
 
 
@@ -85,13 +87,15 @@ public class MissionStepTest {
                 .body(params)
                 .when().post("/reservations")
                 .then()
-                .statusCode(400);
+                .statusCode(400)
+                .body("message", is("날짜는 필수 입력값입니다."));
 
         // 삭제할 예약이 없는 경우
         RestAssured.given()
                 .when().delete("/reservations/1")
                 .then()
-                .statusCode(400);
+                .statusCode(400)
+                .body("message", is("존재하지 않는 예약입니다."));
     }
     @Test
     void 팔단계() {
