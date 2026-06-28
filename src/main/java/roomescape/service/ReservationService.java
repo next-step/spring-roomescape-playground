@@ -3,7 +3,6 @@ package roomescape.service;
 import org.springframework.stereotype.Service;
 import roomescape.domain.Reservation;
 import roomescape.domain.Time;
-import roomescape.domain.ReservationValidator;
 import roomescape.dto.ReservationRequest;
 import roomescape.repository.ReservationRepository;
 import roomescape.repository.TimeRepository;
@@ -16,12 +15,10 @@ public class ReservationService {
 
     private final ReservationRepository reservationRepository;
     private final TimeRepository timeRepository;
-    private final ReservationValidator validator;
 
-    public ReservationService(ReservationRepository reservationRepository, TimeRepository timeRepository, ReservationValidator validator) {
+    public ReservationService(ReservationRepository reservationRepository, TimeRepository timeRepository) {
         this.reservationRepository = reservationRepository;
         this.timeRepository = timeRepository;
-        this.validator = validator;
     }
 
     public List<Reservation> getAllReservations() {
@@ -33,7 +30,6 @@ public class ReservationService {
         Time reservationTime = timeRepository.findById(timeId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 시간입니다."));
 
-        validator.validateReservationDateTime(request.date(), reservationTime.getTime());
         validateDuplicatedReservation(request.date(), reservationTime.getId());
 
         Reservation newReservation = new Reservation(

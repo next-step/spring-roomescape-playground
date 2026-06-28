@@ -26,8 +26,7 @@ src/main/java/roomescape
 │   ├── ReservationController.java
 │   └── ReservationViewController.java
 ├── domain
-│   ├── Reservation.java
-│   └── ReservationValidator.java
+│   └── Reservation.java
 ├── dto
 │   ├── ReservationRequest.java
 │   └── ReservationResponse.java

@@ -153,7 +153,6 @@ src/main/java/roomescape
 │   └── TimeViewController.java
 ├── domain
 │   ├── Reservation.java
-│   ├── ReservationValidator.java
 │   └── Time.java
 ├── dto
 │   ├── ReservationRequest.java
