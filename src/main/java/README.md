@@ -145,29 +145,41 @@ INSERT INTO time (time) VALUES ('17:00');
 src/main/java/roomescape
 ├── RoomescapeApplication.java
 ├── GlobalExceptionHandler.java
-├── controller
-│   ├── GreetingViewController.java
-│   ├── ReservationController.java
-│   ├── ReservationViewController.java
-│   ├── TimeController.java
-│   └── TimeViewController.java
-├── domain
-│   ├── Reservation.java
-│   └── Time.java
-├── dto
-│   ├── ReservationRequest.java
-│   ├── ReservationResponse.java
-│   ├── TimeRequest.java
-│   └── TimeResponse.java
-├── dao
-│   ├── ReservationDao.java
-│   └── TimeDao.java
-├── repository
-│   ├── ReservationRepository.java
-│   └── TimeRepository.java
-└── service
-    ├── ReservationService.java
-    └── TimeService.java
+├── common
+│   ├── controller
+│   │   └── GreetingViewController.java
+│   └── dto
+│       └── ErrorResponse.java
+├── reservation
+│   ├── controller
+│   │   ├── ReservationController.java
+│   │   └── ReservationViewController.java
+│   ├── dao
+│   │   └── ReservationDao.java
+│   ├── domain
+│   │   └── Reservation.java
+│   ├── dto
+│   │   ├── ReservationRequest.java
+│   │   └── ReservationResponse.java
+│   ├── repository
+│   │   └── ReservationRepository.java
+│   └── service
+│       └── ReservationService.java
+└── time
+    ├── controller
+    │   ├── TimeController.java
+    │   └── TimeViewController.java
+    ├── dao
+    │   └── TimeDao.java
+    ├── domain
+    │   └── Time.java
+    ├── dto
+    │   ├── TimeRequest.java
+    │   └── TimeResponse.java
+    ├── repository
+    │   └── TimeRepository.java
+    └── service
+        └── TimeService.java
 ```
 
 ```text

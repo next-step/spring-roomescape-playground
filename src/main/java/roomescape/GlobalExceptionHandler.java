@@ -8,8 +8,9 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import roomescape.dto.ErrorResponse;
+import roomescape.common.dto.ErrorResponse;
 
+import java.util.Comparator;
 import java.util.NoSuchElementException;
 
 @RestControllerAdvice
@@ -59,6 +60,7 @@ public class GlobalExceptionHandler {
         return e.getBindingResult()
                 .getFieldErrors()
                 .stream()
+                .sorted(Comparator.comparing(fieldError -> fieldError.getField()))
                 .findFirst()
                 .map(fieldError -> resolveMessage(fieldError::getDefaultMessage, "잘못된 요청입니다."))
                 .orElse("잘못된 요청입니다.");
