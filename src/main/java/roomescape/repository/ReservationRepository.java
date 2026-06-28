@@ -69,7 +69,7 @@ public class ReservationRepository {
             );
 
             return Reservation.withId(
-                    Reservation.of(
+                    Reservation.restore(
                             resultSet.getString("name"),
                             LocalDate.parse(resultSet.getString("date")),
                             time

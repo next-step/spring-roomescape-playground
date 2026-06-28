@@ -20,8 +20,12 @@ public class Reservation {
         this.time = time;
     }
 
-    public static Reservation of(String name, LocalDate date, Time time) {
+    public static Reservation create(String name, LocalDate date, Time time) {
         validateReservationDateTime(date, time);
+        return new Reservation(name, date, time, null);
+    }
+
+    public static Reservation restore(String name, LocalDate date, Time time) {
         return new Reservation(name, date, time, null);
     }
 

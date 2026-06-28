@@ -32,7 +32,7 @@ public class ReservationService {
     public ReservationResponse createReservation(ReservationRequest request) {
         Time selectedTime = timeRepository.findById(request.time())
                 .orElseThrow(() -> new RoomEscapeException(ErrorCode.TIME_NOT_FOUND));
-        Reservation validatedReservation = Reservation.of(request.name(), request.date(), selectedTime);
+        Reservation validatedReservation = Reservation.create(request.name(), request.date(), selectedTime);
         Reservation reservation = reservationRepository.insert(validatedReservation);
         return ReservationResponse.from(reservation);
     }
