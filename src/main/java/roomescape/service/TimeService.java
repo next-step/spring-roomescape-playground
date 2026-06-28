@@ -1,6 +1,7 @@
 package roomescape.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import roomescape.domain.Time;
 import roomescape.dto.TimeRequest;
 import roomescape.dto.TimeResponse;
@@ -22,20 +23,24 @@ public class TimeService {
         this.reservationRepository = reservationRepository;
     }
 
+    @Transactional(readOnly = true)
     public List<TimeResponse> getAllTime() {
         return timeRepository.findAll().stream()
                 .map(TimeResponse::from)
                 .toList();
     }
 
+    @Transactional
     public TimeResponse createTime(TimeRequest timeRequest) {
-        Time time = Time.from(timeRequest.time());
         if (timeRepository.existsByTime(timeRequest.time())) {
             throw new RoomEscapeException(ErrorCode.DUPLICATE_TIME);
         }
+
+        Time time = Time.from(timeRequest.time());
         return TimeResponse.from(timeRepository.insert(time));
     }
 
+    @Transactional
     public void deleteTime(Long id) {
         Time time = timeRepository.findById(id)
                 .orElseThrow(() -> new RoomEscapeException(ErrorCode.TIME_NOT_FOUND));
