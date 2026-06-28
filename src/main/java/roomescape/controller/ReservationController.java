@@ -1,53 +1,46 @@
 package roomescape.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import roomescape.domain.Reservation;
 import roomescape.dto.ReservationRequest;
-import roomescape.exception.NotFoundReservationException;
+import roomescape.service.ReservationService;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 @RestController
+@RequestMapping("/reservations")
 public class ReservationController {
-    private final List<Reservation> reservations = new ArrayList<>();
-    private final AtomicLong index = new AtomicLong(0);
+    private final ReservationService reservationService;
 
-    @GetMapping("/reservations")
-    public ResponseEntity<List<Reservation>> getAllReservations() {
-        return ResponseEntity.ok(reservations);
+    public ReservationController(ReservationService reservationService) {
+        this.reservationService = reservationService;
     }
 
-    @PostMapping("/reservations")
-    public ResponseEntity<Reservation> createReservation(@RequestBody ReservationRequest reservationRequest) {
+    @GetMapping
+    public ResponseEntity<List<Reservation>> getAllReservations() {
+        return ResponseEntity.ok(reservationService.getReservation());
+    }
 
-        Reservation reservation = new Reservation(
-                index.incrementAndGet(),
-                reservationRequest.getName(),
-                reservationRequest.getDate(),
-                reservationRequest.getTime()
-        );
+    @PostMapping
+    public ResponseEntity<Reservation> createReservation(@Valid @RequestBody ReservationRequest reservationRequest) {
+        Reservation reservation = reservationService.createReservation(reservationRequest);
 
-        reservations.add(reservation);
-
-        return ResponseEntity.created(URI.create("/reservations/" + reservation.getId()))
+        return ResponseEntity.created(URI.create("/reservations/" + reservation.id()))
                 .body(reservation);
     }
 
-    @DeleteMapping("/reservations/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
-        boolean removed = reservations.removeIf(reservation -> reservation.getId().equals(id));
-        if (!removed) {
-            throw new NotFoundReservationException("존재하지 않는 예약을 지울 수 없습니다.");
-        }
+        reservationService.cancelReservation(id);
         return ResponseEntity.noContent().build();
     }
 }
