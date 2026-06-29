@@ -9,14 +9,14 @@ import roomescape.exception.BadRequestException;
 import java.time.LocalDate;
 
 public record ReservationRequest(
-        @NotBlank(message = "이름은 비어있을 수 없습니다.")
+        //이름을 비워서 보낼 수 있음
         String name,
 
         @NotNull(message = "날짜는 필수입니다.")
         LocalDate date,
 
-        @NotNull(message = "timeId는 필수입니다.")
-        Long timeId
+        Long time,
+        Long theme
 ) {
 
     @JsonCreator
@@ -24,23 +24,31 @@ public record ReservationRequest(
             @JsonProperty("name") String name,
             @JsonProperty("date") LocalDate date,
             @JsonProperty("timeId") Long timeId,
-            @JsonProperty("time") Object time
+            @JsonProperty("time") Object time,
+            @JsonProperty("theme") Long theme
     ) {
-
-this(
-    name,
-    date,
-    convertToTimeId(time, timeId)
+        this(
+                name,
+                date,
+                convertToTimeId(time, timeId),
+                theme
         );
 }
 
-private static Long convertToTimeId(Object time, Long timeId) {
-    if (time instanceof String) {
-        throw new BadRequestException("이제 시간은 문자열 형식을 지원하지 않습니다. 시간 ID를 입력해주세요.");
+    private static Long convertToTimeId(Object time, Long timeId) {
+        if (time instanceof String StringTime) {
+            if (StringTime.contains(":")) {
+                throw new BadRequestException("이제 시간은 문자열 형식을 지원하지 않습니다. 시간 ID를 입력해주세요.");
+            }
+            try {
+                return Long.parseLong(StringTime);
+            } catch (NumberFormatException e) {
+                throw new BadRequestException("유효하지 않은 시간 ID 형식입니다.");
+            }
+        }
+        if (time instanceof Number) {
+            return ((Number) time).longValue();
+        }
+        return timeId;
     }
-    if (time instanceof Number) {
-        return ((Number) time).longValue();
-    }
-    return timeId;
-}
 }
