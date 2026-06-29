@@ -1,8 +1,12 @@
-package roomescape.dto;
+package roomescape.reservation.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import roomescape.domain.Reservation;
+import roomescape.reservation.domain.Reservation;
+import roomescape.time.dto.TimeResponse;
+
+import java.time.LocalDate;
 
 @Getter
 @AllArgsConstructor
@@ -10,15 +14,16 @@ public class ReservationResponse {
 
     private Long id;
     private String name;
-    private String date;
-    private String time;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate date;
+    private TimeResponse time;
 
     public static ReservationResponse from(Reservation reservation) {
         return new ReservationResponse(
                 reservation.getId(),
                 reservation.getName(),
                 reservation.getDate(),
-                reservation.getTime()
+                TimeResponse.from(reservation.getTime())
         );
     }
 }

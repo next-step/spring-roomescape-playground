@@ -21,20 +21,41 @@ Spring Boot로 구현한 방탈출 예약 관리 애플리케이션입니다.
 src/main/java/roomescape
 ├── RoomescapeApplication.java
 ├── GlobalExceptionHandler.java
-├── controller
-│   ├── GreetingViewController.java
-│   ├── ReservationController.java
-│   └── ReservationViewController.java
-├── domain
-│   ├── Reservation.java
-│   └── ReservationValidator.java
-├── dto
-│   ├── ReservationRequest.java
-│   └── ReservationResponse.java
-├── repository
-│   └── ReservationRepository.java
-└── service
-    └── ReservationService.java
+├── common
+│   ├── controller
+│   │   └── GreetingViewController.java
+│   └── dto
+│       └── ErrorResponse.java
+├── reservation
+│   ├── controller
+│   │   ├── ReservationController.java
+│   │   └── ReservationViewController.java
+│   ├── dao
+│   │   └── ReservationDao.java
+│   ├── domain
+│   │   └── Reservation.java
+│   ├── dto
+│   │   ├── ReservationRequest.java
+│   │   └── ReservationResponse.java
+│   ├── repository
+│   │   └── ReservationRepository.java
+│   └── service
+│       └── ReservationService.java
+└── time
+    ├── controller
+    │   ├── TimeController.java
+    │   └── TimeViewController.java
+    ├── dao
+    │   └── TimeDao.java
+    ├── domain
+    │   └── Time.java
+    ├── dto
+    │   ├── TimeRequest.java
+    │   └── TimeResponse.java
+    ├── repository
+    │   └── TimeRepository.java
+    └── service
+        └── TimeService.java
 ```
 
 ```text
