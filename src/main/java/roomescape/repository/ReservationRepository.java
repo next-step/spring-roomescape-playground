@@ -35,8 +35,8 @@ public class ReservationRepository {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public Long save(String name, LocalDate date, Long timeId) {
-        String sql = "INSERT INTO reservation (name, date, time_id) VALUES (?, ?, ?)";
+    public Long save(String name, LocalDate date, Long timeId, Long themeId) {
+        String sql = "INSERT INTO reservation (name, date, time_id, theme_id) VALUES (?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
@@ -44,6 +44,7 @@ public class ReservationRepository {
             ps.setString(1, name);
             ps.setObject(2, date.toString());
             ps.setObject(3, timeId);
+            ps.setLong(4, themeId);
             return ps;
         }, keyHolder);
 
@@ -67,7 +68,14 @@ public class ReservationRepository {
         );
     }
 
-    public void deleteById(Long id) {
-        jdbcTemplate.update("DELETE FROM reservation WHERE id = ?", id);
+    public int deleteById(Long id) {
+        String sql = "DELETE FROM reservation WHERE id = ?";
+        return jdbcTemplate.update(sql, new Object[]{id});
+    }
+
+    public boolean existsByTimeId(Long timeId) {
+        String sql = "SELECT COUNT(1) FROM reservation WHERE time_id = ?";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, timeId);
+        return count != null && count > 0;
     }
 }
