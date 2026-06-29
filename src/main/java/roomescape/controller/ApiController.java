@@ -1,16 +1,12 @@
 package roomescape.controller;
 
-import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import roomescape.domain.LoginMember;
 import roomescape.domain.Reservation;
 import roomescape.domain.Time;
 import roomescape.dto.ReservationRequest;
 import roomescape.dto.TimeRequest;
-import roomescape.exception.BadRequestException;
-import roomescape.exception.NotFoundReservationException;
-import roomescape.repository.ReservationRepository;
 import roomescape.service.ReservationService;
 
 import java.net.URI;
@@ -31,8 +27,21 @@ public class ApiController {
     }
 
     @PostMapping("/reservations")
-    public ResponseEntity<Reservation> createReservation(@RequestBody @Valid ReservationRequest request) {
-        Reservation reservation = reservationService.createReservation(request);
+    public ResponseEntity<Reservation> createReservation(
+            @RequestBody ReservationRequest request,
+            LoginMember loginMember
+    ) {
+        String reservationName = (request.name() != null && !request.name().isBlank())
+                ? request.name()
+                : loginMember.getName();
+
+        Reservation reservation = reservationService.save(
+                reservationName,
+                request.date(),
+                request.time(),  // DTO에서 꺼낸 시간 ID
+                request.theme()  // DTO에서 꺼낸 테마 ID
+        );
+
         return ResponseEntity
                 .created(URI.create("/reservations/" + reservation.getId()))
                 .body(reservation);
@@ -50,7 +59,7 @@ public class ApiController {
     }
 
     @PostMapping("/times")
-    public ResponseEntity<Time> createTime(@RequestBody @Valid TimeRequest request) {
+    public ResponseEntity<Time> createTime(@RequestBody TimeRequest request) {
         Time time = reservationService.createTime(request);
         return ResponseEntity
                 .created(URI.create("/times/" + time.getId()))
@@ -62,6 +71,4 @@ public class ApiController {
         reservationService.removeTime(id);
         return ResponseEntity.noContent().build();
     }
-
-
 }
