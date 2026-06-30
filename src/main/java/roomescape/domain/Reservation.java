@@ -1,27 +1,31 @@
 package roomescape.domain;
 
-import roomescape.exception.InvalidReservationTimeException;
+import roomescape.exception.ErrorCode;
+import roomescape.exception.RoomEscapeException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 public class Reservation {
 
+    private final Long id;
     private final String name;
     private final LocalDate date;
-    private final LocalTime time;
-    private final Long id;
+    private final Time time;
 
-    private Reservation(String name, LocalDate date, LocalTime time, Long id) {
-        validateReservationDateTime(date, time);
+    private Reservation(String name, LocalDate date, Time time, Long id) {
         this.id = id;
         this.name = name;
         this.date = date;
         this.time = time;
     }
 
-    public static Reservation of(String name, LocalDate date, LocalTime time) {
+    public static Reservation create(String name, LocalDate date, Time time) {
+        validateReservationDateTime(date, time);
+        return new Reservation(name, date, time, null);
+    }
+
+    public static Reservation restore(String name, LocalDate date, Time time) {
         return new Reservation(name, date, time, null);
     }
 
@@ -29,12 +33,11 @@ public class Reservation {
         return new Reservation(reservation.name, reservation.date, reservation.time, id);
     }
 
-    private void validateReservationDateTime(LocalDate date, LocalTime time) {
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime reservationDateTime = date.atTime(time);
+    private static void validateReservationDateTime(LocalDate date, Time time) {
+        LocalDateTime reservationDateTime = date.atTime(time.getTime());
 
-        if (reservationDateTime.isBefore(now)) {
-            throw new InvalidReservationTimeException("과거 시간은 예약할 수 없습니다.");
+        if (reservationDateTime.isBefore(LocalDateTime.now())) {
+            throw new RoomEscapeException(ErrorCode.INVALID_RESERVATION_TIME);
         }
     }
 
@@ -50,7 +53,7 @@ public class Reservation {
         return date;
     }
 
-    public LocalTime getTime() {
+    public Time getTime() {
         return time;
     }
 }
