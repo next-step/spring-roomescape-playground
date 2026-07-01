@@ -12,43 +12,47 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import roomescape.dto.ReservationDto;
 import roomescape.model.Reservation;
-import roomescape.model.Reservations;
-import roomescape.model.errors.ReservationNotFoundException;
+import roomescape.service.ReservationService;
 
 import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping(ReservationController.RESERVATION_API_ENDPOINT_ROOT)
+@RequestMapping("/reservations")
 public class ReservationController {
-    public final static String RESERVATION_API_ENDPOINT_ROOT = "/reservations";
-    private final Reservations reservations;
+    private final ReservationService reservationService;
 
     @Autowired
-    public ReservationController(Reservations reservations) {
-        this.reservations = reservations;
+    public ReservationController(ReservationService reservationService) {
+        this.reservationService = reservationService;
     }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<Reservation> getAllBookings() {
-        return this.reservations.getReservationList();
+        return this.reservationService.getReservations();
     }
 
     @PostMapping
     public ResponseEntity<Reservation> createReservation(@RequestBody @Valid ReservationDto reservationDto) {
-        Reservation newReservation = this.reservations.add(reservationDto);
+        Reservation newReservation = this.reservationService.createReservation(reservationDto);
+
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(newReservation.id())
+                .toUri();
 
         return ResponseEntity
-                .created(URI.create(RESERVATION_API_ENDPOINT_ROOT + "/" + newReservation.id()))
+                .created(location)
                 .body(newReservation);
     }
 
     @DeleteMapping("/{deletingId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteReservation(@PathVariable Long deletingId) throws ReservationNotFoundException {
-        this.reservations.removeById(deletingId);
+    public void deleteReservation(@PathVariable Long deletingId) {
+        this.reservationService.deleteReservationById(deletingId);
     }
 }

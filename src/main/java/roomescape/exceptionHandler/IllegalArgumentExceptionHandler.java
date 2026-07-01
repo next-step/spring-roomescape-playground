@@ -4,13 +4,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import roomescape.model.errors.ReservationNotFoundException;
 
 @RestControllerAdvice
-public class ModelExceptionHandler {
-    @ExceptionHandler(ReservationNotFoundException.class)
+public class IllegalArgumentExceptionHandler {
+
+    @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public String handleReservationNotFoundError(ReservationNotFoundException exception) {
-        return "없는 예약번호 입니다.";
+    public String handleIllegalArgumentException(IllegalArgumentException exception) {
+//        return exception.getMessage();
+        return "this is exceptionHandler speaking " + exception.getMessage();
     }
 }
