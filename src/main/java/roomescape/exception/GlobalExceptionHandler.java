@@ -13,9 +13,9 @@ import java.util.Objects;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(NotFoundReservationException.class)
+    @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ProblemDetail> handleNotFoundReservationException(
-            NotFoundReservationException e
+            NotFoundException e
     ) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
                 HttpStatus.NOT_FOUND,
