@@ -25,7 +25,7 @@ public class CustomerController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/customers") // -> customers 라는 파일(경로)을 만든 적이 없는데 코드가 돌아가긴 함..
+    @GetMapping("/customers")
     public ResponseEntity<List<Customer>> list() {
         String sql = "select id, first_name, last_name from customers";
         List<Customer> customers = jdbcTemplate.query(

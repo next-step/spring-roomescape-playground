@@ -1,13 +1,15 @@
-package roomescape.model;
+package roomescape.model.reservation;
+
+import roomescape.model.time.Time;
 
 public class Reservation {
 
     private Long id;
     private String name;
     private String date;
-    private String time;
+    private Time time;
 
-    public Reservation(String name, String date, String time) {
+    public Reservation(String name, String date, Time time) {
         this.name = name;
         this.date = date;
         this.time = time;
@@ -25,11 +27,19 @@ public class Reservation {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getDate() {
         return date;
     }
 
-    public String getTime() {
+    public Time getTime() {
         return time;
+    }
+
+    public void setTime(Time time) {
+        this.time = time;
     }
 }
