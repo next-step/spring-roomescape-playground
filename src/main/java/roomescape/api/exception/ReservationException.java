@@ -10,7 +10,7 @@ public class ReservationException extends RuntimeException {
     private final String message;
     private final HttpStatus httpStatus;
 
-    protected ReservationException(final ErrorMessage errorMessage) {
+    public ReservationException(final ErrorMessage errorMessage) {
         super(errorMessage.getMessage());
         this.message = errorMessage.getMessage();
         this.httpStatus = errorMessage.getHttpStatus();
