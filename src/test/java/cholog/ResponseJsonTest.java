@@ -8,16 +8,17 @@ import org.springframework.http.HttpStatus;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-class ResponseTemplatesTest {
+class ResponseJsonTest {
 
     @Test
-    void responseTemplatesHelloPage() {
+    void responseJson() {
         var response = RestAssured
                 .given().log().all()
-                .when().get("/hello?name=Brie")
+                .when().get("/json")
                 .then().log().all().extract();
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.asString()).contains("Hello, Brie!");
+        assertThat(response.as(Person.class).getName()).isEqualTo("brown");
+        assertThat(response.as(Person.class).getAge()).isEqualTo(20);
     }
 }
