@@ -1,4 +1,4 @@
-package roomescape.greet;
+package greet;
 
 public class Greeting {
 
