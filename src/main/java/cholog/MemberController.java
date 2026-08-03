@@ -33,6 +33,23 @@ public class MemberController {
         return ResponseEntity.ok(members);
     }
 
+    @PutMapping("/members/{memberId}")
+    public ResponseEntity<?> updateMember(
+            @RequestBody Member member,
+            @PathVariable Long memberId
+    ) {
+        Member foundMember = members.stream()
+                .filter(element -> element.getId() == memberId)
+                .findFirst()
+                .orElseThrow(RuntimeException::new);
+
+        Member updatedMember = foundMember.update(member);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(updatedMember);
+    }
+
     @GetMapping("/hello")
     public String getHello(
             @RequestParam(name = "name", defaultValue = "world") String name,

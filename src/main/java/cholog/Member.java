@@ -24,11 +24,15 @@ public class Member {
         return name;
     }
 
-    public Integer getAge() {
-        return age;
+    public Long getId() {
+        return id;
     }
 
     public static Member toEntity(Long id, Member member) {
         return new Member(id, member.name, member.age);
+    }
+
+    public Member update(Member member) {
+        return new Member(member.name, member.age);
     }
 }
