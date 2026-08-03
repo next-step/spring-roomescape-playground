@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Controller
@@ -39,7 +40,7 @@ public class MemberController {
             @PathVariable Long memberId
     ) {
         Member foundMember = members.stream()
-                .filter(element -> element.getId() == memberId)
+                .filter(element -> Objects.equals(element.getId(), memberId))
                 .findFirst()
                 .orElseThrow(RuntimeException::new);
 
@@ -48,6 +49,21 @@ public class MemberController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(updatedMember);
+    }
+
+    @DeleteMapping("/members/{memberId}")
+    public ResponseEntity<?> deleteMember(
+            @PathVariable Long memberId
+    ) {
+        Member foundMember = members.stream()
+                .filter(member -> Objects.equals(member.getId(), memberId))
+                .findFirst()
+                .orElseThrow(RuntimeException::new);
+
+        members.remove(foundMember);
+
+        return ResponseEntity
+                .noContent().build();
     }
 
     @GetMapping("/hello")
