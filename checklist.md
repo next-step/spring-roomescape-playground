@@ -5,5 +5,5 @@
 - [x] 일단계 테스트 성공
 
 ### Step 2
-- [ ] 어드민 메인 페이지는 templates/reservation.html 파일로 리다이렉트
-- [ ] 예약 관리 페이지 로드 시 호출되는 예약 목록 조회 API도 구현
+- [x] 어드민 메인 페이지는 templates/reservation.html 파일로 리다이렉트
+- [x] 예약 관리 페이지 로드 시 호출되는 예약 목록 조회 API도 구현
