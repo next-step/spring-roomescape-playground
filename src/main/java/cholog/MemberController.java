@@ -6,20 +6,31 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Controller
 public class MemberController {
 
+    private final List<Member> members = new ArrayList<>();
     private final AtomicLong index = new AtomicLong(1);
 
     @PostMapping("/members")
     public ResponseEntity<?> createMember(
             @RequestBody Member member
     ) {
+        Member createdMember = Member.toEntity(index.getAndIncrement(), member);
+        members.add(createdMember);
+
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(Member.toEntity(index.getAndIncrement(), member));
+                .body(createdMember);
+    }
+
+    @GetMapping("/members")
+    public ResponseEntity<?> readMembers() {
+        return ResponseEntity.ok(members);
     }
 
     @GetMapping("/hello")
