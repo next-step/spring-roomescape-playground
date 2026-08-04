@@ -45,13 +45,7 @@ public class RoomEscapeController {
             @RequestBody ReservationRequest request,
             HttpServletResponse response
     ) {
-        Reservation reservation = new Reservation(
-                request.name(),
-                request.date(),
-                request.time()
-        );
-
-        reservationService.createReservation(reservation);
+        reservationService.createReservation(request);
 
         response.setStatus(HttpServletResponse.SC_CREATED);
         return "redirect:/reservations";

@@ -1,5 +1,6 @@
 package roomescape.service;
 
+import roomescape.dto.ReservationRequest;
 import roomescape.entity.Reservation;
 import roomescape.repository.ReservationRepository;
 
@@ -19,7 +20,14 @@ public class ReservationServiceV1 implements ReservationService {
     }
 
     @Override
-    public Reservation createReservation(Reservation reservation) {
-        return reservationRepository.save(reservation);
+    public Reservation createReservation(ReservationRequest reservationRequest) {
+
+        Reservation createdReservation = new Reservation(
+                reservationRequest.name(),
+                reservationRequest.date(),
+                reservationRequest.time()
+        );
+
+        return reservationRepository.save(createdReservation);
     }
 }
