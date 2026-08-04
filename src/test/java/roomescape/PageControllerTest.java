@@ -9,12 +9,21 @@ import static org.hamcrest.Matchers.containsString;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-class HomeControllerTest {
+class PageControllerTest {
 
     @Test
     void 메인_페이지_요청_시_HTML을_반환한다() {
         RestAssured.given().log().all()
                 .when().get("/")
+                .then().log().all()
+                .statusCode(200)
+                .contentType(containsString("text/html"));
+    }
+
+    @Test
+    void 예약_관리_페이지_요청_시_HTML을_반환한다() {
+        RestAssured.given().log().all()
+                .when().get("/reservation")
                 .then().log().all()
                 .statusCode(200)
                 .contentType(containsString("text/html"));
