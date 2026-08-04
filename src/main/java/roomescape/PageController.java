@@ -5,8 +5,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class PageController {
+
     @GetMapping("/")
-    public String homePage() {
+    public String HomePage() {
         return "home";
     }
+
+    @GetMapping("/reservation")
+    public String ReservationPage() {
+        return "reservation";
+    }
+
 }
