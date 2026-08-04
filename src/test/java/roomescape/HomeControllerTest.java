@@ -5,15 +5,18 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 
+import static org.hamcrest.Matchers.containsString;
+
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-public class MissionStepTest {
+class HomeControllerTest {
 
     @Test
-    void 일단계() {
+    void 메인_페이지_요청_시_HTML을_반환한다() {
         RestAssured.given().log().all()
                 .when().get("/")
                 .then().log().all()
-                .statusCode(200);
+                .statusCode(200)
+                .contentType(containsString("text/html"));
     }
 }
