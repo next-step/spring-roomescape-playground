@@ -4,25 +4,26 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Controller
 public class ReservationController {
     private final List<Reservation> reservations = new ArrayList<>();
-    private final AtomicLong counter = new AtomicLong(1);
 
-    @GetMapping("/")
-    public String home() {
-        return "home";
+    public ReservationController() {
+        reservations.add(new Reservation(
+                1L, "브라운", LocalDate.of(2023, 1, 1), LocalTime.of(10, 0)
+        ));
+        reservations.add(new Reservation(
+                2L, "브라운", LocalDate.of(2023, 1, 2), LocalTime.of(11, 0)
+        ));
+        reservations.add(new Reservation(
+                3L, "브라운", LocalDate.of(2023, 1, 3), LocalTime.of(12, 0)
+        ));
     }
-
-    @GetMapping("/reservation")
-    public String Reservation() {
-        return "reservation";
-    }
-
     @GetMapping("/reservations")
     public ResponseEntity<List<Reservation>> readReservationList() {
         return ResponseEntity.ok().body(reservations);
