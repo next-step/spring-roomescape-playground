@@ -13,7 +13,7 @@ public class ReservationRepository {
 
     public Reservation save(Reservation reservation) {
 
-        Reservation createdReservation = Reservation.toEntity(index.incrementAndGet(), reservation);
+        Reservation createdReservation = Reservation.toEntityWithId(index.incrementAndGet(), reservation);
         this.reservations.add(createdReservation);
 
         return createdReservation;

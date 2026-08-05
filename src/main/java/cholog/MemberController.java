@@ -21,7 +21,7 @@ public class MemberController {
     public ResponseEntity<?> createMember(
             @RequestBody Member member
     ) {
-        Member createdMember = Member.toEntity(index.getAndIncrement(), member);
+        Member createdMember = Member.toEntityWithId(index.getAndIncrement(), member);
         members.add(createdMember);
 
         return ResponseEntity
