@@ -7,12 +7,12 @@ import org.springframework.test.annotation.DirtiesContext;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-class HomeControllerTest {
+class ReservationPageControllerTest {
 
     @Test
-    void 관리자_페이지_반환() {
+    void 예약_페이지_반환() {
         RestAssured.given().log().all()
-                .when().get("/")
+                .when().get("/reservation")
                 .then().log().all()
                 .statusCode(200);
     }
