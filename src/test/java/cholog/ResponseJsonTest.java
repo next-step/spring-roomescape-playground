@@ -1,5 +1,6 @@
 package cholog;
 
+import cholog.entity.Person;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

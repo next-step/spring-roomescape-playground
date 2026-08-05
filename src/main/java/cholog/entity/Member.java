@@ -1,4 +1,4 @@
-package cholog;
+package cholog.entity;
 
 public class Member {
 

@@ -1,50 +1,51 @@
 package cholog;
 
+import cholog.dto.MemberRequest;
+import cholog.entity.Member;
+import cholog.entity.Person;
+import cholog.service.MemberService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Controller
 public class MemberController {
 
-    private final List<Member> members = new ArrayList<>();
-    private final AtomicLong index = new AtomicLong(1);
+    private final MemberService memberService;
+
+    public MemberController(MemberService memberService) {
+        this.memberService = memberService;
+    }
 
     @PostMapping("/members")
     public ResponseEntity<?> createMember(
-            @RequestBody Member member
+            @RequestBody MemberRequest request
     ) {
-        Member createdMember = Member.toEntityWithId(index.getAndIncrement(), member);
-        members.add(createdMember);
+
+        Member response = memberService.createMember(request);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(createdMember);
+                .body(response);
     }
 
     @GetMapping("/members")
     public ResponseEntity<?> readMembers() {
-        return ResponseEntity.ok(members);
+        List<Member> response = memberService.findAllMembers();
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/members/{memberId}")
     public ResponseEntity<?> updateMember(
-            @RequestBody Member member,
+            @RequestBody MemberRequest request,
             @PathVariable Long memberId
     ) {
-        Member foundMember = members.stream()
-                .filter(element -> Objects.equals(element.getId(), memberId))
-                .findFirst()
-                .orElseThrow(RuntimeException::new);
-
-        Member updatedMember = foundMember.update(member);
+        Member updatedMember = memberService.updateMember(memberId, request);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -55,12 +56,7 @@ public class MemberController {
     public ResponseEntity<?> deleteMember(
             @PathVariable Long memberId
     ) {
-        Member foundMember = members.stream()
-                .filter(member -> Objects.equals(member.getId(), memberId))
-                .findFirst()
-                .orElseThrow(RuntimeException::new);
-
-        members.remove(foundMember);
+        memberService.deleteMember(memberId);
 
         return ResponseEntity
                 .noContent().build();
