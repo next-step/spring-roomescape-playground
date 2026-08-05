@@ -12,13 +12,11 @@ import java.util.List;
 
 @Controller
 public class ReservationController {
-    private final List<Reservation> reservations = new ArrayList<>();
+    private final List<Reservation> reservations = createReservations();
 
-    public ReservationController() {
-        initializeReservations();
-    }
+    private List<Reservation> createReservations() {
+        List<Reservation> reservations = new ArrayList<>();
 
-    private void initializeReservations() {
         reservations.add(new Reservation(
                 1,
                 "예약자1",
@@ -37,16 +35,18 @@ public class ReservationController {
                 LocalDate.of(2026, 8, 6),
                 LocalTime.of(10, 20)
         ));
+
+        return reservations;
     }
 
     @GetMapping("/reservation")
-    public String reservation() {
+    public String showReservationPage() {
         return "reservation";
     }
 
     @ResponseBody
     @GetMapping("/reservations")
-    public List<Reservation> reservations() {
+    public List<Reservation> findReservations() {
         return List.copyOf(reservations);
     }
 }

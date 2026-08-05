@@ -10,10 +10,17 @@ public class Reservation {
     private final LocalTime time;
 
     public Reservation(long id, String name, LocalDate date, LocalTime time) {
+        validateName(name);
         this.id = id;
         this.name = name;
         this.date = date;
         this.time = time;
+    }
+
+    private static void validateName(String name) {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("이름을 입력해주세요");
+        }
     }
 
     public long getId() {
