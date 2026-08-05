@@ -11,14 +11,16 @@ public class Member {
         this.age = age;
     }
 
-
+    public Long getId() {
+        return id;
+    }
 
     public String getName() {
         return name;
     }
 
-    public Long getId() {
-        return id;
+    public Integer getAge() {
+        return age;
     }
 
     private Member setId(Long id) {
@@ -31,9 +33,15 @@ public class Member {
     }
 
     public Member update(Member member) {
-        this.id = member.id;
-        this.name = member.name;
-        this.age = member.age;
+        if (member.id != null) {
+            this.id = member.id;
+        }
+        if (member.name != null) {
+            this.name = member.name;
+        }
+        if (member.age != null) {
+            this.age = member.age;
+        }
         return this;
     }
 }
