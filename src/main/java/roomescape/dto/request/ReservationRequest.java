@@ -3,12 +3,11 @@ package roomescape.dto.request;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import roomescape.entity.Reservation;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-
-import jakarta.validation.constraints.Size;
-import roomescape.entity.Reservation;
 
 public record ReservationRequest(
 
