@@ -1,6 +1,7 @@
 package roomescape;
 
 import io.restassured.RestAssured;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
@@ -10,7 +11,8 @@ import org.springframework.test.annotation.DirtiesContext;
 public class MissionStepTest {
 
     @Test
-    void 일단계() {
+    @DisplayName("[테스트코드] : localhost:8080을 요청했을 때, home 화면이 나오는지 테스트")
+    void test_실행_후_home_화면으로_전환() {
         RestAssured.given().log().all()
                 .when().get("/")
                 .then().log().all()
