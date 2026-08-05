@@ -16,6 +16,7 @@ function addEditableRow() {
 
   createEditableFieldsFor(row);
   addSaveAndCancelButtonsToRow(row);
+
 }
 
 function createEditableFieldsFor(row) {
