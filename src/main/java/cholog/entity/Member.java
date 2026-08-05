@@ -44,4 +44,17 @@ public class Member {
         }
         return this;
     }
+
+    public boolean equals(Member other) {
+        if (other == null) {
+            return false;
+        }
+        if (other.id.equals(this.id)
+                && other.name.equals(this.name)
+                && other.age.equals(this.age)
+        ) {
+            return false;
+        }
+        return true;
+    }
 }

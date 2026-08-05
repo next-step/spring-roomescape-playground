@@ -1,13 +1,15 @@
 package roomescape.controller;
 
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
-import roomescape.dto.ReservationRequest;
+import roomescape.dto.request.ReservationRequest;
+import roomescape.dto.response.ReservationResponse;
 import roomescape.entity.Reservation;
 import roomescape.service.ReservationService;
 
@@ -36,13 +38,13 @@ public class RoomEscapeController {
 
     @ResponseBody
     @GetMapping("/reservations")
-    public ResponseEntity<List<Reservation>> getReservations() {
+    public ResponseEntity<List<ReservationResponse>> getReservations() {
         return ResponseEntity.ok(reservationService.findAllReservations());
     }
 
     @PostMapping("/reservations")
     public String postReservation(
-            @RequestBody ReservationRequest request,
+            @RequestBody @Valid ReservationRequest request,
             HttpServletResponse response
     ) {
         reservationService.createReservation(request);

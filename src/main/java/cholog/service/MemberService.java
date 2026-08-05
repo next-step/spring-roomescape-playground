@@ -1,6 +1,6 @@
 package cholog.service;
 
-import cholog.dto.MemberRequest;
+import cholog.dto.request.MemberRequest;
 import cholog.entity.Member;
 
 import java.util.List;

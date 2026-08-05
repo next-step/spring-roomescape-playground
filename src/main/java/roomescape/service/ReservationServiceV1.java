@@ -1,6 +1,7 @@
 package roomescape.service;
 
-import roomescape.dto.ReservationRequest;
+import roomescape.dto.request.ReservationRequest;
+import roomescape.dto.response.ReservationResponse;
 import roomescape.entity.Reservation;
 import roomescape.repository.ReservationRepository;
 
@@ -15,8 +16,11 @@ public class ReservationServiceV1 implements ReservationService {
     }
 
     @Override
-    public List<Reservation> findAllReservations() {
-        return reservationRepository.findAll();
+    public List<ReservationResponse> findAllReservations() {
+        return reservationRepository.findAll()
+                .stream()
+                .map(ReservationResponse::toDto)
+                .toList();
     }
 
     @Override

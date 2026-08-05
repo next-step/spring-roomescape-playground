@@ -31,6 +31,14 @@ public class Reservation {
         return name;
     }
 
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public LocalTime getTime() {
+        return time;
+    }
+
     public static Reservation toEntityWithId(Long id, Reservation reservation) {
         return new Reservation(id, reservation.name, reservation.date, reservation.time);
     }

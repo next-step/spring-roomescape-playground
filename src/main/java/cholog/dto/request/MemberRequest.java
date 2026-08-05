@@ -1,4 +1,4 @@
-package cholog.dto;
+package cholog.dto.request;
 
 import cholog.entity.Member;
 import jakarta.validation.constraints.Min;

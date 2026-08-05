@@ -1,6 +1,7 @@
-package cholog;
+package cholog.controller;
 
-import cholog.dto.MemberRequest;
+import cholog.dto.request.MemberRequest;
+import cholog.dto.response.MemberResponse;
 import cholog.entity.Member;
 import cholog.entity.Person;
 import cholog.service.MemberService;
@@ -11,7 +12,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Objects;
 
 @Controller
 public class MemberController {
@@ -23,37 +23,41 @@ public class MemberController {
     }
 
     @PostMapping("/members")
-    public ResponseEntity<?> createMember(
+    public ResponseEntity<MemberResponse> createMember(
             @RequestBody MemberRequest request
     ) {
 
-        Member response = memberService.createMember(request);
+        Member member = memberService.createMember(request);
 
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(response);
+        return toMemberResponseEntity(HttpStatus.CREATED, member);
     }
 
     @GetMapping("/members")
-    public ResponseEntity<?> readMembers() {
-        List<Member> response = memberService.findAllMembers();
-        return ResponseEntity.ok(response);
-    }
+    public ResponseEntity<List<MemberResponse>> readMembers() {
 
-    @PutMapping("/members/{memberId}")
-    public ResponseEntity<?> updateMember(
-            @RequestBody MemberRequest request,
-            @PathVariable Long memberId
-    ) {
-        Member updatedMember = memberService.updateMember(memberId, request);
+        List<Member> response = memberService.findAllMembers();
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(updatedMember);
+                .body(response.stream()
+                .map(MemberResponse::toDataTransferObject)
+                .toList()
+        );
+    }
+
+    @PutMapping("/members/{memberId}")
+    public ResponseEntity<MemberResponse> updateMember(
+            @RequestBody MemberRequest request,
+            @PathVariable Long memberId
+    ) {
+
+        Member updatedMember = memberService.updateMember(memberId, request);
+
+        return toMemberResponseEntity(HttpStatus.OK, updatedMember);
     }
 
     @DeleteMapping("/members/{memberId}")
-    public ResponseEntity<?> deleteMember(
+    public ResponseEntity<Void> deleteMember(
             @PathVariable Long memberId
     ) {
         memberService.deleteMember(memberId);
@@ -78,5 +82,12 @@ public class MemberController {
             @RequestParam(name = "age", defaultValue = "20") Integer age
     ) {
         return ResponseEntity.ok(new Person(name, age));
+    }
+
+    private ResponseEntity<MemberResponse> toMemberResponseEntity(
+            HttpStatus status,
+            Member member
+    ) {
+        return ResponseEntity.status(status).body(MemberResponse.toDataTransferObject(member));
     }
 }
