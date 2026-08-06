@@ -29,7 +29,7 @@ public class ReservationRequestTest {
 
     @Test
     @DisplayName("이름 필드는 비어있을 수 없다")
-    void nameMustRequiredInCreatedReservationRequest() {
+    void nameMustRequiredIncreateReservationRequest() {
 
         // given
         String name = "";
@@ -52,7 +52,7 @@ public class ReservationRequestTest {
 
     @Test
     @DisplayName("이름 필드는 최대 20자를 초과할 수 없다")
-    void nameCannotExceed20CharInCreatedReservationRequest() {
+    void nameCannotExceed20CharIncreateReservationRequest() {
 
         // given
         String name = "abcdefghijklmnopqrstu";
@@ -75,7 +75,7 @@ public class ReservationRequestTest {
 
     @Test
     @DisplayName("이름 필드는 null값을 허용하지 않는다")
-    void nameMustNotBeNullInCreatedReservationRequest() {
+    void nameMustNotBeNullIncreateReservationRequest() {
 
         // given
         LocalDate reservedDate = LocalDate.now();
@@ -97,7 +97,7 @@ public class ReservationRequestTest {
 
     @Test
     @DisplayName("예약 날짜 필드는 null값을 허용하지 않는다")
-    void dateMustNotBeNullInCreatedReservationRequest() {
+    void dateMustNotBeNullIncreateReservationRequest() {
 
         // given
         String name = "Alice";
@@ -120,7 +120,7 @@ public class ReservationRequestTest {
 
     @Test
     @DisplayName("예약 시각 필드는 null값을 허용하지 않는다")
-    void timeMustNotBeNullInCreatedReservationRequest() {
+    void timeMustNotBeNullIncreateReservationRequest() {
 
         // given
         String name = "Alice";
@@ -143,7 +143,7 @@ public class ReservationRequestTest {
 
     @Test
     @DisplayName("예약을 정상적으로 처리한 경우")
-    void allValidatedInCreatedReservationRequest() {
+    void allValidatedIncreateReservationRequest() {
 
         // given
         String name = "Alice";

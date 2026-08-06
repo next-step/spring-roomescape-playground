@@ -8,7 +8,7 @@ import jakarta.validation.constraints.Size;
 
 public record MemberRequest(
         @NotBlank(message = "이름 필드는 비어있을 수 없습니다.")
-        @Size(max = 50, message = "이름 필드는 50자 이하만 가능합니다.")
+        @Size(max = 20, message = "이름 필드는 20자 이하만 가능합니다.")
         String name,
 
         @NotNull(message = "나이 필드는 비어있을 수 없습니다.")

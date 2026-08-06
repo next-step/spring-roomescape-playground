@@ -1,5 +1,6 @@
 package cholog.entity;
 
+import cholog.dto.response.MemberResponse;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,23 +32,23 @@ public class MemberTest {
         Member after = new Member("Bob", 21);
 
         // when
-        Member created = RestAssured
+        MemberResponse created = RestAssured
                 .given().log().all()
                 .body(before)
                 .contentType(ContentType.JSON)
                 .when().post("/members")
-                .then().log().all().extract().body().as(Member.class);
+                .then().log().all().extract().body().as(MemberResponse.class);
 
-        Member updated = RestAssured
+        MemberResponse updated = RestAssured
                 .given().log().all()
                 .body(after)
                 .contentType(ContentType.JSON)
-                .when().put("/members/" + created.getId())
-                .then().log().all().extract().body().as(Member.class);
+                .when().put("/members/" + created.memberId())
+                .then().log().all().extract().body().as(MemberResponse.class);
 
         // then
-        assertThat(created.getId()).isEqualTo(updated.getId());
-        assertThat(updated.getName()).isEqualTo(after.getName());
-        assertThat(updated.getAge()).isEqualTo(after.getAge());
+        assertThat(created.memberId()).isEqualTo(updated.memberId());
+        assertThat(updated.name()).isEqualTo(after.getName());
+        assertThat(updated.age()).isEqualTo(after.getAge());
     }
 }
