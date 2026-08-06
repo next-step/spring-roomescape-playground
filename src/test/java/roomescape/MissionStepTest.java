@@ -29,6 +29,8 @@ public class MissionStepTest {
                 .when().get("/reservations")
                 .then().log().all()
                 .statusCode(200)
-                .body("size()", is(3));
+                .body("size()", is(3))
+                .body("[0].date", is("2023-01-01"))
+                .body("[0].time", is("10:00"));;
     }
 }
