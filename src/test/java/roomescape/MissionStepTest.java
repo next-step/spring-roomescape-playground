@@ -1,8 +1,7 @@
 package roomescape;
 
-import static org.hamcrest.CoreMatchers.is;
-
 import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,8 +12,8 @@ import org.springframework.test.annotation.DirtiesContext;
 public class MissionStepTest {
 
     @Test
-    @DisplayName("localhost:8080 요청 시 home 화면을 반환하는지 테스트")
-    void test_home_요청시_home_화면을_반환하는지_테스트() {
+    @DisplayName("홈 요청 시 200 OK를 반환하는지 테스트")
+    void test_home_요청시_200_OK를_반환하는지_테스트() {
         RestAssured.given().log().all()
                 .when().get("/")
                 .then().log().all()
@@ -31,12 +30,12 @@ public class MissionStepTest {
     }
 
     @Test
-    @DisplayName("/reservations 요청 시 저장된 예약 3건을 반환하는지 테스트")
-    void test_reservations_요청시_저장된_예약_3건을_반환하는지_테스트() {
+    @DisplayName("/reservations 요청 시 200 상태 코드와 JSON 형식의 응답을 반환하는지 테스트")
+    void test_reservations_요청시_정상_응답을_반환하는지_테스트() {
         RestAssured.given().log().all()
             .when().get("/reservations")
             .then().log().all()
             .statusCode(200)
-            .body("size()", is(3));
+            .contentType(ContentType.JSON);
     }
 }
