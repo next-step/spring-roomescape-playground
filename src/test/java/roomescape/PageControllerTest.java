@@ -8,7 +8,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import static org.hamcrest.Matchers.containsString;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class PageControllerTest {
 
     @Test
