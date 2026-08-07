@@ -36,4 +36,40 @@ class ReservationTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("이름을 입력해주세요");
     }
+
+    @Test
+    void 날짜가_정상이면_예약이_생성된다() {
+        //Given
+        LocalDate date = LocalDate.of(2026, 8, 5);
+        //When & Then
+        assertDoesNotThrow(() -> new Reservation(1, "이준환", date, LocalTime.of(10, 0)));
+    }
+
+    @Test
+    void 날짜가_null이면_예외가_발생한다() {
+        //Given
+        LocalDate date = null;
+        //When & Then
+        assertThatThrownBy(() -> new Reservation(1, "이준환", date, LocalTime.of(10, 0)))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("날짜를 선택해주세요");
+    }
+
+    @Test
+    void 시간이_정상이면_예약이_생성된다() {
+        //Given
+        LocalTime time = LocalTime.of(10, 0);
+        //When & Then
+        assertDoesNotThrow(() -> new Reservation(1, "이준환", LocalDate.of(2026, 8, 5), time));
+    }
+
+    @Test
+    void 시간이_null이면_예외가_발생한다() {
+        //Given
+        LocalTime time = null;
+        //When & Then
+        assertThatThrownBy(() -> new Reservation(1, "이준환", LocalDate.of(2026, 8, 5), time))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("시간을 선택해주세요");
+    }
 }
