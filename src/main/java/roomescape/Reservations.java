@@ -14,7 +14,7 @@ public class Reservations {
         createReservations();
     }
 
-    public List<Reservation> getReservations() {
+    public List<Reservation> readReservations() {
         return Collections.unmodifiableList(reservations);
     }
 
