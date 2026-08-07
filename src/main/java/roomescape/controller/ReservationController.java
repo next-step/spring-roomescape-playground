@@ -4,39 +4,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import roomescape.domain.Reservation;
+import roomescape.repository.ReservationRepository;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
 public class ReservationController {
-    private final List<Reservation> reservations = createReservations();
-
-    private List<Reservation> createReservations() {
-        List<Reservation> reservations = new ArrayList<>();
-
-        reservations.add(new Reservation(
-                1,
-                "예약자1",
-                LocalDate.of(2026, 8, 4),
-                LocalTime.of(10, 0)
-        ));
-        reservations.add(new Reservation(
-                2,
-                "예약자2",
-                LocalDate.of(2026, 8, 5),
-                LocalTime.of(10, 10)
-        ));
-        reservations.add(new Reservation(
-                3,
-                "예약자3",
-                LocalDate.of(2026, 8, 6),
-                LocalTime.of(10, 20)
-        ));
-
-        return reservations;
+    private final ReservationRepository reservationRepository;
+    public ReservationController(ReservationRepository reservationRepository) {
+        this.reservationRepository = reservationRepository;
     }
 
     @GetMapping("/reservation")
@@ -47,6 +23,6 @@ public class ReservationController {
     @ResponseBody
     @GetMapping("/reservations")
     public List<Reservation> findReservations() {
-        return List.copyOf(reservations);
+        return reservationRepository.getReservations();
     }
 }
