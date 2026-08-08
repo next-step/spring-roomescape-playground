@@ -1,23 +1,16 @@
-package roomescape;
+package roomescape.controller;
 
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+import roomescape.Reservation;
+import roomescape.Reservations;
+
+@RestController
 public class ReservationController {
-
-    @GetMapping("/")
-    public String home() {
-        return "home";
-    }
-
-    @GetMapping("/reservation")
-    public String reservation() {
-        return "reservation";
-    }
 
     @GetMapping("/reservations")
     public ResponseEntity<List<Reservation>> readReservations() {
