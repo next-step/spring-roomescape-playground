@@ -28,4 +28,15 @@ public class ReservationController {
         reservations.add(newReservation);
         return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
     }
+
+    @DeleteMapping("/reservations/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        Reservation reservation = reservations.stream()
+                .filter(it -> Objects.equals(it.getId(), id))
+                .findFirst()
+                .orElseThrow(RuntimeException::new);
+
+        reservations.remove(reservation);
+        return ResponseEntity.noContent().build();
+    }
 }
