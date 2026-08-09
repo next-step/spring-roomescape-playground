@@ -1,4 +1,4 @@
-package roomescape.service;
+package roomescape.business;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
