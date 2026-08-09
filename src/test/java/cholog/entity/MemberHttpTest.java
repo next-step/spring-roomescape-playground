@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-public class MemberTest {
+public class MemberHttpTest {
 
     @LocalServerPort
     private int port;
@@ -25,7 +25,7 @@ public class MemberTest {
     }
 
     @Test
-    @DisplayName("수정 이후에도 같은 객체인지 비교")
+    @DisplayName("수정 HTTP 인수 요청 이후에도 같은 객체인지 비교")
     void isEqualMemberAfterUpdate() {
         // given
         Member before = new Member("Alice", 20);
