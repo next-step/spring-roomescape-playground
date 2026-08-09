@@ -4,10 +4,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import roomescape.repository.ReservationRepository;
 import roomescape.service.ReservationService;
-import roomescape.service.ReservationServiceV1;
+import roomescape.service.ReservationServiceImpl;
 
 @Configuration
-public class ReservationConfigV1 {
+public class ReservationConfig {
 
     @Bean
     public ReservationRepository reservationRepository() {
@@ -16,6 +16,6 @@ public class ReservationConfigV1 {
 
     @Bean
     public ReservationService reservationService(ReservationRepository reservationRepository) {
-        return new ReservationServiceV1(this.reservationRepository());
+        return new ReservationServiceImpl(reservationRepository);
     }
 }

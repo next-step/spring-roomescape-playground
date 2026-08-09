@@ -2,7 +2,7 @@ package cholog.config;
 
 import cholog.repository.MemberRepository;
 import cholog.service.MemberService;
-import cholog.service.MemberServiceV1;
+import cholog.service.MemberServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -15,7 +15,7 @@ public class MemberConfig {
     }
 
     @Bean
-    public MemberService chologMemberService() {
-        return new MemberServiceV1(chologMemberRepository());
+    public MemberService chologMemberService(MemberRepository memberRepository) {
+        return new MemberServiceImpl(memberRepository);
     }
 }
