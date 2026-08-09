@@ -2,6 +2,7 @@ package roomescape.entity;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Objects;
 
 public class Reservation {
 
@@ -41,6 +42,22 @@ public class Reservation {
 
     public static Reservation toEntityWithId(Long id, Reservation reservation) {
         return new Reservation(id, reservation.name, reservation.date, reservation.time);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Reservation other)) {
+            return false;
+        }
+        return id != null && id.equals(other.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 
 }
