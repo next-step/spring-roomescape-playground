@@ -2,6 +2,7 @@ package cholog.repository;
 
 import cholog.entity.Member;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -33,7 +34,7 @@ public class MemberRepository {
 
     public List<Member> findAll() {
         return members.values().stream()
-                .sorted().toList();
+                .sorted(Comparator.comparing(Member::getId)).toList();
     }
 
     public Member update(Long memberId, Member member) {
