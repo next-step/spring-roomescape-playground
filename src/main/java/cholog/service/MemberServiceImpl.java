@@ -6,11 +6,11 @@ import cholog.repository.MemberRepository;
 
 import java.util.List;
 
-public class MemberServiceV1 implements MemberService {
+public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
 
-    public MemberServiceV1(MemberRepository memberRepository) {
+    public MemberServiceImpl(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
     }
 
