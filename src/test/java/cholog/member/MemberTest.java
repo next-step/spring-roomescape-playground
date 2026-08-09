@@ -1,5 +1,6 @@
-package cholog.entity;
+package cholog.member;
 
+import cholog.entity.Member;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
