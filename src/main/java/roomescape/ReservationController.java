@@ -8,9 +8,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/reservations")
 public class ReservationController {
 
     private final ReservationService reservationService;
@@ -19,19 +21,22 @@ public class ReservationController {
         this.reservationService = reservationService;
     }
 
-    @GetMapping("/reservations")
-    public List<ReservationResponse> reservations() {
-        return reservationService.findAll();
+    @GetMapping
+    public List<ReservationResponse> findAll() {
+        return reservationService.findAll().stream()
+                .map(ReservationResponse::from)
+                .toList();
     }
 
-    @PostMapping("/reservations")
+    @PostMapping
     public ResponseEntity<ReservationResponse> create(@RequestBody ReservationRequest request) {
-        ReservationResponse response = reservationService.create(request);
+        Reservation reservation = reservationService.create(request.toReservation());
+        ReservationResponse response = ReservationResponse.from(reservation);
         URI location = URI.create("/reservations/" + response.getId());
         return ResponseEntity.created(location).body(response);
     }
 
-    @DeleteMapping("/reservations/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         reservationService.deleteById(id);
         return ResponseEntity.noContent().build();

@@ -12,34 +12,17 @@ public class ReservationService {
         this.reservationRepository = reservationRepository;
     }
 
-    public List<ReservationResponse> findAll() {
-        return reservationRepository.findAll().stream()
-                .map(ReservationResponse::from)
-                .toList();
+    public List<Reservation> findAll() {
+        return reservationRepository.findAll();
     }
 
-    public ReservationResponse create(ReservationRequest request) {
-        validateRequest(request);
-        Reservation reservation = new Reservation(
-                null,
-                request.getName(),
-                request.getDate(),
-                request.getTime()
-        );
-        Reservation savedReservation = reservationRepository.save(reservation);
-        return ReservationResponse.from(savedReservation);
+    public Reservation create(Reservation reservation) {
+        return reservationRepository.save(reservation);
     }
 
     public void deleteById(Long id) {
         if (!reservationRepository.deleteById(id)) {
             throw new NotFoundReservationException(id);
-        }
-    }
-
-    private void validateRequest(ReservationRequest request) {
-        if (request.getName() == null || request.getName().isBlank()
-                || request.getDate() == null || request.getTime() == null) {
-            throw new InvalidReservationRequestException();
         }
     }
 }

@@ -22,6 +22,17 @@ public class ReservationRequest {
         this.time = time;
     }
 
+    public Reservation toReservation() {
+        validate();
+        return new Reservation(null, name, date, time);
+    }
+
+    private void validate() {
+        if (name == null || name.isBlank() || date == null || time == null) {
+            throw new InvalidReservationRequestException();
+        }
+    }
+
     public String getName() {
         return name;
     }
