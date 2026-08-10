@@ -3,6 +3,7 @@ package roomescape.service;
 import roomescape.dto.request.ReservationRequest;
 import roomescape.dto.response.ReservationResponse;
 import roomescape.entity.Reservation;
+import roomescape.exception.ReservationNotFoundException;
 import roomescape.repository.ReservationRepository;
 
 import java.util.List;
@@ -37,7 +38,11 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public Void deleteReservation(Long reservationId) {
-        reservationRepository.delete(reservationId);
+
+        Reservation reservation = reservationRepository.findById(reservationId)
+                .orElseThrow(ReservationNotFoundException::new);
+
+        reservationRepository.delete(reservation);
         return null;
     }
 }

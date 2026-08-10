@@ -4,13 +4,14 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import roomescape.dto.request.ReservationRequest;
 import roomescape.dto.response.ReservationResponse;
 import roomescape.entity.Reservation;
+import roomescape.exception.ReservationNotFoundException;
 import roomescape.service.ReservationService;
 
 import java.net.URI;
@@ -64,4 +65,19 @@ public class RoomEscapeController {
         reservationService.deleteReservation(reservationId);
         return ResponseEntity.noContent().build();
     }
+
+    @ExceptionHandler(ReservationNotFoundException.class)
+    public ResponseEntity<Void> handleRoomEscapeException(
+            ReservationNotFoundException e
+    ) {
+        return ResponseEntity.notFound().build();
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Void> handleRoomEscapeException(
+            MethodArgumentNotValidException e
+    ) {
+        return ResponseEntity.badRequest().build();
+    }
+
 }
