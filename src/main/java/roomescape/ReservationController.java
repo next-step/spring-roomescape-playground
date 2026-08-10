@@ -1,5 +1,6 @@
 package roomescape;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +12,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 
-@Controller
+@RestController
 public class ReservationController {
 
     private final List<Reservation> reservations = new ArrayList<>();
@@ -39,4 +40,10 @@ public class ReservationController {
         reservations.remove(reservation);
         return ResponseEntity.noContent().build();
     }
+
+    @ExceptionHandler(value = IllegalArgumentException.class)
+    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex) {
+        return new ResponseEntity<>(ex.getMessage(),HttpStatus.BAD_REQUEST);
+    }
+
 }
