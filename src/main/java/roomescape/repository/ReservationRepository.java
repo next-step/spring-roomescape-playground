@@ -23,4 +23,9 @@ public class ReservationRepository {
     public List<Reservation> findAll() {
         return this.reservations.values().stream().toList();
     }
+
+    public Void delete(Long reservationId) {
+        this.reservations.remove(reservationId);
+        return null;
+    }
 }
