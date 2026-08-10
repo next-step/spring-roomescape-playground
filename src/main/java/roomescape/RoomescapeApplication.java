@@ -9,4 +9,5 @@ public class RoomescapeApplication {
         SpringApplication.run(RoomescapeApplication.class, args);
     }
 
+
 }
