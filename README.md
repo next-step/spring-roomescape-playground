@@ -37,3 +37,28 @@
   }
 ]
 ```
+
+### 예약 생성
+- Method : POST
+- URL : /reservations
+- Request : Requsest Body (JSON)
+- Response : 201 Created, Location : /reservations/{id}
+
+**Request Body 예시**
+```json
+  {
+    "name": "브라운",
+    "date": "2026-01-01",
+    "time": "10:00"
+  }
+```
+
+**Response Body 예시**
+```json
+  {
+    "id"  : 1,
+    "name": "브라운",
+    "date": "2026-01-01",
+    "time": "10:00"
+  }
+```
