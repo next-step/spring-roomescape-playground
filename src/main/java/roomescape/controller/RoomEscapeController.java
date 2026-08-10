@@ -20,7 +20,6 @@ import java.util.List;
 @Controller
 public class RoomEscapeController {
 
-    private final Logger log = LoggerFactory.getLogger(RoomEscapeController.class);
     private final ReservationService reservationService;
 
     public RoomEscapeController(ReservationService reservationService) {
@@ -36,14 +35,16 @@ public class RoomEscapeController {
     @GetMapping("/reservation")
     public String getReservation(
     ) {
-        log.info("reservations.size() = {}", reservationService.findAllReservations().size());
         return "reservation";
     }
 
     @ResponseBody
     @GetMapping("/reservations")
     public ResponseEntity<List<ReservationResponse>> getReservations() {
-        return ResponseEntity.ok(reservationService.findAllReservations());
+        List<ReservationResponse> response = reservationService.findAllReservations().stream()
+                .map(ReservationResponse::toDto)
+                .toList();
+        return ResponseEntity.ok(response);
     }
 
     @ResponseBody
