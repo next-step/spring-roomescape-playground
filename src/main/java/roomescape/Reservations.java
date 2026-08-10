@@ -3,6 +3,7 @@ package roomescape;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.stereotype.Repository;
 
@@ -23,5 +24,10 @@ public class Reservations {
         Reservation newReservation = Reservation.toEntity(index.getAndIncrement(), reservation);
         reservations.add(newReservation);
         return newReservation;
+    }
+
+    public void delete(Long id){
+        Reservation deleteReservation = reservations.stream().filter(it-> Objects.equals(it.getId(),id)).findFirst().orElseThrow(RuntimeException::new);
+        reservations.remove(deleteReservation);
     }
 }
