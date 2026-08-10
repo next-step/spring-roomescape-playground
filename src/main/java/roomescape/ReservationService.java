@@ -19,6 +19,7 @@ public class ReservationService {
     }
 
     public ReservationResponse create(ReservationRequest request) {
+        validateRequest(request);
         Reservation reservation = new Reservation(
                 null,
                 request.getName(),
@@ -30,6 +31,15 @@ public class ReservationService {
     }
 
     public void deleteById(Long id) {
-        reservationRepository.deleteById(id);
+        if (!reservationRepository.deleteById(id)) {
+            throw new NotFoundReservationException(id);
+        }
+    }
+
+    private void validateRequest(ReservationRequest request) {
+        if (request.getName() == null || request.getName().isBlank()
+                || request.getDate() == null || request.getTime() == null) {
+            throw new InvalidReservationRequestException();
+        }
     }
 }
