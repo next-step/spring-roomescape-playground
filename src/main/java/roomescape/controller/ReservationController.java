@@ -12,8 +12,14 @@ import roomescape.Reservations;
 @RestController
 public class ReservationController {
 
+    private final Reservations reservations;
+
+    public ReservationController(Reservations reservations) {
+        this.reservations = reservations;
+    }
+
     @GetMapping("/reservations")
     public ResponseEntity<List<Reservation>> readReservations() {
-        return ResponseEntity.ok(new Reservations().readReservations());
+        return ResponseEntity.ok(reservations.readReservations());
     }
 }
