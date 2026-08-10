@@ -17,4 +17,19 @@ public class ReservationService {
                 .map(ReservationResponse::from)
                 .toList();
     }
+
+    public ReservationResponse create(ReservationRequest request) {
+        Reservation reservation = new Reservation(
+                null,
+                request.getName(),
+                request.getDate(),
+                request.getTime()
+        );
+        Reservation savedReservation = reservationRepository.save(reservation);
+        return ReservationResponse.from(savedReservation);
+    }
+
+    public void deleteById(Long id) {
+        reservationRepository.deleteById(id);
+    }
 }
