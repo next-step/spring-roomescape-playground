@@ -97,4 +97,19 @@ public class MissionStepTest {
                 .then().log().all()
                 .statusCode(404);
     }
+
+    @Test
+    void 이름이_공백인_예약은_추가할_수_없다() {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", " ");
+        params.put("date", "2023-08-05");
+        params.put("time", "15:40");
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(400);
+    }
 }
