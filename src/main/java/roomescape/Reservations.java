@@ -1,28 +1,27 @@
 package roomescape;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.stereotype.Component;
 
 @Component
 public class Reservations {
     private final List<Reservation> reservations;
+    private final AtomicLong index = new AtomicLong(1);
 
     public Reservations() {
         this.reservations = new ArrayList<>();
-        createReservations();
     }
 
     public List<Reservation> readReservations() {
         return Collections.unmodifiableList(reservations);
     }
 
-    private void createReservations() {
-        reservations.add(new Reservation(1L, "브라운", LocalDate.of(2026, 1, 1), LocalTime.of(10, 0)));
-        reservations.add(new Reservation(2L, "브라운", LocalDate.of(2026, 2, 1), LocalTime.of(11, 0)));
-        reservations.add(new Reservation(3L, "브라운", LocalDate.of(2026, 3, 1), LocalTime.of(12, 0)));
+    public Reservation reserve(Reservation reservation){
+        Reservation newReservation = Reservation.toEntity(index.getAndIncrement(), reservation);
+        reservations.add(newReservation);
+        return newReservation;
     }
 }
