@@ -1,35 +1,30 @@
-package roomescape;
+package roomescape.repository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.stereotype.Repository;
+import roomescape.domain.Reservation;
 
 @Repository
 public class InMemoryReservationRepository implements ReservationRepository {
 
     private final List<Reservation> reservations = new ArrayList<>();
-    private final AtomicLong index = new AtomicLong(1);
+    private long nextId = 1L;
 
     @Override
-    public List<Reservation> findAll() {
+    public synchronized List<Reservation> findAll() {
         return List.copyOf(reservations);
     }
 
     @Override
-    public Reservation save(Reservation reservation) {
-        Reservation savedReservation = new Reservation(
-                index.getAndIncrement(),
-                reservation.getName(),
-                reservation.getDate(),
-                reservation.getTime()
-        );
+    public synchronized Reservation save(Reservation reservation) {
+        Reservation savedReservation = reservation.withId(nextId++);
         reservations.add(savedReservation);
         return savedReservation;
     }
 
     @Override
-    public boolean deleteById(Long id) {
+    public synchronized boolean deleteById(Long id) {
         return reservations.removeIf(reservation -> reservation.getId().equals(id));
     }
 }

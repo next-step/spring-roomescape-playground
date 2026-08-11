@@ -1,9 +1,10 @@
-package roomescape;
+package roomescape.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import roomescape.domain.Reservation;
 
 public class ReservationRequest {
 
@@ -23,14 +24,7 @@ public class ReservationRequest {
     }
 
     public Reservation toReservation() {
-        validate();
         return new Reservation(null, name, date, time);
-    }
-
-    private void validate() {
-        if (name == null || name.isBlank() || date == null || time == null) {
-            throw new InvalidReservationRequestException();
-        }
     }
 
     public String getName() {

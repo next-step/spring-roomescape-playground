@@ -2,6 +2,7 @@ package roomescape;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
@@ -99,7 +100,8 @@ public class MissionStepTest {
     }
 
     @Test
-    void 이름이_공백인_예약은_추가할_수_없다() {
+    @DisplayName("이름이 공백인 예약은 추가할 수 없다")
+    void rejectsReservationWithBlankName() {
         Map<String, String> params = new HashMap<>();
         params.put("name", " ");
         params.put("date", "2023-08-05");
