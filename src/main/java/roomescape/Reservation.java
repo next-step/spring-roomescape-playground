@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import roomescape.exception.BlankReservationException;
 
 public class Reservation {
     private Long id;
@@ -20,7 +21,20 @@ public class Reservation {
     }
 
     public static Reservation toEntity(Long id, Reservation reservation) {
+        validate(reservation);
         return new Reservation(id, reservation.name, reservation.date, reservation.time);
+    }
+
+    private static void validate(Reservation reservation) {
+        if(reservation.name == null || reservation.name.isEmpty()){
+            throw new BlankReservationException("이름은 공백이 될 수 없습니다.");
+        }
+        if(reservation.date == null){
+            throw new BlankReservationException("예약일자는 공백이 될 수 없습니다.");
+        }
+        if(reservation.time == null){
+            throw new BlankReservationException("예약시간은 공백이 될 수 없습니다.");
+        }
     }
 
     public Long getId() {

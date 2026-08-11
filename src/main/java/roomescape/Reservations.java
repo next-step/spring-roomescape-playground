@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.stereotype.Repository;
+import roomescape.exception.NotFoundReservationException;
 
 @Repository
 public class Reservations {
@@ -27,7 +28,7 @@ public class Reservations {
     }
 
     public void delete(Long id){
-        Reservation deleteReservation = reservations.stream().filter(it-> Objects.equals(it.getId(),id)).findFirst().orElseThrow(RuntimeException::new);
+        Reservation deleteReservation = reservations.stream().filter(it-> Objects.equals(it.getId(),id)).findFirst().orElseThrow(() -> new NotFoundReservationException("해당 id의 예약이 존재하지 않습니다."));
         reservations.remove(deleteReservation);
     }
 }
