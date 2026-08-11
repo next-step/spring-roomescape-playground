@@ -45,7 +45,7 @@ public class ReservationHttpTest {
                 .contentType(ContentType.JSON)
                 .when().post("/reservations")
                 .then()
-                .statusCode(HttpStatus.FOUND.value())
+                .statusCode(HttpStatus.CREATED.value())
                 .header("Location", containsString("/reservations"));
     }
 
