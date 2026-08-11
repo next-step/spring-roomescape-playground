@@ -6,11 +6,13 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Repository
 public class InMemoryReservationRepository implements ReservationRepository {
 
     private final List<Reservation> reservations = new ArrayList<>();
+    private final AtomicLong index = new AtomicLong(3);
 
     public InMemoryReservationRepository() {
         initializeReservations();
@@ -19,6 +21,26 @@ public class InMemoryReservationRepository implements ReservationRepository {
     @Override
     public List<Reservation> findAll() {
         return List.copyOf(reservations);
+    }
+
+    @Override
+    public Reservation save(Reservation reservation) {
+        Reservation savedReservation = new Reservation(
+                index.incrementAndGet(),
+                reservation.getName(),
+                reservation.getDate(),
+                reservation.getTime()
+        );
+
+        reservations.add(savedReservation);
+        return savedReservation;
+    }
+
+    @Override
+    public boolean existsByDateAndTime(LocalDate date, LocalTime time) {
+        return reservations.stream()
+                .anyMatch(reservation -> reservation.getDate().equals(date)
+                        && reservation.getTime().equals(time));
     }
 
     private void initializeReservations() {
