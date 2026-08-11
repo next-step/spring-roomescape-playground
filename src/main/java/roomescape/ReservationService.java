@@ -31,6 +31,13 @@ public class ReservationService {
         return reservationRepository.save(reservation);
     }
 
+    public void deleteReservation(Long id) {
+        Reservation reservation = reservationRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 예약을 찾을 수 없습니다."));
+
+        reservationRepository.delete(reservation);
+    }
+
     private void validateNotPast(ReservationRequest request) {
         LocalDateTime reservationDateTime = LocalDateTime.of(request.date(), request.time());
 

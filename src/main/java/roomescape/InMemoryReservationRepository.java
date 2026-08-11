@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Repository
@@ -34,6 +35,18 @@ public class InMemoryReservationRepository implements ReservationRepository {
 
         reservations.add(savedReservation);
         return savedReservation;
+    }
+
+    @Override
+    public Optional<Reservation> findById(Long id) {
+        return reservations.stream()
+                .filter(reservation -> id.equals(reservation.getId()))
+                .findFirst();
+    }
+
+    @Override
+    public void delete(Reservation reservation) {
+        reservations.removeIf(savedReservation -> reservation.getId().equals(savedReservation.getId()));
     }
 
     @Override
