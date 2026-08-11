@@ -35,7 +35,7 @@ public class ReservationController {
         Reservation reservation = reservations.stream()
                 .filter(it -> Objects.equals(it.getId(), id))
                 .findFirst()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new NotFoundReservationException("해당 예약을 찾을 수 없습니다"));
 
         reservations.remove(reservation);
         return ResponseEntity.noContent().build();
@@ -46,4 +46,8 @@ public class ReservationController {
         return new ResponseEntity<>(ex.getMessage(),HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(NotFoundReservationException.class)
+    public ResponseEntity<String> handle(NotFoundReservationException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
 }
