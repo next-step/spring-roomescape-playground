@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import roomescape.domain.Reservation;
 import roomescape.dto.ReservationRequest;
 import roomescape.dto.ReservationResponse;
+import roomescape.exception.NotFoundReservationException;
 import roomescape.repository.ReservationRepository;
 
 import java.net.URI;
@@ -48,7 +49,10 @@ public class ReservationController {
     public ResponseEntity<Void> deleteReservation(
             @PathVariable Long id
     ) {
-        reservationRepository.deleteById(id);
+        boolean deleted = reservationRepository.deleteById(id);
+        if (!deleted) {
+            throw new NotFoundReservationException("예약을 찾을 수 없습니다. id=" + id);
+        }
 
         return ResponseEntity.noContent().build();
     }

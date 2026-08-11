@@ -56,4 +56,24 @@ class ReservationControllerTest {
                 .statusCode(200)
                 .body("size()", is(0));
     }
+
+    @Test
+    void 예외_처리() {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", "브라운");
+        params.put("date", "");
+        params.put("time", "");
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(400);
+
+        RestAssured.given().log().all()
+                .when().delete("/reservations/1")
+                .then().log().all()
+                .statusCode(404);
+    }
 }
