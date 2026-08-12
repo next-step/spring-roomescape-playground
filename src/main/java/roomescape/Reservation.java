@@ -21,11 +21,10 @@ public class Reservation {
     }
 
     public static Reservation toEntity(Long id, Reservation reservation) {
-        validate(reservation);
         return new Reservation(id, reservation.name, reservation.date, reservation.time);
     }
 
-    private static void validate(Reservation reservation) {
+    static void validate(Reservation reservation) {
         if(reservation.name == null || reservation.name.isEmpty()){
             throw new BlankReservationException("이름은 공백이 될 수 없습니다.");
         }

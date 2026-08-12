@@ -22,6 +22,7 @@ public class Reservations {
     }
 
     public Reservation reserve(Reservation reservation){
+        Reservation.validate(reservation);
         Reservation newReservation = Reservation.toEntity(index.getAndIncrement(), reservation);
         reservations.add(newReservation);
         return newReservation;
