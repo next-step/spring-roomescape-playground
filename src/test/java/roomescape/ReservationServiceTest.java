@@ -58,7 +58,7 @@ class ReservationServiceTest {
 
         // when & then
         assertThatThrownBy(() -> reservationService.addReservation(duplicatedRequest))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(BadRequestException.class);
     }
 
     @Test
@@ -72,7 +72,7 @@ class ReservationServiceTest {
 
         // when & then
         assertThatThrownBy(() -> reservationService.addReservation(pastDateRequest))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(BadRequestException.class);
     }
 
     @Test
@@ -86,7 +86,7 @@ class ReservationServiceTest {
 
         // when & then
         assertThatThrownBy(() -> reservationService.addReservation(pastTimeRequest))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(BadRequestException.class);
     }
 
     @Test
@@ -113,6 +113,6 @@ class ReservationServiceTest {
 
         // when & then
         assertThatThrownBy(() -> reservationService.deleteReservation(nonExistingId))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(ReservationNotFoundException.class);
     }
 }

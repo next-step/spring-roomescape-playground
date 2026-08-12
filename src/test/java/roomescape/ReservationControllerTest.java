@@ -114,9 +114,47 @@ class ReservationControllerTest {
     }
 
     @Test
-    void 예약_삭제_요청에_성공하면_상태코드_204를_반환한다() {
+    void 같은_날짜와_시간에_예약을_추가하면_400을_반환한다() {
+        // given
+        String date = LocalDate.now().plusDays(1).toString();
+        String request = createReservationRequest(date, "브라운", "10:00");
+        String duplicatedRequest = createReservationRequest(date, "철수", "10:00");
+
         RestAssured.given().log().all()
-                .when().delete("/reservations/1")
+                .contentType("application/json")
+                .body(request)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(201);
+
+        // when & then
+        assertBadRequest(duplicatedRequest);
+    }
+
+    @Test
+    void 현재_날짜_시간보다_과거인_예약을_추가하면_400을_반환한다() {
+        // given
+        String date = LocalDate.now().minusDays(1).toString();
+        String request = createReservationRequest(date, "브라운", "10:00");
+
+        // when & then
+        assertBadRequest(request);
+    }
+
+    @Test
+    void 예약_삭제_요청에_성공하면_상태코드_204를_반환한다() {
+        // given
+        Integer id = RestAssured.given().log().all()
+                .when().get("/reservations")
+                .then().log().all()
+                .statusCode(200)
+                .extract()
+                .jsonPath()
+                .getInt("[0].id");
+
+        // when & then
+        RestAssured.given().log().all()
+                .when().delete("/reservations/" + id)
                 .then().log().all()
                 .statusCode(204);
     }
@@ -127,6 +165,14 @@ class ReservationControllerTest {
                 .when().delete("/reservations/abc")
                 .then().log().all()
                 .statusCode(400);
+    }
+
+    @Test
+    void 존재하지_않는_id로_예약_삭제_요청_시_404를_반환한다() {
+        RestAssured.given().log().all()
+                .when().delete("/reservations/-1")
+                .then().log().all()
+                .statusCode(404);
     }
 
     private void assertBadRequest(String request) {

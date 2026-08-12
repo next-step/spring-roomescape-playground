@@ -33,7 +33,7 @@ public class ReservationService {
 
     public void deleteReservation(Long id) {
         Reservation reservation = reservationRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 예약을 찾을 수 없습니다."));
+                .orElseThrow(() -> new ReservationNotFoundException("해당 예약을 찾을 수 없습니다."));
 
         reservationRepository.delete(reservation);
     }
@@ -42,13 +42,13 @@ public class ReservationService {
         LocalDateTime reservationDateTime = LocalDateTime.of(request.date(), request.time());
 
         if (reservationDateTime.isBefore(LocalDateTime.now())) {
-            throw new IllegalArgumentException("과거 시간은 예약할 수 없습니다.");
+            throw new BadRequestException("과거 시간은 예약할 수 없습니다.");
         }
     }
 
     private void validateNotDuplicated(ReservationRequest request) {
         if (reservationRepository.existsByDateAndTime(request.date(), request.time())) {
-            throw new IllegalArgumentException("이미 예약된 시간입니다.");
+            throw new BadRequestException("이미 예약된 시간입니다.");
         }
     }
 }
