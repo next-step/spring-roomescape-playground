@@ -47,7 +47,7 @@ public class InMemoryReservationRepository implements ReservationRepository {
 
     @Override
     public void delete(Reservation reservation) {
-        reservations.removeIf(savedReservation -> reservation.getId().equals(savedReservation.getId()));
+        reservations.removeIf(existingReservation -> reservation.getId().equals(existingReservation.getId()));
     }
 
     @Override
