@@ -1,6 +1,7 @@
 package roomescape.domain;
 
 import org.junit.jupiter.api.Test;
+import roomescape.exception.BlankReservationException;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -23,7 +24,7 @@ class ReservationTest {
         String name = null;
         //When & Then
         assertThatThrownBy(() -> new Reservation(1, name, LocalDate.of(2026, 8, 5), LocalTime.of(10, 0)))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(BlankReservationException.class)
                 .hasMessage("이름을 입력해주세요");
     }
 
@@ -33,7 +34,7 @@ class ReservationTest {
         String name = " ";
         //When & Then
         assertThatThrownBy(() -> new Reservation(1, name, LocalDate.of(2026, 8, 5), LocalTime.of(10, 0)))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(BlankReservationException.class)
                 .hasMessage("이름을 입력해주세요");
     }
 
@@ -51,7 +52,7 @@ class ReservationTest {
         LocalDate date = null;
         //When & Then
         assertThatThrownBy(() -> new Reservation(1, "이준환", date, LocalTime.of(10, 0)))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(BlankReservationException.class)
                 .hasMessage("날짜를 선택해주세요");
     }
 
@@ -69,7 +70,7 @@ class ReservationTest {
         LocalTime time = null;
         //When & Then
         assertThatThrownBy(() -> new Reservation(1, "이준환", LocalDate.of(2026, 8, 5), time))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(BlankReservationException.class)
                 .hasMessage("시간을 선택해주세요");
     }
 }

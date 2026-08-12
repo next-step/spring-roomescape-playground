@@ -30,50 +30,31 @@ public class MissionStepTest {
                 .then().log().all()
                 .statusCode(200);
 
-        Map<String, String> params1 = new HashMap<>();
-        params1.put("name", "브라운");
-        params1.put("date", "2023-08-05");
-        params1.put("time", "10:00");
-        RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
-                .body(params1)
-                .when().post("/reservations")
-                .then().log().all()
-                .statusCode(201);
-
-        Map<String, String> params2 = new HashMap<>();
-        params2.put("name", "브라운");
-        params2.put("date", "2023-08-06");
-        params2.put("time", "11:00");
-        RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
-                .body(params2)
-                .when().post("/reservations")
-                .then().log().all()
-                .statusCode(201);
-
-        Map<String, String> params3 = new HashMap<>();
-        params3.put("name", "브라운");
-        params3.put("date", "2023-08-07");
-        params3.put("time", "12:00");
-        RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
-                .body(params3)
-                .when().post("/reservations")
-                .then().log().all()
-                .statusCode(201);
+        createReservation("2023-08-05", "10:00");
+        createReservation("2023-08-06", "11:00");
+        createReservation("2023-08-07", "12:00");
 
         RestAssured.given().log().all()
                 .when().get("/reservations")
                 .then().log().all()
                 .statusCode(200)
                 .body("size()", is(3));
+    }
+
+    private void createReservation(String date, String time) {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", "브라운");
+        params.put("date", date);
+        params.put("time", time);
 
         RestAssured.given().log().all()
-                .when().get("/reservation")
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/reservations")
                 .then().log().all()
-                .statusCode(200);
+                .statusCode(201);
     }
+
 
     @Test
     void 삼단계() {
