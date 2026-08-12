@@ -2,6 +2,8 @@ package roomescape;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import roomescape.domain.Reservation;
+import roomescape.repository.InMemoryReservationRepository;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
