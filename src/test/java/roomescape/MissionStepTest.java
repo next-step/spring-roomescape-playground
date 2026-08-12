@@ -1,9 +1,13 @@
 package roomescape;
 
 import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.hamcrest.Matchers.is;
 
@@ -26,10 +30,104 @@ public class MissionStepTest {
                 .then().log().all()
                 .statusCode(200);
 
+        Map<String, String> params1 = new HashMap<>();
+        params1.put("name", "브라운");
+        params1.put("date", "2023-08-05");
+        params1.put("time", "10:00");
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params1)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(201);
+
+        Map<String, String> params2 = new HashMap<>();
+        params2.put("name", "브라운");
+        params2.put("date", "2023-08-06");
+        params2.put("time", "11:00");
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params2)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(201);
+
+        Map<String, String> params3 = new HashMap<>();
+        params3.put("name", "브라운");
+        params3.put("date", "2023-08-07");
+        params3.put("time", "12:00");
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params3)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(201);
+
         RestAssured.given().log().all()
                 .when().get("/reservations")
                 .then().log().all()
                 .statusCode(200)
                 .body("size()", is(3));
+
+        RestAssured.given().log().all()
+                .when().get("/reservation")
+                .then().log().all()
+                .statusCode(200);
+    }
+
+    @Test
+    void 삼단계() {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", "브라운");
+        params.put("date", "2023-08-05");
+        params.put("time", "15:40");
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(201)
+                .header("Location", "/reservations/1")
+                .body("id", is(1));
+
+        RestAssured.given().log().all()
+                .when().get("/reservations")
+                .then().log().all()
+                .statusCode(200)
+                .body("size()", is(1));
+
+        RestAssured.given().log().all()
+                .when().delete("/reservations/1")
+                .then().log().all()
+                .statusCode(204);
+
+        RestAssured.given().log().all()
+                .when().get("/reservations")
+                .then().log().all()
+                .statusCode(200)
+                .body("size()", is(0));
+    }
+
+    @Test
+    void 사단계() {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", "브라운");
+        params.put("date", "");
+        params.put("time", "");
+
+        // 필요한 인자가 없는 경우
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(400);
+
+        // 삭제할 예약이 없는 경우
+        RestAssured.given().log().all()
+                .when().delete("/reservations/1")
+                .then().log().all()
+                .statusCode(404);
     }
 }
