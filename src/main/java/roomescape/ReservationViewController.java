@@ -15,6 +15,12 @@ public class ReservationViewController {
     private List<Reservation> reservations = new ArrayList<>();
     private AtomicLong index = new AtomicLong(1);
 
+    public ReservationViewController() {
+        reservations.add(new Reservation(1L, "브라운", "2023-01-01", "10:00"));
+        reservations.add(new Reservation(2L, "브라운", "2023-01-02", "11:00"));
+        reservations.add(new Reservation(3L, "브라운", "2023-01-03", "12:00"));
+    }
+
     @GetMapping("/")
     public String home() {
         return "home";
@@ -28,10 +34,6 @@ public class ReservationViewController {
     @GetMapping("/reservations")
     @ResponseBody
     public List<Reservation> reservations() {
-        reservations.add(new Reservation(1L, "브라운", "2023-01-01", "10:00"));
-        reservations.add(new Reservation(2L, "브라운", "2023-01-02", "11:00"));
-        reservations.add(new Reservation(3L, "브라운", "2023-01-03", "12:00"));
-
         return reservations;
     }
 }
