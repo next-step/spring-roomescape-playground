@@ -41,21 +41,6 @@ public class MissionStepTest {
                 .body("size()", is(3));
     }
 
-    private void createReservation(String date, String time) {
-        Map<String, String> params = new HashMap<>();
-        params.put("name", "브라운");
-        params.put("date", date);
-        params.put("time", time);
-
-        RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
-                .body(params)
-                .when().post("/reservations")
-                .then().log().all()
-                .statusCode(201);
-    }
-
-
     @Test
     void 삼단계() {
         Map<String, String> params = new HashMap<>();
@@ -110,5 +95,19 @@ public class MissionStepTest {
                 .when().delete("/reservations/1")
                 .then().log().all()
                 .statusCode(404);
+    }
+
+    private void createReservation(String date, String time) {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", "브라운");
+        params.put("date", date);
+        params.put("time", time);
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(201);
     }
 }
