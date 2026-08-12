@@ -88,4 +88,26 @@ class ReservationServiceTest {
         assertThatThrownBy(() -> reservationService.addReservation(pastTimeRequest))
                 .isInstanceOf(IllegalArgumentException.class);
     }
+
+    @Test
+    void 존재하는_id로_예약을_삭제한다() {
+        // given
+        Long id = 1L;
+
+        // when
+        reservationService.deleteReservation(id);
+
+        // then
+        assertThat(reservationRepository.findById(id)).isEmpty();
+    }
+
+    @Test
+    void 존재하지_않는_id로_예약_삭제_요청_시_예외를_던진다() {
+        // given
+        Long nonExistingId = 999L;
+
+        // when & then
+        assertThatThrownBy(() -> reservationService.deleteReservation(nonExistingId))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
 }

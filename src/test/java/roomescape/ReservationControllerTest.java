@@ -6,6 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.containsString;
@@ -23,6 +24,33 @@ class ReservationControllerTest {
                 .contentType(containsString("application/json"))
                 .body("size()", is(3))
                 .body("[0].keySet()", containsInAnyOrder("id", "name", "date", "time"));
+    }
+
+    @Test
+    void 예약_목록이_비어있으면_빈_JSON_배열을_반환한다() {
+        // given
+        List<Integer> ids = RestAssured.given().log().all()
+                .when().get("/reservations")
+                .then().log().all()
+                .statusCode(200)
+                .extract()
+                .jsonPath()
+                .getList("id");
+
+        for (Integer id : ids) {
+            RestAssured.given().log().all()
+                    .when().delete("/reservations/" + id)
+                    .then().log().all()
+                    .statusCode(204);
+        }
+
+        // when & then
+        RestAssured.given().log().all()
+                .when().get("/reservations")
+                .then().log().all()
+                .statusCode(200)
+                .contentType(containsString("application/json"))
+                .body("size()", is(0));
     }
 
     @Test
@@ -82,6 +110,22 @@ class ReservationControllerTest {
 
         // when & then
         assertBadRequest(request);
+    }
+
+    @Test
+    void 예약_삭제_요청에_성공하면_상태코드_204를_반환한다() {
+        RestAssured.given().log().all()
+                .when().delete("/reservations/1")
+                .then().log().all()
+                .statusCode(204);
+    }
+
+    @Test
+    void 예약_삭제_요청_id가_숫자가_아니면_400을_반환한다() {
+        RestAssured.given().log().all()
+                .when().delete("/reservations/abc")
+                .then().log().all()
+                .statusCode(400);
     }
 
     private void assertBadRequest(String request) {
