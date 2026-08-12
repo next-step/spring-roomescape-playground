@@ -8,11 +8,13 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class GlobalExceptionHandler {
     @ExceptionHandler(NotFoundReservationException.class)
     public ResponseEntity<Void> handleNotFoundReservation(NotFoundReservationException e) {
+        System.out.println("[오류] : " + e.getMessage());
         return ResponseEntity.notFound().build();
     }
 
     @ExceptionHandler(BlankReservationException.class)
-    public ResponseEntity<Void> handleIllegalArgument(IllegalArgumentException e) {
+    public ResponseEntity<Void> handleBlankReservation(BlankReservationException e) {
+        System.out.println("[오류] : " + e.getMessage());
         return ResponseEntity.badRequest().build();
     }
 }
