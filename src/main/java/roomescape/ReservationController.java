@@ -3,11 +3,11 @@ package roomescape;
 import java.util.List;
 import java.util.ArrayList;
 
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+@Controller
 public class ReservationController {
 
     public ReservationController() {
