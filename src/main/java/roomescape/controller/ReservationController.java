@@ -1,9 +1,12 @@
-package roomescape;
+package roomescape.controller;
 
-import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import roomescape.domain.Reservation;
+import roomescape.dto.ReservationRequest;
+import roomescape.dto.ReservationResponse;
+import roomescape.exception.NotFoundReservationException;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -16,8 +19,6 @@ public class ReservationController {
     private final List<Reservation> reservations = new ArrayList<>();
     private final AtomicLong index = new AtomicLong(1);
 
-    public ReservationController() {
-    }
     @GetMapping("/reservations")
     public ResponseEntity<List<ReservationResponse>> readReservationList() {
         List<ReservationResponse> responses = reservations.stream()
@@ -37,16 +38,14 @@ public class ReservationController {
     }
 
     @DeleteMapping("/reservations/{id}")
-    public ResponseEntity<ReservationResponse> deleteReservation(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
         Reservation reservation = reservations.stream()
                 .filter(it -> Objects.equals(it.getId(), id))
                 .findFirst()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new NotFoundReservationException("예약을 찾을 수 없습니다."));
 
         reservations.remove(reservation);
 
         return ResponseEntity.noContent().build();
     }
-
-
 }
