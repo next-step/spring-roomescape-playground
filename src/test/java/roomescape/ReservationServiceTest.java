@@ -81,7 +81,7 @@ class ReservationServiceTest {
         ReservationRequest pastTimeRequest = new ReservationRequest(
                 LocalDate.now(),
                 "브라운",
-                LocalTime.now().minusMinutes(1)
+                LocalTime.of(0, 0)
         );
 
         // when & then
@@ -92,19 +92,24 @@ class ReservationServiceTest {
     @Test
     void 존재하는_id로_예약을_삭제한다() {
         // given
-        Long id = 1L;
+        ReservationRequest request = new ReservationRequest(
+                LocalDate.now().plusDays(1),
+                "브라운",
+                LocalTime.of(10, 0)
+        );
+        Reservation reservation = reservationService.addReservation(request);
 
         // when
-        reservationService.deleteReservation(id);
+        reservationService.deleteReservation(reservation.getId());
 
         // then
-        assertThat(reservationRepository.findById(id)).isEmpty();
+        assertThat(reservationRepository.findById(reservation.getId())).isEmpty();
     }
 
     @Test
     void 존재하지_않는_id로_예약_삭제_요청_시_예외를_던진다() {
         // given
-        Long nonExistingId = 999L;
+        Long nonExistingId = -1L;
 
         // when & then
         assertThatThrownBy(() -> reservationService.deleteReservation(nonExistingId))

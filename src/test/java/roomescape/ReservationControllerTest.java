@@ -11,6 +11,7 @@ import java.util.List;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -67,7 +68,7 @@ class ReservationControllerTest {
                 .then().log().all()
                 .statusCode(201)
                 .contentType(containsString("application/json"))
-                .body("id", is(4))
+                .body("id", notNullValue())
                 .body("name", is("브라운"))
                 .body("date", is(date))
                 .body("time", is("10:00"));

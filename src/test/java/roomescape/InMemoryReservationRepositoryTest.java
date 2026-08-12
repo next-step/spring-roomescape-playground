@@ -21,6 +21,7 @@ class InMemoryReservationRepositoryTest {
     void 예약을_저장하면_id가_부여되고_목록에_추가된다() {
         // given
         Reservation reservation = new Reservation(null, "브라운", LocalDate.now(), LocalTime.of(10, 0));
+        int size = reservationRepository.findAll().size();
 
         // when
         Reservation savedReservation = reservationRepository.save(reservation);
@@ -28,7 +29,7 @@ class InMemoryReservationRepositoryTest {
         // then
         assertThat(savedReservation.getId()).isNotNull();
         assertThat(savedReservation.getName()).isEqualTo("브라운");
-        assertThat(reservationRepository.findAll()).hasSize(4);
+        assertThat(reservationRepository.findAll()).hasSize(size + 1);
     }
 
     @Test
@@ -53,32 +54,34 @@ class InMemoryReservationRepositoryTest {
     @Test
     void 예약을_삭제하면_목록에서_제거된다() {
         // given
-        Reservation reservation = reservationRepository.findById(1L).get();
+        Reservation reservation = new Reservation(null, "브라운", LocalDate.now(), LocalTime.of(10, 0));
+        Reservation savedReservation = reservationRepository.save(reservation);
 
         // when
-        reservationRepository.delete(reservation);
+        reservationRepository.delete(savedReservation);
 
         // then
-        assertThat(reservationRepository.findById(1L)).isEmpty();
+        assertThat(reservationRepository.findById(savedReservation.getId())).isEmpty();
     }
 
     @Test
     void id에_해당하는_예약이_존재하면_예약을_반환한다() {
         // given
-        Long id = 1L;
+        Reservation reservation = new Reservation(null, "브라운", LocalDate.now(), LocalTime.of(10, 0));
+        Reservation savedReservation = reservationRepository.save(reservation);
 
         // when
-        Optional<Reservation> reservation = reservationRepository.findById(id);
+        Optional<Reservation> foundReservation = reservationRepository.findById(savedReservation.getId());
 
         // then
-        assertThat(reservation).isPresent();
-        assertThat(reservation.get().getId()).isEqualTo(id);
+        assertThat(foundReservation).isPresent();
+        assertThat(foundReservation.get().getId()).isEqualTo(savedReservation.getId());
     }
 
     @Test
     void id에_해당하는_예약이_존재하지_않으면_빈_Optional을_반환한다() {
         // given
-        Long nonExistingId = 999L;
+        Long nonExistingId = -1L;
 
         // when
         Optional<Reservation> reservation = reservationRepository.findById(nonExistingId);
