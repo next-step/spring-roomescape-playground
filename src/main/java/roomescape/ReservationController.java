@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class ReservationController {
+
     private List<Reservation> reservations = new ArrayList<>(
         List.of(
             new Reservation(1, "브라운", "2023-01-01", "10:00"),
