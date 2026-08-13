@@ -7,13 +7,13 @@ public class Reservation {
     private final Long id;
     private final String name;
     private final LocalDate date;
-    private final LocalTime localTime;
+    private final LocalTime time;
 
-    public Reservation(Long id, String name, LocalDate date, LocalTime localTime) {
+    public Reservation(Long id, String name, LocalDate date, LocalTime time) {
         this.id = id;
         this.name = name;
         this.date = date;
-        this.localTime = localTime;
+        this.time = time;
     }
 
     public String getName() {
@@ -28,7 +28,7 @@ public class Reservation {
         return date;
     }
 
-    public LocalTime getLocalTime() {
-        return localTime;
+    public LocalTime getTime() {
+        return time;
     }
 }
