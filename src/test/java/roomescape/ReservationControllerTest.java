@@ -23,8 +23,8 @@ class ReservationControllerTest {
                 .then().log().all()
                 .statusCode(200)
                 .contentType(containsString("application/json"))
-                .body("size()", is(3))
-                .body("[0].keySet()", containsInAnyOrder("id", "name", "date", "time"));
+                .body("reservations.size()", is(3))
+                .body("reservations[0].keySet()", containsInAnyOrder("id", "name", "date", "time"));
     }
 
     @Test
@@ -36,7 +36,7 @@ class ReservationControllerTest {
                 .statusCode(200)
                 .extract()
                 .jsonPath()
-                .getList("id");
+                .getList("reservations.id");
 
         for (Integer id : ids) {
             RestAssured.given().log().all()
@@ -51,7 +51,7 @@ class ReservationControllerTest {
                 .then().log().all()
                 .statusCode(200)
                 .contentType(containsString("application/json"))
-                .body("size()", is(0));
+                .body("reservations.size()", is(0));
     }
 
     @Test
@@ -150,7 +150,7 @@ class ReservationControllerTest {
                 .statusCode(200)
                 .extract()
                 .jsonPath()
-                .getInt("[0].id");
+                .getInt("reservations[0].id");
 
         // when & then
         RestAssured.given().log().all()
