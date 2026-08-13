@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import roomescape.domain.Reservation;
 import roomescape.repository.InMemoryReservationRepository;
+import roomescape.repository.ReservationRepository;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -11,8 +12,8 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class InMemoryReservationRepositoryTest {
-    private InMemoryReservationRepository reservationRepository;
+class ReservationRepositoryTest {
+    private ReservationRepository reservationRepository;
 
     @BeforeEach
     void setUp() {
