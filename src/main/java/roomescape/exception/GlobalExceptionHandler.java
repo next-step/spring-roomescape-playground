@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -21,5 +22,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleBlankReservation(BlankReservationException e) {
         log.warn(e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<String> handleTypeMismatch(MethodArgumentTypeMismatchException e) {
+        log.warn(e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("잘못된 요청입니다. id는 숫자여야 합니다.");
     }
 }
