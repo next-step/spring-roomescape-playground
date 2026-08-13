@@ -13,11 +13,11 @@ public class Reservation {
     public Reservation() {}
 
     public Reservation(Long id, String name, String date, String time) {
-        if (name == null || name.isEmpty()) {
+        if (name == null || name.isBlank()) {
             throw new IllegalArgumentException("이름을 입력해주세요.");
         }
 
-        if (date == null || date.isEmpty()) {
+        if (date == null || date.isBlank()) {
             throw new IllegalArgumentException("날짜를 입력해주세요.");
         }
         try {
@@ -26,7 +26,7 @@ public class Reservation {
             throw new IllegalArgumentException("날짜 형식이 올바르지 않습니다.");
         }
 
-        if (time == null || time.isEmpty()) {
+        if (time == null || time.isBlank()) {
             throw new IllegalArgumentException("시간을 입력해주세요.");
         }
         try {
