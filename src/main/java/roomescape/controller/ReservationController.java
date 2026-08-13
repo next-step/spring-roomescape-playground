@@ -24,7 +24,7 @@ public class ReservationController {
     @GetMapping("/reservations")
     @ResponseBody
     public List<Reservation> reservations() {
-        return reservations;
+        return List.copyOf(reservations);
     }
 
 }
