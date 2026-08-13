@@ -13,27 +13,9 @@ public class Reservation {
     public Reservation() {}
 
     public Reservation(Long id, String name, String date, String time) {
-        if (name == null || name.isBlank()) {
-            throw new IllegalArgumentException("이름을 입력해주세요.");
-        }
-
-        if (date == null || date.isBlank()) {
-            throw new IllegalArgumentException("날짜를 입력해주세요.");
-        }
-        try {
-            LocalDate.parse(date);
-        } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("날짜 형식이 올바르지 않습니다.");
-        }
-
-        if (time == null || time.isBlank()) {
-            throw new IllegalArgumentException("시간을 입력해주세요.");
-        }
-        try {
-            LocalTime.parse(time);
-        } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("시간 형식이 올바르지 않습니다.");
-        }
+        validateName(name);
+        validateDate(date);
+        validateTime(time);
 
         this.id = id;
         this.name = name;
@@ -59,5 +41,33 @@ public class Reservation {
 
     public static Reservation toEntity(Reservation reservation, Long id) {
         return new Reservation(id, reservation.name, reservation.date, reservation.time);
+    }
+
+    private void validateName(String name) {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("이름을 입력해주세요.");
+        }
+    }
+
+    private void validateDate(String date) {
+        if (date == null || date.isBlank()) {
+            throw new IllegalArgumentException("날짜를 입력해주세요.");
+        }
+        try {
+            LocalDate.parse(date);
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("날짜 형식이 올바르지 않습니다.");
+        }
+    }
+
+    private void validateTime(String time) {
+        if (time == null || time.isBlank()) {
+            throw new IllegalArgumentException("시간을 입력해주세요.");
+        }
+        try {
+            LocalTime.parse(time);
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("시간 형식이 올바르지 않습니다.");
+        }
     }
 }
