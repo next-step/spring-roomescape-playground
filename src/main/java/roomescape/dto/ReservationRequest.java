@@ -24,7 +24,7 @@ public class ReservationRequest {
     }
 
     public ReservationRequest() {
-    } // jackson이 역질렬화 할 떄 사용
+    }
 
     public String getName() {
         return name;
