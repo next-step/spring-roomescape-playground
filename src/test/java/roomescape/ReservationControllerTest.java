@@ -114,7 +114,7 @@ class ReservationControllerTest {
     }
 
     @Test
-    void 같은_날짜와_시간에_예약을_추가하면_400을_반환한다() {
+    void 같은_날짜와_시간에_예약을_추가하면_409를_반환한다() {
         // given
         String date = LocalDate.now().plusDays(1).toString();
         String request = createReservationRequest(date, "브라운", "10:00");
@@ -128,7 +128,12 @@ class ReservationControllerTest {
                 .statusCode(201);
 
         // when & then
-        assertBadRequest(duplicatedRequest);
+        RestAssured.given().log().all()
+                .contentType("application/json")
+                .body(duplicatedRequest)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(409);
     }
 
     @Test

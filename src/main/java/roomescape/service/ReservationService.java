@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import roomescape.domain.Reservation;
 import roomescape.dto.ReservationRequest;
 import roomescape.exception.BadRequestException;
+import roomescape.exception.ReservationConflictException;
 import roomescape.exception.ReservationNotFoundException;
 import roomescape.repository.ReservationRepository;
 
@@ -53,7 +54,7 @@ public class ReservationService {
 
     private void validateNotDuplicated(ReservationRequest request) {
         if (reservationRepository.existsByDateAndTime(request.date(), request.time())) {
-            throw new BadRequestException("이미 예약된 시간입니다.");
+            throw new ReservationConflictException("이미 예약된 시간입니다.");
         }
     }
 }

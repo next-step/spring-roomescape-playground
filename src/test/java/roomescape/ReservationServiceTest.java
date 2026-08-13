@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import roomescape.domain.Reservation;
 import roomescape.dto.ReservationRequest;
 import roomescape.exception.BadRequestException;
+import roomescape.exception.ReservationConflictException;
 import roomescape.exception.ReservationNotFoundException;
 import roomescape.repository.InMemoryReservationRepository;
 import roomescape.repository.ReservationRepository;
@@ -65,7 +66,7 @@ class ReservationServiceTest {
 
         // when & then
         assertThatThrownBy(() -> reservationService.addReservation(duplicatedRequest))
-                .isInstanceOf(BadRequestException.class);
+                .isInstanceOf(ReservationConflictException.class);
     }
 
     @Test
