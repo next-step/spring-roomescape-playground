@@ -4,27 +4,16 @@ import roomescape.exception.NotFoundReservationException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 public class Reservations {
     private final List<Reservation> reservations = new ArrayList<>();
-    private final AtomicLong index = new AtomicLong(0);
 
     public List<Reservation> getReservations() {
         return List.copyOf(reservations);
     }
 
-    public Reservation add(Reservation reservation) {
-        long newId = index.incrementAndGet();
-
-        Reservation newReservation = new Reservation(
-                newId,
-                reservation.getName(),
-                reservation.getDate(),
-                reservation.getTime()
-        );
-        reservations.add(newReservation);
-        return newReservation;
+    public void add(Reservation reservation) {
+        reservations.add(reservation);
     }
 
     public void delete(long id) {
