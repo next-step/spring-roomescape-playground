@@ -107,7 +107,7 @@ class ReservationControllerTest {
         String request = createReservationRequest("2027/08/15", "브라운", RESERVATION_TIME.toString());
 
         // when & then
-        assertBadRequest(request);
+        assertBadReservationRequest(request, "요청 본문 형식이 올바르지 않습니다.");
         then(reservationService).shouldHaveNoInteractions();
     }
 
@@ -117,7 +117,7 @@ class ReservationControllerTest {
         String request = createReservationRequest(RESERVATION_DATE.toString(), "브라운", "10-00");
 
         // when & then
-        assertBadRequest(request);
+        assertBadReservationRequest(request, "요청 본문 형식이 올바르지 않습니다.");
         then(reservationService).shouldHaveNoInteractions();
     }
 
@@ -127,7 +127,7 @@ class ReservationControllerTest {
         String request = createReservationRequest(RESERVATION_DATE.toString(), "", RESERVATION_TIME.toString());
 
         // when & then
-        assertBadRequest(request);
+        assertBadReservationRequest(request, "예약자 이름은 비어 있을 수 없습니다.");
         then(reservationService).shouldHaveNoInteractions();
     }
 
@@ -137,7 +137,7 @@ class ReservationControllerTest {
         String request = createReservationRequest(RESERVATION_DATE.toString(), "브라운1", RESERVATION_TIME.toString());
 
         // when & then
-        assertBadRequest(request);
+        assertBadReservationRequest(request, "예약자 이름 형식이 올바르지 않습니다.");
         then(reservationService).shouldHaveNoInteractions();
     }
 
@@ -153,7 +153,8 @@ class ReservationControllerTest {
         mockMvc.perform(post("/reservations")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(request))
-                .andExpect(status().isConflict());
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.message").value("이미 예약된 시간입니다."));
     }
 
     @Test
@@ -165,7 +166,7 @@ class ReservationControllerTest {
                 .willThrow(new BadRequestException("잘못된 예약입니다."));
 
         // when & then
-        assertBadRequest(request);
+        assertBadReservationRequest(request, "잘못된 예약입니다.");
     }
 
     @Test
@@ -184,7 +185,8 @@ class ReservationControllerTest {
     void 예약_삭제_요청_id가_숫자가_아니면_400을_반환한다() throws Exception {
         // when & then
         mockMvc.perform(delete("/reservations/abc"))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("요청 값의 형식이 올바르지 않습니다."));
 
         then(reservationService).shouldHaveNoInteractions();
     }
@@ -199,16 +201,18 @@ class ReservationControllerTest {
 
         // when & then
         mockMvc.perform(delete("/reservations/{id}", id))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("해당 예약을 찾을 수 없습니다."));
 
         then(reservationService).should().deleteReservation(id);
     }
 
-    private void assertBadRequest(String request) throws Exception {
+    private void assertBadReservationRequest(String request, String message) throws Exception {
         mockMvc.perform(post("/reservations")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(request))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value(message));
     }
 
     private String createReservationRequest(String date, String name, String time) {
