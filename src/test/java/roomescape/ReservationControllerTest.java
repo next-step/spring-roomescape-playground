@@ -8,7 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import roomescape.controller.ReservationController;
 import roomescape.domain.Reservation;
-import roomescape.dto.ReservationRequest;
+import roomescape.dto.ReservationCreateCommand;
 import roomescape.exception.BadRequestException;
 import roomescape.exception.ReservationConflictException;
 import roomescape.exception.ReservationNotFoundException;
@@ -82,9 +82,9 @@ class ReservationControllerTest {
     void 예약_추가_요청이_성공하면_상태코드_201과_생성된_예약을_반환한다() throws Exception {
         // given
         String request = createReservationRequest(RESERVATION_DATE.toString(), "브라운", RESERVATION_TIME.toString());
-        ReservationRequest expectedRequest = new ReservationRequest(RESERVATION_DATE, "브라운", RESERVATION_TIME);
+        ReservationCreateCommand expectedCommand = new ReservationCreateCommand("브라운", RESERVATION_DATE, RESERVATION_TIME);
 
-        given(reservationService.addReservation(expectedRequest))
+        given(reservationService.addReservation(expectedCommand))
                 .willReturn(new Reservation(1L, "브라운", RESERVATION_DATE, RESERVATION_TIME));
 
         // when & then
@@ -98,7 +98,7 @@ class ReservationControllerTest {
                 .andExpect(jsonPath("$.date").value(RESERVATION_DATE.toString()))
                 .andExpect(jsonPath("$.time").value(RESERVATION_TIME.toString()));
 
-        then(reservationService).should().addReservation(expectedRequest);
+        then(reservationService).should().addReservation(expectedCommand);
     }
 
     @Test

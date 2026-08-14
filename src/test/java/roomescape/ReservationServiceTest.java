@@ -3,7 +3,7 @@ package roomescape;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import roomescape.domain.Reservation;
-import roomescape.dto.ReservationRequest;
+import roomescape.dto.ReservationCreateCommand;
 import roomescape.exception.BadRequestException;
 import roomescape.exception.ReservationConflictException;
 import roomescape.exception.ReservationNotFoundException;
@@ -38,81 +38,81 @@ class ReservationServiceTest {
     @Test
     void 유효한_예약_요청이면_저장된_예약을_반환한다() {
         // given
-        ReservationRequest request = new ReservationRequest(
-                TODAY.plusDays(1),
+        ReservationCreateCommand command = new ReservationCreateCommand(
                 "브라운",
+                TODAY.plusDays(1),
                 RESERVATION_TIME
         );
 
         // when
-        Reservation reservation = reservationService.addReservation(request);
+        Reservation reservation = reservationService.addReservation(command);
 
         // then
         assertThat(reservation.getId()).isNotNull();
         assertThat(reservation.getName()).isEqualTo("브라운");
-        assertThat(reservation.getDate()).isEqualTo(request.date());
-        assertThat(reservation.getTime()).isEqualTo(request.time());
+        assertThat(reservation.getDate()).isEqualTo(command.date());
+        assertThat(reservation.getTime()).isEqualTo(command.time());
     }
 
     @Test
     void 이미_예약된_날짜와_시간이면_예외를_던진다() {
         // given
-        ReservationRequest firstRequest = new ReservationRequest(
-                TODAY.plusDays(1),
+        ReservationCreateCommand firstCommand = new ReservationCreateCommand(
                 "브라운",
-                RESERVATION_TIME
-        );
-
-        ReservationRequest duplicatedRequest = new ReservationRequest(
                 TODAY.plusDays(1),
-                "철수",
                 RESERVATION_TIME
         );
 
-        reservationService.addReservation(firstRequest);
+        ReservationCreateCommand duplicatedCommand = new ReservationCreateCommand(
+                "철수",
+                TODAY.plusDays(1),
+                RESERVATION_TIME
+        );
+
+        reservationService.addReservation(firstCommand);
 
         // when & then
-        assertThatThrownBy(() -> reservationService.addReservation(duplicatedRequest))
+        assertThatThrownBy(() -> reservationService.addReservation(duplicatedCommand))
                 .isInstanceOf(ReservationConflictException.class);
     }
 
     @Test
     void 과거_날짜로_예약하면_예외를_던진다() {
         // given
-        ReservationRequest pastDateRequest = new ReservationRequest(
-                TODAY.minusDays(1),
+        ReservationCreateCommand pastDateCommand = new ReservationCreateCommand(
                 "브라운",
+                TODAY.minusDays(1),
                 RESERVATION_TIME
         );
 
         // when & then
-        assertThatThrownBy(() -> reservationService.addReservation(pastDateRequest))
+        assertThatThrownBy(() -> reservationService.addReservation(pastDateCommand))
                 .isInstanceOf(BadRequestException.class);
     }
 
     @Test
     void 오늘_날짜의_지난_시간으로_예약하면_예외를_던진다() {
         // given
-        ReservationRequest pastTimeRequest = new ReservationRequest(
-                TODAY,
+        ReservationCreateCommand pastTimeCommand = new ReservationCreateCommand(
                 "브라운",
+                TODAY,
                 RESERVATION_TIME
         );
 
         // when & then
-        assertThatThrownBy(() -> reservationService.addReservation(pastTimeRequest))
+        assertThatThrownBy(() -> reservationService.addReservation(pastTimeCommand))
                 .isInstanceOf(BadRequestException.class);
     }
 
     @Test
     void 존재하는_id로_예약을_삭제한다() {
         // given
-        ReservationRequest request = new ReservationRequest(
-                TODAY.plusDays(1),
+        ReservationCreateCommand command = new ReservationCreateCommand(
                 "브라운",
+                TODAY.plusDays(1),
                 RESERVATION_TIME
         );
-        Reservation reservation = reservationService.addReservation(request);
+        Reservation reservation = reservationService.addReservation(command);
 
         // when
         reservationService.deleteReservation(reservation.getId());

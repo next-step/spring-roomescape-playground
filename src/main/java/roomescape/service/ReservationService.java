@@ -2,7 +2,7 @@ package roomescape.service;
 
 import org.springframework.stereotype.Service;
 import roomescape.domain.Reservation;
-import roomescape.dto.ReservationRequest;
+import roomescape.dto.ReservationCreateCommand;
 import roomescape.exception.BadRequestException;
 import roomescape.exception.ReservationConflictException;
 import roomescape.exception.ReservationNotFoundException;
@@ -27,14 +27,14 @@ public class ReservationService {
         return reservationRepository.findAll();
     }
 
-    public Reservation addReservation(ReservationRequest request) {
-        validateNotPast(request);
-        validateNotDuplicated(request);
+    public Reservation addReservation(ReservationCreateCommand command) {
+        validateNotPast(command);
+        validateNotDuplicated(command);
 
         Reservation reservation = new Reservation(
-                request.name(),
-                request.date(),
-                request.time()
+                command.name(),
+                command.date(),
+                command.time()
         );
 
         return reservationRepository.save(reservation);
@@ -48,16 +48,16 @@ public class ReservationService {
         }
     }
 
-    private void validateNotPast(ReservationRequest request) {
-        LocalDateTime reservationDateTime = LocalDateTime.of(request.date(), request.time());
+    private void validateNotPast(ReservationCreateCommand command) {
+        LocalDateTime reservationDateTime = LocalDateTime.of(command.date(), command.time());
 
         if (reservationDateTime.isBefore(LocalDateTime.now(clock))) {
             throw new BadRequestException("과거 시간은 예약할 수 없습니다.");
         }
     }
 
-    private void validateNotDuplicated(ReservationRequest request) {
-        if (reservationRepository.existsByDateAndTime(request.date(), request.time())) {
+    private void validateNotDuplicated(ReservationCreateCommand command) {
+        if (reservationRepository.existsByDateAndTime(command.date(), command.time())) {
             throw new ReservationConflictException("이미 예약된 시간입니다.");
         }
     }
