@@ -13,6 +13,9 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ReservationRepositoryTest {
+    private static final LocalDate DATE = LocalDate.of(2027, 8, 14);
+    private static final LocalTime TIME = LocalTime.of(10, 0);
+
     private ReservationRepository reservationRepository;
 
     @BeforeEach
@@ -23,7 +26,7 @@ class ReservationRepositoryTest {
     @Test
     void 예약을_저장하면_id가_부여되고_목록에_추가된다() {
         // given
-        Reservation reservation = new Reservation(null, "브라운", LocalDate.now(), LocalTime.of(10, 0));
+        Reservation reservation = new Reservation(null, "브라운", DATE, TIME);
         int size = reservationRepository.findAll().size();
 
         // when
@@ -38,7 +41,7 @@ class ReservationRepositoryTest {
     @Test
     void 같은_날짜와_시간의_예약이_존재하면_true를_반환한다() {
         // given
-        Reservation reservation = new Reservation(null, "브라운", LocalDate.now(), LocalTime.of(10, 0));
+        Reservation reservation = new Reservation(null, "브라운", DATE, TIME);
 
         // when
         reservationRepository.save(reservation);
@@ -50,14 +53,14 @@ class ReservationRepositoryTest {
 
     @Test
     void 같은_날짜와_시간의_예약이_존재하지_않으면_false를_반환한다() {
-        assertThat(reservationRepository.existsByDateAndTime(LocalDate.now(), LocalTime.of(10, 0)))
+        assertThat(reservationRepository.existsByDateAndTime(DATE, TIME))
                 .isFalse();
     }
 
     @Test
     void 예약을_삭제하면_목록에서_제거된다() {
         // given
-        Reservation reservation = new Reservation(null, "브라운", LocalDate.now(), LocalTime.of(10, 0));
+        Reservation reservation = new Reservation(null, "브라운", DATE, TIME);
         Reservation savedReservation = reservationRepository.save(reservation);
 
         // when
@@ -83,7 +86,7 @@ class ReservationRepositoryTest {
     @Test
     void id에_해당하는_예약이_존재하면_예약을_반환한다() {
         // given
-        Reservation reservation = new Reservation(null, "브라운", LocalDate.now(), LocalTime.of(10, 0));
+        Reservation reservation = new Reservation(null, "브라운", DATE, TIME);
         Reservation savedReservation = reservationRepository.save(reservation);
 
         // when

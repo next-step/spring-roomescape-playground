@@ -8,6 +8,7 @@ import roomescape.exception.ReservationConflictException;
 import roomescape.exception.ReservationNotFoundException;
 import roomescape.repository.ReservationRepository;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -15,9 +16,11 @@ import java.util.List;
 public class ReservationService {
 
     private final ReservationRepository reservationRepository;
+    private final Clock clock;
 
-    public ReservationService(ReservationRepository reservationRepository) {
+    public ReservationService(ReservationRepository reservationRepository, Clock clock) {
         this.reservationRepository = reservationRepository;
+        this.clock = clock;
     }
 
     public List<Reservation> findAll() {
@@ -48,7 +51,7 @@ public class ReservationService {
     private void validateNotPast(ReservationRequest request) {
         LocalDateTime reservationDateTime = LocalDateTime.of(request.date(), request.time());
 
-        if (reservationDateTime.isBefore(LocalDateTime.now())) {
+        if (reservationDateTime.isBefore(LocalDateTime.now(clock))) {
             throw new BadRequestException("과거 시간은 예약할 수 없습니다.");
         }
     }
