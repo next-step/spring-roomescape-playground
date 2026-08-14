@@ -17,13 +17,13 @@ public class ReservationController {
         reservations.add(new Reservation(2, "브라운", "2023-01-02", "11:00"));
     }
     @GetMapping("/reservation")
-    public String reservations() {
+    public String reservation() {
         return "reservation";
     }
 
     @GetMapping("/reservations")
     @ResponseBody
-    public List<Reservation> Reservations() {
+    public List<Reservation> reservations() {
         return reservations;
     }
 }
