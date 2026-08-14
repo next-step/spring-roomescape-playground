@@ -25,9 +25,14 @@ public class ReservationRepository {
         return this.reservations.values().stream().toList();
     }
 
-    public Void delete(Reservation reservation) {
+    public void delete(Reservation reservation) {
+        if (reservation == null || reservation.getId() == null) {
+            throw new IllegalArgumentException();
+        }
+        if (!reservations.containsKey(reservation.getId())) {
+            return;
+        }
         this.reservations.remove(reservation.getId());
-        return null;
     }
 
     public Optional<Reservation> findById(Long reservationId) {
