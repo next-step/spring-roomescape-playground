@@ -17,9 +17,7 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public List<Reservation> findAllReservations() {
-        return reservationRepository.findAll()
-                .stream()
-                .toList();
+        return reservationRepository.findAll();
     }
 
     @Override
