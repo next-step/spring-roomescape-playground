@@ -38,10 +38,11 @@ public class ReservationService {
     }
 
     public void deleteReservation(Long id) {
-        Reservation reservation = reservationRepository.findById(id)
-                .orElseThrow(() -> new ReservationNotFoundException("해당 예약을 찾을 수 없습니다."));
+        boolean deleted = reservationRepository.deleteById(id);
 
-        reservationRepository.delete(reservation);
+        if (!deleted) {
+            throw new ReservationNotFoundException("해당 예약을 찾을 수 없습니다.");
+        }
     }
 
     private void validateNotPast(ReservationRequest request) {

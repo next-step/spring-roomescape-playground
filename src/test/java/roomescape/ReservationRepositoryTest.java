@@ -61,10 +61,23 @@ class ReservationRepositoryTest {
         Reservation savedReservation = reservationRepository.save(reservation);
 
         // when
-        reservationRepository.delete(savedReservation);
+        boolean deleted = reservationRepository.deleteById(savedReservation.getId());
 
         // then
+        assertThat(deleted).isTrue();
         assertThat(reservationRepository.findById(savedReservation.getId())).isEmpty();
+    }
+
+    @Test
+    void id에_해당하는_예약이_없으면_삭제_시_false를_반환한다() {
+        // given
+        Long id = 999L;
+
+        // when
+        boolean deleted = reservationRepository.deleteById(id);
+
+        // then
+        assertThat(deleted).isFalse();
     }
 
     @Test
