@@ -11,7 +11,7 @@ import roomescape.exception.InvalidReservationRequestException;
 
 class ReservationTest {
 
-    private static final LocalDate DATE = LocalDate.of(2026, 8, 11);
+    private static final LocalDate DATE = LocalDate.of(2026, 8, 13);
     private static final LocalTime TIME = LocalTime.of(15, 40);
 
     @Test

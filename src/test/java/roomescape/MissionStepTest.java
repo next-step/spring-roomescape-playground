@@ -1,20 +1,40 @@
 package roomescape;
 
+import static org.hamcrest.Matchers.is;
+
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.util.HashMap;
+import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Primary;
 import org.springframework.test.annotation.DirtiesContext;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.hamcrest.Matchers.is;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@Import(MissionStepTest.FixedClockConfiguration.class)
 public class MissionStepTest {
+
+    @TestConfiguration
+    static class FixedClockConfiguration {
+
+        @Bean
+        @Primary
+        Clock fixedClock() {
+            return Clock.fixed(
+                    Instant.parse("2026-08-12T03:00:00Z"),
+                    ZoneId.of("Asia/Seoul")
+            );
+        }
+    }
 
     @Test
     void 일단계() {
@@ -43,7 +63,7 @@ public class MissionStepTest {
     void 삼단계() {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
-        params.put("date", "2023-08-05");
+        params.put("date", "2026-08-13");
         params.put("time", "15:40");
 
         RestAssured.given().log().all()
@@ -56,7 +76,7 @@ public class MissionStepTest {
                 .contentType(ContentType.JSON)
                 .body("id", is(1))
                 .body("name", is("브라운"))
-                .body("date", is("2023-08-05"))
+                .body("date", is("2026-08-13"))
                 .body("time", is("15:40"));
 
         RestAssured.given().log().all()
@@ -104,8 +124,24 @@ public class MissionStepTest {
     void rejectsReservationWithBlankName() {
         Map<String, String> params = new HashMap<>();
         params.put("name", " ");
-        params.put("date", "2023-08-05");
+        params.put("date", "2026-08-13");
         params.put("time", "15:40");
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(400);
+    }
+
+    @Test
+    @DisplayName("지난 일시로는 예약할 수 없다")
+    void rejectsPastReservation() {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", "브라운");
+        params.put("date", "2026-08-12");
+        params.put("time", "11:59");
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
