@@ -139,4 +139,19 @@ public class MissionStepTest {
                 .statusCode(400);
     }
 
+    @Test
+    void 예약자_이름은_20자를_초과할_수_없다() {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", "a".repeat(21));
+        params.put("date", "2023-01-01");
+        params.put("time", "10:00");
+
+        RestAssured.given()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/reservations")
+                .then()
+                .statusCode(400);
+    }
+
 }
