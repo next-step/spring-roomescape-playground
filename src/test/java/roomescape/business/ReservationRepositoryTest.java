@@ -108,19 +108,30 @@ public class ReservationRepositoryTest {
     }
 
     @Test
-    @DisplayName("delete를 잘못된 인자로 호출하면, 조용히 실패한다.")
+    @DisplayName("delete를 id가 없는 객체로 호출하면 예외가 발생한다")
     void testDeleteNotFound() {
         // given
-        Reservation reservation = new Reservation("Alice", LocalDate.now(), LocalTime.now());
-        Reservation saved = reservationRepository.save(reservation);
-        Reservation dummy = new Reservation("illegal", LocalDate.now(), LocalTime.now());
-        Reservation illegal = reservationRepository.save(dummy);
+        Reservation hasNotId = new Reservation("Alice", LocalDate.now(), LocalTime.now());
+
+        // then
+        Assertions.assertThrows(
+                IllegalArgumentException.class,
+
+                // when
+                () -> reservationRepository.delete(hasNotId));
+    }
+
+    @Test
+    @DisplayName("delete의 인자로 저장된 적 없는 id를 가진 객체를 전달하면 조용히 실패한다.")
+    void testDeleteByIllegalId() {
+        // given
+        reservationRepository.save(new Reservation("Alice", LocalDate.now(), LocalTime.now()));
+        Reservation dummy = Reservation.toEntityWithId(-1L, new Reservation("Bob", LocalDate.now(), LocalTime.now()));
 
         // when
-        reservationRepository.delete(illegal);
+        reservationRepository.delete(dummy);
 
         // then
         assertThat(reservationRepository.findAll().size()).isEqualTo(1);
-        assertThat(reservationRepository.findById(saved.getId())).isPresent();
     }
 }
