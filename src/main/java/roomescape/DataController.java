@@ -13,9 +13,9 @@ public class DataController {
     private AtomicLong index = new AtomicLong(1);
 
     public DataController() {
-        reservations.add(new Reservation(1L, "브라운", "2023-01-01", "10:00"));
-        reservations.add(new Reservation(2L, "브라운", "2023-01-02", "11:00"));
-        reservations.add(new Reservation(3L, "브라운", "2023-01-03", "12:00"));
+        reservations.add(new Reservation(index.getAndIncrement(), "브라운", "2023-01-01", "10:00"));
+        reservations.add(new Reservation(index.getAndIncrement(), "브라운", "2023-01-02", "11:00"));
+        reservations.add(new Reservation(index.getAndIncrement(), "브라운", "2023-01-03", "12:00"));
     }
 
     @GetMapping("/reservations")
