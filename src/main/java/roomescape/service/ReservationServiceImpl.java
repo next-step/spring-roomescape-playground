@@ -33,12 +33,11 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public Void deleteReservation(Long reservationId) {
+    public void deleteReservation(Long reservationId) {
 
         Reservation reservation = reservationRepository.findById(reservationId)
                 .orElseThrow(ReservationNotFoundException::new);
 
         reservationRepository.delete(reservation);
-        return null;
     }
 }

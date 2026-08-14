@@ -11,5 +11,5 @@ public interface ReservationService {
 
     Reservation createReservation(ReservationRequest reservationRequest);
 
-    Void deleteReservation(Long reservationId);
+    void deleteReservation(Long reservationId);
 }
