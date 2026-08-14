@@ -8,6 +8,7 @@ import roomescape.repository.ReservationRepository;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -80,19 +81,16 @@ public class ReservationRepositoryTest {
     }
 
     @Test
-    @DisplayName("저장된 적 없는 id로 findById()를 호출하면 예외가 발생한다.")
+    @DisplayName("저장된 적 없는 id로 findById()를 호출하면 빈 Optional을 반환한다.")
     void testFindByIdNotFound() {
         // given
         Long neverSavedId = 1L;
 
+        // when
+        Optional<Reservation> found = reservationRepository.findById(neverSavedId);
+
         // then
-        Assertions.assertThrows(
-
-                ReservationNotFoundException.class,
-
-                // when
-                () -> reservationRepository.findById(neverSavedId)
-                        .orElseThrow(ReservationNotFoundException::new));
+        assertThat(found).isEmpty();
     }
 
     @Test
