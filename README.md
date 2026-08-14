@@ -76,7 +76,7 @@ Spring MVC를 활용하여 방탈출 어드민 페이지를 구성하고,
 
 | 객체                      | 역할                             |
 | ----------------------- | ------------------------------ |
-| `RoomescapeController`  | 어드민 메인 페이지 요청을 처리한다.           |
+| `PageController`  | 어드민 메인 페이지 요청을 처리한다.           |
 | `ReservationController` | 예약 관리 페이지와 예약 목록 조회 요청을 처리한다.  |
 | `Reservation`           | 예약의 식별자, 예약자 이름, 날짜, 시간을 관리한다. |
 | `ReservationResponse`   | 예약 정보를 API 응답 형식으로 전달하는 DTO이다. |

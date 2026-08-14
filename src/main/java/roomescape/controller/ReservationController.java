@@ -17,11 +17,6 @@ public class ReservationController {
         this.reservationRepository = reservationRepository;
     }
 
-    @GetMapping("/reservation")
-    public String reservationPage() {
-        return "reservation";
-    }
-
     @ResponseBody
     @GetMapping("/reservations")
     public List<ReservationResponse> reservations() {
