@@ -154,4 +154,15 @@ public class MissionStepTest {
                 .statusCode(400);
     }
 
+    @Test
+    void 예약을_1개_조회한다() {
+        예약_생성("브라운", "2026-01-01", "10:00");
+
+        RestAssured.given().log().all()
+                .when().get("/reservations/1")
+                .then().log().all()
+                .statusCode(200)
+                .body("id", is(1))
+                .body("name", is("브라운"));
+    }
 }

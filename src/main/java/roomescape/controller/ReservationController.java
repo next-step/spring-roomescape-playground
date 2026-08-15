@@ -28,6 +28,13 @@ public class ReservationController {
         return ResponseEntity.ok(responses);
     }
 
+    @GetMapping("/reservations/{id}")
+    public ResponseEntity<ReservationResponse> readReservation(@PathVariable Long id) {
+        Reservation reservation = findReservationById(id);
+
+        return ResponseEntity.ok(ReservationResponse.from(reservation));
+    }
+
     @PostMapping("/reservations")
     public ResponseEntity<ReservationResponse> addReservation(@RequestBody ReservationRequest request) {
         Reservation newReservation = request.toEntity(index.getAndIncrement());
@@ -39,13 +46,17 @@ public class ReservationController {
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
-        Reservation reservation = reservations.stream()
-                .filter(it -> Objects.equals(it.getId(), id))
-                .findFirst()
-                .orElseThrow(() -> new NotFoundReservationException("예약을 찾을 수 없습니다."));
+        Reservation reservation = findReservationById(id);
 
         reservations.remove(reservation);
 
         return ResponseEntity.noContent().build();
+    }
+
+    private Reservation findReservationById(Long id) {
+        return reservations.stream()
+                .filter(it -> Objects.equals(it.getId(), id))
+                .findFirst()
+                .orElseThrow(() -> new NotFoundReservationException("예약을 찾을 수 없습니다."));
     }
 }
