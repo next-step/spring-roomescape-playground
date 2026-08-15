@@ -1,22 +1,22 @@
 package roomescape;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import roomescape.dto.ExceptionResponse;
 import roomescape.exception.BlankReservationException;
 import roomescape.exception.NotFoundReservationException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
-  @ExceptionHandler(NotFoundReservationException.class)
-  public ResponseEntity<Void> handleNotFoundReservationException(NotFoundReservationException ex){
-    System.out.println("[오류] : " + ex.getMessage());
-    return ResponseEntity.notFound().build();
-  }
+    @ExceptionHandler(NotFoundReservationException.class)
+    public ResponseEntity<ExceptionResponse> handleNotFoundReservationException(NotFoundReservationException ex){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ExceptionResponse(ex.getMessage()));
+    }
 
-  @ExceptionHandler(BlankReservationException.class)
-  public ResponseEntity<Void> handleBlankReservationException(BlankReservationException ex){
-    System.out.println("[입력값 오류] : " + ex.getMessage());
-    return ResponseEntity.badRequest().build();
-  }
+    @ExceptionHandler(BlankReservationException.class)
+    public ResponseEntity<ExceptionResponse> handleBlankReservationException(BlankReservationException ex){
+        return ResponseEntity.badRequest().body(new ExceptionResponse(ex.getMessage()));
+    }
 }
