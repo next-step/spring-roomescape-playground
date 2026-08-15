@@ -9,7 +9,10 @@ import java.util.List;
 
 @Controller
 public class HomeController {
-    private List<Reservation> reservations = new ArrayList<>();
+    private List<Reservation> reservations = new ArrayList<>(List.of(new Reservation(1L, "브라운", "2023-01-01", "10:00"),
+                                                                     new Reservation(2L, "하이", "2024-05-23", "10:00"),
+                                                                     new Reservation(2L, "바이", "2026-08-12", "10:00")
+                                                                    ));
 
     @GetMapping("/")
     public String home() {
@@ -23,10 +26,6 @@ public class HomeController {
 
     @GetMapping("reservations")
     public ResponseEntity<List<Reservation>> reservations() {
-        reservations.add(new Reservation(1L, "브라운", "2023-01-01", "10:00"));
-        reservations.add(new Reservation(2L, "하이", "2024-05-23", "10:00"));
-        reservations.add(new Reservation(2L, "바이", "2026-08-12", "10:00"));
-
         return ResponseEntity.ok().body(reservations);
     }
 
