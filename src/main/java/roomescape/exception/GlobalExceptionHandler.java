@@ -47,4 +47,10 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleReservationConflictException(ReservationConflictException exception) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorResponse(exception.getMessage()));
     }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleException(Exception exception) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ErrorResponse("서버 내부 오류가 발생했습니다."));
+    }
 }
