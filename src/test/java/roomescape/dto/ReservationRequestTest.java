@@ -161,7 +161,7 @@ public class ReservationRequestTest {
                 .when().post("/reservations")
                 .then().log().all()
                 // then
-                .statusCode(HttpStatus.FOUND.value());
+                .statusCode(HttpStatus.CREATED.value());
     }
 
 }
