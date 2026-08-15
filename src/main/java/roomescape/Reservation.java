@@ -2,14 +2,10 @@ package roomescape;
 
 public class Reservation {
 
-    private long id;
-    private String name;
+    private final long id;
+    private final String name;
     private String date;
     private String time;
-
-    public Reservation() {
-
-    }
 
     public Reservation(long id, String name, String date, String time) {
         this.id = id;
@@ -32,5 +28,15 @@ public class Reservation {
 
     public String getTime() {
         return time;
+    }
+
+    @Override
+    public String toString() {
+        return "Reservation{" +
+            "id=" + id +
+            ", name='" + name + '\'' +
+            ", date='" + date + '\'' +
+            ", time='" + time + '\'' +
+            '}';
     }
 }
