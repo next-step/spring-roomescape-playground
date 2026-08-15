@@ -5,19 +5,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeParseException;
 
 public class Reservation {
     private Long id;
     private String name;
-    private String date;
-    private String time;
+    private LocalDate date;
+    private LocalTime time;
 
     @JsonCreator
     public Reservation(@JsonProperty("id") Long id,
                        @JsonProperty("name") String name,
-                       @JsonProperty("date") String date,
-                       @JsonProperty("time") String time) {
+                       @JsonProperty("date") LocalDate date,
+                       @JsonProperty("time") LocalTime time) {
         validateName(name);
         validateDate(date);
         validateTime(time);
@@ -32,7 +31,7 @@ public class Reservation {
         return id;
     }
 
-    public String getTime() {
+    public LocalTime getTime() {
         return time;
     }
 
@@ -40,7 +39,7 @@ public class Reservation {
         return name;
     }
 
-    public String getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
@@ -54,25 +53,15 @@ public class Reservation {
         }
     }
 
-    private void validateDate(String date) {
-        if (date == null || date.isBlank()) {
+    private void validateDate(LocalDate date) {
+        if (date == null) {
             throw new IllegalArgumentException("날짜를 입력해주세요.");
-        }
-        try {
-            LocalDate.parse(date);
-        } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("날짜 형식이 올바르지 않습니다.");
         }
     }
 
-    private void validateTime(String time) {
-        if (time == null || time.isBlank()) {
+    private void validateTime(LocalTime time) {
+        if (time == null) {
             throw new IllegalArgumentException("시간을 입력해주세요.");
-        }
-        try {
-            LocalTime.parse(time);
-        } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("시간 형식이 올바르지 않습니다.");
         }
     }
 }
