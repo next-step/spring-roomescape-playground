@@ -29,7 +29,10 @@ public class Reservations {
     }
 
     public void delete(Long id){
-        Reservation deleteReservation = reservations.stream().filter(it-> Objects.equals(it.getId(),id)).findFirst().orElseThrow(() -> new NotFoundReservationException("해당 id의 예약이 존재하지 않습니다."));
+        Reservation deleteReservation = reservations.stream()
+            .filter(it-> Objects.equals(it.getId(),id))
+            .findFirst()
+            .orElseThrow(() -> new NotFoundReservationException("해당 id의 예약이 존재하지 않습니다."));
         reservations.remove(deleteReservation);
     }
 }
