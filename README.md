@@ -36,3 +36,17 @@
 - 성공 상태 코드: `200 OK`
 - Response Content-Type: `application/json`
 - Response Body: 예약 목록을 JSON 형태로 반환한다
+
+## 역할 분리
+
+### Controller
+- HTTP 요청을 받는다
+- Repository에 예약 목록 조회를 요청한다
+- 조회한 예약 목록을 HTTP 응답으로 반환한다
+
+### ReservationRepository
+- 예약 데이터를 저장한다
+- 저장된 예약 목록을 조회한다
+
+### Reservation
+- 예약 정보를 표현하는 객체이다
