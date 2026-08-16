@@ -2,6 +2,8 @@ package roomescape;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import java.util.HashMap;
+import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -37,5 +39,66 @@ public class MissionStepTest {
             .then().log().all()
             .statusCode(200)
             .contentType(ContentType.JSON);
+    }
+
+    @Test
+    @DisplayName("POST /reservations 요청 시 201 상태 코드를 반환하는지 테스트")
+    void test_post_요청시_예약이_생성되는지_테스트() {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", "브라운");
+        params.put("date", "2023-08-05");
+        params.put("time", "15:40");
+
+        RestAssured.given().log().all()
+            .contentType(ContentType.JSON)
+            .body(params)
+            .when().post("/reservations")
+            .then().log().all()
+            .statusCode(201);
+    }
+
+    @Test
+    @DisplayName("DELETE /reservations/{id} 요청 시 204 상태 코드를 반환하는지 테스트")
+    void test_delete_요청시_예약이_삭제되는지_테스트(){
+
+        Map<String, String> params = new HashMap<>();
+        params.put("name", "브라운");
+        params.put("date", "2023-08-05");
+        params.put("time", "15:40");
+
+        RestAssured.given().log().all()
+            .contentType(ContentType.JSON)
+            .body(params)
+            .when().post("/reservations");
+
+        RestAssured.given().log().all()
+            .when().delete("/reservations/1")
+            .then().log().all()
+            .statusCode(204);
+    }
+
+    @Test
+    @DisplayName("POST /reservations 요청 시 필수값이 공백이면 400 상태 코드를 반환하는지 테스트")
+    void test_post_요청시_필수값이_공백이면_400을_반환하는지_테스트() {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", "브라운");
+        params.put("date", "");
+        params.put("time", "");
+
+        RestAssured.given().log().all()
+            .contentType(ContentType.JSON)
+            .body(params)
+            .when().post("/reservations")
+            .then().log().all()
+            .statusCode(400);
+    }
+
+    @Test
+    @DisplayName("DELETE /reservations/{id} 요청 시 존재하지 않는 예약이면 404 상태 코드를 반환하는지 테스트")
+    void test_delete_요청시_존재하지_않는_예약이면_404를_반환하는지_테스트(){
+        RestAssured.given().log().all()
+            .when().delete("/reservations/1")
+            .then().log().all()
+            .statusCode(404);
     }
 }

@@ -1,26 +1,39 @@
 package roomescape;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicLong;
+import org.springframework.stereotype.Repository;
+import roomescape.dto.ReservationRequest;
+import roomescape.exception.NotFoundReservationException;
 
+@Repository
 public class Reservations {
     private final List<Reservation> reservations;
+    private final AtomicLong index = new AtomicLong(1);
 
     public Reservations() {
         this.reservations = new ArrayList<>();
-        createReservations();
     }
 
     public List<Reservation> readReservations() {
         return Collections.unmodifiableList(reservations);
     }
 
-    private void createReservations() {
-        reservations.add(new Reservation(1L, "브라운", LocalDate.of(2026, 1, 1), LocalTime.of(10, 0)));
-        reservations.add(new Reservation(2L, "브라운", LocalDate.of(2026, 2, 1), LocalTime.of(11, 0)));
-        reservations.add(new Reservation(3L, "브라운", LocalDate.of(2026, 3, 1), LocalTime.of(12, 0)));
+    public Reservation reserve(ReservationRequest reservationRequest){
+        Reservation newReservation = reservationRequest.toDomain(index.get());
+        reservations.add(newReservation);
+        index.incrementAndGet();
+        return newReservation;
+    }
+
+    public void delete(Long id){
+        Reservation deleteReservation = reservations.stream()
+            .filter(it-> Objects.equals(it.getId(),id))
+            .findFirst()
+            .orElseThrow(() -> new NotFoundReservationException("해당 id의 예약이 존재하지 않습니다."));
+        reservations.remove(deleteReservation);
     }
 }

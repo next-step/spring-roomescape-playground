@@ -4,28 +4,20 @@
 - [x] 사용자는 홈 화면에 접속할 수 있다.
 - [x] 사용자는 예약 페이지에 접속할 수 있다.
 - [x] 사용자는 저장된 예약 목록을 조회할 수 있다.
+- [x] 사용자가 직접 예약을 신청 및 취소를 할 수 있다.
+- [x] 사용자는 필수 입력값을 모두 입력해야만 예약을 신청할 수 있다.
 
 ## API 명세서
 
-### 홈 화면
-- Method : GET
-- URL : /
-- Request : -
-- Response : 200 OK, home.html
+| 기능 | Method | URL | Request | Response |
+|---|---|---|---|---|
+| 홈 화면 | GET | / | - | 200 OK, home.html |
+| 예약 화면 | GET | /reservation | - | 200 OK, reservation.html |
+| 예약 목록 조회 | GET | /reservations | - | 200 OK |
+| 예약 생성 | POST | /reservations | Request Body (JSON) | 201 Created, Location : /reservations/{id} |
+| 예약 삭제 | DELETE | /reservations/{id} | 삭제하고자 하는 예약의 id | 204 No Content |
 
-### 예약 화면
-- Method : GET
-- URL : /reservation
-- Request : -
-- Response : 200 OK, reservation.html
-
-### 예약 목록 조회
-- Method : GET
-- URL : /reservations
-- Request : -
-- Response : 200 OK
-
-**Response Body 예시**
+### 예약 목록 조회 - Response Body 예시
 ```json
 [
   {
@@ -37,3 +29,35 @@
 ]
 ```
 
+### 예약 생성 - Request Body 예시
+```json
+  {
+    "name": "브라운",
+    "date": "2026-01-01",
+    "time": "10:00"
+  }
+```
+
+### 예약 생성 - Response Body 예시
+```json
+  {
+    "id"  : 1,
+    "name": "브라운",
+    "date": "2026-01-01",
+    "time": "10:00"
+  }
+```
+
+### 예약 생성 - 실패 응답 (400 Bad Request)
+```json
+  {
+    "message": "이름은 공백이 될 수 없습니다."
+  }
+```
+
+### 예약 삭제 - 실패 응답 (404 Not Found)
+```json
+  {
+    "message": "해당 id의 예약이 존재하지 않습니다."
+  }
+```
