@@ -1,24 +1,17 @@
 package roomescape.global.exception;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import roomescape.exception.BadRequestException;
 import roomescape.global.response.ErrorResponse;
-import roomescape.exception.ReservationConflictException;
-import roomescape.exception.ReservationNotFoundException;
+import roomescape.global.response.code.ErrorCode;
+import roomescape.global.response.code.GlobalErrorCode;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-
-    @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<ErrorResponse> handleBadRequestException(BadRequestException exception) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(exception.getMessage()));
-    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidationException(MethodArgumentNotValidException exception) {
@@ -29,32 +22,40 @@ public class GlobalExceptionHandler {
                 .map(fieldError -> fieldError.getDefaultMessage())
                 .orElse("입력값이 올바르지 않습니다.");
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(message));
+        return createResponse(GlobalErrorCode.BAD_REQUEST_ERROR, message);
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException() {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse("요청 본문 형식이 올바르지 않습니다."));
+        return createResponse(GlobalErrorCode.INVALID_HTTP_MESSAGE_BODY);
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ErrorResponse> handleTypeMismatchException() {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse("요청 값의 형식이 올바르지 않습니다."));
+        return createResponse(GlobalErrorCode.INVALID_HTTP_MESSAGE_PARAMETER);
     }
 
-    @ExceptionHandler(ReservationNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleReservationNotFoundException(ReservationNotFoundException exception) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(exception.getMessage()));
-    }
-
-    @ExceptionHandler(ReservationConflictException.class)
-    public ResponseEntity<ErrorResponse> handleReservationConflictException(ReservationConflictException exception) {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorResponse(exception.getMessage()));
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<ErrorResponse> handleBusinessException(BusinessException exception) {
+        ErrorCode errorCode = exception.getErrorCode();
+        return createResponse(errorCode);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception exception) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ErrorResponse("서버 내부 오류가 발생했습니다."));
+        return createResponse(GlobalErrorCode.SERVER_ERROR);
+    }
+
+    private ResponseEntity<ErrorResponse> createResponse(ErrorCode responseCode) {
+        return createResponse(responseCode, responseCode.getMessage());
+    }
+
+    private ResponseEntity<ErrorResponse> createResponse(
+            ErrorCode responseCode,
+            String message
+    ) {
+        return ResponseEntity
+                .status(responseCode.getHttpStatus())
+                .body(new ErrorResponse(responseCode.getCode(), message));
     }
 }

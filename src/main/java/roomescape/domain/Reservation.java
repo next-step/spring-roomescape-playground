@@ -1,6 +1,7 @@
 package roomescape.domain;
 
-import roomescape.exception.InvalidReservationException;
+import roomescape.exception.ReservationErrorCode;
+import roomescape.exception.ReservationException;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -50,23 +51,23 @@ public class Reservation {
 
     private void validateName(String name) {
         if (name == null || name.isBlank()) {
-            throw new InvalidReservationException("예약자 이름은 비어 있을 수 없습니다.");
+            throw new ReservationException(ReservationErrorCode.INVALID_RESERVATION);
         }
 
         if (!NAME_PATTERN.matcher(name).matches()) {
-            throw new InvalidReservationException("예약자 이름 형식이 올바르지 않습니다.");
+            throw new ReservationException(ReservationErrorCode.INVALID_RESERVATION);
         }
     }
 
     private void validateDate(LocalDate date) {
         if (date == null) {
-            throw new InvalidReservationException("예약 날짜는 비어 있을 수 없습니다.");
+            throw new ReservationException(ReservationErrorCode.INVALID_RESERVATION);
         }
     }
 
     private void validateTime(LocalTime time) {
         if (time == null) {
-            throw new InvalidReservationException("예약 시간은 비어 있을 수 없습니다.");
+            throw new ReservationException(ReservationErrorCode.INVALID_RESERVATION);
         }
     }
 }

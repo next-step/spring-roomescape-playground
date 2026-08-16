@@ -3,9 +3,8 @@ package roomescape.service;
 import org.springframework.stereotype.Service;
 import roomescape.domain.Reservation;
 import roomescape.dto.ReservationCreateCommand;
-import roomescape.exception.BadRequestException;
-import roomescape.exception.ReservationConflictException;
-import roomescape.exception.ReservationNotFoundException;
+import roomescape.exception.ReservationErrorCode;
+import roomescape.exception.ReservationException;
 import roomescape.repository.ReservationRepository;
 
 import java.time.Clock;
@@ -44,7 +43,7 @@ public class ReservationService {
         boolean deleted = reservationRepository.deleteById(id);
 
         if (!deleted) {
-            throw new ReservationNotFoundException("해당 예약을 찾을 수 없습니다.");
+            throw new ReservationException(ReservationErrorCode.RESERVATION_NOT_FOUND);
         }
     }
 
@@ -52,13 +51,13 @@ public class ReservationService {
         LocalDateTime reservationDateTime = LocalDateTime.of(command.date(), command.time());
 
         if (reservationDateTime.isBefore(LocalDateTime.now(clock))) {
-            throw new BadRequestException("과거 시간은 예약할 수 없습니다.");
+            throw new ReservationException(ReservationErrorCode.RESERVATION_IN_PAST);
         }
     }
 
     private void validateNotDuplicated(ReservationCreateCommand command) {
         if (reservationRepository.existsByDateAndTime(command.date(), command.time())) {
-            throw new ReservationConflictException("이미 예약된 시간입니다.");
+            throw new ReservationException(ReservationErrorCode.RESERVATION_CONFLICT);
         }
     }
 }

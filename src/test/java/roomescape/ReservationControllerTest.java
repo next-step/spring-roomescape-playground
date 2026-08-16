@@ -9,9 +9,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import roomescape.controller.ReservationController;
 import roomescape.domain.Reservation;
 import roomescape.dto.ReservationCreateCommand;
-import roomescape.exception.BadRequestException;
-import roomescape.exception.ReservationConflictException;
-import roomescape.exception.ReservationNotFoundException;
+import roomescape.exception.ReservationErrorCode;
+import roomescape.exception.ReservationException;
 import roomescape.service.ReservationService;
 
 import java.time.LocalDate;
@@ -147,13 +146,14 @@ class ReservationControllerTest {
         String request = createReservationRequest(RESERVATION_DATE.toString(), "브라운", RESERVATION_TIME.toString());
 
         given(reservationService.addReservation(any()))
-                .willThrow(new ReservationConflictException("이미 예약된 시간입니다."));
+                .willThrow(new ReservationException(ReservationErrorCode.RESERVATION_CONFLICT));
 
         // when & then
         mockMvc.perform(post("/reservations")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(request))
                 .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.code").value("RESERVATION_CONFLICT"))
                 .andExpect(jsonPath("$.message").value("이미 예약된 시간입니다."));
     }
 
@@ -163,10 +163,15 @@ class ReservationControllerTest {
         String request = createReservationRequest(RESERVATION_DATE.toString(), "브라운", RESERVATION_TIME.toString());
 
         given(reservationService.addReservation(any()))
-                .willThrow(new BadRequestException("잘못된 예약입니다."));
+                .willThrow(new ReservationException(ReservationErrorCode.RESERVATION_IN_PAST));
 
         // when & then
-        assertBadReservationRequest(request, "잘못된 예약입니다.");
+        mockMvc.perform(post("/reservations")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(request))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value("RESERVATION_IN_PAST"))
+                .andExpect(jsonPath("$.message").value("과거 시간은 예약할 수 없습니다."));
     }
 
     @Test
@@ -196,12 +201,13 @@ class ReservationControllerTest {
         // given
         long id = -1L;
 
-        willThrow(new ReservationNotFoundException("해당 예약을 찾을 수 없습니다."))
+        willThrow(new ReservationException(ReservationErrorCode.RESERVATION_NOT_FOUND))
                 .given(reservationService).deleteReservation(id);
 
         // when & then
         mockMvc.perform(delete("/reservations/{id}", id))
                 .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.code").value("RESERVATION_NOT_FOUND"))
                 .andExpect(jsonPath("$.message").value("해당 예약을 찾을 수 없습니다."));
 
         then(reservationService).should().deleteReservation(id);

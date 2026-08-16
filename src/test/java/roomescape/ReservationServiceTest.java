@@ -4,9 +4,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import roomescape.domain.Reservation;
 import roomescape.dto.ReservationCreateCommand;
-import roomescape.exception.BadRequestException;
-import roomescape.exception.ReservationConflictException;
-import roomescape.exception.ReservationNotFoundException;
+import roomescape.exception.ReservationErrorCode;
+import roomescape.exception.ReservationException;
 import roomescape.repository.InMemoryReservationRepository;
 import roomescape.repository.ReservationRepository;
 import roomescape.service.ReservationService;
@@ -73,7 +72,11 @@ class ReservationServiceTest {
 
         // when & then
         assertThatThrownBy(() -> reservationService.addReservation(duplicatedCommand))
-                .isInstanceOf(ReservationConflictException.class);
+                .isInstanceOfSatisfying(
+                        ReservationException.class,
+                        exception -> assertThat(exception.getErrorCode())
+                                .isEqualTo(ReservationErrorCode.RESERVATION_CONFLICT)
+                );
     }
 
     @Test
@@ -87,7 +90,11 @@ class ReservationServiceTest {
 
         // when & then
         assertThatThrownBy(() -> reservationService.addReservation(pastDateCommand))
-                .isInstanceOf(BadRequestException.class);
+                .isInstanceOfSatisfying(
+                        ReservationException.class,
+                        exception -> assertThat(exception.getErrorCode())
+                                .isEqualTo(ReservationErrorCode.RESERVATION_IN_PAST)
+                );
     }
 
     @Test
@@ -101,7 +108,11 @@ class ReservationServiceTest {
 
         // when & then
         assertThatThrownBy(() -> reservationService.addReservation(pastTimeCommand))
-                .isInstanceOf(BadRequestException.class);
+                .isInstanceOfSatisfying(
+                        ReservationException.class,
+                        exception -> assertThat(exception.getErrorCode())
+                                .isEqualTo(ReservationErrorCode.RESERVATION_IN_PAST)
+                );
     }
 
     @Test
@@ -128,7 +139,11 @@ class ReservationServiceTest {
 
         // when & then
         assertThatThrownBy(() -> reservationService.deleteReservation(nonExistingId))
-                .isInstanceOf(ReservationNotFoundException.class);
+                .isInstanceOfSatisfying(
+                        ReservationException.class,
+                        exception -> assertThat(exception.getErrorCode())
+                                .isEqualTo(ReservationErrorCode.RESERVATION_NOT_FOUND)
+                );
     }
 
     private static Clock fixedClockAt(LocalDate date, LocalTime time) {

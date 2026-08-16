@@ -2,7 +2,8 @@ package roomescape;
 
 import org.junit.jupiter.api.Test;
 import roomescape.domain.Reservation;
-import roomescape.exception.InvalidReservationException;
+import roomescape.exception.ReservationErrorCode;
+import roomescape.exception.ReservationException;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -28,28 +29,52 @@ class ReservationTest {
     @Test
     void 이름이_비어있거나_공백이면_예외를_던진다() {
         assertThatThrownBy(() -> new Reservation("", DATE, TIME))
-                .isInstanceOf(InvalidReservationException.class);
+                .isInstanceOfSatisfying(
+                        ReservationException.class,
+                        exception -> assertThat(exception.getErrorCode())
+                                .isEqualTo(ReservationErrorCode.INVALID_RESERVATION)
+                );
         assertThatThrownBy(() -> new Reservation(" ", DATE, TIME))
-                .isInstanceOf(InvalidReservationException.class);
+                .isInstanceOfSatisfying(
+                        ReservationException.class,
+                        exception -> assertThat(exception.getErrorCode())
+                                .isEqualTo(ReservationErrorCode.INVALID_RESERVATION)
+                );
     }
 
     @Test
     void 이름_형식이_올바르지_않은_예약_생성_시_예외를_던진다() {
         assertThatThrownBy(() -> new Reservation("브라운1", DATE, TIME))
-                .isInstanceOf(InvalidReservationException.class);
+                .isInstanceOfSatisfying(
+                        ReservationException.class,
+                        exception -> assertThat(exception.getErrorCode())
+                                .isEqualTo(ReservationErrorCode.INVALID_RESERVATION)
+                );
         assertThatThrownBy(() -> new Reservation("브라운@", DATE, TIME))
-                .isInstanceOf(InvalidReservationException.class);
+                .isInstanceOfSatisfying(
+                        ReservationException.class,
+                        exception -> assertThat(exception.getErrorCode())
+                                .isEqualTo(ReservationErrorCode.INVALID_RESERVATION)
+                );
     }
 
     @Test
     void 날짜가_비어있는_예약_생성_시_예외를_던진다() {
         assertThatThrownBy(() -> new Reservation("브라운", null, TIME))
-                .isInstanceOf(InvalidReservationException.class);
+                .isInstanceOfSatisfying(
+                        ReservationException.class,
+                        exception -> assertThat(exception.getErrorCode())
+                                .isEqualTo(ReservationErrorCode.INVALID_RESERVATION)
+                );
     }
 
     @Test
     void 시간이_비어있는_예약_생성_시_예외를_던진다() {
         assertThatThrownBy(() -> new Reservation("브라운", DATE, null))
-                .isInstanceOf(InvalidReservationException.class);
+                .isInstanceOfSatisfying(
+                        ReservationException.class,
+                        exception -> assertThat(exception.getErrorCode())
+                                .isEqualTo(ReservationErrorCode.INVALID_RESERVATION)
+                );
     }
 }
