@@ -2,6 +2,7 @@ package roomescape.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import roomescape.domain.ReservationRequest;
 import roomescape.exception.NotFoundReservationException;
 import roomescape.domain.Reservation;
 
@@ -24,8 +25,8 @@ public class ReservationController {
     }
 
     @PostMapping("/reservations")
-    public ResponseEntity<Reservation> create(@RequestBody Reservation reservation) {
-        Reservation newReservation = Reservation.toEntity(reservation, index.getAndIncrement());
+    public ResponseEntity<Reservation> create(@RequestBody ReservationRequest request) {
+        Reservation newReservation = Reservation.toEntity(request, index.getAndIncrement());
         reservations.add(newReservation);
         return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
     }
