@@ -1,4 +1,4 @@
-package roomescape.exception;
+package roomescape.global.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -7,6 +7,10 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import roomescape.exception.BadRequestException;
+import roomescape.global.response.ErrorResponse;
+import roomescape.exception.ReservationConflictException;
+import roomescape.exception.ReservationNotFoundException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
