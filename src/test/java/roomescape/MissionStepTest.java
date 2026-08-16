@@ -72,10 +72,32 @@ public class MissionStepTest {
     }
 
     @Test
-    void 사단계() {
+    void 사단계_날짜테스트() {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
         params.put("date", "");
+        params.put("time", "15:40");
+
+        // 필요한 인자가 없는 경우
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(400);
+
+        // 삭제할 예약이 없는 경우
+        RestAssured.given().log().all()
+                .when().delete("/reservations/1")
+                .then().log().all()
+                .statusCode(404);
+    }
+
+    @Test
+    void 사단계_시간테스트() {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", "브라운");
+        params.put("date", "2026-08-16");
         params.put("time", "");
 
         // 필요한 인자가 없는 경우
