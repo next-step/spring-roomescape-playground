@@ -13,10 +13,11 @@ function fetchReservations() {
 }
 
 function renderReservations(data) {
+  const reservations = data.reservations;
   const tableBody = document.getElementById('reservation-table-body');
   tableBody.innerHTML = '';
 
-  data.forEach(reservation => {
+  reservations.forEach(reservation => {
     const row = tableBody.insertRow();
     insertReservationRow(row, reservation);
   });
