@@ -52,4 +52,12 @@ public class UpdatingDaoTest {
 
         assertThat(rowNum).isEqualTo(1);
     }
+
+    @Test
+    void keyHolder() {
+        Customer customer = new Customer("Leonor", "Watling");
+        Long id = updatingDAO.insertWithKeyHolder(customer);
+
+        assertThat(id).isNotNull();
+    }
 }
