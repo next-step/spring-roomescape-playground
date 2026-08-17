@@ -27,4 +27,24 @@ public class ReservationController {
     public List<Reservation> reservations() {
         return reservationRepository.findAll();
     }
+    @PostMapping("/reservations")
+    @ResponseBody
+    public ResponseEntity<Reservation> createReservation(
+            @RequestBody ReservationRequest request
+    ) {
+        Long id = index.getAndIncrement();
+
+        Reservation reservation = new Reservation(
+                id,
+                request.getName(),
+                request.getDate(),
+                request.getTime()
+        );
+
+        reservationRepository.save(reservation);
+
+        return ResponseEntity
+                .created(URI.create("/reservations/" + id))
+                .body(reservation);
+    }
 }
