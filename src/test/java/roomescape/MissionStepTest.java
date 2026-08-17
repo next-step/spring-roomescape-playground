@@ -8,7 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.annotation.DirtiesContext;
 import roomescape.entity.Reservation;
+import roomescape.repository.ReservationRepository;
 import roomescape.repository.ReservationRepositoryV2;
 
 import java.sql.Connection;
@@ -21,6 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class MissionStepTest {
 
     @LocalServerPort
@@ -29,12 +32,9 @@ public class MissionStepTest {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    private ReservationRepositoryV2 reservationRepository;
 
     @BeforeEach
     public void setup() {
-        reservationRepository = new ReservationRepositoryV2(jdbcTemplate);
-        tableSetUp();
         RestAssured.port = port;
     }
 
@@ -167,11 +167,5 @@ public class MissionStepTest {
 
         Integer countAfterDelete = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
         assertThat(countAfterDelete).isEqualTo(0);
-    }
-
-    private void tableSetUp() {
-        jdbcTemplate.execute("drop table reservation if exists");
-        jdbcTemplate.execute("create table reservation(" +
-                "id bigint not null auto_increment, name varchar(255) not null, date varchar(255) not null, time varchar(255) not null, primary key (id))");
     }
 }
