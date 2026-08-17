@@ -46,4 +46,15 @@ public class QueryingDaoTest {
         // then
         assertThat(actual).isEqualTo(expect);
     }
+
+    @Test
+    void getLastName() {
+        // given
+        String expect = "Woo";
+
+        // when
+        String actualLastName = queryingDAO.getLastName(1L);
+
+        assertThat(actualLastName).isEqualTo(expect);
+    }
 }
