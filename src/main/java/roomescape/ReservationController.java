@@ -17,6 +17,7 @@ import java.util.concurrent.atomic.AtomicLong;
 public class ReservationController {
 
     private final ReservationRepository reservationRepository;
+
     private final AtomicLong index = new AtomicLong(1);
 
     public ReservationController(ReservationRepository reservationRepository) {
@@ -33,11 +34,13 @@ public class ReservationController {
     public List<Reservation> reservations() {
         return reservationRepository.findAll();
     }
+
     @PostMapping("/reservations")
     @ResponseBody
     public ResponseEntity<Reservation> createReservation(
             @RequestBody ReservationRequest request
     ) {
+
         Long id = index.getAndIncrement();
 
         Reservation reservation = new Reservation(
@@ -52,5 +55,15 @@ public class ReservationController {
         return ResponseEntity
                 .created(URI.create("/reservations/" + id))
                 .body(reservation);
+    }
+
+    @DeleteMapping("/reservations/{id}")
+    public ResponseEntity<Void> deleteReservation(
+            @PathVariable Long id
+    ) {
+
+        reservationRepository.deleteById(id);
+
+        return ResponseEntity.noContent().build();
     }
 }
