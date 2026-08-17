@@ -41,6 +41,12 @@ public class ReservationController {
             @RequestBody ReservationRequest request
     ) {
 
+        if (isBlank(request.getName())
+                || isBlank(request.getDate())
+                || isBlank(request.getTime())) {
+            throw new InvalidReservationException();
+        }
+
         Long id = index.getAndIncrement();
 
         Reservation reservation = new Reservation(
@@ -62,8 +68,16 @@ public class ReservationController {
             @PathVariable Long id
     ) {
 
-        reservationRepository.deleteById(id);
+        boolean deleted = reservationRepository.deleteById(id);
+
+        if (!deleted) {
+            throw new NotFoundReservationException();
+        }
 
         return ResponseEntity.noContent().build();
+    }
+
+    private boolean isBlank(String value) {
+        return value == null || value.isBlank();
     }
 }
