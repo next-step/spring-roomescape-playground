@@ -6,7 +6,7 @@ import roomescape.entity.Reservation;
 import roomescape.exception.ReservationNotFoundException;
 import roomescape.repository.ReservationRepositoryV1;
 import roomescape.service.ReservationService;
-import roomescape.service.ReservationServiceImpl;
+import roomescape.service.ReservationServiceV1;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -14,13 +14,13 @@ import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-public class ReservationServiceTest {
+public class ReservationServiceV1Test {
 
     private ReservationService reservationService;
 
     @BeforeEach
     public void setup() {
-        this.reservationService = new ReservationServiceImpl(new ReservationRepositoryV1());
+        this.reservationService = new ReservationServiceV1(new ReservationRepositoryV1());
     }
 
     @AfterEach
