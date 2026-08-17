@@ -45,4 +45,11 @@ public class UpdatingDaoTest {
 
         assertThat(customers).hasSize(1);
     }
+
+    @Test
+    void delete() {
+        int rowNum = updatingDAO.delete(1L);
+
+        assertThat(rowNum).isEqualTo(1);
+    }
 }
