@@ -3,7 +3,10 @@ package roomescape.repository;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import roomescape.entity.Reservation;
+import roomescape.repository.sql.JdbcSQL;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,7 +26,19 @@ public class ReservationRepositoryV2 implements ReservationRepository {
 
     @Override
     public List<Reservation> findAll() {
-        return List.of();
+        return jdbcTemplate.query(JdbcSQL.FIND_ALL.getSql(),
+                (resultSet, rowNum) ->
+                        // 각 row를 바인딩할 Entity 객체 생성
+                        Reservation.toEntityWithId(
+                                resultSet.getLong("id"),
+                                new Reservation(
+                                        resultSet.getString("name"),
+                                        LocalDate.parse(resultSet.getString("date")),
+                                        LocalTime.parse(resultSet.getString("time"))
+                                )
+                        )
+
+                );
     }
 
     @Override
@@ -33,6 +48,6 @@ public class ReservationRepositoryV2 implements ReservationRepository {
 
     @Override
     public Optional<Reservation> findById(Long reservationId) {
-        return Optional.empty();
+        return Optional.of(jdbcTemplate.queryForObject(JdbcSQL.FIND_BY_ID.getSql(), Reservation.class, reservationId));
     }
 }

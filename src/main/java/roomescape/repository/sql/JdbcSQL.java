@@ -1,0 +1,22 @@
+package roomescape.repository.sql;
+
+public enum JdbcSQL {
+
+    FIND_BY_ID("""
+            select id, name, date, time from reservation where id = ?
+            """),
+    FIND_ALL("""
+            select id, name, date, time from reservation
+    """)
+    ;
+
+    JdbcSQL(String sql) {
+        this.sql = sql;
+    }
+
+    public String getSql() {
+        return sql;
+    }
+
+    private final String sql;
+}
