@@ -1,18 +1,11 @@
 package roomescape.dto;
 
-import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.http.HttpStatus;
-import org.springframework.test.annotation.DirtiesContext;
-import roomescape.RoomEscapeApplication;
 import roomescape.dto.request.ReservationRequest;
 
 import java.time.LocalDate;

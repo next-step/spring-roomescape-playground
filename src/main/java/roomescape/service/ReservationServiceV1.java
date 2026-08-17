@@ -4,7 +4,6 @@ import roomescape.dto.request.ReservationRequest;
 import roomescape.entity.Reservation;
 import roomescape.exception.ReservationNotFoundException;
 import roomescape.repository.ReservationRepository;
-import roomescape.repository.ReservationRepositoryV1;
 
 import java.util.List;
 
