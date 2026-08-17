@@ -1,13 +1,23 @@
 package roomescape;
 
+import java.util.concurrent.atomic.AtomicLong;
+
 public class Reservation {
 
-    private final long id;
+    private AtomicLong id;
     private final String name;
     private String date;
     private String time;
 
-    public Reservation(long id, String name, String date, String time) {
+    public static Reservation toEntity(Reservation reservation, long id) {
+        return new Reservation(
+            new AtomicLong(id),
+            reservation.getName(),
+            reservation.getDate(),
+            reservation.getTime());
+    }
+
+    public Reservation(AtomicLong id, String name, String date, String time) {
         this.id = id;
         this.name = name;
         this.date = date;
@@ -15,7 +25,7 @@ public class Reservation {
     }
 
     public long getId() {
-        return id;
+        return id.get();
     }
 
     public String getName() {
