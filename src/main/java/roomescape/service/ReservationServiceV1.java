@@ -3,15 +3,16 @@ package roomescape.service;
 import roomescape.dto.request.ReservationRequest;
 import roomescape.entity.Reservation;
 import roomescape.exception.ReservationNotFoundException;
+import roomescape.repository.ReservationRepository;
 import roomescape.repository.ReservationRepositoryV1;
 
 import java.util.List;
 
-public class ReservationServiceImpl implements ReservationService {
+public class ReservationServiceV1 implements ReservationService {
 
-    private final ReservationRepositoryV1 reservationRepository;
+    private final ReservationRepository reservationRepository;
 
-    public ReservationServiceImpl(ReservationRepositoryV1 reservationRepository) {
+    public ReservationServiceV1(ReservationRepository reservationRepository) {
         this.reservationRepository = reservationRepository;
     }
 

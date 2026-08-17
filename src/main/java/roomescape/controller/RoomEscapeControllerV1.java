@@ -18,11 +18,12 @@ import java.net.URI;
 import java.util.List;
 
 @Controller
-public class RoomEscapeController {
+@RequestMapping("/v1")
+public class RoomEscapeControllerV1 {
 
     private final ReservationService reservationService;
 
-    public RoomEscapeController(ReservationService reservationService) {
+    public RoomEscapeControllerV1(ReservationService reservationService) {
         this.reservationService = reservationService;
     }
 
