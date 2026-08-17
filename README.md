@@ -50,3 +50,75 @@
 
 ### Reservation
 - 예약 정보를 표현하는 객체이다
+
+# 3단계 - 예약 추가 / 취소
+
+## 기능 명세서
+
+* 예약을 추가할 수 있다.
+* 예약 번호는 서버에서 자동으로 생성한다.
+* 등록된 예약 목록을 조회할 수 있다.
+* 예약 번호를 이용해 예약을 삭제할 수 있다.
+* 예약 추가 성공 시 `201 Created`를 반환한다.
+* 예약 삭제 성공 시 `204 No Content`를 반환한다.
+
+## API 명세서
+
+### 예약 조회
+
+```http
+GET /reservations
+```
+
+응답
+
+```http
+200 OK
+```
+
+### 예약 추가
+
+```http
+POST /reservations
+Content-Type: application/json
+```
+
+요청 예시
+
+```json
+{
+  "name": "브라운",
+  "date": "2023-08-05",
+  "time": "15:40"
+}
+```
+
+응답
+
+```http
+201 Created
+Location: /reservations/1
+```
+
+응답 예시
+
+```json
+{
+  "id": 1,
+  "name": "브라운",
+  "date": "2023-08-05",
+  "time": "15:40"
+}
+```
+
+### 예약 삭제
+
+```http
+DELETE /reservations/{id}
+```
+
+응답
+
+```http
+204 No Content
+```
