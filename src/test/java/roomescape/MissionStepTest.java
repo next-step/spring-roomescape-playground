@@ -130,6 +130,6 @@ public class MissionStepTest {
     private void tableSetUp() {
         jdbcTemplate.execute("drop table reservation if exists");
         jdbcTemplate.execute("create table reservation(" +
-                "id serial, name varchar(255), date timestamp, time timestamp)");
+                "id bigint not null auto_increment, name varchar(255) not null, date varchar(255) not null, time varchar(255) not null, primary key (id))");
     }
 }
