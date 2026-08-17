@@ -79,4 +79,16 @@ public class QueryingDaoTest {
         // then
         assertThat(actualCustomerCount).hasSize(expect);
     }
+
+    @Test
+    void findCustomerByFirstName() {
+        // given
+        int expect = 2;
+
+        // when
+        List<Customer> customers = queryingDAO.findCustomerByFirstName("Josh");
+
+        // then
+        assertThat(customers).hasSize(expect);
+    }
 }
