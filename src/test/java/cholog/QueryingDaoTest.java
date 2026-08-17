@@ -67,4 +67,16 @@ public class QueryingDaoTest {
         assertThat(customer).isNotNull();
         assertThat(customer.getLastName()).isEqualTo("Woo");
     }
+
+    @Test
+    void findAllCustomers() {
+        // given
+        int expect = 4;
+
+        // when
+        List<Customer> actualCustomerCount = queryingDAO.findAllCustomers();
+
+        // then
+        assertThat(actualCustomerCount).hasSize(expect);
+    }
 }
