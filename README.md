@@ -122,3 +122,39 @@ DELETE /reservations/{id}
 ```http
 204 No Content
 ```
+
+# 4단계 - 예외 처리
+
+## 기능 명세서
+
+- 예약 추가 시 이름, 날짜, 시간이 비어있는지 확인한다.
+- 필요한 값이 비어있으면 예약을 추가하지 않는다.
+- 잘못된 예약 추가 요청에는 400 Bad Request를 반환한다.
+- 존재하지 않는 예약을 삭제하려는 경우 404 Not Found를 반환한다.
+- 예외 처리는 @ExceptionHandler와 @ControllerAdvice를 이용한다.
+- API 명세서
+- 잘못된 예약 추가
+- POST /reservations
+- Content-Type: application/json
+
+요청 예시
+
+```json
+{
+  "name": "브라운",
+  "date": "",
+  "time": ""
+}
+```
+
+응답
+
+```http
+400 Bad Request
+존재하지 않는 예약 삭제
+DELETE /reservations/{id}
+
+해당 예약이 존재하지 않는 경우
+
+404 Not Found
+```
