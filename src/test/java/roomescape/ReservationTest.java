@@ -47,6 +47,17 @@ public class ReservationTest {
                 .body("size()", is(1));
     }
 
+    @Test
+    @DisplayName("예약을 삭제할 수 있다")
+    void deleteReservation() {
+        saveReservation();
+
+        RestAssured.given().log().all()
+                .when().delete("/reservations/1")
+                .then().log().all()
+                .statusCode(204);
+    }
+
     private void saveReservation() {
         RestAssured.given()
                 .contentType(ContentType.JSON)
