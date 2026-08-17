@@ -2,7 +2,7 @@ package roomescape.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import roomescape.repository.ReservationRepository;
+import roomescape.repository.ReservationRepositoryV1;
 import roomescape.service.ReservationService;
 import roomescape.service.ReservationServiceImpl;
 
@@ -10,12 +10,12 @@ import roomescape.service.ReservationServiceImpl;
 public class ReservationConfig {
 
     @Bean
-    public ReservationRepository reservationRepository() {
-        return new ReservationRepository();
+    public ReservationRepositoryV1 reservationRepository() {
+        return new ReservationRepositoryV1();
     }
 
     @Bean
-    public ReservationService reservationService(ReservationRepository reservationRepository) {
+    public ReservationService reservationService(ReservationRepositoryV1 reservationRepository) {
         return new ReservationServiceImpl(reservationRepository);
     }
 }

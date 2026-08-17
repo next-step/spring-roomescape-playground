@@ -4,7 +4,7 @@ import org.junit.jupiter.api.*;
 import roomescape.dto.request.ReservationRequest;
 import roomescape.entity.Reservation;
 import roomescape.exception.ReservationNotFoundException;
-import roomescape.repository.ReservationRepository;
+import roomescape.repository.ReservationRepositoryV1;
 import roomescape.service.ReservationService;
 import roomescape.service.ReservationServiceImpl;
 
@@ -20,7 +20,7 @@ public class ReservationServiceTest {
 
     @BeforeEach
     public void setup() {
-        this.reservationService = new ReservationServiceImpl(new ReservationRepository());
+        this.reservationService = new ReservationServiceImpl(new ReservationRepositoryV1());
     }
 
     @AfterEach

@@ -3,7 +3,7 @@ package roomescape.business;
 import org.junit.jupiter.api.*;
 import roomescape.entity.Reservation;
 import roomescape.exception.ReservationNotFoundException;
-import roomescape.repository.ReservationRepository;
+import roomescape.repository.ReservationRepositoryV1;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -12,13 +12,13 @@ import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-public class ReservationRepositoryTest {
+public class ReservationRepositoryV1Test {
 
-    private ReservationRepository reservationRepository;
+    private ReservationRepositoryV1 reservationRepository;
 
     @BeforeEach
     void setUp() {
-        this.reservationRepository = new ReservationRepository();
+        this.reservationRepository = new ReservationRepositoryV1();
     }
 
     @AfterEach
