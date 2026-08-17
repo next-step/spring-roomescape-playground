@@ -58,6 +58,24 @@ public class ReservationTest {
                 .statusCode(204);
     }
 
+    @Test
+    @DisplayName("예약을 삭제하면 예약 목록에서 제거된다")
+    void deleteReservationCheck() {
+        //Given
+        saveReservation();
+
+        //When
+        RestAssured.given().log().all()
+                .when().delete("/reservations/1");
+
+        //Then
+        RestAssured.given().log().all()
+                .when().get("/reservations")
+                .then().log().all()
+                .statusCode(200)
+                .body("size()", is(0));
+    }
+
     private void saveReservation() {
         RestAssured.given()
                 .contentType(ContentType.JSON)
