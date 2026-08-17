@@ -4,7 +4,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import roomescape.dto.request.ReservationRequest;
 import roomescape.dto.response.ReservationResponse;
