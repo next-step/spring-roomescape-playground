@@ -3,6 +3,9 @@ package cholog.dto;
 import cholog.dto.request.MemberRequest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,16 +14,17 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+import java.util.Set;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
 public class MemberRequestTest {
 
-    @LocalServerPort
-    private int port;
+    private Validator validator;
 
     @BeforeEach
     public void setUp() {
-        RestAssured.port = port;
+        validator = Validation.buildDefaultValidatorFactory().getValidator();
     }
 
     @Test
@@ -33,16 +37,11 @@ public class MemberRequestTest {
 
         MemberRequest request = new MemberRequest(name, age);
 
-        RestAssured
-                .given()
-                .body(request)
-                .contentType(ContentType.JSON)
+        // when
+        Set<ConstraintViolation<MemberRequest>> violations = validator.validate(request);
 
-                .when()
-                .post("/members")
-
-                .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+        // then
+        assertThat(violations).hasSize(1);
     }
 
     @Test
@@ -53,19 +52,11 @@ public class MemberRequestTest {
         String name = "";
         Integer age = 20;
 
-        MemberRequest request = new MemberRequest(name, age);
+        // when
+        Set<ConstraintViolation<MemberRequest>> violations = validator.validate(new MemberRequest(name, age));
 
-        RestAssured
-                .given()
-                .body(request)
-                .contentType(ContentType.JSON)
-
-                .when()
-                .post("/members")
-
-                .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
-
+        // then
+        assertThat(violations).hasSize(1);
     }
 
     @Test
@@ -76,18 +67,11 @@ public class MemberRequestTest {
         String name = "abcdefghijklmnopqrstu";
         Integer age = 20;
 
-        MemberRequest request = new MemberRequest(name, age);
+        //when
+        Set<ConstraintViolation<MemberRequest>> violations = validator.validate(new MemberRequest(name, age));
 
-        RestAssured
-                .given()
-                .body(request)
-                .contentType(ContentType.JSON)
-
-                .when()
-                .post("/members")
-
-                .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+        // then
+        assertThat(violations).hasSize(1);
     }
 
     @Test
@@ -98,40 +82,26 @@ public class MemberRequestTest {
         String name = "Alice";
         Integer age = null;
 
-        MemberRequest request = new MemberRequest(name, age);
+        // when
+        Set<ConstraintViolation<MemberRequest>> violations = validator.validate(new MemberRequest(name, age));
 
-        RestAssured
-                .given()
-                .body(request)
-                .contentType(ContentType.JSON)
-
-                .when()
-                .post("/members")
-
-                .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+        // then
+        assertThat(violations).hasSize(1);
     }
 
     @Test
-    @DisplayName("나이 필드는 null값을 허용하지 않는다")
-    void ageMustNotBeNegaticeInMemberRequest() {
+    @DisplayName("나이 필드는 음수값을 허용하지 않는다")
+    void ageMustNotBeNegativeInMemberRequest() {
 
         // given
         String name = "Alice";
         Integer age = -1;
 
-        MemberRequest request = new MemberRequest(name, age);
+        // when
+        Set<ConstraintViolation<MemberRequest>> violations = validator.validate(new MemberRequest(name, age));
 
-        RestAssured
-                .given()
-                .body(request)
-                .contentType(ContentType.JSON)
-
-                .when()
-                .post("/members")
-
-                .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+        // then
+        assertThat(violations).hasSize(1);
     }
 
     @Test
@@ -142,17 +112,10 @@ public class MemberRequestTest {
         String name = "Alice";
         Integer age = 20;
 
-        MemberRequest request = new MemberRequest(name, age);
+        // when
+        Set<ConstraintViolation<MemberRequest>> violations = validator.validate(new MemberRequest(name, age));
 
-        RestAssured
-                .given()
-                .body(request)
-                .contentType(ContentType.JSON)
-
-                .when()
-                .post("/members")
-
-                .then()
-                .statusCode(HttpStatus.CREATED.value());
+        // then
+        assertThat(violations).hasSize(0);
     }
 }

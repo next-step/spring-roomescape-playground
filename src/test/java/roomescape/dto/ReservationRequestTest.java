@@ -2,6 +2,9 @@ package roomescape.dto;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,17 +17,17 @@ import roomescape.dto.request.ReservationRequest;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Set;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,  classes = RoomEscapeApplication.class)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+import static org.assertj.core.api.Assertions.assertThat;
+
 public class ReservationRequestTest {
 
-    @LocalServerPort
-    private int port;
+    private Validator validator;
 
     @BeforeEach
     void setUp() {
-        RestAssured.port = port;
+        validator = Validation.buildDefaultValidatorFactory().getValidator();
     }
 
     @Test
@@ -40,14 +43,11 @@ public class ReservationRequestTest {
                 name, reservedDate, reservedTime
         );
 
-        // when
-        RestAssured.given().log().all()
-                .body(request)
-                .contentType(ContentType.JSON)
-                .when().post("/reservations")
-                .then().log().all()
-                // then
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+       // when
+        Set<ConstraintViolation<ReservationRequest>> violations = validator.validate(request);
+
+        // then
+        assertThat(violations).hasSize(1);
     }
 
     @Test
@@ -64,13 +64,10 @@ public class ReservationRequestTest {
         );
 
         // when
-        RestAssured.given().log().all()
-                .body(request)
-                .contentType(ContentType.JSON)
-                .when().post("/reservations")
-                .then().log().all()
-                // then
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+        Set<ConstraintViolation<ReservationRequest>> violations = validator.validate(request);
+
+        // then
+        assertThat(violations).hasSize(1);
     }
 
     @Test
@@ -86,13 +83,10 @@ public class ReservationRequestTest {
         );
 
         // when
-        RestAssured.given().log().all()
-                .body(request)
-                .contentType(ContentType.JSON)
-                .when().post("/reservations")
-                .then().log().all()
-                // then
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+        Set<ConstraintViolation<ReservationRequest>> violations = validator.validate(request);
+
+        // then
+        assertThat(violations).hasSize(1);
     }
 
     @Test
@@ -109,13 +103,10 @@ public class ReservationRequestTest {
         );
 
         // when
-        RestAssured.given().log().all()
-                .body(request)
-                .contentType(ContentType.JSON)
-                .when().post("/reservations")
-                .then().log().all()
-                // then
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+        Set<ConstraintViolation<ReservationRequest>> violations = validator.validate(request);
+
+        // then
+        assertThat(violations).hasSize(1);
     }
 
     @Test
@@ -132,13 +123,10 @@ public class ReservationRequestTest {
         );
 
         // when
-        RestAssured.given().log().all()
-                .body(request)
-                .contentType(ContentType.JSON)
-                .when().post("/reservations")
-                .then().log().all()
-                // then
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+        Set<ConstraintViolation<ReservationRequest>> violations = validator.validate(request);
+
+        // then
+        assertThat(violations).hasSize(1);
     }
 
     @Test
@@ -155,13 +143,10 @@ public class ReservationRequestTest {
         );
 
         // when
-        RestAssured.given().log().all()
-                .body(request)
-                .contentType(ContentType.JSON)
-                .when().post("/reservations")
-                .then().log().all()
-                // then
-                .statusCode(HttpStatus.CREATED.value());
+        Set<ConstraintViolation<ReservationRequest>> violations = validator.validate(request);
+
+        // then
+        assertThat(violations).isEmpty();
     }
 
 }
