@@ -1,4 +1,4 @@
-package roomescape.business;
+package roomescape.business.v1;
 
 import org.junit.jupiter.api.*;
 import roomescape.dto.request.ReservationRequest;

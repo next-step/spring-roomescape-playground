@@ -1,4 +1,4 @@
-package roomescape.business;
+package roomescape.business.v1;
 
 import org.junit.jupiter.api.*;
 import roomescape.entity.Reservation;
@@ -108,17 +108,17 @@ public class ReservationRepositoryV1Test {
     }
 
     @Test
-    @DisplayName("delete를 id가 없는 객체로 호출하면 예외가 발생한다")
+    @DisplayName("delete를 id가 없는 객체로 호출하면 조용히 실패한다.")
     void testDeleteNotFound() {
         // given
-        Reservation hasNotId = new Reservation("Alice", LocalDate.now(), LocalTime.now());
+        reservationRepository.save(new Reservation("Alice", LocalDate.now(), LocalTime.now()));
+        Reservation dummy = Reservation.withId(null, new Reservation("Bob", LocalDate.now(), LocalTime.now()));
+
+        // when
+        reservationRepository.delete(dummy);
 
         // then
-        Assertions.assertThrows(
-                IllegalArgumentException.class,
-
-                // when
-                () -> reservationRepository.delete(hasNotId));
+        assertThat(reservationRepository.findAll().size()).isEqualTo(1);
     }
 
     @Test
