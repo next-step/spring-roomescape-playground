@@ -16,16 +16,13 @@ import static org.hamcrest.Matchers.is;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class ReservationTest {
 
+
     @Test
     @DisplayName("새로운 예약을 정상적으로 등록할 수 있다")
     void createReservation() {
-        Map<String, String> params = new HashMap<>();
-        params.put("name", "브라운");
-        params.put("date", "2023-08-05");
-        params.put("time", "15:40");
 
         RestAssured.given().log().all().contentType(ContentType.JSON)
-                .body(params)
+                .body(createParams())
                 .when().post("/reservations")
                 .then().log().all()
                 .statusCode(201)
@@ -36,7 +33,7 @@ public class ReservationTest {
     @Test
     @DisplayName("등록된 예약을 조회할 수 있다")
     void readReservation() {
-        createReservation();
+        saveReservation();
 
         RestAssured.given().log().all()
                 .when().get("/reservation")
@@ -50,4 +47,19 @@ public class ReservationTest {
                 .body("size()", is(1));
     }
 
+    private void saveReservation() {
+        RestAssured.given()
+                .contentType(ContentType.JSON)
+                .body(createParams())
+                .when().post("/reservations");
+    }
+
+    private Map<String, String> createParams() {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", "브라운");
+        params.put("date", "2023-08-05");
+        params.put("time", "15:40");
+
+        return params;
+    }
 }
