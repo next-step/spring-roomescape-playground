@@ -67,6 +67,9 @@ public class ReservationRepositoryV2 implements ReservationRepository {
 
     @Override
     public void delete(Reservation reservation) {
+        if (reservation == null) {
+            throw new IllegalArgumentException();
+        }
         jdbcTemplate.update(JdbcSQL.DELETE.getSql(), reservation.getId());
     }
 

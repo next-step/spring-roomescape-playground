@@ -26,10 +26,10 @@ public class ReservationRepositoryV1 implements ReservationRepository{
     }
 
     public void delete(Reservation reservation) {
-        if (reservation == null || reservation.getId() == null) {
+        if (reservation == null) {
             throw new IllegalArgumentException();
         }
-        if (!reservations.containsKey(reservation.getId())) {
+        if (reservation.getId() == null || !reservations.containsKey(reservation.getId())) {
             return;
         }
         this.reservations.remove(reservation.getId());
