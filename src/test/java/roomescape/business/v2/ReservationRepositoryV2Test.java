@@ -1,13 +1,15 @@
 package roomescape.business.v2;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import roomescape.entity.Reservation;
 import roomescape.exception.ReservationNotFoundException;
 import roomescape.repository.ReservationRepository;
-import roomescape.repository.ReservationRepositoryV1;
 import roomescape.repository.ReservationRepositoryV2;
 
 import java.time.LocalDate;

@@ -10,8 +10,6 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import roomescape.entity.Reservation;
-import roomescape.repository.ReservationRepository;
-import roomescape.repository.ReservationRepositoryV2;
 
 import java.sql.Connection;
 import java.sql.SQLException;

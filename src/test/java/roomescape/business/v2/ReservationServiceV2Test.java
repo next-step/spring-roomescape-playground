@@ -7,10 +7,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import roomescape.dto.request.ReservationRequest;
 import roomescape.entity.Reservation;
 import roomescape.exception.ReservationNotFoundException;
-import roomescape.repository.ReservationRepositoryV1;
 import roomescape.repository.ReservationRepositoryV2;
 import roomescape.service.ReservationService;
-import roomescape.service.ReservationServiceV1;
 import roomescape.service.ReservationServiceV2;
 
 import java.time.LocalDate;
