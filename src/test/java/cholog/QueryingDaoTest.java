@@ -57,4 +57,14 @@ public class QueryingDaoTest {
 
         assertThat(actualLastName).isEqualTo(expect);
     }
+
+    @Test
+    void findCustomerById() {
+        // when
+        Customer customer = queryingDAO.findCustomerById(1L);
+
+        // then
+        assertThat(customer).isNotNull();
+        assertThat(customer.getLastName()).isEqualTo("Woo");
+    }
 }
