@@ -72,12 +72,4 @@ public class RoomEscapeControllerV1 {
     ) {
         return ResponseEntity.notFound().build();
     }
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Void> handleRoomEscapeException(
-            MethodArgumentNotValidException e
-    ) {
-        return ResponseEntity.badRequest().build();
-    }
-
 }
