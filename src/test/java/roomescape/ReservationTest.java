@@ -31,7 +31,23 @@ public class ReservationTest {
                 .statusCode(201)
                 .header("Location", "/reservations/1")
                 .body("id", is(1));
+    }
 
+    @Test
+    @DisplayName("등록된 예약을 조회할 수 있다")
+    void readReservation() {
+        createReservation();
+
+        RestAssured.given().log().all()
+                .when().get("/reservation")
+                .then().log().all()
+                .statusCode(200);
+
+        RestAssured.given().log().all()
+                .when().get("/reservations")
+                .then().log().all()
+                .statusCode(200)
+                .body("size()", is(1));
     }
 
 }
