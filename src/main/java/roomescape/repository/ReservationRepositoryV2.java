@@ -72,8 +72,7 @@ public class ReservationRepositoryV2 implements ReservationRepository {
 
     @Override
     public Optional<Reservation> findById(Long reservationId) {
-        return Optional.ofNullable(
-                jdbcTemplate.queryForObject(
+        return jdbcTemplate.query(
                         JdbcSQL.FIND_BY_ID.getSql(),
                         (resultSet, rowNum) -> Reservation.withId(
                                 resultSet.getLong("id"),
@@ -83,7 +82,6 @@ public class ReservationRepositoryV2 implements ReservationRepository {
                                         LocalTime.parse(resultSet.getString("time"))
                                 )
                         ), reservationId
-                )
-        );
+                ).stream().findFirst();
     }
 }
