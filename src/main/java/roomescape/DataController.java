@@ -18,8 +18,8 @@ public class DataController {
 
 
     @GetMapping("/reservations")
-    public List<Reservation> reservations() {
-        return reservations;
+    public ResponseEntity<List<Reservation>> reservations() {
+        return ResponseEntity.ok().body(reservations);
     }
 
     @PostMapping("/reservations")
