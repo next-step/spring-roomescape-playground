@@ -1,10 +1,13 @@
 package roomescape.repository;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.entity.Reservation;
 import roomescape.repository.sql.JdbcSQL;
 
+import java.sql.PreparedStatement;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -21,7 +24,28 @@ public class ReservationRepositoryV2 implements ReservationRepository {
 
     @Override
     public Reservation save(Reservation reservation) {
-        return null;
+        // JDBC API에서 반환할 기본 키 바인더
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        jdbcTemplate.update(
+                // PreparedStatementCreator 익명 객체 빌드
+                connection -> {
+            PreparedStatement preparedStatement = connection.prepareStatement(
+                    JdbcSQL.SAVE.getSql(),
+                    new String[]{"id"}
+            );
+
+            // JDBC row 인덱싱은 1부터 시작. 값 바인딩
+            preparedStatement.setString(1, reservation.getName());
+            preparedStatement.setString(2, reservation.getDate().toString());
+            preparedStatement.setString(3, reservation.getTime().toString());
+
+            return preparedStatement;
+        },  keyHolder);
+
+        Long id = keyHolder.getKey().longValue();
+
+        return Reservation.withId(id, reservation);
     }
 
     @Override
@@ -29,7 +53,7 @@ public class ReservationRepositoryV2 implements ReservationRepository {
         return jdbcTemplate.query(JdbcSQL.FIND_ALL.getSql(),
                 (resultSet, rowNum) ->
                         // 각 row를 바인딩할 Entity 객체 생성
-                        Reservation.toEntityWithId(
+                        Reservation.withId(
                                 resultSet.getLong("id"),
                                 new Reservation(
                                         resultSet.getString("name"),
@@ -43,11 +67,23 @@ public class ReservationRepositoryV2 implements ReservationRepository {
 
     @Override
     public void delete(Reservation reservation) {
-
+        jdbcTemplate.update(JdbcSQL.DELETE.getSql(), reservation.getId());
     }
 
     @Override
     public Optional<Reservation> findById(Long reservationId) {
-        return Optional.of(jdbcTemplate.queryForObject(JdbcSQL.FIND_BY_ID.getSql(), Reservation.class, reservationId));
+        return Optional.ofNullable(
+                jdbcTemplate.queryForObject(
+                        JdbcSQL.FIND_BY_ID.getSql(),
+                        (resultSet, rowNum) -> Reservation.withId(
+                                resultSet.getLong("id"),
+                                new Reservation(
+                                        resultSet.getString("name"),
+                                        LocalDate.parse(resultSet.getString("date")),
+                                        LocalTime.parse(resultSet.getString("time"))
+                                )
+                        ), reservationId
+                )
+        );
     }
 }
