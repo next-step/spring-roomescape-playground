@@ -14,11 +14,12 @@ import org.springframework.test.annotation.DirtiesContext;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class CRUDTest {
 
     @LocalServerPort
     private int port;
+
+    private static int memberCount = 0;
 
     @BeforeEach
     void setUp() {
@@ -27,6 +28,7 @@ class CRUDTest {
 
     @Test
     void create() {
+
         var response = RestAssured
                 .given().log().all()
                 .body(new Member("brown", 20))
@@ -34,13 +36,13 @@ class CRUDTest {
                 .when().post("/members")
                 .then().log().all().extract();
 
+        memberCount++;
+
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
     @Test
     void read() {
-        create();
-
         var response = RestAssured
                 .given().log().all()
                 .contentType(ContentType.JSON)
@@ -48,18 +50,25 @@ class CRUDTest {
                 .then().log().all().extract();
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.jsonPath().getList("", MemberResponse.class)).hasSize(1);
+        assertThat(response.jsonPath().getList("", MemberResponse.class)).hasSize(memberCount);
     }
 
     @Test
     void update() {
-        create();
+        MemberResponse created = RestAssured
+                .given().log().all()
+                .body(new Member("brown", 20))
+                .contentType(ContentType.JSON)
+                .when().post("/members")
+                .then().log().all().extract().as(MemberResponse.class);
+
+        memberCount++;
 
         var response = RestAssured
                 .given().log().all()
                 .body(new Member("brown", 30))
                 .contentType(ContentType.JSON)
-                .when().put("/members/1")
+                .when().put("/members/" + created.memberId())
                 .then().log().all().extract();
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -67,12 +76,21 @@ class CRUDTest {
 
     @Test
     void delete() {
-        create();
+        MemberResponse created = RestAssured
+                .given().log().all()
+                .body(new Member("brown", 20))
+                .contentType(ContentType.JSON)
+                .when().post("/members")
+                .then().log().all().extract().as(MemberResponse.class);
+
+        memberCount++;
 
         var response = RestAssured
                 .given().log().all()
-                .when().delete("/members/1")
+                .when().delete("/members/" + created.memberId())
                 .then().log().all().extract();
+
+        memberCount--;
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
