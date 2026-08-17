@@ -126,7 +126,7 @@ public class ReservationRepositoryV1Test {
     void testDeleteByIllegalId() {
         // given
         reservationRepository.save(new Reservation("Alice", LocalDate.now(), LocalTime.now()));
-        Reservation dummy = Reservation.toEntityWithId(-1L, new Reservation("Bob", LocalDate.now(), LocalTime.now()));
+        Reservation dummy = Reservation.withId(-1L, new Reservation("Bob", LocalDate.now(), LocalTime.now()));
 
         // when
         reservationRepository.delete(dummy);

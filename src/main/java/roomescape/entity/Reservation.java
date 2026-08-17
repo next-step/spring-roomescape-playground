@@ -43,7 +43,7 @@ public class Reservation {
         return time;
     }
 
-    public static Reservation toEntityWithId(Long id, Reservation reservation) {
+    public static Reservation withId(Long id, Reservation reservation) {
         return new Reservation(id, reservation.name, reservation.date, reservation.time);
     }
 

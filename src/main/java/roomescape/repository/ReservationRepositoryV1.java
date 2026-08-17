@@ -15,7 +15,7 @@ public class ReservationRepositoryV1 implements ReservationRepository{
 
     public Reservation save(Reservation reservation) {
 
-        Reservation createdReservation = Reservation.toEntityWithId(index.incrementAndGet(), reservation);
+        Reservation createdReservation = Reservation.withId(index.incrementAndGet(), reservation);
         this.reservations.put(createdReservation.getId(), createdReservation);
 
         return createdReservation;
