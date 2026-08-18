@@ -1,6 +1,7 @@
 package roomescape;
 
 import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -41,5 +44,27 @@ class ReservationIntegrationTest {
         // then
         Integer dbCount = jdbcTemplate.queryForObject("select count(*) from reservations", Integer.class);
         assertThat(apiCount).isEqualTo(dbCount);
+    }
+
+    @Test
+    void 추가_API_요청_후_DB에_데이터가_저장된다() {
+        // given
+        Map<String, String> request = new HashMap<>();
+        request.put("name", "브라운");
+        request.put("date", DATE.toString());
+        request.put("time", TIME.toString());
+
+        // when
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when().post("/reservations")
+                .then().statusCode(201);
+
+        // then
+        Integer dbCount = jdbcTemplate.queryForObject(
+                "select count(*) from reservations where reservation_date = ? and reservation_time = ?",
+                Integer.class, DATE, TIME);
+        assertThat(dbCount).isEqualTo(1);
     }
 }
