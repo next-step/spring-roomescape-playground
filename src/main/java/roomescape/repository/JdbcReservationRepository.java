@@ -1,10 +1,13 @@
 package roomescape.repository;
 
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
+import roomescape.exception.ReservationErrorCode;
+import roomescape.exception.ReservationException;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -34,13 +37,17 @@ public class JdbcReservationRepository implements ReservationRepository {
         String sql = "insert into reservations (name, reservation_date, reservation_time) values(?, ?, ?)";
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcTemplate.update(connection -> {
-            PreparedStatement preparedStatement = connection.prepareStatement(sql, new String[]{"id"});
-            preparedStatement.setString(1, reservation.getName());
-            preparedStatement.setObject(2, reservation.getDate());
-            preparedStatement.setObject(3, reservation.getTime());
-            return preparedStatement;
-        }, keyHolder);
+        try {
+            jdbcTemplate.update(connection -> {
+                PreparedStatement preparedStatement = connection.prepareStatement(sql, new String[]{"id"});
+                preparedStatement.setString(1, reservation.getName());
+                preparedStatement.setObject(2, reservation.getDate());
+                preparedStatement.setObject(3, reservation.getTime());
+                return preparedStatement;
+            }, keyHolder);
+        } catch (DuplicateKeyException exception) {
+            throw new ReservationException(ReservationErrorCode.RESERVATION_CONFLICT);
+        }
 
         Long id = keyHolder.getKey().longValue();
         return new Reservation(id, reservation.getName(), reservation.getDate(), reservation.getTime());

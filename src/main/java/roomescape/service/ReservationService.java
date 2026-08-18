@@ -22,11 +22,11 @@ public class ReservationService {
         this.clock = clock;
     }
 
-    public synchronized List<Reservation> findAll() {
+    public List<Reservation> findAll() {
         return reservationRepository.findAll();
     }
 
-    public synchronized Reservation addReservation(ReservationCreateCommand command) {
+    public Reservation addReservation(ReservationCreateCommand command) {
         validateNotPast(command);
         validateNotDuplicated(command);
 
@@ -39,7 +39,7 @@ public class ReservationService {
         return reservationRepository.save(reservation);
     }
 
-    public synchronized void deleteReservation(Long id) {
+    public void deleteReservation(Long id) {
         boolean deleted = reservationRepository.deleteById(id);
 
         if (!deleted) {
