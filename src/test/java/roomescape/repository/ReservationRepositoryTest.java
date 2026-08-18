@@ -1,6 +1,9 @@
 package roomescape.repository;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import roomescape.domain.Reservation;
 
 import java.time.LocalDate;
@@ -8,11 +11,15 @@ import java.time.LocalTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@SpringBootTest
 class ReservationRepositoryTest {
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
     @Test
     void 예약을_추가하면_id가_정상적으로_부여되고_저장된다() {
         //Given
-        ReservationRepository reservationRepository = new ReservationRepository();
+        ReservationRepository reservationRepository = new ReservationRepository(jdbcTemplate);
 
         // When
         Reservation savedReservation = reservationRepository.addReservation(
@@ -29,7 +36,7 @@ class ReservationRepositoryTest {
     @Test
     void 여러_예약을_추가하면_ID가_순차적으로_부여된다() {
         // Given
-        ReservationRepository reservationRepository = new ReservationRepository();
+        ReservationRepository reservationRepository = new ReservationRepository(jdbcTemplate);
 
         // When
         Reservation firstAddedReservation = reservationRepository.addReservation(
