@@ -36,5 +36,10 @@ public class ReservationController {
         reservations.remove(reservation);
         return ResponseEntity.noContent().build();
     }
+
+    @ExceptionHandler(value = IllegalArgumentException.class)
+    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
 }
 
