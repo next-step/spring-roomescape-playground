@@ -2,19 +2,22 @@ package roomescape.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import roomescape.domain.Reservation;
 import roomescape.exception.InvalidReservationRequestException;
 import roomescape.exception.NotFoundReservationException;
-import roomescape.repository.InMemoryReservationRepository;
+import roomescape.repository.ReservationRepository;
 
 class ReservationServiceTest {
 
@@ -24,10 +27,12 @@ class ReservationServiceTest {
     );
 
     private ReservationService reservationService;
+    private ReservationRepository reservationRepository;
 
     @BeforeEach
     void setUp() {
-        reservationService = new ReservationService(new InMemoryReservationRepository(), CLOCK);
+        reservationRepository = mock(ReservationRepository.class);
+        reservationService = new ReservationService(reservationRepository, CLOCK);
     }
 
     @Test
@@ -40,9 +45,11 @@ class ReservationServiceTest {
                 LocalTime.of(15, 40)
         );
 
-        Reservation savedReservation = reservationService.create(reservation);
+        Reservation savedReservation = reservation.withId(1L);
+        when(reservationRepository.save(reservation)).thenReturn(savedReservation);
+        when(reservationRepository.findAll()).thenReturn(List.of(savedReservation));
 
-        assertThat(savedReservation.getId()).isEqualTo(1L);
+        assertThat(reservationService.create(reservation).getId()).isEqualTo(1L);
         assertThat(reservationService.findAll()).containsExactly(savedReservation);
     }
 
