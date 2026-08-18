@@ -34,6 +34,14 @@
 - [x] `GET /reservations` 요청 시 `Content-Type: application/json` 응답
 - [x] `GET /reservations` 요청 시 예약 목록을 JSON 배열로 응답
 
+### 3단계 - 예약 추가 / 취소
+
+- [x] `POST /reservations` 요청 시 201 응답
+- [x] `POST /reservations` 요청 시 `Location` 헤더에 생성된 예약의 경로 응답
+- [x] `POST /reservations` 요청 시 생성된 예약 정보를 JSON으로 응답
+- [x] `DELETE /reservations/{id}` 요청 시 204 응답
+- [x] `DELETE /reservations/{id}` 요청 시 해당 예약이 목록에서 제거됨
+
 ## API 명세
 
 ### 예약 목록 조회
@@ -70,4 +78,48 @@ Content-Type: application/json
         "time": "12:00"
     }
 ]
+```
+
+### 예약 추가
+
+**Request**
+
+```
+POST /reservations HTTP/1.1
+content-type: application/json
+
+{
+    "name": "브라운",
+    "date": "2023-08-05",
+    "time": "15:40"
+}
+```
+
+**Response**
+
+```
+HTTP/1.1 201
+Location: /reservations/1
+Content-Type: application/json
+
+{
+    "id": 1,
+    "name": "브라운",
+    "date": "2023-08-05",
+    "time": "15:40"
+}
+```
+
+### 예약 취소
+
+**Request**
+
+```
+DELETE /reservations/1 HTTP/1.1
+```
+
+**Response**
+
+```
+HTTP/1.1 204 No Content
 ```
