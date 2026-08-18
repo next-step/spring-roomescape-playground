@@ -13,6 +13,10 @@ public class ReservationRequest {
     private String time;
 
     public Reservation toReservation() {
+        if (date == null || date.isBlank() || time == null || time.isBlank()) {
+            throw new BlankReservationException("날짜와 시간을 입력해주세요.");
+        }
+
         try {
             LocalDate parsedDate = LocalDate.parse(date);
             LocalTime parsedTime = LocalTime.parse(time);
