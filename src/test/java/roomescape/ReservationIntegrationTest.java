@@ -55,16 +55,16 @@ class ReservationIntegrationTest {
         request.put("time", TIME.toString());
 
         // when
-        RestAssured.given().log().all()
+        Long id = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(request)
                 .when().post("/reservations")
-                .then().statusCode(201);
+                .then().statusCode(201)
+                .extract().jsonPath().getLong("id");
 
         // then
         Integer dbCount = jdbcTemplate.queryForObject(
-                "select count(*) from reservations where reservation_date = ? and reservation_time = ?",
-                Integer.class, DATE, TIME);
+                "select count(*) from reservations where id = ?", Integer.class, id);
         assertThat(dbCount).isEqualTo(1);
     }
 
