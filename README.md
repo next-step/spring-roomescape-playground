@@ -6,10 +6,10 @@
 - [ ] 예약 관리 기능이 정상 동작하도록 기능 완성
 
 ## 요구사항 테스트
-- [ ] JdbcTemplate을 이용하여 DataSource객체에 접근하기
-- [ ] DataSource 객체를 이용하여 Connection 확인하기
-- [ ] Connection 객체를 이용하여 데이터베이스 이름 검증
-- [ ] Connection 객체를 이용하여 테이블 이름 검증
+- [x] JdbcTemplate을 이용하여 DataSource객체에 접근하기
+- [x] DataSource 객체를 이용하여 Connection 확인하기
+- [x] Connection 객체를 이용하여 데이터베이스 이름 검증
+- [x] Connection 객체를 이용하여 테이블 이름 검증
 - [ ] DB에 예약 하나 추가 후 조회 API 결과와 DB 쿼리 조회 결과 비교 테스트
 - [ ] 예약 추가 API 활용 후 조회 쿼리를 이용해서 데이터가 저장되었는지 확인
 - [ ] 예약 취소 API 활용 후 조회 쿼리를 이용해서 데이터가 삭제되었는지 확인
