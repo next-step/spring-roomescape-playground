@@ -1,17 +1,26 @@
 package roomescape;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class MissionStepTest {
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @Test
     @DisplayName("홈 요청 시 200 OK를 반환하는지 테스트")
@@ -101,4 +110,17 @@ public class MissionStepTest {
             .then().log().all()
             .statusCode(404);
     }
+
+    @Test
+    @DisplayName("데이터베이스 및 reservation 테이블 연결 확인 테스트")
+    void test_데이터베이스_연결과_테이블_존재를_확인하는지_테스트() {
+        try (Connection connection = jdbcTemplate.getDataSource().getConnection()) {
+            assertThat(connection).isNotNull();
+            assertThat(connection.getCatalog()).isEqualTo("DATABASE");
+            assertThat(connection.getMetaData().getTables(null, null, "RESERVATION", null).next()).isTrue();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
