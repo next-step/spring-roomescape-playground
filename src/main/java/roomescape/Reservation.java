@@ -7,48 +7,46 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import roomescape.exception.BlankReservationException;
 
 public class Reservation {
-    private final Long id;
-    private final String name;
-    private final LocalDate date;
-    @JsonFormat(pattern = "HH:mm")
-    private final LocalTime time;
 
-    public Reservation(Long id, String name, LocalDate date, LocalTime time) {
-        validate(id, name, date, time);
-        this.id = id;
-        this.name = name;
-        this.date = date;
-        this.time = time;
-    }
+  private final Long id;
+  private final String name;
+  private final LocalDate date;
+  @JsonFormat(pattern = "HH:mm")
+  private final LocalTime time;
 
-    private void validate(Long id, String name, LocalDate date, LocalTime time) {
-        if(id == null){
-            throw new BlankReservationException("ID가 입력되지 않았습니다.");
-        }
-        if(name == null || name.isEmpty()){
-            throw new BlankReservationException("이름은 공백이 될 수 없습니다.");
-        }
-        if(date == null){
-            throw new BlankReservationException("예약일자는 공백이 될 수 없습니다.");
-        }
-        if(time == null){
-            throw new BlankReservationException("예약시간은 공백이 될 수 없습니다.");
-        }
-    }
+  public Reservation(Long id, String name, LocalDate date, LocalTime time) {
+    validate(name, date, time);
+    this.id = id;
+    this.name = name;
+    this.date = date;
+    this.time = time;
+  }
 
-    public Long getId() {
-        return id;
+  public static void validate(String name, LocalDate date, LocalTime time) {
+    if (name == null || name.isEmpty()) {
+      throw new BlankReservationException("이름은 공백이 될 수 없습니다.");
     }
+    if (date == null) {
+      throw new BlankReservationException("예약일자는 공백이 될 수 없습니다.");
+    }
+    if (time == null) {
+      throw new BlankReservationException("예약시간은 공백이 될 수 없습니다.");
+    }
+  }
 
-    public String getName() {
-        return name;
-    }
+  public Long getId() {
+    return id;
+  }
 
-    public LocalDate getDate() {
-        return date;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public LocalTime getTime() {
-        return time;
-    }
+  public LocalDate getDate() {
+    return date;
+  }
+
+  public LocalTime getTime() {
+    return time;
+  }
 }
