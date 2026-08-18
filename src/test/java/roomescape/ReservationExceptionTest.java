@@ -21,9 +21,16 @@ public class ReservationExceptionTest {
                 .when().post("/reservations")
                 .then().log().all()
                 .statusCode(400);
-
     }
 
+    @Test
+    @DisplayName("삭제할 예약이 없는 경우 예외가 발생한다")
+    void deleteException() {
+        RestAssured.given().log().all()
+                .when().delete("/reservations/1")
+                .then().log().all()
+                .statusCode(404);
+    }
 
     private Map<String, String> createParams() {
         Map<String, String> params = new HashMap<>();
