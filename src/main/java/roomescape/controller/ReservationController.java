@@ -1,15 +1,14 @@
 package roomescape.controller;
 
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import roomescape.domain.Reservation;
 import roomescape.dto.ReservationResponse;
 import roomescape.repository.ReservationRepository;
 
 import java.util.List;
 
-@Controller
+@RestController
 public class ReservationController {
     private final ReservationRepository reservationRepository;
 
@@ -17,7 +16,6 @@ public class ReservationController {
         this.reservationRepository = reservationRepository;
     }
 
-    @ResponseBody
     @GetMapping("/reservations")
     public List<ReservationResponse> reservations() {
         List<Reservation> reservations = reservationRepository.findAll();
