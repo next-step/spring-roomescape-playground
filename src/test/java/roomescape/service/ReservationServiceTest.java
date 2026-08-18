@@ -2,6 +2,7 @@ package roomescape.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import roomescape.domain.Reservation;
 import roomescape.repository.ReservationRepository;
 
 import java.time.Clock;
@@ -18,6 +19,8 @@ public class ReservationServiceTest {
     private static final String NAME = "브라운";
     private static final LocalDate TODAY = LocalDate.of(2023, 1, 2);
     private static final LocalTime NOW = LocalTime.of(10, 30);
+
+    private static final Long NON_EXISTENT_ID = 999L;
 
     private static final ZoneId ZONE_ID = ZoneId.of("Asia/Seoul");
 
@@ -95,6 +98,26 @@ public class ReservationServiceTest {
                         TODAY,
                         reservationTime
                 )
+        );
+    }
+
+    @Test
+    void 존재하는_예약을_삭제할_수_있다() {
+        LocalTime reservationTime = NOW.plusHours(2);
+
+        Reservation savedReservation = reservationService.create(NAME, TODAY, reservationTime);
+        Long id = savedReservation.getId();
+
+        assertDoesNotThrow(
+                () -> reservationService.delete(id)
+        );
+    }
+
+    @Test
+    void 존재하지_않는_예약을_삭제하면_예외가_발생한다() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> reservationService.delete(NON_EXISTENT_ID)
         );
     }
 }

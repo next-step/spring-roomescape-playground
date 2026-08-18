@@ -37,6 +37,10 @@ public class ReservationRepository {
         return savedReservation;
     }
 
+    public boolean deleteById(Long id) {
+        return reservations.removeIf(reservation -> reservation.getId().equals(id));
+    }
+
     public boolean existsByNameAndDateAndTime(String name, LocalDate date, LocalTime time) {
         return reservations.stream()
                 .anyMatch(reservation ->

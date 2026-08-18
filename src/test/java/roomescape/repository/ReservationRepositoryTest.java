@@ -17,11 +17,13 @@ public class ReservationRepositoryTest {
     private static final LocalDate TODAY = LocalDate.of(2023, 1, 2);
     private static final LocalTime NOW = LocalTime.of(10, 30);
 
-    private final ReservationRepository repository = new ReservationRepository();
+    private static final Long NON_EXISTENT_ID = 999L;
+
+    private final ReservationRepository reservationRepository = new ReservationRepository();
 
     @Test
     void 저장된_예약_목록을_조회할_수_있다() {
-        List<Reservation> reservations = repository.findAll();
+        List<Reservation> reservations = reservationRepository.findAll();
         Reservation first = reservations.get(0);
 
         assertEquals(3, reservations.size());
@@ -33,7 +35,7 @@ public class ReservationRepositoryTest {
     @Test
     void 예약을_저장할_수_있다() {
         Reservation reservation = new Reservation(NAME, TODAY, NOW);
-        Reservation savedReservation = repository.save(reservation);
+        Reservation savedReservation = reservationRepository.save(reservation);
 
         assertEquals(4L, savedReservation.getId());
         assertEquals(NAME, savedReservation.getName());
@@ -44,9 +46,9 @@ public class ReservationRepositoryTest {
     @Test
     void 동일한_이름_날짜_시간의_예약이_존재하면_true를_반환한다() {
         Reservation reservation = new Reservation(NAME, TODAY, NOW);
-        Reservation savedReservation = repository.save(reservation);
+        Reservation savedReservation = reservationRepository.save(reservation);
 
-        assertTrue(repository.existsByNameAndDateAndTime(
+        assertTrue(reservationRepository.existsByNameAndDateAndTime(
                 NAME,
                 TODAY,
                 NOW
@@ -56,12 +58,28 @@ public class ReservationRepositoryTest {
     @Test
     void 동일한_이름_날짜_시간의_예약이_없으면_false를_반환한다() {
         Reservation reservation = new Reservation(NAME, TODAY, NOW);
-        Reservation savedReservation = repository.save(reservation);
+        Reservation savedReservation = reservationRepository.save(reservation);
 
-        assertFalse(repository.existsByNameAndDateAndTime(
+        assertFalse(reservationRepository.existsByNameAndDateAndTime(
                 NAME,
                 TODAY,
                 NOW.plusMinutes(1)
         ));
+    }
+
+    @Test
+    void 존재하는_예약_id로_삭제하면_true를_반환한다() {
+        LocalTime reservationTime = NOW.plusHours(2);
+
+        Reservation reservation = new Reservation(NAME, TODAY, reservationTime);
+        Reservation savedReservation = reservationRepository.save(reservation);
+        Long id = savedReservation.getId();
+
+        assertTrue(reservationRepository.deleteById(id));
+    }
+
+    @Test
+    void 존재하지_않는_예약_id로_삭제하면_false를_반환한다() {
+        assertFalse(reservationRepository.deleteById(NON_EXISTENT_ID));
     }
 }

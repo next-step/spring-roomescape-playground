@@ -36,6 +36,12 @@ public class ReservationService {
         return reservationRepository.save(reservation);
     }
 
+    public void delete(Long id) {
+        if (!reservationRepository.deleteById(id)) {
+            throw new IllegalArgumentException("존재하지 않는 예약입니다.");
+        }
+    }
+
     private void validateReservationDateTime(LocalDate date, LocalTime time) {
         LocalDateTime reservationDateTime = LocalDateTime.of(date, time).truncatedTo(ChronoUnit.MINUTES);
         LocalDateTime now = LocalDateTime.now(clock).truncatedTo(ChronoUnit.MINUTES);
