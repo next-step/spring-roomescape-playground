@@ -13,35 +13,36 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import roomescape.Reservation;
-import roomescape.Reservations;
+import roomescape.ReservationRepository;
 import roomescape.dto.ReservationRequest;
 
 @RestController
 @RequestMapping("/reservations")
 public class ReservationController {
 
-    private final Reservations reservations;
+  private final ReservationRepository reservationRepository;
 
-    public ReservationController(Reservations reservations) {
-        this.reservations = reservations;
-    }
+  public ReservationController(ReservationRepository reservationRepository) {
+    this.reservationRepository = reservationRepository;
+  }
 
-    @GetMapping("")
-    public ResponseEntity<List<Reservation>> readReservations() {
-        return ResponseEntity.ok(reservations.readReservations());
-    }
+  @GetMapping("")
+  public ResponseEntity<List<Reservation>> readReservations() {
+    return ResponseEntity.ok(reservationRepository.readReservations());
+  }
 
-    @PostMapping("")
-    public ResponseEntity<Reservation> createReservation(@RequestBody ReservationRequest reservationRequest){
-        Reservation newReservation = reservations.reserve(reservationRequest);
-        return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId()))
-            .body(newReservation);
-    }
+  @PostMapping("")
+  public ResponseEntity<Reservation> createReservation(
+      @RequestBody ReservationRequest reservationRequest) {
+    Reservation newReservation = reservationRepository.reserve(reservationRequest);
+    return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId()))
+        .body(newReservation);
+  }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Reservation> deleteReservation(@PathVariable Long id){
-        reservations.delete(id);
-        return ResponseEntity.noContent().build();
-    }
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Reservation> deleteReservation(@PathVariable Long id) {
+    reservationRepository.delete(id);
+    return ResponseEntity.noContent().build();
+  }
 
 }

@@ -12,11 +12,11 @@ import roomescape.dto.ReservationRequest;
 import roomescape.exception.NotFoundReservationException;
 
 @Repository
-public class Reservations {
+public class ReservationRepository {
 
   private final JdbcTemplate jdbcTemplate;
 
-  public Reservations(JdbcTemplate jdbcTemplate) {
+  public ReservationRepository(JdbcTemplate jdbcTemplate) {
     this.jdbcTemplate = jdbcTemplate;
   }
 
