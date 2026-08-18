@@ -1,10 +1,13 @@
 package roomescape;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import roomescape.dto.ReservationRequest;
 import roomescape.exception.NotFoundReservationException;
@@ -13,13 +16,20 @@ import roomescape.exception.NotFoundReservationException;
 public class Reservations {
     private final List<Reservation> reservations;
     private final AtomicLong index = new AtomicLong(1);
+    private final JdbcTemplate jdbcTemplate;
 
-    public Reservations() {
+    public Reservations(JdbcTemplate jdbcTemplate) {
         this.reservations = new ArrayList<>();
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     public List<Reservation> readReservations() {
-        return Collections.unmodifiableList(reservations);
+        return jdbcTemplate.query("SELECT * FROM reservation", (rs, rowNum) ->
+            new Reservation(rs.getLong("id"),
+                rs.getString("name"),
+                LocalDate.parse(rs.getString("date")),
+                LocalTime.parse(rs.getString("time"))
+            ));
     }
 
     public Reservation reserve(ReservationRequest reservationRequest){
