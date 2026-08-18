@@ -12,6 +12,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 @Service
 public class ReservationService {
@@ -27,6 +28,10 @@ public class ReservationService {
     ReservationService(ReservationRepository reservationRepository, Clock clock) {
         this.reservationRepository = reservationRepository;
         this.clock = clock;
+    }
+
+    public List<Reservation> findAll() {
+        return reservationRepository.findAll();
     }
 
     public Reservation create(String name, LocalDate date, LocalTime time) {
