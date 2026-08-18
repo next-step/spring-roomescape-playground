@@ -1,6 +1,7 @@
 package roomescape.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import roomescape.domain.Reservation;
@@ -9,6 +10,8 @@ import roomescape.dto.ReservationResponse;
 import roomescape.exception.NotFoundReservationException;
 
 import java.net.URI;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -18,14 +21,26 @@ import java.util.concurrent.atomic.AtomicLong;
 public class ReservationController {
     private final List<Reservation> reservations = new ArrayList<>();
     private final AtomicLong index = new AtomicLong(1);
+    private JdbcTemplate jdbcTemplate;
+
+    public ReservationController(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     @GetMapping("/reservations")
     public ResponseEntity<List<ReservationResponse>> readReservationList() {
-        List<ReservationResponse> responses = reservations.stream()
+        List<ReservationResponse> respones = jdbcTemplate.query(
+                        "select id, name, date, time from reservation",
+                        (rs, rowNum) -> new Reservation(
+                                rs.getLong("id"),
+                                rs.getString("name"),
+                                rs.getObject("date", LocalDate.class),
+                                rs.getObject("time", LocalTime.class)
+                        )
+                ).stream()
                 .map(ReservationResponse::from)
                 .toList();
-
-        return ResponseEntity.ok(responses);
+        return ResponseEntity.ok(respones);
     }
 
     @GetMapping("/reservations/{id}")
