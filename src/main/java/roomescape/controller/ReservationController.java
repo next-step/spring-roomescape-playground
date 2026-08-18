@@ -19,11 +19,11 @@ import roomescape.dto.Reservation;
 public class ReservationController {
     private final List<Reservation> reservations = new ArrayList<>();
 
-    private final AtomicLong reservationId = new AtomicLong(1);
+    private final AtomicLong idGenerator = new AtomicLong(1);
 
     @PostMapping("/reservations")
-    public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservation) {
-        Reservation newReservation = Reservation.toEntity(reservation, reservationId.getAndIncrement());
+    public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservationRequest) {
+        Reservation newReservation = Reservation.toEntity(reservationRequest, idGenerator.getAndIncrement());
         reservations.add(newReservation);
         return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
     }
@@ -42,7 +42,7 @@ public class ReservationController {
     @DeleteMapping("/reservations/{reservationId}")
     public ResponseEntity<Void> deleteReservation(@PathVariable Long reservationId) {
         Reservation reservation = reservations.stream()
-                .filter(iterator -> Objects.equals(iterator.getId(), reservationId))
+                .filter(existingReservation -> Objects.equals(existingReservation.getId(), reservationId))
                 .findFirst()
                 .orElseThrow(RuntimeException::new);
 
