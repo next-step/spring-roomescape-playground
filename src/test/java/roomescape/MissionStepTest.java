@@ -7,6 +7,7 @@ import io.restassured.http.ContentType;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -122,5 +123,22 @@ public class MissionStepTest {
             throw new RuntimeException(e);
         }
     }
+
+    @Test
+    @DisplayName("예약 조회 API가 데이터베이스에 저장된 예약을 반환하는지 테스트")
+    void test_예약_조회_API가_데이터베이스를_조회하는지_테스트(){
+        jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "브라운", "2023-08-05", "15:40");
+
+        List<Reservation> reservations = RestAssured.given().log().all()
+            .when().get("/reservations")
+            .then().log().all()
+            .statusCode(200).extract()
+            .jsonPath().getList(".", Reservation.class);
+
+        Integer count = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
+
+        assertThat(reservations.size()).isEqualTo(count);
+    }
+
 
 }
