@@ -1,5 +1,6 @@
 package roomescape;
 
+import exception.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +34,7 @@ public class ReservationController {
         Reservation reservation = reservations.stream()
                 .filter(it -> Objects.equals(it.getId(), id))
                 .findFirst()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new NotFoundException("삭제할 예약을 찾을 수 없습니다."));
         reservations.remove(reservation);
         return ResponseEntity.noContent().build();
     }
