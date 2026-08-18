@@ -1,16 +1,25 @@
 package roomescape.controller;
 
 import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.test.annotation.DirtiesContext;
+
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.is;
 
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
+)
+@DirtiesContext(
+        classMode =  DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD
 )
 public class ReservationControllerTest {
 
@@ -38,6 +47,38 @@ public class ReservationControllerTest {
                 .when()
                 .get("/reservations")
                 .then()
+                .statusCode(200)
                 .body("[0].time", is("10:00"));
+    }
+
+    @Test
+    void 예약을_추가할_수_있다() {
+        String date = LocalDate.now().plusDays(1).toString();
+        Map<String, String> params = new HashMap<>();
+        params.put("name", "브라운");
+        params.put("date", date);
+        params.put("time", "12:00");
+
+        given()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when()
+                .post("/reservations")
+                .then()
+                .statusCode(201)
+                .header("Location", "/reservations/4")
+                .body("id", is(4))
+                .body("name", is("브라운"))
+                .body("date", is(date))
+                .body("time", is("12:00"));
+    }
+
+    @Test
+    void 예약을_삭제할_수_있다() {
+        given()
+                .when()
+                .delete("/reservations/1")
+                .then()
+                .statusCode(204);
     }
 }
