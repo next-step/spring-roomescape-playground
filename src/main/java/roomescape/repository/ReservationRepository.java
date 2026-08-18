@@ -2,42 +2,34 @@ package roomescape.repository;
 
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
+import roomescape.domain.Reservations;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Repository
 public class ReservationRepository {
-    private final List<Reservation> reservations = createReservations();
-
-    private List<Reservation> createReservations() {
-        List<Reservation> reservations = new ArrayList<>();
-
-        reservations.add(new Reservation(
-                1,
-                "예약자1",
-                LocalDate.of(2026, 8, 4),
-                LocalTime.of(10, 0)
-        ));
-        reservations.add(new Reservation(
-                2,
-                "예약자2",
-                LocalDate.of(2026, 8, 5),
-                LocalTime.of(10, 10)
-        ));
-        reservations.add(new Reservation(
-                3,
-                "예약자3",
-                LocalDate.of(2026, 8, 6),
-                LocalTime.of(10, 20)
-        ));
-
-        return reservations;
-    }
+    private final Reservations reservations = new Reservations();
+    private final AtomicLong index = new AtomicLong(0);
 
     public List<Reservation> getReservations() {
-        return List.copyOf(reservations);
+        return reservations.getReservations();
+    }
+
+    public Reservation addReservation(String name, LocalDate date, LocalTime time) {
+        Reservation newReservation = new Reservation(
+                index.incrementAndGet(),
+                name,
+                date,
+                time
+        );
+        reservations.add(newReservation);
+        return newReservation;
+    }
+
+    public void deleteReservation(long id) {
+        reservations.delete(id);
     }
 }
