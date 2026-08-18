@@ -13,14 +13,11 @@ class ReservationRepositoryTest {
     void 예약을_추가하면_id가_정상적으로_부여되고_저장된다() {
         //Given
         ReservationRepository reservationRepository = new ReservationRepository();
-        Reservation reservation = new Reservation(
-                0,
-                "이준환",
-                LocalDate.of(2026, 8, 5),
-                LocalTime.of(10, 0)
-        );
+
         // When
-        Reservation savedReservation = reservationRepository.addReservation(reservation);
+        Reservation savedReservation = reservationRepository.addReservation(
+                "이준환", LocalDate.of(2026, 8, 5), LocalTime.of(10, 0)
+        );
 
         // Then
         assertThat(savedReservation.getId()).isEqualTo(1);
@@ -34,23 +31,13 @@ class ReservationRepositoryTest {
         // Given
         ReservationRepository reservationRepository = new ReservationRepository();
 
-        Reservation firstReservation = new Reservation(
-                0,
-                "이준환",
-                LocalDate.of(2026, 8, 5),
-                LocalTime.of(10, 0)
-        );
-
-        Reservation secondReservation = new Reservation(
-                0,
-                "김준우",
-                LocalDate.of(2026, 8, 6),
-                LocalTime.of(11, 0)
-        );
-
         // When
-        Reservation firstAddedReservation = reservationRepository.addReservation(firstReservation);
-        Reservation secondAddedReservation =reservationRepository.addReservation(secondReservation);
+        Reservation firstAddedReservation = reservationRepository.addReservation(
+                "이준환", LocalDate.of(2026, 8, 5), LocalTime.of(10, 0)
+        );
+        Reservation secondAddedReservation = reservationRepository.addReservation(
+                "김준우", LocalDate.of(2026, 8, 6), LocalTime.of(11, 0)
+        );
 
         // Then
         assertThat(firstAddedReservation.getId()).isEqualTo(1);

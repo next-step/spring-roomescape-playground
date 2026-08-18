@@ -36,7 +36,9 @@ public class ReservationController {
 
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> addReservation(@RequestBody ReservationRequest request) {
-        Reservation newReservation = reservationRepository.addReservation(request.toReservation());
+        Reservation newReservation = reservationRepository.addReservation(
+                request.getName(), request.getParsedDate(), request.getParsedTime()
+        );
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
