@@ -2,8 +2,11 @@ package roomescape;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import roomescape.domain.Reservation;
-import roomescape.repository.InMemoryReservationRepository;
+import roomescape.repository.JdbcReservationRepository;
 import roomescape.repository.ReservationRepository;
 
 import java.time.LocalDate;
@@ -12,15 +15,19 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@JdbcTest
 class ReservationRepositoryTest {
     private static final LocalDate DATE = LocalDate.of(2027, 8, 14);
     private static final LocalTime TIME = LocalTime.of(10, 0);
 
     private ReservationRepository reservationRepository;
 
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
     @BeforeEach
     void setUp() {
-        reservationRepository = new InMemoryReservationRepository();
+        reservationRepository = new JdbcReservationRepository(jdbcTemplate);
     }
 
     @Test
