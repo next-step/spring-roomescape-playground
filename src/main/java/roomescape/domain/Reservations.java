@@ -17,12 +17,10 @@ public class Reservations {
     }
 
     public void delete(long id) {
-        boolean exists = reservations.stream().anyMatch(reservation -> reservation.getId() == id);
+        boolean removed = reservations.removeIf(reservation -> reservation.getId() == id);
 
-        if (!exists) {
+        if (!removed) {
             throw new NotFoundReservationException("해당 id의 예약을 찾을 수 없습니다.");
         }
-
-        reservations.removeIf(reservation -> reservation.getId() == id);
     }
 }

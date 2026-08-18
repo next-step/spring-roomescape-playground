@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicLong;
 @Repository
 public class ReservationRepository {
     private final Reservations reservations = new Reservations();
-    private AtomicLong index = new AtomicLong(0);
+    private final AtomicLong index = new AtomicLong(0);
 
     public List<Reservation> getReservations() {
         return reservations.getReservations();
