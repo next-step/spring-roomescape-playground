@@ -3,6 +3,8 @@ package roomescape.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import roomescape.domain.Reservation;
+import roomescape.exception.DuplicateReservationException;
+import roomescape.exception.ReservationNotFoundException;
 import roomescape.repository.ReservationRepository;
 
 import java.time.Clock;
@@ -92,7 +94,7 @@ public class ReservationServiceTest {
         reservationService.create(NAME, TODAY, reservationTime);
 
         assertThrows(
-                IllegalArgumentException.class,
+                DuplicateReservationException.class,
                 () -> reservationService.create(
                         NAME,
                         TODAY,
@@ -116,7 +118,7 @@ public class ReservationServiceTest {
     @Test
     void 존재하지_않는_예약을_삭제하면_예외가_발생한다() {
         assertThrows(
-                IllegalArgumentException.class,
+                ReservationNotFoundException.class,
                 () -> reservationService.delete(NON_EXISTENT_ID)
         );
     }

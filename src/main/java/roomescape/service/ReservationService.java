@@ -3,6 +3,8 @@ package roomescape.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import roomescape.domain.Reservation;
+import roomescape.exception.DuplicateReservationException;
+import roomescape.exception.ReservationNotFoundException;
 import roomescape.repository.ReservationRepository;
 
 import java.time.Clock;
@@ -38,7 +40,7 @@ public class ReservationService {
 
     public void delete(Long id) {
         if (!reservationRepository.deleteById(id)) {
-            throw new IllegalArgumentException("존재하지 않는 예약입니다.");
+            throw new ReservationNotFoundException("존재하지 않는 예약입니다.");
         }
     }
 
@@ -55,7 +57,7 @@ public class ReservationService {
         boolean exists = reservationRepository.existsByNameAndDateAndTime(name, date, time);
 
         if (exists) {
-            throw new IllegalArgumentException("이미 존재하는 예약입니다.");
+            throw new DuplicateReservationException("이미 존재하는 예약입니다.");
         }
     }
 }
