@@ -1,12 +1,15 @@
-package roomescape.business.v1;
+package roomescape.business;
 
 import org.junit.jupiter.api.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import roomescape.dto.request.ReservationRequest;
 import roomescape.entity.Reservation;
 import roomescape.exception.ReservationNotFoundException;
-import roomescape.repository.ReservationRepositoryV1;
+import roomescape.repository.ReservationRepositoryImpl;
 import roomescape.service.ReservationService;
-import roomescape.service.ReservationServiceV1;
+import roomescape.service.ReservationServiceImpl;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -14,13 +17,17 @@ import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-public class ReservationServiceV1Test {
+@JdbcTest
+public class ReservationServiceTest {
 
     private ReservationService reservationService;
 
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
     @BeforeEach
     public void setup() {
-        this.reservationService = new ReservationServiceV1(new ReservationRepositoryV1());
+        this.reservationService = new ReservationServiceImpl(new ReservationRepositoryImpl(jdbcTemplate));
     }
 
     @AfterEach

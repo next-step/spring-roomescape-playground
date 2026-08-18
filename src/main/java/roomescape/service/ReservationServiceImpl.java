@@ -7,11 +7,11 @@ import roomescape.repository.ReservationRepository;
 
 import java.util.List;
 
-public class ReservationServiceV1 implements ReservationService {
+public class ReservationServiceImpl implements ReservationService {
 
     private final ReservationRepository reservationRepository;
 
-    public ReservationServiceV1(ReservationRepository reservationRepository) {
+    public ReservationServiceImpl(ReservationRepository reservationRepository) {
         this.reservationRepository = reservationRepository;
     }
 
@@ -23,18 +23,13 @@ public class ReservationServiceV1 implements ReservationService {
     @Override
     public Reservation createReservation(ReservationRequest reservationRequest) {
 
-        Reservation createdReservation = new Reservation(
-                reservationRequest.name(),
-                reservationRequest.date(),
-                reservationRequest.time()
-        );
+        Reservation reservation = ReservationRequest.toReservationWithoutId(reservationRequest);
 
-        return reservationRepository.save(createdReservation);
+        return reservationRepository.save(reservation);
     }
 
     @Override
     public void deleteReservation(Long reservationId) {
-
         Reservation reservation = reservationRepository.findById(reservationId)
                 .orElseThrow(ReservationNotFoundException::new);
 

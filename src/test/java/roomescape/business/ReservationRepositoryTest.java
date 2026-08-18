@@ -1,4 +1,4 @@
-package roomescape.business.v2;
+package roomescape.business;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,7 +10,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import roomescape.entity.Reservation;
 import roomescape.exception.ReservationNotFoundException;
 import roomescape.repository.ReservationRepository;
-import roomescape.repository.ReservationRepositoryV2;
+import roomescape.repository.ReservationRepositoryImpl;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -20,7 +20,7 @@ import java.util.Optional;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @JdbcTest
-public class ReservationRepositoryV2Test {
+public class ReservationRepositoryTest {
 
     private ReservationRepository reservationRepository;
 
@@ -29,7 +29,7 @@ public class ReservationRepositoryV2Test {
 
     @BeforeEach
     void setUp() {
-        reservationRepository = new ReservationRepositoryV2(jdbcTemplate);
+        reservationRepository = new ReservationRepositoryImpl(jdbcTemplate);
     }
 
     @AfterEach

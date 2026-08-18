@@ -15,11 +15,11 @@ import java.net.URI;
 import java.util.List;
 
 @Controller
-public class RoomEscapeControllerV2 {
+public class RoomEscapeController {
 
     private final ReservationService reservationService;
 
-    public RoomEscapeControllerV2(ReservationService reservationService) {
+    public RoomEscapeController(ReservationService reservationService) {
         this.reservationService = reservationService;
     }
 

@@ -14,11 +14,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class ReservationRepositoryV2 implements ReservationRepository {
+public class ReservationRepositoryImpl implements ReservationRepository {
 
     private JdbcTemplate jdbcTemplate;
 
-    public ReservationRepositoryV2(JdbcTemplate jdbcTemplate) {
+    public ReservationRepositoryImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
