@@ -86,7 +86,7 @@ public class ReservationTest {
     private Map<String, String> createParams() {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
-        params.put("date", "2023-08-05");
+        params.put("date", "2026-08-30");
         params.put("time", "15:40");
 
         return params;
