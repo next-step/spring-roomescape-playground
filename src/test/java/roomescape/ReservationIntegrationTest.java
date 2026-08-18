@@ -67,4 +67,24 @@ class ReservationIntegrationTest {
                 Integer.class, DATE, TIME);
         assertThat(dbCount).isEqualTo(1);
     }
+
+    @Test
+    void 삭제_API_요청_후_DB에_데이터가_삭제된다() {
+        // given
+        jdbcTemplate.update("insert into reservations (name, reservation_date, reservation_time) values (?, ?, ?)",
+                "브라운", DATE, TIME);
+        Long id = jdbcTemplate.queryForObject(
+                "select id from reservations where reservation_date = ? and reservation_time = ?",
+                Long.class, DATE, TIME);
+
+        // when
+        RestAssured.given().log().all()
+                .when().delete("/reservations/" + id)
+                .then().statusCode(204);
+
+        // then
+        Integer dbCount = jdbcTemplate.queryForObject(
+                "select count(*) from reservations where id = ?", Integer.class, id);
+        assertThat(dbCount).isZero();
+    }
 }
