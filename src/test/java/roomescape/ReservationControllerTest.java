@@ -103,6 +103,40 @@ class ReservationControllerTest {
         assertThat(reservations.size()).isEqualTo(count);
     }
 
+    @Test
+    void 예약_추가_데이터베이스에_저장_테스트() {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", "브라운");
+        params.put("date", "2023-08-05");
+        params.put("time", "10:00");
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(201)
+                .header("Location", "/reservations/1")
+                .body("id", is(1));
+
+        Integer count = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
+        assertThat(count).isEqualTo(1);
+    }
+
+    @Test
+    void 예약_취소_데이터베이스에서_삭제_테스트() {
+        jdbcTemplate.update("INSERT INTO reservation (name, reservation_date, reservation_time) VALUES (?, ?, ?)",
+                "브라운", "2023-08-05", "10:00");
+
+        RestAssured.given().log().all()
+                .when().delete("/reservations/1")
+                .then().log().all()
+                .statusCode(204);
+
+        Integer count = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
+        assertThat(count).isEqualTo(0);
+    }
+
     private void 예약을_추가한다() {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");

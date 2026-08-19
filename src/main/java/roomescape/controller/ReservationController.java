@@ -13,7 +13,6 @@ import roomescape.dto.ReservationRequest;
 import roomescape.dto.ReservationResponse;
 import roomescape.exception.NotFoundReservationException;
 import roomescape.repository.JdbcReservationRepository;
-import roomescape.repository.ReservationRepository;
 
 import java.net.URI;
 import java.util.List;
@@ -22,14 +21,9 @@ import java.util.List;
 @ResponseBody // @Controller + @ResponseBody = @RestController
 public class ReservationController {
 
-    private final ReservationRepository reservationRepository;
     private final JdbcReservationRepository jdbcReservationRepository;
 
-    public ReservationController(
-            ReservationRepository reservationRepository,
-            JdbcReservationRepository jdbcReservationRepository
-            ) {
-        this.reservationRepository = reservationRepository;
+    public ReservationController(JdbcReservationRepository jdbcReservationRepository) {
         this.jdbcReservationRepository = jdbcReservationRepository;
     }
 
@@ -44,7 +38,7 @@ public class ReservationController {
     public ResponseEntity<ReservationResponse> createReservation(
             @RequestBody ReservationRequest request
     ) {
-        Reservation saved = reservationRepository.save(request.toReservation());
+        Reservation saved = jdbcReservationRepository.save(request.toReservation());
 
         return ResponseEntity
                 .created(URI.create("/reservations/" + saved.getId()))
@@ -55,8 +49,8 @@ public class ReservationController {
     public ResponseEntity<Void> deleteReservation(
             @PathVariable Long id
     ) {
-        boolean deleted = reservationRepository.deleteById(id);
-        if (!deleted) {
+        int deleted = jdbcReservationRepository.deleteById(id);
+        if (deleted == 0) {
             throw new NotFoundReservationException("예약을 찾을 수 없습니다. id=" + id);
         }
 

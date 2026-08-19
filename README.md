@@ -37,3 +37,5 @@
   - [x] `Connection`으로 데이터베이스 이름을 검증한다.
   - [x] `Connection`으로 테이블 이름을 검증한다.
 - [x] `GET /reservations`는 `JdbcTemplate`으로 데이터베이스에서 예약을 조회한다.
+- [x] `POST /reservations`는 데이터베이스에 예약을 추가하고, 발급된 식별자를 응답한다.
+- [x] `DELETE /reservations/{id}`는 데이터베이스에서 예약을 삭제한다.
