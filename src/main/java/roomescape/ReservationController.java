@@ -7,10 +7,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class ReservationController {
@@ -34,7 +31,7 @@ public class ReservationController {
 
     @PostMapping("/reservations")
     @ResponseBody
-    public ResponseEntity<Reservation> postReservations(@RequestBody ReservationRequest reservationRequest) {
+    public ResponseEntity<Reservation> postReservation(@RequestBody ReservationRequest reservationRequest) {
         Reservation reservation = new Reservation(
                 index.incrementAndGet(),
                 reservationRequest.getDate(),
@@ -47,5 +44,11 @@ public class ReservationController {
         return ResponseEntity.created(
                 URI.create("/reservations/" + reservation.getId()))
                 .body(reservation);
+    }
+
+    @DeleteMapping("/reservations/{id}")
+    @ResponseBody
+    public void deleteReservation(@PathVariable long id) {
+        reservations.removeIf(reservation -> reservation.getId() == id);
     }
 }
