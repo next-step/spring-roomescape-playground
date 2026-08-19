@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import roomescape.dto.Reservation;
+import roomescape.exception.ReservationInvalidException;
+import roomescape.exception.ReservationNotFoundException;
 
 @Controller
 public class ReservationController {
@@ -23,6 +25,18 @@ public class ReservationController {
 
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservationRequest) {
+        if (reservationRequest.getName() == null || reservationRequest.getName().isBlank()) {
+            throw new ReservationInvalidException("예약자 이름은 비워둘 수 없습니다.");
+        }
+
+        if (reservationRequest.getDate() == null) {
+            throw new ReservationInvalidException("날짜는 비어있을 수 없습니다.");
+        }
+
+        if (reservationRequest.getTime() == null) {
+            throw new ReservationInvalidException("시간은 비어있을 수 없습니다.");
+        }
+
         Reservation newReservation = Reservation.toEntity(reservationRequest, idGenerator.getAndIncrement());
         reservations.add(newReservation);
         return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
@@ -44,7 +58,7 @@ public class ReservationController {
         Reservation reservation = reservations.stream()
                 .filter(existingReservation -> Objects.equals(existingReservation.getId(), reservationId))
                 .findFirst()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new ReservationNotFoundException("id " + reservationId + "에 해당하는 예약을 찾을 수 없습니다."));
 
         reservations.remove(reservation);
 
