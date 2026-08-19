@@ -19,8 +19,6 @@ public class ReservationController {
 
     private final ReservationRepository reservationRepository;
 
-    private final AtomicLong index = new AtomicLong(1);
-
     public ReservationController(ReservationRepository reservationRepository) {
         this.reservationRepository = reservationRepository;
     }
