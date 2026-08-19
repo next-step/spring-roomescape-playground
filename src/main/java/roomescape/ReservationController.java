@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.net.URI;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
+import jakarta.validation.Valid;
 
 @Controller
 public class ReservationController {
@@ -38,14 +39,8 @@ public class ReservationController {
     @PostMapping("/reservations")
     @ResponseBody
     public ResponseEntity<Reservation> createReservation(
-            @RequestBody ReservationRequest request
+            @Valid @RequestBody ReservationRequest request
     ) {
-
-        if (isBlank(request.getName())
-                || isBlank(request.getDate())
-                || isBlank(request.getTime())) {
-            throw new InvalidReservationException();
-        }
 
         Long id = index.getAndIncrement();
 
