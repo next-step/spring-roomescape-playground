@@ -49,6 +49,10 @@
 - [x] `POST /reservations` 요청 시 시간이 비어있으면 400 응답
 - [x] `DELETE /reservations/{id}` 요청 시 존재하지 않는 예약이면 404 응답
 
+### 추가 구현 (미션 요구사항 외)
+
+- [x] `POST /reservations` 요청 시 현재 시각보다 과거의 날짜/시간으로 예약하면 400 응답
+
 ## API 명세
 
 ### 예약 목록 조회
@@ -164,4 +168,27 @@ DELETE /reservations/999 HTTP/1.1
 
 ```
 HTTP/1.1 404 Not Found
+```
+
+### 예약 추가 실패 (과거 시간)
+
+미션 요구사항에는 없지만, 현재 시각보다 과거의 날짜/시간으로는 예약할 수 없도록 직접 추가했습니다.
+
+**Request**
+
+```
+POST /reservations HTTP/1.1
+content-type: application/json
+
+{
+    "name": "브라운",
+    "date": "2020-01-01",
+    "time": "10:00"
+}
+```
+
+**Response**
+
+```
+HTTP/1.1 400 Bad Request
 ```
