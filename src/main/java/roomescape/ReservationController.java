@@ -36,8 +36,8 @@ public class ReservationController {
 
         // 예외처리
         if (reservationRequest.getName().isBlank()
-                || reservationRequest.getDate().isBlank()
-                || reservationRequest.getTime().isBlank()) {
+                || reservationRequest.getDate() == null
+                || reservationRequest.getTime() == null) {
             throw new IllegalArgumentException();
         }
 
