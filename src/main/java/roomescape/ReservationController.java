@@ -1,76 +1,67 @@
 package roomescape;
 
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
-import jakarta.validation.Valid;
 
-@Controller
+@RestController
+@RequestMapping("/reservations")
 public class ReservationController {
 
-    private final ReservationRepository reservationRepository;
+    private final ReservationService reservationService;
 
-    public ReservationController(ReservationRepository reservationRepository) {
-        this.reservationRepository = reservationRepository;
+    public ReservationController(ReservationService reservationService) {
+        this.reservationService = reservationService;
     }
 
-    @GetMapping("/reservation")
-    public String reservation() {
-        return "reservation";
+    @GetMapping
+    public ResponseEntity<List<ReservationResponse>> reservations() {
+
+        List<ReservationResponse> responses = reservationService.findAll()
+                .stream()
+                .map(ReservationResponse::from)
+                .toList();
+
+        return ResponseEntity.ok(responses);
     }
 
-    @GetMapping("/reservations")
-    @ResponseBody
-    public List<Reservation> reservations() {
-        return reservationRepository.findAll();
-    }
-
-    @PostMapping("/reservations")
-    @ResponseBody
-    public ResponseEntity<Reservation> createReservation(
+    @PostMapping
+    public ResponseEntity<ReservationResponse> create(
             @Valid @RequestBody ReservationRequest request
     ) {
 
-        Long id = index.getAndIncrement();
+        Reservation reservation = reservationService.create(request);
 
-        Reservation reservation = new Reservation(
-                id,
-                request.getName(),
-                request.getDate(),
-                request.getTime()
-        );
-
-        reservationRepository.save(reservation);
+        ReservationResponse response =
+                ReservationResponse.from(reservation);
 
         return ResponseEntity
-                .created(URI.create("/reservations/" + id))
-                .body(reservation);
+                .created(URI.create("/reservations/" + reservation.getId()))
+                .body(response);
     }
 
-    @DeleteMapping("/reservations/{id}")
-    public ResponseEntity<Void> deleteReservation(
-            @PathVariable Long id
+    @PutMapping("/{id}")
+    public ResponseEntity<ReservationResponse> update(
+            @PathVariable Long id,
+            @Valid @RequestBody ReservationRequest request
     ) {
 
-        boolean deleted = reservationRepository.deleteById(id);
+        Reservation reservation =
+                reservationService.update(id, request);
 
-        if (!deleted) {
-            throw new NotFoundReservationException();
-        }
-
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(
+                ReservationResponse.from(reservation)
+        );
     }
 
-    private boolean isBlank(String value) {
-        return value == null || value.isBlank();
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+
+        reservationService.delete(id);
+
+        return ResponseEntity.noContent().build();
     }
 }
