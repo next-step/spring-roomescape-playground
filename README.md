@@ -42,6 +42,13 @@
 - [x] `DELETE /reservations/{id}` 요청 시 204 응답
 - [x] `DELETE /reservations/{id}` 요청 시 해당 예약이 목록에서 제거됨
 
+### 4단계 - 예외 처리
+
+- [x] `POST /reservations` 요청 시 이름이 비어있으면 400 응답
+- [x] `POST /reservations` 요청 시 날짜가 비어있으면 400 응답
+- [x] `POST /reservations` 요청 시 시간이 비어있으면 400 응답
+- [x] `DELETE /reservations/{id}` 요청 시 존재하지 않는 예약이면 404 응답
+
 ## API 명세
 
 ### 예약 목록 조회
@@ -122,4 +129,39 @@ DELETE /reservations/1 HTTP/1.1
 
 ```
 HTTP/1.1 204 No Content
+```
+
+### 예약 추가 실패 (필수 값 누락)
+
+**Request**
+
+```
+POST /reservations HTTP/1.1
+content-type: application/json
+
+{
+    "name": "브라운",
+    "date": "",
+    "time": ""
+}
+```
+
+**Response**
+
+```
+HTTP/1.1 400 Bad Request
+```
+
+### 예약 취소 실패 (존재하지 않는 예약)
+
+**Request**
+
+```
+DELETE /reservations/999 HTTP/1.1
+```
+
+**Response**
+
+```
+HTTP/1.1 404 Not Found
 ```
