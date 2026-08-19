@@ -33,6 +33,10 @@ public class HomeController {
 
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> create(@RequestBody Reservation reservation) {
+        if (reservation.getName().isBlank() || reservation.getDate().isBlank() || reservation.getTime().isBlank()) {
+            throw new IllegalArgumentException("Invalid reservation");
+        }
+
         Reservation newReservation = Reservation.toEntity(reservation, index.getAndIncrement());
         reservations.add(newReservation);
         return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
@@ -43,10 +47,21 @@ public class HomeController {
         Reservation reservation = reservations.stream()
                 .filter(it -> Objects.equals(it.getId(), id))
                 .findFirst()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new NotFoundReservationException("Reservation not found: id=" + id));
 
         reservations.remove(reservation);
         return ResponseEntity.noContent().build();
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<Void> handleIllegalArgumentException(IllegalArgumentException e) {
+        System.out.println("IllegalArgumentException occurred: " + e.getMessage());
+        return ResponseEntity.badRequest().build();
+    }
+
+    @ExceptionHandler(NotFoundReservationException.class)
+    public ResponseEntity<Void> handleNotFoundReservationException(NotFoundReservationException e) {
+        return ResponseEntity.notFound().build();
     }
 
 }
