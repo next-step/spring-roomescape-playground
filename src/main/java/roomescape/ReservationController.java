@@ -34,8 +34,8 @@ public class ReservationController {
     public ResponseEntity<Reservation> postReservation(@RequestBody ReservationRequest reservationRequest) {
         Reservation reservation = new Reservation(
                 index.incrementAndGet(),
-                reservationRequest.getDate(),
                 reservationRequest.getName(),
+                reservationRequest.getDate(),
                 reservationRequest.getTime()
         );
 
