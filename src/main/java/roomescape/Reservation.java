@@ -4,10 +4,10 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class Reservation {
 
-    private AtomicLong id;
+    private final AtomicLong id;
     private final String name;
-    private String date;
-    private String time;
+    private final String date;
+    private final String time;
 
     public static Reservation toEntity(Reservation reservation, long id) {
         return new Reservation(
