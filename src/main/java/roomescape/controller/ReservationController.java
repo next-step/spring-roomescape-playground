@@ -43,13 +43,13 @@ public class ReservationController {
     }
 
     @GetMapping("/reservation")
-    public String reservation() {
+    public String reservationPage() {
         return "reservation";
     }
 
     @GetMapping("/reservations")
     @ResponseBody
-    public List<Reservation> reservations() {
+    public List<Reservation> findAllReservations() {
         return List.copyOf(reservations);
     }
 

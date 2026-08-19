@@ -10,12 +10,12 @@ import roomescape.exception.ReservationNotFoundException;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(ReservationInvalidException.class)
-    public ResponseEntity<Void> handleInvalidException(ReservationInvalidException e) {
+    public ResponseEntity<Void> handleReservationInvalidException(ReservationInvalidException e) {
         return ResponseEntity.badRequest().build();
     }
 
     @ExceptionHandler(ReservationNotFoundException.class)
-    public ResponseEntity<Void> handleException(ReservationNotFoundException e) {
+    public ResponseEntity<Void> handleReservationNotFoundException(ReservationNotFoundException e) {
         return ResponseEntity.notFound().build();
     }
 }
