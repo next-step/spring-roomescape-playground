@@ -26,24 +26,10 @@ public class ReservationController {
 
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservationRequest) {
-        if (reservationRequest.getName() == null || reservationRequest.getName().isBlank()) {
-            throw new ReservationInvalidException("예약자 이름은 비워둘 수 없습니다.");
-        }
-
-        if (reservationRequest.getDate() == null) {
-            throw new ReservationInvalidException("날짜는 비어있을 수 없습니다.");
-        }
-
-        if (reservationRequest.getTime() == null) {
-            throw new ReservationInvalidException("시간은 비어있을 수 없습니다.");
-        }
-
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime requestedDateTime = LocalDateTime.of(reservationRequest.getDate(), reservationRequest.getTime());
-
-        if (requestedDateTime.isBefore(now)) {
-            throw new ReservationInvalidException("과거 시간으로 예약할 수 없습니다");
-        }
+        validateName(reservationRequest);
+        validateDate(reservationRequest);
+        validateTime(reservationRequest);
+        validateNotPast(reservationRequest);
 
         Reservation newReservation = Reservation.toEntity(reservationRequest, idGenerator.getAndIncrement());
         reservations.add(newReservation);
@@ -71,6 +57,31 @@ public class ReservationController {
         reservations.remove(reservation);
 
         return ResponseEntity.noContent().build();
+    }
+
+    private void validateName(Reservation reservationRequest) {
+        if (reservationRequest.getName() == null || reservationRequest.getName().isBlank()) {
+            throw new ReservationInvalidException("예약자 이름은 비워둘 수 없습니다.");
+        }
+    }
+
+    private void validateDate(Reservation reservationRequest) {
+        if (reservationRequest.getDate() == null) {
+            throw new ReservationInvalidException("날짜는 비어있을 수 없습니다.");
+        }
+    }
+
+    private void validateTime(Reservation reservationRequest) {
+        if (reservationRequest.getTime() == null) {
+            throw new ReservationInvalidException("시간은 비어있을 수 없습니다.");
+        }
+    }
+
+    private void validateNotPast(Reservation reservationRequest) {
+        LocalDateTime requestedDateTime = LocalDateTime.of(reservationRequest.getDate(), reservationRequest.getTime());
+        if (requestedDateTime.isBefore(LocalDateTime.now())) {
+            throw new ReservationInvalidException("과거 시간으로 예약할 수 없습니다");
+        }
     }
 
 }
