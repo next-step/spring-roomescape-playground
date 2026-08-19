@@ -9,6 +9,7 @@
 - [x] `/reservations` 요청 시 예약 목록을 응답한다.
 - [x] 예약을 추가한다.
 - [x] 예약을 삭제한다.
+- [x] 예약 정보가 비어 있다면 예외 처리한다.
 
 ### 'Reservation'
 
@@ -17,6 +18,14 @@
 - [x] 예약 날짜를 관리한다.
 - [x] 예약 시간을 관리한다.
 - [x] 예약 생성 시 새로운 id을 부여한다.
+
+### `NotFoundReservationException`
+
+- [x] 삭제할 예약을 찾을 수 없는 경우 예외를 발생시킨다.
+
+### `GlobalExceptionHandler`
+
+- [x] 존재하지 않는 예약을 취소하는 경우 404 Not Found를 응답한다.
 
 ### 'Gradle'
 
