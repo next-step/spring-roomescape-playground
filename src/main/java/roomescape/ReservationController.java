@@ -3,6 +3,7 @@ package roomescape;
 import java.net.URI;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.http.ResponseEntity;
@@ -32,6 +33,14 @@ public class ReservationController {
     @PostMapping("/reservations")
     @ResponseBody
     public ResponseEntity<Reservation> postReservation(@RequestBody ReservationRequest reservationRequest) {
+
+        // 예외처리
+        if (reservationRequest.getName().isBlank()
+                || reservationRequest.getDate().isBlank()
+                || reservationRequest.getTime().isBlank()) {
+            throw new IllegalArgumentException();
+        }
+
         Reservation reservation = new Reservation(
                 index.incrementAndGet(),
                 reservationRequest.getName(),
@@ -49,7 +58,14 @@ public class ReservationController {
     @DeleteMapping("/reservations/{id}")
     @ResponseBody
     public ResponseEntity<Void> deleteReservation(@PathVariable long id) {
-        reservations.removeIf(reservation -> reservation.getId() == id);
+
+        boolean removed = reservations.removeIf(reservation -> reservation.getId() == id);
+
+        // 4단계
+        if (!removed) {
+            throw new NoSuchElementException();
+        }
+
         return ResponseEntity.noContent().build();
     }
 }
