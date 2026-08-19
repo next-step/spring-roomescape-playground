@@ -22,6 +22,7 @@ import static org.hamcrest.Matchers.is;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class MissionStepTest {
 
+    //Spring MVC 1~4단계
     @Test
     void 일단계() {
         RestAssured.given().log().all()
@@ -174,6 +175,15 @@ public class MissionStepTest {
                 .body("name", is("브라운"));
     }
 
+    @Test
+    void 존재하지_않는_예약을_조회하면_404를_응답한다() {
+        RestAssured.given()
+                .when().get("/reservations/1")
+                .then()
+                .statusCode(404);
+    }
+
+    // Spring MVC 5~7단계
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
