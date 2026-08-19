@@ -1,6 +1,7 @@
 package roomescape.controller;
 
 import java.net.URI;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -35,6 +36,13 @@ public class ReservationController {
 
         if (reservationRequest.getTime() == null) {
             throw new ReservationInvalidException("시간은 비어있을 수 없습니다.");
+        }
+
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime requestedDateTime = LocalDateTime.of(reservationRequest.getDate(), reservationRequest.getTime());
+
+        if (requestedDateTime.isBefore(now)) {
+            throw new ReservationInvalidException("과거 시간으로 예약할 수 없습니다");
         }
 
         Reservation newReservation = Reservation.toEntity(reservationRequest, idGenerator.getAndIncrement());
