@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 public class ReservationController {
 
     private final List<Reservation> reservations = new ArrayList<>();
-    private AtomicLong index = new AtomicLong(1);
+    private AtomicLong index = new AtomicLong(0);
 
     public ReservationController() {
     }
