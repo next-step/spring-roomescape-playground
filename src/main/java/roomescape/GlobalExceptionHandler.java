@@ -1,23 +1,30 @@
 package roomescape;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(InvalidReservationException.class)
-    public ResponseEntity<Void> handleInvalidReservation(
-            InvalidReservationException exception
-    ) {
-        return ResponseEntity.badRequest().build();
-    }
-
     @ExceptionHandler(NotFoundReservationException.class)
-    public ResponseEntity<Void> handleNotFoundReservation(
+    public ResponseEntity<ErrorResponse> handleNotFound(
             NotFoundReservationException exception
     ) {
-        return ResponseEntity.notFound().build();
+
+        return ResponseEntity
+                .status(404)
+                .body(new ErrorResponse(exception.getMessage()));
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidRequest(
+            MethodArgumentNotValidException exception
+    ) {
+
+        return ResponseEntity
+                .badRequest()
+                .body(new ErrorResponse("예약 정보가 올바르지 않습니다."));
     }
 }
