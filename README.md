@@ -36,3 +36,4 @@
 - [x] `JdbcTemplate`으로 `DataSource`에 접근해 데이터베이스 연결을 검증한다.
   - [x] `Connection`으로 데이터베이스 이름을 검증한다.
   - [x] `Connection`으로 테이블 이름을 검증한다.
+- [x] `GET /reservations`는 `JdbcTemplate`으로 데이터베이스에서 예약을 조회한다.

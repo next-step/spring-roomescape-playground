@@ -12,6 +12,7 @@ import roomescape.domain.Reservation;
 import roomescape.dto.ReservationRequest;
 import roomescape.dto.ReservationResponse;
 import roomescape.exception.NotFoundReservationException;
+import roomescape.repository.JdbcReservationRepository;
 import roomescape.repository.ReservationRepository;
 
 import java.net.URI;
@@ -22,14 +23,19 @@ import java.util.List;
 public class ReservationController {
 
     private final ReservationRepository reservationRepository;
+    private final JdbcReservationRepository jdbcReservationRepository;
 
-    public ReservationController(ReservationRepository reservationRepository) {
+    public ReservationController(
+            ReservationRepository reservationRepository,
+            JdbcReservationRepository jdbcReservationRepository
+            ) {
         this.reservationRepository = reservationRepository;
+        this.jdbcReservationRepository = jdbcReservationRepository;
     }
 
     @GetMapping("/reservations")
     public List<ReservationResponse> getReservations() {
-        return reservationRepository.findAll().stream()
+        return jdbcReservationRepository.findAll().stream()
                 .map(ReservationResponse::from)
                 .toList();
     }
