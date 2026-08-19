@@ -14,6 +14,12 @@ public class Reservation {
         this.time = time;
     }
 
+    public void update(String name, String date, String time) {
+        this.name = name;
+        this.date = date;
+        this.time = time;
+    }
+
     public Long getId() {
         return id;
     }
