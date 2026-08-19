@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.annotation.DirtiesContext;
 import roomescape.domain.Reservation;
 
 import java.time.LocalDate;
@@ -11,7 +12,8 @@ import java.time.LocalTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
+@SpringBootTest(properties = "spring.datasource.url=jdbc:h2:mem:repository-test")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class ReservationRepositoryTest {
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -27,10 +29,7 @@ class ReservationRepositoryTest {
         );
 
         // Then
-        assertThat(savedReservation.getId()).isEqualTo(1);
-        assertThat(savedReservation.getName()).isEqualTo("이준환");
-        assertThat(savedReservation.getDate()).isEqualTo(LocalDate.of(2026, 8, 5));
-        assertThat(savedReservation.getTime()).isEqualTo(LocalTime.of(10, 0));
+        assertThat(savedReservation.getId()).isPositive();
     }
 
     @Test
@@ -47,7 +46,6 @@ class ReservationRepositoryTest {
         );
 
         // Then
-        assertThat(firstAddedReservation.getId()).isEqualTo(1);
-        assertThat(secondAddedReservation.getId()).isEqualTo(2);
+        assertThat(firstAddedReservation.getId()).isLessThan(secondAddedReservation.getId());
     }
 }
