@@ -113,10 +113,10 @@ public class ReservationServiceTest {
 
         reservationService.delete(id);
 
-        boolean exists = reservationRepository.findAll().stream()
+        boolean reservationExists = reservationRepository.findAll().stream()
                 .anyMatch(reservation -> reservation.getId().equals(id));
 
-        assertFalse(exists);
+        assertFalse(reservationExists);
     }
 
     @Test

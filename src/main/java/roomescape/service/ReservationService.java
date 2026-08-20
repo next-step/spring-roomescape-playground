@@ -59,9 +59,9 @@ public class ReservationService {
     }
 
     private void validateDuplicateReservation(String name, LocalDate date, LocalTime time) {
-        boolean exists = reservationRepository.existsByNameAndDateAndTime(name, date, time);
+        boolean isDuplicate = reservationRepository.existsByNameAndDateAndTime(name, date, time);
 
-        if (exists) {
+        if (isDuplicate) {
             throw new DuplicateReservationException("이미 존재하는 예약입니다.");
         }
     }
