@@ -13,7 +13,6 @@ import java.time.LocalTime;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(properties = "spring.datasource.url=jdbc:h2:mem:repository-test")
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class ReservationRepositoryTest {
     @Autowired
     private JdbcTemplate jdbcTemplate;

@@ -6,7 +6,6 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
-import roomescape.exception.NotFoundReservationException;
 
 import java.sql.PreparedStatement;
 import java.time.LocalDate;
@@ -16,7 +15,7 @@ import java.util.List;
 @Repository
 public class ReservationRepository {
     private final JdbcTemplate jdbcTemplate;
-    private final RowMapper<Reservation> rowMapper = (resultSet, rowNum) -> {
+    private static final RowMapper<Reservation> rowMapper = (resultSet, rowNum) -> {
         return new Reservation(
                 resultSet.getLong("id"),
                 resultSet.getString("name"),
@@ -29,14 +28,14 @@ public class ReservationRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public List<Reservation> getReservations() {
+    public List<Reservation> findAll() {
         return jdbcTemplate.query(
                 "SELECT id, name, date, time FROM reservation",
                 rowMapper
         );
     }
 
-    public Reservation addReservation(String name, LocalDate date, LocalTime time) {
+    public Reservation save(String name, LocalDate date, LocalTime time) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
@@ -54,14 +53,11 @@ public class ReservationRepository {
         return new Reservation(id, name, date, time);
     }
 
-    public void deleteReservation(long id) {
+    public int deleteById(long id) {
         int deleteCount = jdbcTemplate.update(
                 "DELETE FROM reservation WHERE id = ?",
                 id
         );
-
-        if (deleteCount == 0) {
-            throw new NotFoundReservationException("해당 id의 예약을 찾을 수 없습니다.");
-        }
+        return deleteCount;
     }
 }
