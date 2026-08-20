@@ -11,6 +11,7 @@ import roomescape.domain.Reservation;
 import roomescape.dto.ReservationRequest;
 import roomescape.dto.ReservationResponse;
 import roomescape.service.ReservationService;
+import jakarta.validation.Valid;
 
 import java.net.URI;
 import java.util.List;
@@ -34,7 +35,7 @@ public class ReservationController {
     }
 
     @PostMapping("/reservations")
-    public ResponseEntity<ReservationResponse> createReservation(@RequestBody ReservationRequest request) {
+    public ResponseEntity<ReservationResponse> createReservation(@Valid @RequestBody ReservationRequest request) {
         Reservation reservation = reservationService.create(
                 request.name(),
                 request.date(),
