@@ -66,7 +66,7 @@ public class ReservationServiceTest {
     }
 
     @Test
-    void 현재와_같은_분으로_예약하면_예외가_발생한다() {
+    void 현재_시각과_동일한_시각의_예약은_생성할_수_없다() {
         assertThrows(
                 IllegalArgumentException.class,
                 () -> reservationService.create(
