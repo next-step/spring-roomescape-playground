@@ -14,6 +14,7 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ReservationServiceTest {
@@ -110,9 +111,12 @@ public class ReservationServiceTest {
         Reservation savedReservation = reservationService.create(NAME, TODAY, reservationTime);
         Long id = savedReservation.getId();
 
-        assertDoesNotThrow(
-                () -> reservationService.delete(id)
-        );
+        reservationService.delete(id);
+
+        boolean exists = reservationRepository.findAll().stream()
+                .anyMatch(reservation -> reservation.getId().equals(id));
+
+        assertFalse(exists);
     }
 
     @Test
