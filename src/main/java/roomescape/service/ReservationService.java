@@ -35,10 +35,10 @@ public class ReservationService {
     }
 
     public Reservation create(String name, LocalDate date, LocalTime time) {
-        Reservation reservation = new Reservation(name, date, time);
-
         validateReservationDateTime(date, time);
         validateDuplicateReservation(name, date, time);
+
+        Reservation reservation = new Reservation(name, date, time);
 
         return reservationRepository.save(reservation);
     }
