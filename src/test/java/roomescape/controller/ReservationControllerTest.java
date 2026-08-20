@@ -5,15 +5,16 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.Test;
-import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.TestExecutionListeners;
+import roomescape.repository.DatabaseCleanupListener;
+import roomescape.repository.DatabaseTest;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.hamcrest.Matchers.equalTo;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@DatabaseTest
 class ReservationControllerTest {
     @Test
     void 존재하지_않는_예약을_삭제하면_404가_반환된다() {
