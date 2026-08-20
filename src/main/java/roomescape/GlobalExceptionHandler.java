@@ -1,5 +1,7 @@
 package roomescape;
 
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -26,5 +28,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<Void> handleHttpMessageNotReadableException() {
         return ResponseEntity.badRequest().build();
+    }
+
+    //예약 중복 오류
+    @ExceptionHandler(DuplicateKeyException.class)
+    public ResponseEntity<Void> handleDuplicateReservationException() {
+        return ResponseEntity.status(HttpStatus.CONFLICT).build();
     }
 }

@@ -183,6 +183,23 @@ public class MissionStepTest {
                 .statusCode(404);
     }
 
+    @Test
+    void 동일한_날짜와_시간에는_중복_예약할_수_없다() {
+        예약_생성("브라운", "2023-01-01", "10:00");
+
+        Map<String, String> params = new HashMap<>();
+        params.put("name", "브라운");
+        params.put("date", "2023-01-01");
+        params.put("time", "10:00");
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(409);
+    }
+
     // Spring MVC 5~7단계
     @Autowired
     private JdbcTemplate jdbcTemplate;
