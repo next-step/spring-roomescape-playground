@@ -1,11 +1,9 @@
 package roomescape.controller;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import roomescape.exception.DuplicateReservationException;
-import roomescape.exception.ReservationNotFoundException;
+import roomescape.exception.RoomEscapeException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -17,13 +15,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().build();
     }
 
-    @ExceptionHandler(ReservationNotFoundException.class)
-    public ResponseEntity<Void> handleReservationNotFound(ReservationNotFoundException e) {
-        return ResponseEntity.notFound().build();
-    }
-
-    @ExceptionHandler(DuplicateReservationException.class)
-    public ResponseEntity<Void> handleDuplicateReservation(DuplicateReservationException e) {
-        return ResponseEntity.status(HttpStatus.CONFLICT).build();
+    @ExceptionHandler(RoomEscapeException.class)
+    public ResponseEntity<Void> handleRoomEscapeException(RoomEscapeException e) {
+        return ResponseEntity.status(e.getStatus()).build();
     }
 }
