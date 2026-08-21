@@ -26,12 +26,12 @@ public class ReservationController {
     this.reservationRepository = reservationRepository;
   }
 
-  @GetMapping("")
+  @GetMapping
   public ResponseEntity<List<Reservation>> readReservations() {
     return ResponseEntity.ok(reservationRepository.findAll());
   }
 
-  @PostMapping("")
+  @PostMapping
   public ResponseEntity<Reservation> createReservation(
       @RequestBody ReservationRequest reservationRequest) {
     Reservation newReservation = reservationRepository.save(reservationRequest);
