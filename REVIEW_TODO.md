@@ -16,8 +16,8 @@
 
 # 리뷰 피드백 체크리스트 (5~7단계)
 
-- [ ] RestController의 불필요한 매핑 빈 문자열("") 제거 (@RequestMapping의 기본 경로를 그대로 사용하도록 생략)
-- [ ] Repository 메서드명을 데이터 접근 의도가 드러나게 변경 (readReservations -> findAll, reserve -> save)
-- [ ] KeyHolder.getKey()가 null일 수 있는 경우에 대한 검증 및 예외처리 추가
-- [ ] DELETE 응답의 반환 타입을 ResponseEntity<Void>로 변경해 본문 없음을 명시
-- [ ] JdbcTemplate 학습 정리: 순수 JDBC 대비 JdbcTemplate이 대신 처리해주는 작업(Connection/PreparedStatement/ResultSet/자원 해제) 정리 및 query/queryForObject/update 등 메서드별 적합 상황 정리
+- [x] RestController의 불필요한 매핑 빈 문자열("") 제거 (@RequestMapping의 기본 경로를 그대로 사용하도록 생략)
+- [x] Repository 메서드명을 데이터 접근 의도가 드러나게 변경 (readReservations -> findAll, reserve -> save)
+- [x] KeyHolder.getKey()가 null일 수 있는 경우에 대한 검증 및 예외처리 추가
+- [x] DELETE 응답의 반환 타입을 ResponseEntity<Void>로 변경해 본문 없음을 명시
+- [x] JdbcTemplate 학습 정리: 순수 JDBC 대비 JdbcTemplate이 대신 처리해주는 작업(Connection/PreparedStatement/ResultSet/자원 해제) 정리 및 query/queryForObject/update 등 메서드별 적합 상황 정리
