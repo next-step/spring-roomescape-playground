@@ -13,12 +13,13 @@
 ### 2단계 - 예약 관리 페이지 및 예약 목록 조회 API
 - [x] **예약 관리 페이지 연결**: `GET /reservation` 요청 시 `templates/reservation.html` 화면 반환
 - [x] **예약 데이터 도메인 구현**: `Reservation` 모델 클래스 작성
-- [x] **예약 목록 조회 API 구현**: `GET /reservations` 요청 시 메모리 내 예약 목록(`List<Reservation>`)을 JSON 형식으로 반환 
+- [x] **예약 목록 조회 API 구현**: `GET /reservations` 요청 시 메모리 내 예약 목록을 (`List<ReservationResponseDto>`) JSON 형식으로 반환 
 - [x] **학습 테스트 통과**: `ReservationTest.readReservation` 통과 (목록 크기 검증 `size() == 1`)
 ---
 
 ### 3단계 - 예약 추가 및 취소 기능 구현 
-- [x] **예약 추가 API 구현**: `POST/reservations` 요청 시 요청 본문을 역직렬화 하여 'Reservation' 생성 및 메모리 저장
+- [x] **예약 추가 API 구현**: `POST/reservations` 요청 시 요청 본문을 ReservationRequestDto로 역직렬화
+- 검증 완료 후 Reservation 생성 및 ReservationRepository에 메모리 저장
 - 응답 상태 코드 `201 Created` 반환
 - `Location` 응답 헤더에 URI 포함
 - 생성된 예약 객체를 응답 본문으로 반환
