@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import roomescape.Reservation;
-import roomescape.ReservationRepository;
+import roomescape.domain.Reservation;
+import roomescape.repository.ReservationRepository;
 import roomescape.dto.ReservationRequest;
 
 @RestController

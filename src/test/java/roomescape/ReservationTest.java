@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import roomescape.domain.Reservation;
 import roomescape.exception.BlankReservationException;
 
 public class ReservationTest {
