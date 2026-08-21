@@ -1,4 +1,4 @@
-package roomescape;
+package roomescape.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -17,7 +17,6 @@ public class Reservation {
     }
 
     public Reservation(Long id, String name, LocalDate date, LocalTime time) {
-        validateReservationArgument(name, date, time);
         this.id = id;
         this.name = name;
         this.date = date;
@@ -25,14 +24,16 @@ public class Reservation {
     }
 
     public Reservation(String name, LocalDate date, LocalTime time) {
+        validateReservationArgument(name, date, time);
         this.name = name;
         this.date = date;
         this.time = time;
     }
 
-    public static Reservation toEntity(Reservation reservation, Long id) {
+    public static Reservation withId(Reservation reservation, Long id) {
         return new Reservation(id, reservation.name, reservation.date, reservation.time);
     }
+
 
     public void validateReservationArgument(String name, LocalDate date, LocalTime time) {
         LocalDate todayDate = LocalDate.now();
@@ -53,10 +54,7 @@ public class Reservation {
             throw new IllegalArgumentException("지난 시간을 예약할 수 없습니다.");
         }
     }
-
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
 
     public String getName() {
         return name;
