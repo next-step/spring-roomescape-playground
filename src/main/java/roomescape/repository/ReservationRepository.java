@@ -21,7 +21,7 @@ public class ReservationRepository {
     this.jdbcTemplate = jdbcTemplate;
   }
 
-  public List<Reservation> readReservations() {
+  public List<Reservation> findAll() {
     return jdbcTemplate.query("SELECT * FROM reservation", (rs, rowNum) ->
         new Reservation(rs.getLong("id"),
             rs.getString("name"),
@@ -30,7 +30,7 @@ public class ReservationRepository {
         ));
   }
 
-  public Reservation reserve(ReservationRequest reservationRequest) {
+  public Reservation save(ReservationRequest reservationRequest) {
     Reservation.validate(reservationRequest.getName(), reservationRequest.getDate(),
         reservationRequest.getTime());
 

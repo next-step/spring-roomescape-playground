@@ -28,13 +28,13 @@ public class ReservationController {
 
   @GetMapping("")
   public ResponseEntity<List<Reservation>> readReservations() {
-    return ResponseEntity.ok(reservationRepository.readReservations());
+    return ResponseEntity.ok(reservationRepository.findAll());
   }
 
   @PostMapping("")
   public ResponseEntity<Reservation> createReservation(
       @RequestBody ReservationRequest reservationRequest) {
-    Reservation newReservation = reservationRepository.reserve(reservationRequest);
+    Reservation newReservation = reservationRepository.save(reservationRequest);
     return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId()))
         .body(newReservation);
   }
