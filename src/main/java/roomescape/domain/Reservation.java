@@ -3,6 +3,7 @@ package roomescape.domain;
 import roomescape.exception.InvalidReservationException;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public class Reservation {
@@ -16,6 +17,7 @@ public class Reservation {
     public Reservation(Long id, String name, LocalDate date, LocalTime time) {
         validateRequiredValues(name, date, time);
         validateNameLength(name);
+        validateFutureDateTime(date, time);
 
         this.id = id;
         this.name = name;
@@ -48,6 +50,14 @@ public class Reservation {
     private void validateNameLength(String name) {
         if (name.length() > MAX_NAME_LENGTH) {
             throw new InvalidReservationException("예약자 이름은 20자 이하여야 합니다.");
+        }
+    }
+
+    private void validateFutureDateTime(LocalDate date, LocalTime time) {
+        LocalDateTime reservationDateTime = LocalDateTime.of(date, time);
+
+        if (!reservationDateTime.isAfter(LocalDateTime.now())) {
+            throw new InvalidReservationException("올바른 예약 날짜와 시간을 선택해야 합니다.");
         }
     }
 }

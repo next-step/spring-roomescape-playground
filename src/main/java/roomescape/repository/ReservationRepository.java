@@ -30,7 +30,7 @@ public class ReservationRepository {
             );
 
     public List<Reservation> findAll() {
-        String sql = "select id, name, date, time from reservation";
+        String sql = "select id, name, date, time from reservation order by id asc";
 
         return jdbcTemplate.query(sql, reservationRowMapper);
     }

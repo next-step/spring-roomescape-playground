@@ -14,25 +14,25 @@ public class GlobalExceptionHandler {
 
     // 없는 예약 삭제 오류
     @ExceptionHandler(NotFoundReservationException.class)
-    public ResponseEntity<Void> handleNotFoundException() {
-        return ResponseEntity.notFound().build();
+    public ResponseEntity<String> handleNotFoundException(NotFoundReservationException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 
     //예약 입력 값 누락 오류
     @ExceptionHandler(InvalidReservationException.class)
-    public ResponseEntity<Void> handleInvalidRequestException() {
-        return ResponseEntity.badRequest().build();
+    public ResponseEntity<String> handleInvalidRequestException(InvalidReservationException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 
     //날짜, 시간 형식 오류
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<Void> handleHttpMessageNotReadableException() {
-        return ResponseEntity.badRequest().build();
+    public ResponseEntity<String> handleHttpMessageNotReadableException() {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("날짜 또는 시간 형식이 올바르지 않습니다.");
     }
 
     //예약 중복 오류
     @ExceptionHandler(DuplicateKeyException.class)
-    public ResponseEntity<Void> handleDuplicateReservationException() {
-        return ResponseEntity.status(HttpStatus.CONFLICT).build();
+    public ResponseEntity<String> handleDuplicateReservationException() {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body("이미 해당 날짜와 시간에 예약이 존재합니다.");
     }
 }
