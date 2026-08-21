@@ -1,6 +1,5 @@
 package roomescape.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import roomescape.domain.Reservation;
 import roomescape.exception.DuplicateReservationException;
@@ -19,11 +18,6 @@ public class ReservationService {
 
     private final ReservationRepository reservationRepository;
     private final Clock clock;
-
-    @Autowired
-    public ReservationService(ReservationRepository reservationRepository) {
-        this(reservationRepository, Clock.systemDefaultZone());
-    }
 
     ReservationService(ReservationRepository reservationRepository, Clock clock) {
         this.reservationRepository = reservationRepository;

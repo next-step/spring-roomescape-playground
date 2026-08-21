@@ -3,17 +3,26 @@ package roomescape;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
+import roomescape.config.FixedClockConfig;
 
+import java.time.Clock;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.hamcrest.Matchers.is;
 
+@Import(FixedClockConfig.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class MissionStepTest {
+
+    @Autowired
+    private Clock clock;
 
     @Test
     void 일단계() {
@@ -40,8 +49,10 @@ public class MissionStepTest {
     @Test
     void 삼단계() {
         Map<String, String> params = new HashMap<>();
+        LocalDate reservationDate = LocalDate.now(clock).plusDays(1);
+
         params.put("name", "브라운");
-        params.put("date", "2027-08-05");
+        params.put("date", reservationDate.toString());
         params.put("time", "15:40");
 
         RestAssured.given().log().all()
