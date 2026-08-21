@@ -24,11 +24,6 @@ public class ReservationResponseDto {
         this.time = reservation.getTime();
     }
 
-    public ReservationResponseDto toDto(Reservation reservation) {
-        return new ReservationResponseDto(reservation);
-    }
-
-
     public Long getId() {
         return id;
     }
