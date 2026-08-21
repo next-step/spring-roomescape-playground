@@ -22,8 +22,7 @@ public class ReservationRepository {
         return reservations;
     }
 
-    public List<Reservation> delete(Reservation reservation) {
+    public void delete(Reservation reservation) {
         reservations.remove(reservation);
-        return reservations;
     }
 }
