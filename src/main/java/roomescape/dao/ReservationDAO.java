@@ -13,7 +13,7 @@ import java.util.List;
 
 @Repository
 public class ReservationDAO {
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
     public ReservationDAO(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -27,8 +27,8 @@ public class ReservationDAO {
                     Reservation reservation = new Reservation(
                             resultSet.getLong("id"),
                             resultSet.getString("name"),
-                            LocalDate.parse(resultSet.getString("date")),
-                                    LocalTime.parse(resultSet.getString("time"))
+                            resultSet.getObject("date", LocalDate.class),
+                            resultSet.getObject("time", LocalTime.class)
                     );
                     return reservation;
                 });
@@ -36,7 +36,7 @@ public class ReservationDAO {
 
 
     public int delete(Long id) {
-        int delete = jdbcTemplate.update("delete from reservation where id = ?", Long.valueOf(id));
+        int delete = jdbcTemplate.update("delete from reservation where id = ?", id);
         return delete;
     }
 
@@ -49,8 +49,8 @@ public class ReservationDAO {
                     sql,
                     new String[]{"id"});
             ps.setString(1, reservation.getName());
-            ps.setString(2, reservation.getDate().toString());
-            ps.setString(3, reservation.getTime().toString());
+            ps.setObject(2, reservation.getDate());
+            ps.setObject(3, reservation.getTime());
             return ps;
         }, keyHolder);
 
