@@ -17,4 +17,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ExceptionResponse> handleBlankReservationException(BlankReservationException ex){
         return ResponseEntity.badRequest().body(new ExceptionResponse(ex.getMessage()));
     }
+
+    @ExceptionHandler(ReservationSaveFailedException.class)
+    public ResponseEntity<ExceptionResponse> handleReservationSaveFailedException(ReservationSaveFailedException ex){
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ExceptionResponse(ex.getMessage()));
+    }
 }

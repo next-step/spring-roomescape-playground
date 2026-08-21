@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
 import roomescape.dto.ReservationRequest;
 import roomescape.exception.NotFoundReservationException;
+import roomescape.exception.ReservationSaveFailedException;
 
 @Repository
 public class ReservationRepository {
@@ -44,7 +45,16 @@ public class ReservationRepository {
       ps.setString(3, reservationRequest.getTime().toString());
       return ps;
     }, keyHolder);
-    return reservationRequest.toDomain(keyHolder.getKey().longValue());
+
+    return reservationRequest.toDomain(extractGeneratedId(keyHolder));
+  }
+
+  private Long extractGeneratedId(KeyHolder keyHolder) {
+    Number key = keyHolder.getKey();
+    if (key == null) {
+      throw new ReservationSaveFailedException("예약 생성 중 id를 발급받지 못했습니다.");
+    }
+    return key.longValue();
   }
 
   public void delete(Long id) {
