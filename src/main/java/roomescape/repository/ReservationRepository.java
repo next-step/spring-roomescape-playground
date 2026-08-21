@@ -13,7 +13,7 @@ public class ReservationRepository {
     private AtomicLong index = new AtomicLong(1);
 
     public Reservation save(Reservation reservation) {
-        Reservation savedReservation = Reservation.withId(reservation, index.getAndIncrement());
+        Reservation savedReservation = reservation.withId(index.getAndIncrement());
         reservations.add(savedReservation);
         return savedReservation;
     }

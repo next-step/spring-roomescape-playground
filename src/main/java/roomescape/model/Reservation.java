@@ -9,9 +9,9 @@ public class Reservation {
     private Long id;
     private String name;
     @JsonFormat(pattern = "yyyy-MM-dd")
-    LocalDate date;
+    private LocalDate date;
     @JsonFormat(pattern = "HH:mm")
-    LocalTime time;
+    private LocalTime time;
 
     public Reservation() {
     }
@@ -30,8 +30,8 @@ public class Reservation {
         this.time = time;
     }
 
-    public static Reservation withId(Reservation reservation, Long id) {
-        return new Reservation(id, reservation.name, reservation.date, reservation.time);
+    public Reservation withId(Long id) {
+        return new Reservation(id, this.name, this.date, this.time);
     }
 
 

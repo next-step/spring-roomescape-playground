@@ -15,8 +15,6 @@ public class ReservationResponseDto {
     public ReservationResponseDto(){
     }
 
-
-
     public ReservationResponseDto(Reservation reservation) {
         this.id = reservation.getId();
         this.name = reservation.getName();
