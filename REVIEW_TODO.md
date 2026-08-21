@@ -1,4 +1,4 @@
-# 리뷰 피드백 체크리스트
+# 리뷰 피드백 체크리스트(1~4단계)
 
 - [x] 스프링 @Repository의 역할과 기능에 대한 학습 및 Repository 형식의 메서드 네이밍으로 변경
 - [x] 테스트 네이밍을 실제 검증내용과 일치 및 검증내용 변경
@@ -13,3 +13,11 @@
 - [x] @RequestMapping 학습 후 적용 가능한 부분 적용
 - [x] @ControllerAdvice와 @ExceptionHandler의 역할을 정리해 리뷰 코멘트로 작성
 - [x] API 명세서에 예외 상황(400/404 등) 포함, 표 형태로 재정리 
+
+# 리뷰 피드백 체크리스트 (5~7단계)
+
+- [ ] RestController의 불필요한 매핑 빈 문자열("") 제거 (@RequestMapping의 기본 경로를 그대로 사용하도록 생략)
+- [ ] Repository 메서드명을 데이터 접근 의도가 드러나게 변경 (readReservations -> findAll, reserve -> save)
+- [ ] KeyHolder.getKey()가 null일 수 있는 경우에 대한 검증 및 예외처리 추가
+- [ ] DELETE 응답의 반환 타입을 ResponseEntity<Void>로 변경해 본문 없음을 명시
+- [ ] JdbcTemplate 학습 정리: 순수 JDBC 대비 JdbcTemplate이 대신 처리해주는 작업(Connection/PreparedStatement/ResultSet/자원 해제) 정리 및 query/queryForObject/update 등 메서드별 적합 상황 정리
