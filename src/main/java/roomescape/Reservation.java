@@ -1,5 +1,7 @@
 package roomescape;
 
+import java.util.stream.Stream;
+
 public class Reservation {
 
     private long id;
@@ -16,6 +18,16 @@ public class Reservation {
     }
 
     public Reservation(long id, String name, String date, String time) {
+        //검증먼저
+        boolean hasEmpty = Stream.of(
+            name,
+            date,
+            time
+        ).anyMatch(value -> value == null || value.isBlank());
+        //검증 실패하면 던지기
+        if ( hasEmpty ) {
+            throw new IllegalArgumentException();
+        }
         this.id = id;
         this.name = name;
         this.date = date;
