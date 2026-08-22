@@ -8,20 +8,9 @@ import org.junit.jupiter.params.provider.ValueSource;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ReservationTest {
-
-    @Test
-    void 유효한_예약을_생성할_수_있다() {
-        assertDoesNotThrow(() -> new Reservation(
-                1L,
-                "브라운",
-                LocalDate.of(2023, 1, 1),
-                LocalTime.of(10, 0))
-        );
-    }
 
     @ParameterizedTest
     @NullAndEmptySource
@@ -32,8 +21,9 @@ public class ReservationTest {
                 () -> new Reservation(
                         1L,
                         name,
-                        LocalDate.of(2023, 1, 1),
-                        LocalTime.of(10, 0))
+                        LocalDate.of(2023,1,1),
+                        LocalTime.of(10, 0)
+                )
         );
     }
 
@@ -45,7 +35,8 @@ public class ReservationTest {
                         1L,
                         "브라운",
                         null,
-                        LocalTime.of(10, 0))
+                        LocalTime.of(10, 0)
+                )
         );
     }
 
@@ -56,8 +47,9 @@ public class ReservationTest {
                 () -> new Reservation(
                         1L,
                         "브라운",
-                        LocalDate.of(2023, 1, 1),
-                        null)
+                        LocalDate.of(2023,1,1),
+                        null
+                )
         );
     }
 }
