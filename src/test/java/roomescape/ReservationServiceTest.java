@@ -1,45 +1,41 @@
 package roomescape;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.context.annotation.Import;
 import roomescape.domain.Reservation;
 import roomescape.dto.ReservationCreateCommand;
 import roomescape.exception.ReservationErrorCode;
 import roomescape.exception.ReservationException;
-import roomescape.repository.InMemoryReservationRepository;
+import roomescape.repository.JdbcReservationRepository;
 import roomescape.repository.ReservationRepository;
 import roomescape.service.ReservationService;
 
-import java.time.Clock;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.ZoneId;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+@JdbcTest
+@Import({ReservationService.class, JdbcReservationRepository.class, TestClockConfig.class})
 class ReservationServiceTest {
-    private static final LocalDate TODAY = LocalDate.of(2027, 8, 14);
-    private static final LocalTime CURRENT_TIME = LocalTime.of(12, 0);
+    private static final LocalDate TEST_DATE = LocalDate.of(2027, 8, 4);
     private static final LocalTime RESERVATION_TIME = LocalTime.of(10, 0);
-    private static final Clock CLOCK = fixedClockAt(TODAY, CURRENT_TIME);
 
+    @Autowired
     private ReservationRepository reservationRepository;
-    private ReservationService reservationService;
 
-    @BeforeEach
-    void setUp() {
-        reservationRepository = new InMemoryReservationRepository();
-        reservationService = new ReservationService(reservationRepository, CLOCK);
-    }
+    @Autowired
+    private ReservationService reservationService;
 
     @Test
     void 유효한_예약_요청이면_저장된_예약을_반환한다() {
         // given
         ReservationCreateCommand command = new ReservationCreateCommand(
                 "브라운",
-                TODAY.plusDays(1),
+                TEST_DATE.plusDays(1),
                 RESERVATION_TIME
         );
 
@@ -58,13 +54,13 @@ class ReservationServiceTest {
         // given
         ReservationCreateCommand firstCommand = new ReservationCreateCommand(
                 "브라운",
-                TODAY.plusDays(1),
+                TEST_DATE.plusDays(1),
                 RESERVATION_TIME
         );
 
         ReservationCreateCommand duplicatedCommand = new ReservationCreateCommand(
                 "철수",
-                TODAY.plusDays(1),
+                TEST_DATE.plusDays(1),
                 RESERVATION_TIME
         );
 
@@ -84,7 +80,7 @@ class ReservationServiceTest {
         // given
         ReservationCreateCommand pastDateCommand = new ReservationCreateCommand(
                 "브라운",
-                TODAY.minusDays(1),
+                TEST_DATE.minusDays(1),
                 RESERVATION_TIME
         );
 
@@ -102,7 +98,7 @@ class ReservationServiceTest {
         // given
         ReservationCreateCommand pastTimeCommand = new ReservationCreateCommand(
                 "브라운",
-                TODAY,
+                TEST_DATE,
                 RESERVATION_TIME
         );
 
@@ -120,7 +116,7 @@ class ReservationServiceTest {
         // given
         ReservationCreateCommand command = new ReservationCreateCommand(
                 "브라운",
-                TODAY.plusDays(1),
+                TEST_DATE.plusDays(1),
                 RESERVATION_TIME
         );
         Reservation reservation = reservationService.addReservation(command);
@@ -146,12 +142,4 @@ class ReservationServiceTest {
                 );
     }
 
-    private static Clock fixedClockAt(LocalDate date, LocalTime time) {
-        return Clock.fixed(
-                LocalDateTime.of(date, time)
-                        .atZone(ZoneId.systemDefault())
-                        .toInstant(),
-                ZoneId.systemDefault()
-        );
-    }
 }
