@@ -49,8 +49,12 @@ public class JdbcReservationRepository implements ReservationRepository {
             throw new ReservationException(ReservationErrorCode.RESERVATION_CONFLICT);
         }
 
-        Long id = keyHolder.getKey().longValue();
-        return new Reservation(id, reservation.getName(), reservation.getDate(), reservation.getTime());
+        Number key = keyHolder.getKey();
+        if (key == null) {
+            throw new IllegalStateException("예약 저장 후 생성된 ID를 확인할 수 없습니다.");
+        }
+
+        return new Reservation(key.longValue(), reservation.getName(), reservation.getDate(), reservation.getTime());
     }
 
     @Override
