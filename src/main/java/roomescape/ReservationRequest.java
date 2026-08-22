@@ -1,17 +1,20 @@
 package roomescape;
 
 public class ReservationRequest {
+
     private String name;
     private String date;
     private String time;
 
-    public String getName(){
+    public String getName() {
         return name;
     }
-    public String getDate(){
+
+    public String getDate() {
         return date;
     }
-    public String getTime(){
+
+    public String getTime() {
         return time;
     }
 }
