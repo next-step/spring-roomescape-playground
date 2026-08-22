@@ -27,6 +27,7 @@ public class ReservationController {
     public ResponseEntity<String> handleNotFoundException() {
         return ResponseEntity.notFound().build();
     }
+
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> handleException() {
         return ResponseEntity.badRequest().build();
@@ -43,17 +44,21 @@ public class ReservationController {
     }
 
     @PostMapping("/reservations")
-    public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservation) {
-        Reservation newReservaion = Reservation.toEntity(reservation, index.incrementAndGet());
+    public ResponseEntity<Reservation> createReservation(
+        @RequestBody ReservationRequest reservationRequest) {
+        //검증먼저
         boolean hasEmpty = Stream.of(
-            reservation.getName(),
-            reservation.getDate(),
-            reservation.getTime()
+            reservationRequest.getName(),
+            reservationRequest.getDate(),
+            reservationRequest.getTime()
         ).anyMatch(value -> value == null || value.isBlank());
-
-        if(hasEmpty){
+        //검증 실패하면 던지기
+        if ( hasEmpty ) {
             throw new IllegalArgumentException();
         }
+        //검증 성공하면
+        index = index + 1;
+        Reservation newReservaion = Reservation.toEntity(reservationRequest, index);
 
         reservations.add(newReservaion);
 
