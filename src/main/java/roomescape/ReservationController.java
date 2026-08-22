@@ -29,7 +29,7 @@ public class ReservationController {
     }
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> handleException() {
-        return ResponseEntity.badRequest().body("잘못된 요청입니다");
+        return ResponseEntity.badRequest().build();
     }
 
     @GetMapping("/reservation")
