@@ -86,6 +86,20 @@ class ReservationControllerTest {
                 .when().delete("/reservations/1")
                 .then().log().all()
                 .statusCode(404);
+
+        예약을_추가한다();
+
+        Map<String, String> duplicated = new HashMap<>();
+        duplicated.put("name", "네오");
+        duplicated.put("date", "2023-08-05");
+        duplicated.put("time", "15:40");
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(duplicated)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(409);
     }
 
     @Test
