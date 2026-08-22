@@ -58,10 +58,4 @@ public class HomeController {
         System.out.println("IllegalArgumentException occurred: " + e.getMessage());
         return ResponseEntity.badRequest().build();
     }
-
-    @ExceptionHandler(NotFoundReservationException.class)
-    public ResponseEntity<Void> handleNotFoundReservationException(NotFoundReservationException e) {
-        return ResponseEntity.notFound().build();
-    }
-
 }
