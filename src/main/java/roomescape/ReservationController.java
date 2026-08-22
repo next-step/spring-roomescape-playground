@@ -19,7 +19,7 @@ import roomescape.exception.NotFoundException;
 @Controller
 public class ReservationController {
 
-    private AtomicLong index = new AtomicLong(0);
+    private long index = 0;
 
     private List<Reservation> reservations = new ArrayList<>();
 
