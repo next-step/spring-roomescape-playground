@@ -20,8 +20,14 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().build();
     }
 
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<Void> handleRuntimeException(RuntimeException e){
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<Void> handleBadRequestException(BadRequestException e){
+        logger.warn(e.getMessage(), e);
+        return ResponseEntity.badRequest().build();
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<Void> handleRuntimeException(NotFoundException e){
         logger.warn(e.getMessage(), e);
         return ResponseEntity.notFound().build();
     }

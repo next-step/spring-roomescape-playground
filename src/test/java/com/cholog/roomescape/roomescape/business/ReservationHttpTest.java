@@ -48,11 +48,30 @@ public class ReservationHttpTest {
     }
 
     @Test
-    @DisplayName("이름이 빈 값이면 400을 반환한다.")
+    @DisplayName("이름이 null 값이면 400을 반환한다.")
     void createReservationMustRequiredName() {
 
         // given
         String name = null;
+        LocalDate date = LocalDate.now();
+        LocalTime time = LocalTime.now().truncatedTo(ChronoUnit.MINUTES);
+        ReservationRequest request = new ReservationRequest(name, date, time);
+
+        RestAssured
+                .given()
+                .body(request)
+                .contentType(ContentType.JSON)
+                .when().post("/reservations")
+                .then()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    @DisplayName("이름이 빈 문자열이면 400을 반환한다.")
+    void createReservationRequiredNotBlankName() {
+
+        // given
+        String name = "";
         LocalDate date = LocalDate.now();
         LocalTime time = LocalTime.now().truncatedTo(ChronoUnit.MINUTES);
         ReservationRequest request = new ReservationRequest(name, date, time);

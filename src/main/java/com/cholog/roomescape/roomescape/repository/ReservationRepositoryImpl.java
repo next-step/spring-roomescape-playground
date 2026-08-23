@@ -1,10 +1,10 @@
 package com.cholog.roomescape.roomescape.repository;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import com.cholog.roomescape.roomescape.entity.Reservation;
-import com.cholog.roomescape.roomescape.repository.sql.JdbcSQL;
 
 import java.sql.PreparedStatement;
 import java.time.LocalDate;
@@ -13,6 +13,16 @@ import java.util.List;
 import java.util.Optional;
 
 public class ReservationRepositoryImpl implements ReservationRepository {
+
+    private static final RowMapper<Reservation> RESERVATION_ROW_MAPPER =
+            (resultSet, rowNum) -> Reservation.withId(
+                    resultSet.getLong("id"),
+                    new Reservation(
+                            resultSet.getString("name"),
+                            resultSet.getObject("date", LocalDate.class),
+                            resultSet.getObject("time", LocalTime.class)
+                    )
+            );
 
     private JdbcTemplate jdbcTemplate;
 
@@ -28,8 +38,8 @@ public class ReservationRepositoryImpl implements ReservationRepository {
         jdbcTemplate.update(
                 // PreparedStatementCreator 익명 객체 빌드
                 connection -> {
-            PreparedStatement preparedStatement = connection.prepareStatement(
-                    JdbcSQL.SAVE.getSql(),
+                    PreparedStatement preparedStatement = connection.prepareStatement(
+                            "insert into reservation(name, date, time) values (?, ?, ?)",
                     new String[]{"id"}
             );
 
@@ -48,19 +58,10 @@ public class ReservationRepositoryImpl implements ReservationRepository {
 
     @Override
     public List<Reservation> findAll() {
-        return jdbcTemplate.query(JdbcSQL.FIND_ALL.getSql(),
-                (resultSet, rowNum) ->
-                        // 각 row를 바인딩할 Entity 객체 생성
-                        Reservation.withId(
-                                resultSet.getLong("id"),
-                                new Reservation(
-                                        resultSet.getString("name"),
-                                        LocalDate.parse(resultSet.getString("date")),
-                                        LocalTime.parse(resultSet.getString("time"))
-                                )
-                        )
-
-                );
+        return jdbcTemplate.query(
+                "select id, name, date, time from reservation",
+                RESERVATION_ROW_MAPPER
+        );
     }
 
     @Override
@@ -68,21 +69,17 @@ public class ReservationRepositoryImpl implements ReservationRepository {
         if (reservation == null) {
             throw new IllegalArgumentException();
         }
-        jdbcTemplate.update(JdbcSQL.DELETE.getSql(), reservation.getId());
+        jdbcTemplate.update(
+                "delete from reservation where id = ?",
+                reservation.getId()
+        );
     }
 
     @Override
     public Optional<Reservation> findById(Long reservationId) {
         return jdbcTemplate.query(
-                        JdbcSQL.FIND_BY_ID.getSql(),
-                        (resultSet, rowNum) -> Reservation.withId(
-                                resultSet.getLong("id"),
-                                new Reservation(
-                                        resultSet.getString("name"),
-                                        LocalDate.parse(resultSet.getString("date")),
-                                        LocalTime.parse(resultSet.getString("time"))
-                                )
-                        ), reservationId
-                ).stream().findFirst();
+                "select id, name, date, time from reservation where id = ?",
+                RESERVATION_ROW_MAPPER,
+                reservationId).stream().findFirst();
     }
 }

@@ -8,3 +8,11 @@
 - [x] `ReservationRepositoryimpl.java` 중복 빈 등록 제거
 - [x] Reservation 생성자에서 nullable = false 검증 로직 추가
 - [x] ViewResolver를 담당하는 컨트롤러와 API를 담당하는 컨트롤러 분리
+
+### Review 2
+- RuntimeException을 404로 던지던 것을 애플리케이션 내 커스텀 예외로 분리
+  - BadRequestException, NotFoundException
+- `Reservation`의 date, time 필드 속성을 varchar에서 date, time으로 마이그레이션
+- `Reservation` 생성자에 name 빈 문자열 검증을 추가
+- `ReservationRepositoryImpl`을 위한 SQL을 enum 분리 -> 구현체 내로 책임 이동
+- `ReservationRepositoryImpl` 내에 쿼리 결과를 `Reservation` 객체로 빌드하는 RowMapper를 변수로 분리

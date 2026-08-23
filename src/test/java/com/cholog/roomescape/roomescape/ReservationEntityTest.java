@@ -1,7 +1,7 @@
 package com.cholog.roomescape.roomescape;
 
 import com.cholog.roomescape.roomescape.entity.Reservation;
-import com.cholog.roomescape.roomescape.exception.ReservationException;
+import com.cholog.roomescape.roomescape.exception.ReservationNotValidException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,7 +18,7 @@ public class ReservationEntityTest {
         String name = null;
 
         // then
-        Assertions.assertThrows(ReservationException.class, () -> {
+        Assertions.assertThrows(ReservationNotValidException.class, () -> {
             // when
             new Reservation(null, LocalDate.of(2026, 8, 21), LocalTime.of(22, 51));
         });
@@ -31,7 +31,7 @@ public class ReservationEntityTest {
         LocalDate date = null;
 
         // then
-        Assertions.assertThrows(ReservationException.class, () -> {
+        Assertions.assertThrows(ReservationNotValidException.class, () -> {
             // when
             new Reservation("Alice", date, LocalTime.of(22, 51));
         });
@@ -43,7 +43,7 @@ public class ReservationEntityTest {
         // given
         LocalTime time = null;
 
-        Assertions.assertThrows(ReservationException.class, () -> {
+        Assertions.assertThrows(ReservationNotValidException.class, () -> {
             // when
             new Reservation("Alice", LocalDate.of(2026, 8, 21), time);
         });

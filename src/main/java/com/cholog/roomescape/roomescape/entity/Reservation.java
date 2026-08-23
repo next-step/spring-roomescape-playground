@@ -1,7 +1,6 @@
 package com.cholog.roomescape.roomescape.entity;
 
-import com.cholog.roomescape.roomescape.exception.ReservationException;
-import org.springframework.web.bind.MethodArgumentNotValidException;
+import com.cholog.roomescape.roomescape.exception.ReservationNotValidException;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -19,12 +18,23 @@ public class Reservation {
 
     public Reservation(String name, LocalDate date, LocalTime time) {
         try {
-            this.name = Objects.requireNonNull(name, "이름은 비어 있을 수 없습니다.");
-            this.date = Objects.requireNonNull(date, "날짜는 비어 있을 수 없습니다.");
-            this.time = Objects.requireNonNull(time, "시각은 비어 있을 수 없습니다.");
-        } catch (NullPointerException e) {
-            throw new ReservationException(e.getMessage());
+            validateCreateReservation(name, date, time);
+        } catch (NullPointerException | IllegalArgumentException e) {
+            throw new ReservationNotValidException(e.getMessage());
         }
+        this.name = name;
+        this.date = date;
+        this.time = time;
+    }
+
+    private void validateCreateReservation(String name, LocalDate date, LocalTime time) {
+        if (name.isBlank()) {
+            throw new IllegalArgumentException("이름은 빈 문자열일 수 없습니다.");
+        }
+
+        Objects.requireNonNull(name, "이름은 비어 있을 수 없습니다.");
+        Objects.requireNonNull(date, "날짜는 비어 있을 수 없습니다.");
+        Objects.requireNonNull(time, "시각은 비어 있을 수 없습니다.");
     }
 
     private Reservation(Long id, String name, LocalDate date, LocalTime time) {

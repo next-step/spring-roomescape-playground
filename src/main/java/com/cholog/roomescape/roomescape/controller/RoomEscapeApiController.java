@@ -12,6 +12,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
+@RequestMapping("/reservations")
 public class RoomEscapeApiController {
 
     private final ReservationService reservationService;
@@ -21,7 +22,7 @@ public class RoomEscapeApiController {
     }
 
     @ResponseBody
-    @GetMapping("/reservations")
+    @GetMapping
     public ResponseEntity<List<ReservationResponse>> getReservations() {
         List<ReservationResponse> response = reservationService.findAllReservations().stream()
                 .map(ReservationResponse::toDto)
@@ -30,7 +31,7 @@ public class RoomEscapeApiController {
     }
 
     @ResponseBody
-    @PostMapping("/reservations")
+    @PostMapping
     public ResponseEntity<ReservationResponse> postReservation(
             @RequestBody @Valid ReservationRequest request
     ) {
@@ -41,7 +42,7 @@ public class RoomEscapeApiController {
                 .body(ReservationResponse.toDto(reservation));
     }
 
-    @DeleteMapping("/reservations/{reservationId}")
+    @DeleteMapping("/{reservationId}")
     public ResponseEntity<Void> deleteReservation(
             @PathVariable Long reservationId
     ) {

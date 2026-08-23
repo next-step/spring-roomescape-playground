@@ -13,6 +13,8 @@ import com.cholog.roomescape.roomescape.entity.Reservation;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -127,7 +129,7 @@ public class MissionStepTest {
 
     @Test
     void 육단계() {
-        jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "브라운", "2023-08-05", "15:40");
+        jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "브라운", LocalDate.of(2023, 8, 5), LocalTime.of(15, 40));
 
         List<Reservation> reservations = RestAssured.given().log().all()
                 .when().get("/reservations")

@@ -58,7 +58,7 @@ public class ReservationRepositoryTest {
     @DisplayName("findAll()을 호출하면, 저장된 모든 레코드를 반환한다.")
     void testFindAll() {
         // given
-        Reservation aliceReservation = new Reservation("Alice", LocalDate.now(), LocalTime.now());
+        Reservation aliceReservation = new Reservation("Alice", LocalDate.of(2026, 8, 23), LocalTime.of(23, 30));
         Reservation bobReservation = new Reservation("Bob", LocalDate.now(), LocalTime.now());
 
         Reservation aliceSavedReservation = reservationRepository.save(aliceReservation);
