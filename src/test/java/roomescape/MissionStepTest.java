@@ -13,7 +13,7 @@ import static org.hamcrest.Matchers.equalTo;
 public class MissionStepTest {
 
     @Test
-    void readPage() {
+    void 일단계() {
         RestAssured.given().log().all()
                 .when().get("/")
                 .then().log().all()
