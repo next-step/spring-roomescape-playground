@@ -20,7 +20,6 @@ public class JdbcReservationRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-
     public List<Reservation> findAll() {
         String sql = "SELECT id, name, reservation_date, reservation_time FROM reservation";
         return jdbcTemplate.query(sql, reservationRowMapper);
@@ -48,7 +47,6 @@ public class JdbcReservationRepository {
         String sql = "DELETE FROM reservation WHERE id = ?";
         return jdbcTemplate.update(sql, id);
     }
-
 
     private final RowMapper<Reservation> reservationRowMapper = (resultSet, rowNum) -> {
         Reservation reservation = new Reservation(
