@@ -35,7 +35,8 @@ public class ReservationController {
     public ResponseEntity<Reservation> postReservation(@RequestBody ReservationRequest reservationRequest) {
 
         // 예외처리
-        if (reservationRequest.getName().isBlank()
+        if (reservationRequest.getName() == null
+                || reservationRequest.getName().trim().isBlank()
                 || reservationRequest.getDate() == null
                 || reservationRequest.getTime() == null) {
             throw new IllegalArgumentException();
