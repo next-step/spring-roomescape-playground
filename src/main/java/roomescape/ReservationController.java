@@ -14,7 +14,8 @@ import org.springframework.web.bind.annotation.*;
 public class ReservationController {
 
     private final List<Reservation> reservations = new ArrayList<>();
-    private AtomicLong index = new AtomicLong(0);
+    private final AtomicLong index = new AtomicLong(0);
+    private final Object lock = new Object();
 
     public ReservationController() {
     }
@@ -27,45 +28,52 @@ public class ReservationController {
     @GetMapping("/reservations")
     @ResponseBody
     public List<Reservation> getReservations() {
-        return reservations;
+        synchronized (lock) {
+            return reservations;
+        }
     }
 
     @PostMapping("/reservations")
     @ResponseBody
     public ResponseEntity<Reservation> postReservation(@RequestBody ReservationRequest reservationRequest) {
 
-        // 예외처리
-        if (reservationRequest.getName() == null
-                || reservationRequest.getName().trim().isBlank()
-                || reservationRequest.getDate() == null
-                || reservationRequest.getTime() == null) {
-            throw new IllegalArgumentException();
+        synchronized (lock) {
+
+            // 예외처리
+            if (reservationRequest.getName() == null
+                    || reservationRequest.getName().trim().isBlank()
+                    || reservationRequest.getDate() == null
+                    || reservationRequest.getTime() == null) {
+                throw new IllegalArgumentException();
+            }
+
+            Reservation reservation = new Reservation(
+                    index.incrementAndGet(),
+                    reservationRequest.getName(),
+                    reservationRequest.getDate(),
+                    reservationRequest.getTime()
+            );
+
+            reservations.add(reservation);
+
+            return ResponseEntity.created(
+                            URI.create("/reservations/" + reservation.getId()))
+                    .body(reservation);
         }
-
-        Reservation reservation = new Reservation(
-                index.incrementAndGet(),
-                reservationRequest.getName(),
-                reservationRequest.getDate(),
-                reservationRequest.getTime()
-        );
-
-        reservations.add(reservation);
-
-        return ResponseEntity.created(
-                URI.create("/reservations/" + reservation.getId()))
-                .body(reservation);
     }
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable long id) {
 
-        boolean removed = reservations.removeIf(reservation -> reservation.getId() == id);
+        synchronized (lock) {
+            boolean removed = reservations.removeIf(reservation -> reservation.getId() == id);
 
-        // 4단계
-        if (!removed) {
-            throw new NoSuchElementException();
+            // 4단계
+            if (!removed) {
+                throw new NoSuchElementException();
+            }
+
+            return ResponseEntity.noContent().build();
         }
-
-        return ResponseEntity.noContent().build();
     }
 }
