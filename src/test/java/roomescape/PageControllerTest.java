@@ -2,12 +2,10 @@ package roomescape;
 
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.hamcrest.Matchers.containsString;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-class PageControllerTest {
+class PageControllerTest extends IntegrationTestSupport {
 
     @Test
     void 메인_페이지_요청_시_HTML을_반환한다() {

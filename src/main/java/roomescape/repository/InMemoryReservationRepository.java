@@ -1,6 +1,5 @@
 package roomescape.repository;
 
-import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
 
 import java.time.LocalDate;
@@ -10,7 +9,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
-@Repository
 public class InMemoryReservationRepository implements ReservationRepository {
 
     private final List<Reservation> reservations = new ArrayList<>();
