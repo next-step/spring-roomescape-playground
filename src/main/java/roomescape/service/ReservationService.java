@@ -30,7 +30,8 @@ public class ReservationService {
             return jdbcReservationRepository.save(reservation);
         } catch (DuplicateKeyException e) {
             throw new DuplicateReservationException(
-                    "이미 예약된 시간입니다. date=" + reservation.getDate() + ", time=" + reservation.getTime());
+                    "이미 예약된 시간입니다. date=" + reservation.getReservedAt().toLocalDate()
+                            + ", time=" + reservation.getReservedAt().toLocalTime());
         }
     }
 

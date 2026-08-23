@@ -3,8 +3,7 @@ package roomescape;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +16,7 @@ import roomescape.repository.JdbcReservationRepository;
 @SpringBootTest
 class DatabaseConstraintTest {
 
-    private static final LocalDate RESERVATION_DATE = LocalDate.of(2026, 8, 7);
-    private static final LocalTime RESERVATION_TIME = LocalTime.of(10, 0);
+    private static final LocalDateTime RESERVED_AT = LocalDateTime.of(2026, 8, 7, 10, 0);
 
     @Autowired
     private JdbcReservationRepository jdbcReservationRepository;
@@ -28,25 +26,25 @@ class DatabaseConstraintTest {
 
     @Test
     void 날짜_같음_시간_같음_예약_불가_테스트() {
-        jdbcReservationRepository.save(new Reservation("AAA", RESERVATION_DATE, RESERVATION_TIME));
+        jdbcReservationRepository.save(new Reservation("AAA", RESERVED_AT));
 
-        assertThatThrownBy(() -> jdbcReservationRepository.save(new Reservation("BBB", RESERVATION_DATE, RESERVATION_TIME)))
+        assertThatThrownBy(() -> jdbcReservationRepository.save(new Reservation("BBB", RESERVED_AT)))
                 .isInstanceOf(DuplicateKeyException.class);
     }
 
     @Test
     void 날짜_같음_시간_다름_예약_가능_테스트() {
-        jdbcReservationRepository.save(new Reservation("AAA", RESERVATION_DATE, RESERVATION_TIME));
+        jdbcReservationRepository.save(new Reservation("AAA", RESERVED_AT));
 
-        assertThatCode(() -> jdbcReservationRepository.save(new Reservation("BBB", RESERVATION_DATE, RESERVATION_TIME.plusHours(1))))
+        assertThatCode(() -> jdbcReservationRepository.save(new Reservation("BBB", RESERVED_AT.plusHours(1))))
                 .doesNotThrowAnyException();
     }
 
     @Test
     void 날짜_다름_시간_같음_예약_가능_테스트() {
-        jdbcReservationRepository.save(new Reservation("AAA", RESERVATION_DATE, RESERVATION_TIME));
+        jdbcReservationRepository.save(new Reservation("AAA", RESERVED_AT));
 
-        assertThatCode(() -> jdbcReservationRepository.save(new Reservation("BBB", RESERVATION_DATE.plusDays(1), RESERVATION_TIME)))
+        assertThatCode(() -> jdbcReservationRepository.save(new Reservation("BBB", RESERVED_AT.plusDays(1))))
                 .doesNotThrowAnyException();
     }
 }

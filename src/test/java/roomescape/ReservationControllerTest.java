@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.is;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -104,7 +105,7 @@ class ReservationControllerTest {
 
     @Test
     void 예약_목록_데이터베이스에서_조회_테스트() {
-        jdbcTemplate.update("INSERT INTO reservation (name, reservation_date, reservation_time) VALUES (?, ?, ?)", "브라운", "2023-08-05", "15:40");
+        jdbcTemplate.update("INSERT INTO reservation (name, reserved_at) VALUES (?, ?)", "브라운", LocalDateTime.of(2023, 8, 5, 15, 40));
 
         List<ReservationResponse> reservations = RestAssured.given().log().all()
                 .when().get("/reservations")
@@ -139,8 +140,8 @@ class ReservationControllerTest {
 
     @Test
     void 예약_취소_데이터베이스에서_삭제_테스트() {
-        jdbcTemplate.update("INSERT INTO reservation (name, reservation_date, reservation_time) VALUES (?, ?, ?)",
-                "브라운", "2023-08-05", "10:00");
+        jdbcTemplate.update("INSERT INTO reservation (name, reserved_at) VALUES (?, ?)",
+                "브라운", LocalDateTime.of(2023, 8, 5, 10, 0));
 
         RestAssured.given().log().all()
                 .when().delete("/reservations/1")

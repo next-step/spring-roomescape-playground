@@ -1,9 +1,8 @@
 CREATE TABLE reservation
 (
-    id                  BIGINT          NOT NULL AUTO_INCREMENT,
-    name                VARCHAR(255)    NOT NULL,
-    reservation_date    DATE            NOT NULL,
-    reservation_time    TIME            NOT NULL,
+    id          BIGINT          NOT NULL AUTO_INCREMENT,
+    name        VARCHAR(255)    NOT NULL,
+    reserved_at TIMESTAMP       NOT NULL,
     PRIMARY KEY (id),
-    CONSTRAINT uk_reservation_date_time UNIQUE (reservation_date, reservation_time)
+    CONSTRAINT uk_reservation_reserved_at UNIQUE (reserved_at)
 );
