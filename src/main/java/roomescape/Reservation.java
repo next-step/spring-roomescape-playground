@@ -6,7 +6,7 @@ public class Reservation {
     private String date;
     private String time;
 
-    public Reservation(Long id, String name, String data, String time) {
+    public Reservation(Long id, String name, String date, String time) {
         this.id = id;
         this.name = name;
         this.date = date;
@@ -27,5 +27,9 @@ public class Reservation {
 
     public String getTime() {
         return time;
+    }
+
+    public static Reservation toEntity(Reservation reservation, Long id) {
+        return new Reservation(id, reservation.name, reservation.date, reservation.time);
     }
 }
