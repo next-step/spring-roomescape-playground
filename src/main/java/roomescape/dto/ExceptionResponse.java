@@ -1,13 +1,10 @@
 package roomescape.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
 public class ExceptionResponse {
     private final String message;
-
-    public ExceptionResponse(String message) {
-        this.message = message;
-    }
-
-    public String getMessage() {
-        return message;
-    }
 }

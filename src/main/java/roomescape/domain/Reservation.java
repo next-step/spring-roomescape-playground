@@ -4,8 +4,10 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Getter;
 import roomescape.exception.BlankReservationException;
 
+@Getter
 public class Reservation {
 
   private final Long id;
@@ -32,21 +34,5 @@ public class Reservation {
     if (time == null) {
       throw new BlankReservationException("예약시간은 공백이 될 수 없습니다.");
     }
-  }
-
-  public Long getId() {
-    return id;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public LocalDate getDate() {
-    return date;
-  }
-
-  public LocalTime getTime() {
-    return time;
   }
 }
