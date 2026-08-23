@@ -10,7 +10,6 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
-import roomescape.dto.ReservationRequest;
 import roomescape.exception.NotFoundReservationException;
 import roomescape.exception.ReservationSaveFailedException;
 
@@ -34,22 +33,20 @@ public class ReservationRepository {
     return jdbcTemplate.query("SELECT * FROM reservation", reservationRowMapper);
   }
 
-  public Reservation save(ReservationRequest reservationRequest) {
-    Reservation.validate(reservationRequest.getName(), reservationRequest.getDate(),
-        reservationRequest.getTime());
-
+  public Reservation save(Reservation reservation) {
     KeyHolder keyHolder = new GeneratedKeyHolder();
     jdbcTemplate.update(connection -> {
       PreparedStatement ps = connection.prepareStatement(
           "INSERT INTO reservation(name, date, time) VALUES (?, ?, ?)",
           new String[]{"id"});
-      ps.setString(1, reservationRequest.getName());
-      ps.setString(2, reservationRequest.getDate().toString());
-      ps.setString(3, reservationRequest.getTime().toString());
+      ps.setString(1, reservation.getName());
+      ps.setString(2, reservation.getDate().toString());
+      ps.setString(3, reservation.getTime().toString());
       return ps;
     }, keyHolder);
 
-    return reservationRequest.toDomain(extractGeneratedId(keyHolder));
+    return new Reservation(extractGeneratedId(keyHolder), reservation.getName(),
+        reservation.getDate(), reservation.getTime());
   }
 
   private Long extractGeneratedId(KeyHolder keyHolder) {
