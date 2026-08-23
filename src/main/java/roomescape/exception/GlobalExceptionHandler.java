@@ -1,12 +1,10 @@
-package roomescape;
+package roomescape.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import roomescape.dto.ExceptionResponse;
-import roomescape.exception.BlankReservationException;
-import roomescape.exception.NotFoundReservationException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -18,5 +16,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BlankReservationException.class)
     public ResponseEntity<ExceptionResponse> handleBlankReservationException(BlankReservationException ex){
         return ResponseEntity.badRequest().body(new ExceptionResponse(ex.getMessage()));
+    }
+
+    @ExceptionHandler(ReservationSaveFailedException.class)
+    public ResponseEntity<ExceptionResponse> handleReservationSaveFailedException(ReservationSaveFailedException ex){
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ExceptionResponse(ex.getMessage()));
     }
 }
