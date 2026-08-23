@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
@@ -22,13 +23,15 @@ public class ReservationRepository {
     this.jdbcTemplate = jdbcTemplate;
   }
 
+  private final RowMapper<Reservation> reservationRowMapper = (rs, rowNum) ->
+      new Reservation(rs.getLong("id"),
+          rs.getString("name"),
+          LocalDate.parse(rs.getString("date")),
+          LocalTime.parse(rs.getString("time"))
+      );
+
   public List<Reservation> findAll() {
-    return jdbcTemplate.query("SELECT * FROM reservation", (rs, rowNum) ->
-        new Reservation(rs.getLong("id"),
-            rs.getString("name"),
-            LocalDate.parse(rs.getString("date")),
-            LocalTime.parse(rs.getString("time"))
-        ));
+    return jdbcTemplate.query("SELECT * FROM reservation", reservationRowMapper);
   }
 
   public Reservation save(ReservationRequest reservationRequest) {
