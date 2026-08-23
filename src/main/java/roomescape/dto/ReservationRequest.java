@@ -10,7 +10,7 @@ public record ReservationRequest (
     LocalDate date,
     LocalTime time
 ) {
-    public Reservation toEntity(long id) {
-        return new Reservation(id, name, date, time);
+    public Reservation toEntity() {
+        return new Reservation(null, name, date, time);
     }
 }

@@ -3,6 +3,7 @@ package roomescape.domain;
 import roomescape.exception.InvalidReservationException;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public class Reservation {
@@ -14,12 +15,10 @@ public class Reservation {
     private final LocalTime time;
 
     public Reservation(Long id, String name, LocalDate date, LocalTime time) {
-        if (name == null || name.isBlank() || date == null || time == null) {
-            throw new InvalidReservationException("예약 정보는 모두 입력해야 합니다.");
-        }
-        if (name.length() > MAX_NAME_LENGTH) {
-            throw new InvalidReservationException("예약자 이름은 20자 이하여야 합니다.");
-        }
+        validateRequiredValues(name, date, time);
+        validateNameLength(name);
+        validateFutureDateTime(date, time);
+
         this.id = id;
         this.name = name;
         this.date = date;
@@ -40,5 +39,25 @@ public class Reservation {
 
     public LocalTime getTime() {
         return time;
+    }
+
+    private void validateRequiredValues(String name, LocalDate date, LocalTime time) {
+        if (name == null || name.isBlank() || date == null || time == null) {
+            throw new InvalidReservationException("예약 정보는 모두 입력해야 합니다.");
+        }
+    }
+
+    private void validateNameLength(String name) {
+        if (name.length() > MAX_NAME_LENGTH) {
+            throw new InvalidReservationException("예약자 이름은 20자 이하여야 합니다.");
+        }
+    }
+
+    private void validateFutureDateTime(LocalDate date, LocalTime time) {
+        LocalDateTime reservationDateTime = LocalDateTime.of(date, time);
+
+        if (!reservationDateTime.isAfter(LocalDateTime.now())) {
+            throw new InvalidReservationException("올바른 예약 날짜와 시간을 선택해야 합니다.");
+        }
     }
 }
