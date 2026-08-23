@@ -1,6 +1,7 @@
 package roomescape.controller;
 
 import java.net.URI;
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,9 +21,15 @@ import roomescape.exception.ReservationNotFoundException;
 
 @Controller
 public class ReservationController {
+    private final Clock clock;
+
     private final List<Reservation> reservations = new ArrayList<>();
 
     private final AtomicLong idGenerator = new AtomicLong(1);
+
+    public ReservationController(Clock clock) {
+        this.clock = clock;
+    }
 
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservationRequest) {
@@ -79,7 +86,7 @@ public class ReservationController {
 
     private void validateNotPast(Reservation reservationRequest) {
         LocalDateTime requestedDateTime = LocalDateTime.of(reservationRequest.getDate(), reservationRequest.getTime());
-        if (requestedDateTime.isBefore(LocalDateTime.now())) {
+        if (requestedDateTime.isBefore(LocalDateTime.now(clock))) {
             throw new ReservationInvalidException("과거 시간으로 예약할 수 없습니다");
         }
     }
