@@ -19,7 +19,7 @@ public class Reservation {
         this.time = time;
     }
 
-    public static Reservation toEntity(Reservation reservation, Long reservationId) {
+    public static Reservation assignID(Reservation reservation, Long reservationId) {
         return new Reservation(reservationId, reservation.name, reservation.date, reservation.time);
     }
 

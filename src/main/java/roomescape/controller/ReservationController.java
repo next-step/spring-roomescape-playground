@@ -31,7 +31,7 @@ public class ReservationController {
         validateTime(reservationRequest);
         validateNotPast(reservationRequest);
 
-        Reservation newReservation = Reservation.toEntity(reservationRequest, idGenerator.getAndIncrement());
+        Reservation newReservation = Reservation.assignID(reservationRequest, idGenerator.getAndIncrement());
         reservations.add(newReservation);
         return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
     }
