@@ -62,6 +62,15 @@ public class ReservationController {
         }
     }
 
+    @GetMapping("/reservations/{id}")
+    @ResponseBody
+    public Reservation getReservation(@PathVariable long id) {
+        return reservations.stream()
+                .filter(reservation -> reservation.getId() == id)
+                .findFirst()
+                .orElseThrow(NoSuchElementException::new);
+    }
+
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable long id) {
 
