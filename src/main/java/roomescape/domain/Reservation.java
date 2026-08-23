@@ -23,7 +23,7 @@ public class Reservation {
   }
 
   public static void validate(String name, LocalDate date, LocalTime time) {
-    if (name == null || name.isEmpty()) {
+    if (name == null || name.isBlank()) {
       throw new BlankReservationException("이름은 공백이 될 수 없습니다.");
     }
     if (date == null) {
