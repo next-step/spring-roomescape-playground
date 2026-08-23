@@ -5,6 +5,9 @@ import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -90,5 +93,66 @@ public class MissionStepTest {
                 .when().delete("/reservations/1")
                 .then().log().all()
                 .statusCode(404);
+    }
+
+    @Test
+    void nameTest() {
+        ReservationRequest name_null = new ReservationRequest(
+                LocalDate.of(2023, 8, 5),
+                null,
+                LocalTime.of(15, 53)
+        );
+
+        ReservationRequest name_empty = new ReservationRequest(
+                LocalDate.of(2023, 8, 5),
+                "",
+                LocalTime.of(15, 53)
+        );
+
+        ReservationRequest name_blank = new ReservationRequest(
+                LocalDate.of(2023, 8, 5),
+                "    ",
+                LocalTime.of(15, 53)
+        );
+
+        String name_delete = """
+                {
+                    "date" = LocalDate.of(2023, 8, 5),
+                    "time" = LocalTime.of(15, 53)
+                }
+                """;
+
+
+        RestAssured.given()
+                .contentType(ContentType.JSON)
+                .body(name_null)
+                .when()
+                .post("/reservations")
+                .then()
+                .statusCode(400);
+
+        RestAssured.given()
+                .contentType(ContentType.JSON)
+                .body(name_empty)
+                .when()
+                .post("/reservations")
+                .then()
+                .statusCode(400);
+
+        RestAssured.given()
+                .contentType(ContentType.JSON)
+                .body(name_blank)
+                .when()
+                .post("/reservations")
+                .then()
+                .statusCode(400);
+
+        RestAssured.given()
+                .contentType(ContentType.JSON)
+                .body(name_delete)
+                .when()
+                .post("/reservations")
+                .then()
+                .statusCode(400);
     }
 }
