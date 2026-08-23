@@ -21,3 +21,8 @@
 - [x] KeyHolder.getKey()가 null일 수 있는 경우에 대한 검증 및 예외처리 추가
 - [x] DELETE 응답의 반환 타입을 ResponseEntity<Void>로 변경해 본문 없음을 명시
 - [x] JdbcTemplate 학습 정리: 순수 JDBC 대비 JdbcTemplate이 대신 처리해주는 작업(Connection/PreparedStatement/ResultSet/자원 해제) 정리 및 query/queryForObject/update 등 메서드별 적합 상황 정리
+- [ ] Reservation 도메인 객체의 이름 검증 로직 수정
+- [ ] Controller에서 ReservationRequest를 Reservation으로 변환 후 Repository에 전달, Repository가 DTO 대신 도메인 객체에 의존하도록 변경
+- [ ] 조회 결과를 도메인 객체로 매핑하는 로직을 RowMapper로 분리
+- [ ] JdbcTemplate 메서드 추가 학습 정리: query/queryForObject 결과 0건일 때의 동작 차이, 발생하는 예외 종류, RowMapper의 역할 정리
+- [ ] Lombok 학습
