@@ -1,5 +1,6 @@
 package roomescape.domain;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import roomescape.exception.BlankReservationException;
 
 import java.time.LocalDate;
@@ -11,6 +12,11 @@ public class Reservation {
     private final LocalDate date;
     private final LocalTime time;
 
+    public Reservation(String name, LocalDate date, LocalTime time) {
+        this(0, name, date, time);
+    }
+
+    @JsonCreator
     public Reservation(long id, String name, LocalDate date, LocalTime time) {
         validateName(name);
         validateDate(date);
@@ -19,6 +25,10 @@ public class Reservation {
         this.name = name;
         this.date = date;
         this.time = time;
+    }
+
+    public Reservation withId(long id) {
+        return new Reservation(id, this.name, this.date, this.time);
     }
 
     public long getId() {
@@ -55,4 +65,3 @@ public class Reservation {
         }
     }
 }
-
