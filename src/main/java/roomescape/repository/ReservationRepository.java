@@ -1,21 +1,23 @@
 package roomescape.repository;
 
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
+import roomescape.exception.DuplicateReservationException;
 
 import java.sql.PreparedStatement;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
-public class JdbcReservationRepository {
+public class ReservationRepository {
     private final JdbcTemplate jdbcTemplate;
 
-    public JdbcReservationRepository(JdbcTemplate jdbcTemplate) {
+    public ReservationRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
@@ -28,13 +30,19 @@ public class JdbcReservationRepository {
         String sql = "INSERT INTO reservation (name, reserved_at) VALUES (?, ?)";
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
+        try {
+            jdbcTemplate.update(connection -> {
+                PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
 
-            ps.setString(1, reservation.getName());
-            ps.setObject(2, reservation.getReservedAt());
-            return ps;
-        }, keyHolder);
+                ps.setString(1, reservation.getName());
+                ps.setObject(2, reservation.getReservedAt());
+                return ps;
+            }, keyHolder);
+        } catch (DuplicateKeyException e) {
+            throw new DuplicateReservationException(
+                    "이미 예약된 시간입니다. date=" + reservation.getReservedAt().toLocalDate()
+                            + ", time=" + reservation.getReservedAt().toLocalTime());
+        }
 
         Long id = keyHolder.getKey().longValue();
 

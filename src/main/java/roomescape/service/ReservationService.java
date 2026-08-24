@@ -1,43 +1,35 @@
 package roomescape.service;
 
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import roomescape.domain.Reservation;
-import roomescape.exception.DuplicateReservationException;
 import roomescape.exception.NotFoundReservationException;
-import roomescape.repository.JdbcReservationRepository;
+import roomescape.repository.ReservationRepository;
 
 import java.util.List;
 
 @Service
 public class ReservationService {
 
-    private final JdbcReservationRepository jdbcReservationRepository;
+    private final ReservationRepository reservationRepository;
 
-    public ReservationService(JdbcReservationRepository jdbcReservationRepository) {
-        this.jdbcReservationRepository = jdbcReservationRepository;
+    public ReservationService(ReservationRepository reservationRepository) {
+        this.reservationRepository = reservationRepository;
     }
 
     @Transactional(readOnly = true)
     public List<Reservation> findAll() {
-        return jdbcReservationRepository.findAll();
+        return reservationRepository.findAll();
     }
 
     @Transactional
     public Reservation save(Reservation reservation) {
-        try {
-            return jdbcReservationRepository.save(reservation);
-        } catch (DuplicateKeyException e) {
-            throw new DuplicateReservationException(
-                    "이미 예약된 시간입니다. date=" + reservation.getReservedAt().toLocalDate()
-                            + ", time=" + reservation.getReservedAt().toLocalTime());
-        }
+        return reservationRepository.save(reservation);
     }
 
     @Transactional
     public void deleteById(Long id) {
-        int deleted = jdbcReservationRepository.deleteById(id);
+        int deleted = reservationRepository.deleteById(id);
         if (deleted == 0) {
             throw new NotFoundReservationException("예약을 찾을 수 없습니다. id=" + id);
         }
