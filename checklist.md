@@ -1,39 +1,18 @@
-## Spring MVC 방탈출 미션
-### Step 1
-- [x] 웹 관련 의존성 작성
-- [x] localhost:8080 요청 시, 어드민 페이지 리다이렉트
-- [x] 일단계 테스트 성공
-
-### Step 2
-- [x] 어드민 메인 페이지는 templates/reservation.html 파일로 리다이렉트
-- [x] 예약 관리 페이지 로드 시 호출되는 예약 목록 조회 API도 구현
-
----
+## Spring MVC Mission 5, 6, 7
 ### Review 1
-- [x] 의미가 불명확한 코드에 의미를 명확히 함
-  - `toEntity()` -> `toEntityWithId()`
-  - `Member` 클래스의 ID를 제외한 모든 필드 생성자를 `public` -> `private`
-  - `ResponseEntity<?>`에서 제네릭을 와일드카드에서 구체화 클래스로 변경
-- [x] 전체 프로덕션 코드에서 쓰이지 않는 코드 삭제
-  - `Member` 클래스의 기본 생성자 삭제
-- [x] 쓰임이 잘못된 코드 변경
-  - `Member.update()` 메소드를 방어적 복사에서 원본 객체 수정, 반환으로 수정
-  - `MemberController` 클래스에서 `Repository` 역할까지 겸임하고 있던 것을 분리
-- [x] DTO를 사용하고 있지 않던 타입 불명확 API를 DTO를 사용하게끔 수정
-  - 테스트 클래스에도 수정 전파
+- [x] `RoomEscapeApplication.java`를 꺼냄
+  - com.cholog.roomescape라고 하는 프로젝트 이름과 아티팩트를 심어 `RoomEscapeApplication.java`에 패키지 경로 작성
+- [x] GlobalExceptionHandler에서 제어하는 `MethodArgumentNotValidException.java` 예외를 직접 검증하는 `RestAssured` 테스트 작성
+- [x] `GlobalExceptionHandler`에 에러 응답을 빌드하는 모든 책임을 전가
+- [x] 잘못된 예외 핸들러 메소드 이름 수정 (handleRoomEscapeException -> handleMethodArgumentNotValid)
+- [x] `ReservationRepositoryimpl.java` 중복 빈 등록 제거
+- [x] Reservation 생성자에서 nullable = false 검증 로직 추가
+- [x] ViewResolver를 담당하는 컨트롤러와 API를 담당하는 컨트롤러 분리
 
 ### Review 2
-- [x] in - memory로 엔터티 관리함에 있어서, `동일한 엔터티`의 기준 확립
-  - DB 기준에서는 기본 키가 해당 레코드의 `고유한 필드`이므로, 기본 키가 같다면, 같은 엔터티이다.
-- [x] HTTP 인수 테스트를 제외하고도, `Repository`, `Service` 로직을 직접 테스트하는 단위 테스트 작성
-
-### Step 3
-- [x] 예약 추가하는 메소드 작성
-- [x] 예약 취소하는 메소드 작성
-  - 3단계 테스트 케이스 성공
-  - 추가, 취소하는 Repository, Service 메소드에 대한 단위 테스트 작성
-
-### Step 4
-- [x] 예약을 추가할 때, 사용하는 DTO의 검증 어노테이션을 catch하여 400 Bad Request로 응답하게 작성
-- [x] 예약을 취소할 때, 받은 PathVariable 값을 Repository에 조회하고, 없을 시 404 Not Found로 응답하게 작성
-  - 실제로 예외를 반환하는 지에 대한 단위 테스트 작성
+- RuntimeException을 404로 던지던 것을 애플리케이션 내 커스텀 예외로 분리
+  - BadRequestException, NotFoundException
+- `Reservation`의 date, time 필드 속성을 varchar에서 date, time으로 마이그레이션
+- `Reservation` 생성자에 name 빈 문자열 검증을 추가
+- `ReservationRepositoryImpl`을 위한 SQL을 enum 분리 -> 구현체 내로 책임 이동
+- `ReservationRepositoryImpl` 내에 쿼리 결과를 `Reservation` 객체로 빌드하는 RowMapper를 변수로 분리
