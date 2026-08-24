@@ -23,3 +23,19 @@
 - [x] 잘못된 요청은 적절한 Status Code로 응답한다.
   - [x] 예약 추가 시 `name`, `date`, `time` 중 비어 있는 값이 있으면 `400 Bad Request`로 응답한다.
   - [x] 삭제할 예약을 식별자로 찾을 수 없으면 `404 Not Found`로 응답한다.
+
+## Database Requirement
+
+- [x] `spring-boot-starter-jdbc`, `h2` 의존성을 추가한다.
+- [x] `schema.sql`에 예약(`reservation`) 테이블 생성 쿼리를 작성한다.
+  - [x] `id`(PK), `name`, `date`, `time` 컬럼을 가진다.
+  - [x] 같은 `date`, `time`에 예약이 중복될 수 없도록 유니크 제약을 건다.
+- [x] h2 데이터베이스를 설정한다.
+  - [x] h2 console 기능을 활성화한다.
+  - [x] datasource url을 `jdbc:h2:mem:database`로 지정한다.
+- [x] `JdbcTemplate`으로 `DataSource`에 접근해 데이터베이스 연결을 검증한다.
+  - [x] `Connection`으로 데이터베이스 이름을 검증한다.
+  - [x] `Connection`으로 테이블 이름을 검증한다.
+- [x] `GET /reservations`는 `JdbcTemplate`으로 데이터베이스에서 예약을 조회한다.
+- [x] `POST /reservations`는 데이터베이스에 예약을 추가하고, 발급된 식별자를 응답한다.
+- [x] `DELETE /reservations/{id}`는 데이터베이스에서 예약을 삭제한다.

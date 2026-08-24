@@ -11,8 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import roomescape.domain.Reservation;
 import roomescape.dto.ReservationRequest;
 import roomescape.dto.ReservationResponse;
-import roomescape.exception.NotFoundReservationException;
-import roomescape.repository.ReservationRepository;
+import roomescape.service.ReservationService;
 
 import java.net.URI;
 import java.util.List;
@@ -21,15 +20,15 @@ import java.util.List;
 @ResponseBody // @Controller + @ResponseBody = @RestController
 public class ReservationController {
 
-    private final ReservationRepository reservationRepository;
+    private final ReservationService reservationService;
 
-    public ReservationController(ReservationRepository reservationRepository) {
-        this.reservationRepository = reservationRepository;
+    public ReservationController(ReservationService reservationService) {
+        this.reservationService = reservationService;
     }
 
     @GetMapping("/reservations")
     public List<ReservationResponse> getReservations() {
-        return reservationRepository.findAll().stream()
+        return reservationService.findAll().stream()
                 .map(ReservationResponse::from)
                 .toList();
     }
@@ -38,7 +37,7 @@ public class ReservationController {
     public ResponseEntity<ReservationResponse> createReservation(
             @RequestBody ReservationRequest request
     ) {
-        Reservation saved = reservationRepository.save(request.toReservation());
+        Reservation saved = reservationService.save(request.toReservation());
 
         return ResponseEntity
                 .created(URI.create("/reservations/" + saved.getId()))
@@ -49,10 +48,7 @@ public class ReservationController {
     public ResponseEntity<Void> deleteReservation(
             @PathVariable Long id
     ) {
-        boolean deleted = reservationRepository.deleteById(id);
-        if (!deleted) {
-            throw new NotFoundReservationException("예약을 찾을 수 없습니다. id=" + id);
-        }
+        reservationService.deleteById(id);
 
         return ResponseEntity.noContent().build();
     }

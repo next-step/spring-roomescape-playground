@@ -4,6 +4,7 @@ import roomescape.domain.Reservation;
 import roomescape.exception.InvalidReservationException;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public record ReservationRequest(
@@ -15,8 +16,7 @@ public record ReservationRequest(
         validate();
         return new Reservation(
                 name,
-                LocalDate.parse(date),
-                LocalTime.parse(time)
+                LocalDateTime.of(LocalDate.parse(date), LocalTime.parse(time))
         );
     }
 
