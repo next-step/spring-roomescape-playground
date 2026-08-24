@@ -13,7 +13,7 @@ class ReservationRequestValidationTest {
 
     @Test
     void 예약자_이름이_비어있으면_검증에_실패한다() {
-        ReservationRequest request = new ReservationRequest(" ", LocalDate.of(2030, 8, 5), LocalTime.of(15, 41));
+        ReservationRequest request = new ReservationRequest(" ", LocalDate.of(2030, 8, 5), LocalTime.of(12, 1));
 
         assertThat(validator.validate(request)).extracting(violation -> violation.getPropertyPath().toString())
                 .contains("name");
@@ -21,7 +21,7 @@ class ReservationRequestValidationTest {
 
     @Test
     void 날짜가_null이면_검증에_실패한다() {
-        ReservationRequest request = new ReservationRequest("브라운", null, LocalTime.of(15, 41));
+        ReservationRequest request = new ReservationRequest("브라운", null, LocalTime.of(12, 1));
 
         assertThat(validator.validate(request)).extracting(violation -> violation.getPropertyPath().toString())
                 .contains("date");
