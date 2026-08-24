@@ -7,6 +7,7 @@ import roomescape.exception.NotFoundReservationException;
 import roomescape.repository.ReservationRepository;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class ReservationService {
@@ -29,6 +30,8 @@ public class ReservationService {
 
     @Transactional
     public void deleteById(Long id) {
+        Objects.requireNonNull(id, "id는 null일 수 없습니다.");
+
         int deleted = reservationRepository.deleteById(id);
         if (deleted == 0) {
             throw new NotFoundReservationException("예약을 찾을 수 없습니다. id=" + id);
