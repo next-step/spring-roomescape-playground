@@ -6,6 +6,7 @@ import roomescape.dao.ReservationDAO;
 import roomescape.domain.ReservationRequest;
 import roomescape.exception.NotFoundReservationException;
 import roomescape.domain.Reservation;
+import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
@@ -24,10 +25,8 @@ public class ReservationController {
     }
 
     @PostMapping("/reservations")
-    public ResponseEntity<Reservation> create(@RequestBody ReservationRequest request) {
-        Reservation reservationToSave = Reservation.toEntity(request, null);
-        Long generatedId = reservationDAO.insertWithKeyHolder(reservationToSave);
-
+    public ResponseEntity<Reservation> create(@Valid @RequestBody ReservationRequest request) {
+        Long generatedId = reservationDAO.insertWithKeyHolder(request);
         Reservation newReservation = Reservation.toEntity(request, generatedId);
 
         return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
