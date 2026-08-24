@@ -23,8 +23,8 @@ public class Reservation {
     }
 
     public static Reservation create(Long id, String name, LocalDate date, LocalTime time, Clock clock) {
-        LocalDateTime requestedDateTime = LocalDateTime.of(date, time);
-        if (requestedDateTime.isBefore(LocalDateTime.now(clock))) {
+        LocalDateTime reservationDateTime = LocalDateTime.of(date, time);
+        if (reservationDateTime.isBefore(LocalDateTime.now(clock))) {
             throw new ReservationInvalidException("과거 시간으로 예약할 수 없습니다");
         }
         return new Reservation(id, name, date, time);
