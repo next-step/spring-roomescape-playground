@@ -2,9 +2,7 @@ package roomescape.repository;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.TestExecutionListeners;
 import roomescape.domain.Reservation;
 
 import java.time.LocalDate;
@@ -25,9 +23,7 @@ class JdbcReservationRepositoryTest {
         JdbcReservationRepository reservationRepository = new JdbcReservationRepository(jdbcTemplate);
 
         reservationRepository.save(
-                "이준환",
-                LocalDate.of(2026, 8, 5),
-                LocalTime.of(10, 0)
+                new Reservation("이준환", LocalDate.of(2026, 8, 5), LocalTime.of(10, 0))
         );
 
         // When
@@ -47,9 +43,7 @@ class JdbcReservationRepositoryTest {
 
         // When
         Reservation savedReservation = reservationRepository.save(
-                "이준환",
-                LocalDate.of(2026, 8, 5),
-                LocalTime.of(10, 0)
+                new Reservation("이준환", LocalDate.of(2026, 8, 5), LocalTime.of(10, 0))
         );
 
         // Then
@@ -63,14 +57,10 @@ class JdbcReservationRepositoryTest {
 
         // When
         Reservation firstAddedReservation = reservationRepository.save(
-                "이준환",
-                LocalDate.of(2026, 8, 5),
-                LocalTime.of(10, 0)
+                new Reservation("이준환", LocalDate.of(2026, 8, 5), LocalTime.of(10, 0))
         );
         Reservation secondAddedReservation = reservationRepository.save(
-                "김준우",
-                LocalDate.of(2026, 8, 6),
-                LocalTime.of(11, 0)
+                new Reservation("김준우", LocalDate.of(2026, 8, 6), LocalTime.of(11, 0))
         );
 
         // Then
@@ -84,9 +74,7 @@ class JdbcReservationRepositoryTest {
         JdbcReservationRepository reservationRepository = new JdbcReservationRepository(jdbcTemplate);
 
         Reservation reservation = reservationRepository.save(
-                "이준환",
-                LocalDate.of(2026, 8, 5),
-                LocalTime.of(10, 0)
+                new Reservation("이준환", LocalDate.of(2026, 8, 5), LocalTime.of(10, 0))
         );
 
         // When

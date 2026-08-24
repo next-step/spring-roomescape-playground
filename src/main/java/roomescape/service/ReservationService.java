@@ -3,7 +3,6 @@ package roomescape.service;
 import org.springframework.stereotype.Service;
 import roomescape.domain.Reservation;
 import roomescape.exception.NotFoundReservationException;
-import roomescape.repository.JdbcReservationRepository;
 import roomescape.repository.ReservationRepository;
 
 import java.time.LocalDate;
@@ -23,13 +22,14 @@ public class ReservationService {
     }
 
     public Reservation createReservation(String name, LocalDate date, LocalTime time) {
-        return reservationRepository.save(name, date, time);
+        Reservation reservation = new Reservation(name, date, time);
+        return reservationRepository.save(reservation);
     }
 
     public void deleteReservation(long id) {
-        boolean deleteCount = reservationRepository.deleteById(id);
+        boolean deleted = reservationRepository.deleteById(id);
 
-        if (!deleteCount) {
+        if (!deleted) {
             throw new NotFoundReservationException("해당 id의 예약을 찾을 수 없습니다.");
         }
     }

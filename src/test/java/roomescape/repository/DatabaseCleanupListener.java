@@ -10,7 +10,6 @@ public class DatabaseCleanupListener extends AbstractTestExecutionListener {
     public void beforeTestMethod(TestContext testContext) {
         JdbcTemplate jdbcTemplate = testContext.getApplicationContext()
                 .getBean(JdbcTemplate.class);
-        jdbcTemplate.update("DELETE FROM reservation");
-        jdbcTemplate.update("ALTER TABLE reservation ALTER COLUMN id RESTART WITH 1");
+        jdbcTemplate.update("TRUNCATE TABLE reservation RESTART IDENTITY");
     }
 }

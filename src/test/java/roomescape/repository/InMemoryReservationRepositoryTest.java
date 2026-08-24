@@ -17,9 +17,7 @@ class InMemoryReservationRepositoryTest {
         // Given
         InMemoryReservationRepository reservations = new InMemoryReservationRepository();
         Reservation reservation = reservations.save(
-                "이준환",
-                LocalDate.of(2026, 8, 5),
-                LocalTime.of(10, 0)
+                new Reservation("이준환", LocalDate.of(2026, 8, 5), LocalTime.of(10, 0))
         );
 
         // When
@@ -48,14 +46,10 @@ class InMemoryReservationRepositoryTest {
         InMemoryReservationRepository reservations = new InMemoryReservationRepository();
 
         Reservation first = reservations.save(
-                "이준환",
-                LocalDate.of(2026, 8, 5),
-                LocalTime.of(10, 0)
+                new Reservation("이준환", LocalDate.of(2026, 8, 5), LocalTime.of(10, 0))
         );
         Reservation second = reservations.save(
-                "이준환",
-                LocalDate.of(2026, 8, 6),
-                LocalTime.of(11, 0)
+                new Reservation("이준환", LocalDate.of(2026, 8, 6), LocalTime.of(11, 0))
         );
 
         // When
@@ -74,14 +68,10 @@ class InMemoryReservationRepositoryTest {
         // Given
         InMemoryReservationRepository reservations = new InMemoryReservationRepository();
         reservations.save(
-                "이준환",
-                LocalDate.of(2026, 8, 5),
-                LocalTime.of(10, 0)
+                new Reservation("이준환", LocalDate.of(2026, 8, 5), LocalTime.of(10, 0))
         );
         reservations.save(
-                "이준환2",
-                LocalDate.of(2026, 8, 6),
-                LocalTime.of(11, 0)
+                new Reservation("이준환2", LocalDate.of(2026, 8, 6), LocalTime.of(11, 0))
         );
 
         // When
@@ -90,12 +80,7 @@ class InMemoryReservationRepositoryTest {
         // Then
         assertThat(list).hasSize(2);
         assertThatThrownBy(() -> list.add(
-                new Reservation(
-                        999,
-                        "이준환3",
-                        LocalDate.of(2026, 8, 6),
-                        LocalTime.of(11, 0)
-                )
+                new Reservation(999, "이준환3", LocalDate.of(2026, 8, 6), LocalTime.of(11, 0))
         )).isInstanceOf(UnsupportedOperationException.class);
     }
 }

@@ -17,14 +17,12 @@ import java.util.List;
 @Primary
 public class JdbcReservationRepository implements ReservationRepository {
     private final JdbcTemplate jdbcTemplate;
-    private static final RowMapper<Reservation> rowMapper = (resultSet, rowNum) -> {
-        return new Reservation(
-                resultSet.getLong("id"),
-                resultSet.getString("name"),
-                LocalDate.parse(resultSet.getString("date")),
-                LocalTime.parse(resultSet.getString("time"))
-        );
-    };
+    private static final RowMapper<Reservation> rowMapper = (resultSet, rowNum) -> new Reservation(
+            resultSet.getLong("id"),
+            resultSet.getString("name"),
+            LocalDate.parse(resultSet.getString("date")),
+            LocalTime.parse(resultSet.getString("time"))
+    );
 
     public JdbcReservationRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -39,7 +37,7 @@ public class JdbcReservationRepository implements ReservationRepository {
     }
 
     @Override
-    public Reservation save(String name, LocalDate date, LocalTime time) {
+    public Reservation save(Reservation reservation) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
@@ -47,14 +45,14 @@ public class JdbcReservationRepository implements ReservationRepository {
                     "INSERT INTO reservation(name, date, time) VALUES (?, ?, ?)",
                     new String[]{"id"}
             );
-            preparedStatement.setString(1, name);
-            preparedStatement.setString(2, date.toString());
-            preparedStatement.setString(3, time.toString());
+            preparedStatement.setString(1, reservation.getName());
+            preparedStatement.setString(2, reservation.getDate().toString());
+            preparedStatement.setString(3, reservation.getTime().toString());
             return preparedStatement;
         }, keyHolder);
 
         long id = keyHolder.getKey().longValue();
-        return new Reservation(id, name, date, time);
+        return reservation.withId(id);
     }
 
     @Override

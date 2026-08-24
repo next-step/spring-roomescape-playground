@@ -1,12 +1,9 @@
 package roomescape.controller;
 
 import io.restassured.http.ContentType;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.Test;
-import org.springframework.test.context.TestExecutionListeners;
-import roomescape.repository.DatabaseCleanupListener;
 import roomescape.repository.DatabaseTest;
 
 import java.util.HashMap;
