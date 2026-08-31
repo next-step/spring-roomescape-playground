@@ -1,5 +1,6 @@
-package com.cholog.roomescape.roomescape.business;
+package com.cholog.roomescape.roomescape.business.reservation;
 
+import com.cholog.roomescape.roomescape.dto.request.TimeRequest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,7 +25,7 @@ public class ReservationHttpTest {
     private int port;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         RestAssured.port = this.port;
     }
 
@@ -33,8 +34,8 @@ public class ReservationHttpTest {
     void createReservation() {
 
         // given
-        LocalDate date = LocalDate.now();
-        LocalTime time = LocalTime.now().truncatedTo(ChronoUnit.MINUTES);
+        LocalDate date = LocalDate.of(2026, 8, 31);
+        LocalTime time = LocalTime.of(10, 0).truncatedTo(ChronoUnit.MINUTES);
         ReservationRequest request = new ReservationRequest("Alice", date, time);
 
         RestAssured
@@ -53,8 +54,8 @@ public class ReservationHttpTest {
 
         // given
         String name = null;
-        LocalDate date = LocalDate.now();
-        LocalTime time = LocalTime.now().truncatedTo(ChronoUnit.MINUTES);
+        LocalDate date = LocalDate.of(2026, 8, 31);
+        LocalTime time = LocalTime.of(10, 0).truncatedTo(ChronoUnit.MINUTES);
         ReservationRequest request = new ReservationRequest(name, date, time);
 
         RestAssured
@@ -72,8 +73,8 @@ public class ReservationHttpTest {
 
         // given
         String name = "";
-        LocalDate date = LocalDate.now();
-        LocalTime time = LocalTime.now().truncatedTo(ChronoUnit.MINUTES);
+        LocalDate date = LocalDate.of(2026, 8, 31);
+        LocalTime time = LocalTime.of(10, 0).truncatedTo(ChronoUnit.MINUTES);
         ReservationRequest request = new ReservationRequest(name, date, time);
 
         RestAssured
@@ -86,13 +87,13 @@ public class ReservationHttpTest {
     }
 
     @Test
-    @DisplayName("날짜가 빈 값이면 400을 반환한다.")
+    @DisplayName("날짜가 null 값이면 400을 반환한다.")
     void createReservationMustRequiredDate() {
 
         // given
         String name = "Alice";
         LocalDate date = null;
-        LocalTime time = LocalTime.now().truncatedTo(ChronoUnit.MINUTES);
+        LocalTime time = LocalTime.of(10, 0).truncatedTo(ChronoUnit.MINUTES);
         ReservationRequest request = new ReservationRequest(name, date, time);
 
         RestAssured
@@ -105,13 +106,13 @@ public class ReservationHttpTest {
     }
 
     @Test
-    @DisplayName("날짜가 빈 값이면 400을 반환한다.")
+    @DisplayName("시간이 null 값이면 400을 반환한다.")
     void createReservationMustRequiredTime() {
 
         // given
         String name = "Alice";
-        LocalDate date = null;
-        LocalTime time = LocalTime.now().truncatedTo(ChronoUnit.MINUTES);
+        LocalDate date = LocalDate.of(2026, 8, 31);
+        LocalTime time = null;
         ReservationRequest request = new ReservationRequest(name, date, time);
 
         RestAssured
@@ -128,7 +129,18 @@ public class ReservationHttpTest {
     void readReservation() {
 
         // given
-        createReservation();
+        LocalDate date = LocalDate.of(2026, 8, 31);
+        LocalTime time = LocalTime.of(10, 0).truncatedTo(ChronoUnit.MINUTES);
+        ReservationRequest request = new ReservationRequest("Alice", date, time);
+
+        RestAssured
+                .given()
+                .body(request)
+                .contentType(ContentType.JSON)
+                .when().post("/reservations")
+                .then()
+                .statusCode(HttpStatus.CREATED.value())
+                .header("Location", containsString("/reservations"));
 
         RestAssured
                 .given().log().all()
@@ -137,5 +149,32 @@ public class ReservationHttpTest {
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .body("size()", is(1));
+    }
+
+    @Test
+    @DisplayName("예약 삭제에 성공")
+    void deleteTime() {
+
+        // given
+        LocalDate date = LocalDate.of(2026, 8, 31);
+        LocalTime time = LocalTime.of(10, 0).truncatedTo(ChronoUnit.MINUTES);
+        ReservationRequest request = new ReservationRequest("Alice", date, time);
+
+        String location = RestAssured
+                .given()
+                .body(request)
+                .contentType(ContentType.JSON)
+                .when().post("/reservations")
+                .then()
+                .statusCode(HttpStatus.CREATED.value())
+                .extract().header("Location");
+
+        RestAssured
+                .given()
+                .contentType(ContentType.JSON)
+                .when().delete(location)
+                .then()
+                .statusCode(HttpStatus.NO_CONTENT.value());
+
     }
 }

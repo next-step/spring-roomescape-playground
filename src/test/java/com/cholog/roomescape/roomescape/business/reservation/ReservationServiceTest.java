@@ -1,4 +1,4 @@
-package com.cholog.roomescape.roomescape.business;
+package com.cholog.roomescape.roomescape.business.reservation;
 
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;

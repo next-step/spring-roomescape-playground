@@ -1,4 +1,4 @@
-package com.cholog.roomescape.roomescape.business;
+package com.cholog.roomescape.roomescape.business.reservation;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
