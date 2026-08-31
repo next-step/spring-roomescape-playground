@@ -13,15 +13,14 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/reservations")
-public class RoomEscapeApiController {
+public class ReservationApiController {
 
     private final ReservationService reservationService;
 
-    public RoomEscapeApiController(ReservationService reservationService) {
+    public ReservationApiController(ReservationService reservationService) {
         this.reservationService = reservationService;
     }
 
-    @ResponseBody
     @GetMapping
     public ResponseEntity<List<ReservationResponse>> getReservations() {
         List<ReservationResponse> response = reservationService.findAllReservations().stream()
@@ -30,7 +29,6 @@ public class RoomEscapeApiController {
         return ResponseEntity.ok(response);
     }
 
-    @ResponseBody
     @PostMapping
     public ResponseEntity<ReservationResponse> postReservation(
             @RequestBody @Valid ReservationRequest request
