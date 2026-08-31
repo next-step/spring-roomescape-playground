@@ -4,12 +4,10 @@ import com.cholog.roomescape.roomescape.dto.request.TimeRequest;
 import com.cholog.roomescape.roomescape.dto.response.TimeResponse;
 import com.cholog.roomescape.roomescape.entity.Time;
 import com.cholog.roomescape.roomescape.service.TimeService;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.time.LocalTime;
 import java.util.List;
 
 @RestController
