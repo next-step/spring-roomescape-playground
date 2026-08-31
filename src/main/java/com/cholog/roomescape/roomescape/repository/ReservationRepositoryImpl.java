@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import com.cholog.roomescape.roomescape.entity.Reservation;
+import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
 import java.time.LocalDate;
@@ -12,6 +13,7 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public class ReservationRepositoryImpl implements ReservationRepository {
 
     private static final RowMapper<Reservation> RESERVATION_ROW_MAPPER =
