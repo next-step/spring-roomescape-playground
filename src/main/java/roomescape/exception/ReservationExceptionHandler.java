@@ -10,13 +10,17 @@ public class ReservationExceptionHandler {
 
     @ExceptionHandler({
             InvalidReservationRequestException.class,
+            InvalidTimeRequestException.class,
             HttpMessageNotReadableException.class
     })
     public ResponseEntity<Void> handleBadRequest() {
         return ResponseEntity.badRequest().build();
     }
 
-    @ExceptionHandler(NotFoundReservationException.class)
+    @ExceptionHandler({
+            NotFoundReservationException.class,
+            NotFoundTimeException.class
+    })
     public ResponseEntity<Void> handleNotFound() {
         return ResponseEntity.notFound().build();
     }
