@@ -1,4 +1,4 @@
-package roomescape.repository;
+package roomescape.dao;
 
 import java.sql.PreparedStatement;
 import java.time.LocalTime;
@@ -9,14 +9,14 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.ReservationTime;
-import roomescape.exception.NotFoundReservationException;
 import roomescape.exception.ReservationSaveFailedException;
 
 @Repository
-public class ReservationTimeRepository {
+public class ReservationTimeDao {
+
   private final JdbcTemplate jdbcTemplate;
 
-  public ReservationTimeRepository(JdbcTemplate jdbcTemplate) {
+  public ReservationTimeDao(JdbcTemplate jdbcTemplate) {
     this.jdbcTemplate = jdbcTemplate;
   }
 
@@ -50,10 +50,7 @@ public class ReservationTimeRepository {
     return key.longValue();
   }
 
-  public void delete(Long id) {
-    int affectedRows = jdbcTemplate.update("DELETE FROM reservation_time WHERE id=?", id);
-    if (affectedRows == 0) {
-      throw new NotFoundReservationException("해당 id의 예약시간이 존재하지 않습니다.");
-    }
+  public int delete(Long id) {
+    return jdbcTemplate.update("DELETE FROM reservation_time WHERE id=?", id);
   }
 }
