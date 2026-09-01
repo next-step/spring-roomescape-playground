@@ -30,6 +30,14 @@ public class TimeService {
         return timeRepository.findAll();
     }
 
+    public void deleteTime(Long id) {
+        boolean deleted = timeRepository.deleteById(id);
+
+        if (!deleted) {
+            throw new TimeException(TimeErrorCode.TIME_NOT_FOUND);
+        }
+    }
+
     private void validateNotDuplicate(LocalTime startAt) {
         if (timeRepository.existsByStartAt(startAt)) {
             throw new TimeException(TimeErrorCode.TIME_CONFLICT);

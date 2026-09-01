@@ -75,4 +75,31 @@ class TimeRepositoryTest {
         assertThat(timeRepository.existsByStartAt(TIME)).isFalse();
     }
 
+    @Test
+    void 시간대를_삭제하면_목록에서_제거된다() {
+        // given
+        Time time = new Time(TIME);
+        Time savedTime = timeRepository.save(time);
+
+        // when
+        boolean deleted = timeRepository.deleteById(savedTime.getId());
+
+        // then
+        assertThat(deleted).isTrue();
+        assertThat(timeRepository.findAll())
+                .noneMatch(foundTime -> foundTime.getId().equals(savedTime.getId()));
+    }
+
+    @Test
+    void id에_해당하는_시간대가_없으면_삭제_시_false를_반환한다() {
+        // given
+        Long id = 999L;
+
+        // when
+        boolean deleted = timeRepository.deleteById(id);
+
+        // then
+        assertThat(deleted).isFalse();
+    }
+
 }

@@ -11,4 +11,6 @@ public interface TimeRepository {
     Time save(Time time);
 
     List<Time> findAll();
+
+    boolean deleteById(Long id);
 }

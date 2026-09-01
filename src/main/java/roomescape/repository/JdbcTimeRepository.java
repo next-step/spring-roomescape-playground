@@ -60,6 +60,12 @@ public class JdbcTimeRepository implements TimeRepository {
         return jdbcTemplate.query(sql, this::mapRow);
     }
 
+    @Override
+    public boolean deleteById(Long id) {
+        String sql = "delete from times where id = ?";
+        return jdbcTemplate.update(sql, id) > 0;
+    }
+
     private Time mapRow(ResultSet resultSet, int rowNum) throws SQLException {
         return new Time(
                 resultSet.getLong("id"),

@@ -18,6 +18,8 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.BDDMockito.willThrow;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -115,6 +117,46 @@ class TimeControllerTest {
     }
 
     @Test
+    void 시간대_삭제_요청에_성공하면_상태코드_204를_반환한다() throws Exception {
+        // given
+        long id = 1L;
+
+        // when & then
+        mockMvc.perform(delete("/times/{id}", id))
+                .andExpect(status().isNoContent());
+
+        then(timeService).should().deleteTime(id);
+    }
+
+    @Test
+    void 시간대_삭제_요청_id가_숫자가_아니면_400을_반환한다() throws Exception {
+        // when & then
+        mockMvc.perform(delete("/times/abc"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value("GLOBAL_INVALID_PARAMETER"))
+                .andExpect(jsonPath("$.message").value("요청 값의 형식이 올바르지 않습니다."));
+
+        then(timeService).shouldHaveNoInteractions();
+    }
+
+    @Test
+    void 서비스에서_시간대_없음_예외가_발생하면_404를_반환한다() throws Exception {
+        // given
+        long id = -1L;
+
+        willThrow(new TimeException(TimeErrorCode.TIME_NOT_FOUND))
+                .given(timeService).deleteTime(id);
+
+        // when & then
+        mockMvc.perform(delete("/times/{id}", id))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.code").value("TIME_NOT_FOUND"))
+                .andExpect(jsonPath("$.message").value("해당 시간대를 찾을 수 없습니다."));
+
+        then(timeService).should().deleteTime(id);
+    }
+
+    @Test
     void 서비스에서_시간대_충돌_예외가_발생하면_409를_반환한다() throws Exception {
         // given
         String request = createTimeRequest(TIME.toString());
@@ -139,6 +181,14 @@ class TimeControllerTest {
                 .andExpect(status().isUnsupportedMediaType())
                 .andExpect(jsonPath("$.code").value("GLOBAL_UNSUPPORTED_MEDIA_TYPE"))
                 .andExpect(jsonPath("$.message").value("지원하지 않는 Content-Type입니다."));
+    }
+
+    @Test
+    void 지원하지_않는_HTTP_메서드면_405를_반환한다() throws Exception {
+        mockMvc.perform(get("/times/1"))
+                .andExpect(status().isMethodNotAllowed())
+                .andExpect(jsonPath("$.code").value("GLOBAL_METHOD_NOT_ALLOWED"))
+                .andExpect(jsonPath("$.message").value("지원하지 않는 HTTP 메서드입니다."));
     }
 
     private void assertBadTimeRequest(String request, String code, String message) throws Exception {

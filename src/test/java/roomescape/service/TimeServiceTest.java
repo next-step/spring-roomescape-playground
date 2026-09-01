@@ -9,6 +9,7 @@ import roomescape.dto.TimeCreateCommand;
 import roomescape.exception.TimeErrorCode;
 import roomescape.exception.TimeException;
 import roomescape.repository.JdbcTimeRepository;
+import roomescape.repository.TimeRepository;
 
 import java.time.LocalTime;
 
@@ -22,6 +23,9 @@ class TimeServiceTest {
 
     @Autowired
     private TimeService timeService;
+
+    @Autowired
+    private TimeRepository timeRepository;
 
     @Test
     void 유효한_시간대_요청이면_저장된_시간대를_반환한다() {
@@ -50,6 +54,34 @@ class TimeServiceTest {
                         TimeException.class,
                         exception -> assertThat(exception.getErrorCode())
                                 .isEqualTo(TimeErrorCode.TIME_CONFLICT)
+                );
+    }
+
+    @Test
+    void 존재하는_id로_시간대를_삭제한다() {
+        // given
+        TimeCreateCommand command = new TimeCreateCommand(TIME);
+        Time time = timeService.createTime(command);
+
+        // when
+        timeService.deleteTime(time.getId());
+
+        // then
+        assertThat(timeRepository.findAll())
+                .noneMatch(foundTime -> foundTime.getId().equals(time.getId()));
+    }
+
+    @Test
+    void 존재하지_않는_id로_시간대_삭제_요청_시_예외를_던진다() {
+        // given
+        Long nonExistingId = -1L;
+
+        // when & then
+        assertThatThrownBy(() -> timeService.deleteTime(nonExistingId))
+                .isInstanceOfSatisfying(
+                        TimeException.class,
+                        exception -> assertThat(exception.getErrorCode())
+                                .isEqualTo(TimeErrorCode.TIME_NOT_FOUND)
                 );
     }
 }

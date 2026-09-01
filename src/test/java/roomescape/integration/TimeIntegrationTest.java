@@ -92,6 +92,24 @@ class TimeIntegrationTest extends IntegrationTestSupport {
                 .body("message", equalTo("해당 예약 시간대가 이미 존재합니다."));
     }
 
+    @Test
+    void 삭제_API_요청_후_DB에_데이터가_삭제된다() {
+        // given
+        jdbcTemplate.update("insert into times (start_at) values (?)", TIME);
+        Long id = jdbcTemplate.queryForObject(
+                "select id from times where start_at = ?", Long.class, TIME);
+
+        // when
+        RestAssured.given().log().all()
+                .when().delete("/times/" + id)
+                .then().statusCode(204);
+
+        // then
+        Integer dbCount = jdbcTemplate.queryForObject(
+                "select count(*) from times where id = ?", Integer.class, id);
+        assertThat(dbCount).isZero();
+    }
+
     private Map<String, String> createTimeRequest(String time) {
         Map<String, String> request = new HashMap<>();
         request.put("time", time);
