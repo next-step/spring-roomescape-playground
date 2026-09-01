@@ -6,7 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.jdbc.Sql;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -16,10 +16,12 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.is;
 
 @SpringBootTest(
-        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
+        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+        properties = "spring.datasource.url=jdbc:h2:mem:reservation-controller-test"
 )
-@DirtiesContext(
-        classMode =  DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD
+@Sql(
+        scripts = "/reservation-test-data.sql",
+        executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD
 )
 public class ReservationControllerTest {
 
