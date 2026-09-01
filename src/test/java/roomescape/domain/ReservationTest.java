@@ -1,7 +1,6 @@
-package roomescape;
+package roomescape.domain;
 
 import org.junit.jupiter.api.Test;
-import roomescape.domain.Reservation;
 import roomescape.exception.ReservationErrorCode;
 import roomescape.exception.ReservationException;
 

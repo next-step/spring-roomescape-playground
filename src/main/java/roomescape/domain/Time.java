@@ -8,26 +8,30 @@ import java.time.LocalTime;
 public class Time {
     private final Long id;
 
-    private final LocalTime time;
+    private final LocalTime startAt;
 
-    public Time(Long id, LocalTime time) {
-        validateTime(time);
+    public Time(Long id, LocalTime startAt) {
+        validateStartAt(startAt);
 
         this.id = id;
-        this.time = time;
+        this.startAt = startAt;
+    }
+
+    public Time(LocalTime startAt) {
+        this(null, startAt);
     }
 
     public Long getId() {
         return id;
     }
 
-    public LocalTime getTime() {
-        return time;
+    public LocalTime getStartAt() {
+        return startAt;
     }
 
-    private void validateTime(LocalTime time) {
-        if (time == null) {
-            throw new TimeException(TimeErrorCode.INVALID_TIME);
+    private void validateStartAt(LocalTime startAt) {
+        if (startAt == null) {
+            throw new TimeException(TimeErrorCode.TIME_INVALID);
         }
     }
 }

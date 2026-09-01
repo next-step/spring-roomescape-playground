@@ -1,4 +1,4 @@
-package roomescape;
+package roomescape.repository;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -6,9 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import roomescape.domain.Reservation;
-import roomescape.repository.JdbcReservationRepository;
-import roomescape.repository.ReservationRepository;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Optional;
