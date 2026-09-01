@@ -51,23 +51,23 @@ public class Reservation {
 
     private void validateName(String name) {
         if (name == null || name.isBlank()) {
-            throw new ReservationException(ReservationErrorCode.INVALID_RESERVATION);
+            throw new ReservationException(ReservationErrorCode.RESERVATION_INVALID);
         }
 
         if (!NAME_PATTERN.matcher(name).matches()) {
-            throw new ReservationException(ReservationErrorCode.INVALID_RESERVATION);
+            throw new ReservationException(ReservationErrorCode.RESERVATION_INVALID);
         }
     }
 
     private void validateDate(LocalDate date) {
         if (date == null) {
-            throw new ReservationException(ReservationErrorCode.INVALID_RESERVATION);
+            throw new ReservationException(ReservationErrorCode.RESERVATION_INVALID);
         }
     }
 
     private void validateTime(LocalTime time) {
         if (time == null) {
-            throw new ReservationException(ReservationErrorCode.INVALID_RESERVATION);
+            throw new ReservationException(ReservationErrorCode.RESERVATION_INVALID);
         }
     }
 }

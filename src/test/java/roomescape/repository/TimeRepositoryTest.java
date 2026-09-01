@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @JdbcTest
 class TimeRepositoryTest {
-    private final static LocalTime TIME = LocalTime.of(10, 0);
+    private static final LocalTime TIME = LocalTime.of(10, 0);
 
     private TimeRepository timeRepository;
 

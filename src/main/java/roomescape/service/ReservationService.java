@@ -26,9 +26,9 @@ public class ReservationService {
         return reservationRepository.findAll();
     }
 
-    public Reservation addReservation(ReservationCreateCommand command) {
+    public Reservation createReservation(ReservationCreateCommand command) {
         validateNotPast(command);
-        validateNotDuplicated(command);
+        validateNotDuplicate(command);
 
         Reservation reservation = new Reservation(
                 command.name(),
@@ -55,7 +55,7 @@ public class ReservationService {
         }
     }
 
-    private void validateNotDuplicated(ReservationCreateCommand command) {
+    private void validateNotDuplicate(ReservationCreateCommand command) {
         if (reservationRepository.existsByDateAndTime(command.date(), command.time())) {
             throw new ReservationException(ReservationErrorCode.RESERVATION_CONFLICT);
         }

@@ -25,12 +25,12 @@ public class ReservationInitializer {
     public void initialize() {
         LocalDate today = LocalDate.now(clock);
 
-        addReservation(today.plusDays(1), LocalTime.of(10, 0));
-        addReservation(today.plusDays(2), LocalTime.of(11, 0));
-        addReservation(today.plusDays(3), LocalTime.of(12, 0));
+        createReservation(today.plusDays(1), LocalTime.of(10, 0));
+        createReservation(today.plusDays(2), LocalTime.of(11, 0));
+        createReservation(today.plusDays(3), LocalTime.of(12, 0));
     }
 
-    private void addReservation(LocalDate date, LocalTime time) {
-        reservationService.addReservation(new ReservationCreateCommand("브라운", date, time));
+    private void createReservation(LocalDate date, LocalTime time) {
+        reservationService.createReservation(new ReservationCreateCommand("브라운", date, time));
     }
 }

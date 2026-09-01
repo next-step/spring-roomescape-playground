@@ -31,13 +31,13 @@ class ReservationTest {
                 .isInstanceOfSatisfying(
                         ReservationException.class,
                         exception -> assertThat(exception.getErrorCode())
-                                .isEqualTo(ReservationErrorCode.INVALID_RESERVATION)
+                                .isEqualTo(ReservationErrorCode.RESERVATION_INVALID)
                 );
         assertThatThrownBy(() -> new Reservation(" ", DATE, TIME))
                 .isInstanceOfSatisfying(
                         ReservationException.class,
                         exception -> assertThat(exception.getErrorCode())
-                                .isEqualTo(ReservationErrorCode.INVALID_RESERVATION)
+                                .isEqualTo(ReservationErrorCode.RESERVATION_INVALID)
                 );
     }
 
@@ -47,13 +47,13 @@ class ReservationTest {
                 .isInstanceOfSatisfying(
                         ReservationException.class,
                         exception -> assertThat(exception.getErrorCode())
-                                .isEqualTo(ReservationErrorCode.INVALID_RESERVATION)
+                                .isEqualTo(ReservationErrorCode.RESERVATION_INVALID)
                 );
         assertThatThrownBy(() -> new Reservation("브라운@", DATE, TIME))
                 .isInstanceOfSatisfying(
                         ReservationException.class,
                         exception -> assertThat(exception.getErrorCode())
-                                .isEqualTo(ReservationErrorCode.INVALID_RESERVATION)
+                                .isEqualTo(ReservationErrorCode.RESERVATION_INVALID)
                 );
     }
 
@@ -63,7 +63,7 @@ class ReservationTest {
                 .isInstanceOfSatisfying(
                         ReservationException.class,
                         exception -> assertThat(exception.getErrorCode())
-                                .isEqualTo(ReservationErrorCode.INVALID_RESERVATION)
+                                .isEqualTo(ReservationErrorCode.RESERVATION_INVALID)
                 );
     }
 
@@ -73,7 +73,7 @@ class ReservationTest {
                 .isInstanceOfSatisfying(
                         ReservationException.class,
                         exception -> assertThat(exception.getErrorCode())
-                                .isEqualTo(ReservationErrorCode.INVALID_RESERVATION)
+                                .isEqualTo(ReservationErrorCode.RESERVATION_INVALID)
                 );
     }
 }

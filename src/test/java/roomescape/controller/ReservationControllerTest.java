@@ -82,7 +82,7 @@ class ReservationControllerTest {
         String request = createReservationRequest(RESERVATION_DATE.toString(), "브라운", RESERVATION_TIME.toString());
         ReservationCreateCommand expectedCommand = new ReservationCreateCommand("브라운", RESERVATION_DATE, RESERVATION_TIME);
 
-        given(reservationService.addReservation(expectedCommand))
+        given(reservationService.createReservation(expectedCommand))
                 .willReturn(new Reservation(1L, "브라운", RESERVATION_DATE, RESERVATION_TIME));
 
         // when & then
@@ -96,7 +96,7 @@ class ReservationControllerTest {
                 .andExpect(jsonPath("$.date").value(RESERVATION_DATE.toString()))
                 .andExpect(jsonPath("$.time").value(RESERVATION_TIME.toString()));
 
-        then(reservationService).should().addReservation(expectedCommand);
+        then(reservationService).should().createReservation(expectedCommand);
     }
 
     @Test
@@ -144,7 +144,7 @@ class ReservationControllerTest {
         // given
         String request = createReservationRequest(RESERVATION_DATE.toString(), "브라운", RESERVATION_TIME.toString());
 
-        given(reservationService.addReservation(any()))
+        given(reservationService.createReservation(any()))
                 .willThrow(new ReservationException(ReservationErrorCode.RESERVATION_CONFLICT));
 
         // when & then
@@ -161,7 +161,7 @@ class ReservationControllerTest {
         // given
         String request = createReservationRequest(RESERVATION_DATE.toString(), "브라운", RESERVATION_TIME.toString());
 
-        given(reservationService.addReservation(any()))
+        given(reservationService.createReservation(any()))
                 .willThrow(new ReservationException(ReservationErrorCode.RESERVATION_IN_PAST));
 
         // when & then

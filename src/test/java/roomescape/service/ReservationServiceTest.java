@@ -40,7 +40,7 @@ class ReservationServiceTest {
         );
 
         // when
-        Reservation reservation = reservationService.addReservation(command);
+        Reservation reservation = reservationService.createReservation(command);
 
         // then
         assertThat(reservation.getId()).isNotNull();
@@ -64,10 +64,10 @@ class ReservationServiceTest {
                 RESERVATION_TIME
         );
 
-        reservationService.addReservation(firstCommand);
+        reservationService.createReservation(firstCommand);
 
         // when & then
-        assertThatThrownBy(() -> reservationService.addReservation(duplicatedCommand))
+        assertThatThrownBy(() -> reservationService.createReservation(duplicatedCommand))
                 .isInstanceOfSatisfying(
                         ReservationException.class,
                         exception -> assertThat(exception.getErrorCode())
@@ -85,7 +85,7 @@ class ReservationServiceTest {
         );
 
         // when & then
-        assertThatThrownBy(() -> reservationService.addReservation(pastDateCommand))
+        assertThatThrownBy(() -> reservationService.createReservation(pastDateCommand))
                 .isInstanceOfSatisfying(
                         ReservationException.class,
                         exception -> assertThat(exception.getErrorCode())
@@ -103,7 +103,7 @@ class ReservationServiceTest {
         );
 
         // when & then
-        assertThatThrownBy(() -> reservationService.addReservation(pastTimeCommand))
+        assertThatThrownBy(() -> reservationService.createReservation(pastTimeCommand))
                 .isInstanceOfSatisfying(
                         ReservationException.class,
                         exception -> assertThat(exception.getErrorCode())
@@ -119,7 +119,7 @@ class ReservationServiceTest {
                 TEST_DATE.plusDays(1),
                 RESERVATION_TIME
         );
-        Reservation reservation = reservationService.addReservation(command);
+        Reservation reservation = reservationService.createReservation(command);
 
         // when
         reservationService.deleteReservation(reservation.getId());
