@@ -1,5 +1,6 @@
 package roomescape.repository;
 
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
 
@@ -12,6 +13,12 @@ import java.util.concurrent.atomic.AtomicLong;
 @Repository
 public class ReservationRepository {
 
+    private final JdbcTemplate jdbcTemplate;
+
+    public ReservationRepository(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
     private final List<Reservation> reservations = new ArrayList<>(List.of(
             new Reservation(1L, "브라운", LocalDate.now().plusDays(1), LocalTime.of(10, 0)),
             new Reservation(2L, "브라운", LocalDate.now().plusDays(2), LocalTime.of(11, 0)),
@@ -21,7 +28,15 @@ public class ReservationRepository {
     private final AtomicLong index = new AtomicLong(4L);
 
     public List<Reservation> findAll() {
-        return List.copyOf(reservations);
+        return jdbcTemplate.query(
+                "SELECT id, name, date, time FROM reservation ORDER BY id",
+                (rs, rowNum) -> new Reservation(
+                        rs.getLong("id"),
+                        rs.getString("name"),
+                        rs.getObject("date", LocalDate.class),
+                        rs.getObject("time", LocalTime.class)
+                )
+        );
     }
 
     public Reservation save(Reservation reservation) {

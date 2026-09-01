@@ -1,6 +1,7 @@
 package roomescape.repository;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.jdbc.core.JdbcTemplate;
 import roomescape.domain.Reservation;
 
 import java.time.LocalDate;
@@ -10,6 +11,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
 
 public class ReservationRepositoryTest {
 
@@ -19,7 +21,7 @@ public class ReservationRepositoryTest {
 
     private static final Long NON_EXISTENT_ID = 999L;
 
-    private final ReservationRepository reservationRepository = new ReservationRepository();
+    private final ReservationRepository reservationRepository = new ReservationRepository(mock(JdbcTemplate.class));
 
     @Test
     void 저장된_예약_목록을_조회할_수_있다() {

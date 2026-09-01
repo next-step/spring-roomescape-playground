@@ -2,6 +2,7 @@ package roomescape.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.jdbc.core.JdbcTemplate;
 import roomescape.domain.Reservation;
 import roomescape.exception.DuplicateReservationException;
 import roomescape.exception.ReservationNotFoundException;
@@ -16,6 +17,7 @@ import java.time.ZoneId;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.mock;
 
 public class ReservationServiceTest {
 
@@ -37,7 +39,7 @@ public class ReservationServiceTest {
 
     @BeforeEach
     void setUp() {
-        reservationRepository = new ReservationRepository();
+        reservationRepository = new ReservationRepository(mock(JdbcTemplate.class));
         reservationService = new ReservationService(reservationRepository, FIXED_CLOCK);
     }
 
