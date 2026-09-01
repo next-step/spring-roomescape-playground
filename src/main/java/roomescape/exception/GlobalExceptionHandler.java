@@ -36,4 +36,10 @@ public class GlobalExceptionHandler {
         log.warn(e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("요청 형식이 올바르지 않습니다.");
     }
+
+    @ExceptionHandler(NotFoundTimeException.class)
+    public ResponseEntity<String> handleNotFoundTime(NotFoundTimeException e) {
+        log.warn(e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
 }

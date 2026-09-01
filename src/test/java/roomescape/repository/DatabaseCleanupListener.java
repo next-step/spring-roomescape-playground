@@ -11,5 +11,6 @@ public class DatabaseCleanupListener extends AbstractTestExecutionListener {
         JdbcTemplate jdbcTemplate = testContext.getApplicationContext()
                 .getBean(JdbcTemplate.class);
         jdbcTemplate.update("TRUNCATE TABLE reservation RESTART IDENTITY");
+        jdbcTemplate.update("TRUNCATE TABLE time RESTART IDENTITY");
     }
 }
