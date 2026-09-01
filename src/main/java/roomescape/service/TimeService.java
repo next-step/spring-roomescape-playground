@@ -8,6 +8,7 @@ import roomescape.exception.TimeException;
 import roomescape.repository.TimeRepository;
 
 import java.time.LocalTime;
+import java.util.List;
 
 @Service
 public class TimeService {
@@ -23,6 +24,10 @@ public class TimeService {
 
         Time time = new Time(command.startAt());
         return timeRepository.save(time);
+    }
+
+    public List<Time> findAll() {
+        return timeRepository.findAll();
     }
 
     private void validateNotDuplicate(LocalTime startAt) {

@@ -104,11 +104,11 @@ function fetchTimes() {
       .catch(error => console.error('Error fetching times:', error));
 }
 
-function renderTimes(data) {
+function renderTimes(timesResponse) {
   const tableBody = document.getElementById('time-table-body');
   tableBody.innerHTML = '';
 
-  data.forEach(time => {
+  timesResponse.times.forEach(time => {
     const row = tableBody.insertRow();
     insertTimeRow(row, time);
   });

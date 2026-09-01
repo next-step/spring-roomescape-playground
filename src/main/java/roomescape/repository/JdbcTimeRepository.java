@@ -56,7 +56,7 @@ public class JdbcTimeRepository implements TimeRepository {
     @Override
     public List<Time> findAll() {
         String sql = "select id, start_at from times " +
-                "order by start_at";
+                "order by id";
         return jdbcTemplate.query(sql, this::mapRow);
     }
 

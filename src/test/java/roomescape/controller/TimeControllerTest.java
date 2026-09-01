@@ -13,10 +13,12 @@ import roomescape.exception.TimeException;
 import roomescape.service.TimeService;
 
 import java.time.LocalTime;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -31,6 +33,41 @@ class TimeControllerTest {
 
     @MockBean
     private TimeService timeService;
+
+    @Test
+    void 시간대_목록_조회_요청_시_시간대_목록을_반환한다() throws Exception {
+        // given
+        given(timeService.findAll())
+                .willReturn(List.of(
+                        new Time(1L, LocalTime.of(10, 0)),
+                        new Time(2L, LocalTime.of(11, 0)),
+                        new Time(3L, LocalTime.of(12, 0))
+                ));
+
+        // when & then
+        mockMvc.perform(get("/times"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.times.length()").value(3))
+                .andExpect(jsonPath("$.times[0].id").value(1))
+                .andExpect(jsonPath("$.times[0].time").value("10:00"));
+
+        then(timeService).should().findAll();
+    }
+
+    @Test
+    void 시간대_목록이_비어있으면_빈_시간대_목록을_반환한다() throws Exception {
+        // given
+        given(timeService.findAll()).willReturn(List.of());
+
+        // when & then
+        mockMvc.perform(get("/times"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.times.length()").value(0));
+
+        then(timeService).should().findAll();
+    }
 
     @Test
     void 시간대_추가_요청이_성공하면_상태코드_201과_생성된_시간대를_반환한다() throws Exception {

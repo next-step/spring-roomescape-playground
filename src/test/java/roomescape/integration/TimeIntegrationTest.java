@@ -22,6 +22,22 @@ class TimeIntegrationTest extends IntegrationTestSupport {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    @Test
+    void 조회_API_결과와_DB_조회_결과가_일치한다() {
+        // given
+        jdbcTemplate.update("insert into times (start_at) values (?)", TIME);
+
+        // when
+        int apiCount = RestAssured.given().log().all()
+                .when().get("/times")
+                .then().statusCode(200)
+                .extract().jsonPath().getList("times").size();
+
+        // then
+        Integer dbCount = jdbcTemplate.queryForObject("select count(*) from times", Integer.class);
+        assertThat(apiCount).isEqualTo(dbCount);
+    }
+
     @AfterEach
     void tearDown() {
         jdbcTemplate.update("delete from times where start_at = ?", TIME);
