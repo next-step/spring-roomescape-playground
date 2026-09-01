@@ -10,6 +10,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
+import roomescape.domain.ReservationTime;
 import roomescape.exception.ReservationSaveFailedException;
 
 @Repository
@@ -22,25 +23,28 @@ public class ReservationDao {
   }
 
   private final RowMapper<Reservation> reservationRowMapper = (rs, rowNum) ->
-      new Reservation(rs.getLong("id"),
+      new Reservation(rs.getLong("reservation_id"),
           rs.getString("name"),
           LocalDate.parse(rs.getString("date")),
-          LocalTime.parse(rs.getString("time"))
+          new ReservationTime(rs.getLong("time_id"), LocalTime.parse(rs.getString("time_value")))
       );
 
   public List<Reservation> findAll() {
-    return jdbcTemplate.query("SELECT * FROM reservation", reservationRowMapper);
+    return jdbcTemplate.query(
+        "SELECT r.id AS reservation_id, r.name, r.date, t.id AS time_id, t.time AS time_value "
+            + "FROM reservation AS r INNER JOIN reservation_time AS t ON r.time_id = t.id",
+        reservationRowMapper);
   }
 
   public Reservation save(Reservation reservation) {
     KeyHolder keyHolder = new GeneratedKeyHolder();
     jdbcTemplate.update(connection -> {
       PreparedStatement ps = connection.prepareStatement(
-          "INSERT INTO reservation(name, date, time) VALUES (?, ?, ?)",
+          "INSERT INTO reservation(name, date, time_id) VALUES (?, ?, ?)",
           new String[]{"id"});
       ps.setString(1, reservation.getName());
       ps.setString(2, reservation.getDate().toString());
-      ps.setString(3, reservation.getTime().toString());
+      ps.setLong(3, reservation.getTime().getId());
       return ps;
     }, keyHolder);
 
