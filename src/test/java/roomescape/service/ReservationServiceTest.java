@@ -17,7 +17,9 @@ import java.time.ZoneId;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class ReservationServiceTest {
 
@@ -39,7 +41,7 @@ public class ReservationServiceTest {
 
     @BeforeEach
     void setUp() {
-        reservationRepository = new ReservationRepository(mock(JdbcTemplate.class));
+        reservationRepository = mock(ReservationRepository.class);
         reservationService = new ReservationService(reservationRepository, FIXED_CLOCK);
     }
 
@@ -81,11 +83,18 @@ public class ReservationServiceTest {
 
     @Test
     void 현재보다_이후_시간으로_예약할_수_있다() {
+        LocalTime reservationTime = NOW.plusMinutes(1);
+
+        Reservation savedReservation = new Reservation(1L, NAME, TODAY, reservationTime);
+
+        when(reservationRepository.save(any(Reservation.class)))
+                .thenReturn(savedReservation);
+
         assertDoesNotThrow(
                 () -> reservationService.create(
                         NAME,
                         TODAY,
-                        NOW.plusMinutes(1)
+                        reservationTime
                 )
         );
     }
@@ -94,7 +103,11 @@ public class ReservationServiceTest {
     void 중복_예약을_생성하면_예외가_발생한다() {
         LocalTime reservationTime = NOW.plusHours(2);
 
-        reservationService.create(NAME, TODAY, reservationTime);
+        when(reservationRepository.existsByNameAndDateAndTime(
+                NAME,
+                TODAY,
+                reservationTime
+        )).thenReturn(true);
 
         assertThrows(
                 DuplicateReservationException.class,
@@ -108,21 +121,21 @@ public class ReservationServiceTest {
 
     @Test
     void 존재하는_예약을_삭제할_수_있다() {
-        LocalTime reservationTime = NOW.plusHours(2);
+        Long id = 1L;
 
-        Reservation savedReservation = reservationService.create(NAME, TODAY, reservationTime);
-        Long id = savedReservation.getId();
+        when(reservationRepository.deleteById(id))
+                .thenReturn(true);
 
-        reservationService.delete(id);
-
-        boolean reservationExists = reservationRepository.findAll().stream()
-                .anyMatch(reservation -> reservation.getId().equals(id));
-
-        assertFalse(reservationExists);
+        assertDoesNotThrow(
+                () -> reservationService.delete(id)
+        );
     }
 
     @Test
     void 존재하지_않는_예약을_삭제하면_예외가_발생한다() {
+        when(reservationRepository.deleteById(NON_EXISTENT_ID))
+                .thenReturn(false);
+
         assertThrows(
                 ReservationNotFoundException.class,
                 () -> reservationService.delete(NON_EXISTENT_ID)

@@ -1,7 +1,12 @@
 package roomescape.repository;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.jdbc.SqlConfig;
 import roomescape.domain.Reservation;
 
 import java.time.LocalDate;
@@ -11,17 +16,27 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
 
+@JdbcTest
+@Import(ReservationRepository.class)
+@Sql(
+        scripts = "/reservation-test-data.sql",
+        executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
+        config = @SqlConfig(encoding = "UTF-8")
+)
 public class ReservationRepositoryTest {
+
+    @Autowired
+    private ReservationRepository reservationRepository;
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     private static final String NAME = "브라운";
     private static final LocalDate TODAY = LocalDate.of(2023, 1, 2);
     private static final LocalTime NOW = LocalTime.of(10, 30);
 
     private static final Long NON_EXISTENT_ID = 999L;
-
-    private final ReservationRepository reservationRepository = new ReservationRepository(mock(JdbcTemplate.class));
 
     @Test
     void 저장된_예약_목록을_조회할_수_있다() {
@@ -39,6 +54,20 @@ public class ReservationRepositoryTest {
         Reservation reservation = new Reservation(NAME, TODAY, NOW);
         Reservation savedReservation = reservationRepository.save(reservation);
 
+        assertTrue(jdbcTemplate.queryForObject(
+                """
+                SELECT EXISTS (
+                    SELECT 1
+                    FROM reservation
+                    WHERE name = ? AND date = ? AND time = ?
+                )
+                """,
+                Boolean.class,
+                NAME,
+                TODAY,
+                NOW
+        ));
+
         assertEquals(4L, savedReservation.getId());
         assertEquals(NAME, savedReservation.getName());
         assertEquals(TODAY, savedReservation.getDate());
@@ -47,8 +76,12 @@ public class ReservationRepositoryTest {
 
     @Test
     void 동일한_이름_날짜_시간의_예약이_존재하면_true를_반환한다() {
-        Reservation reservation = new Reservation(NAME, TODAY, NOW);
-        Reservation savedReservation = reservationRepository.save(reservation);
+        jdbcTemplate.update(
+                "INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)",
+                NAME,
+                TODAY,
+                NOW
+        );
 
         assertTrue(reservationRepository.existsByNameAndDateAndTime(
                 NAME,
@@ -59,8 +92,12 @@ public class ReservationRepositoryTest {
 
     @Test
     void 동일한_이름_날짜_시간의_예약이_없으면_false를_반환한다() {
-        Reservation reservation = new Reservation(NAME, TODAY, NOW);
-        Reservation savedReservation = reservationRepository.save(reservation);
+        jdbcTemplate.update(
+                "INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)",
+                NAME,
+                TODAY,
+                NOW
+        );
 
         assertFalse(reservationRepository.existsByNameAndDateAndTime(
                 NAME,
@@ -72,12 +109,29 @@ public class ReservationRepositoryTest {
     @Test
     void 존재하는_예약_id로_삭제하면_true를_반환한다() {
         LocalTime reservationTime = NOW.plusHours(2);
+        Long id = 100L;
 
-        Reservation reservation = new Reservation(NAME, TODAY, reservationTime);
-        Reservation savedReservation = reservationRepository.save(reservation);
-        Long id = savedReservation.getId();
+        jdbcTemplate.update(
+                "INSERT INTO reservation (id, name, date, time) VALUES (?, ?, ?, ?)",
+                id,
+                NAME,
+                TODAY,
+                reservationTime
+        );
 
         assertTrue(reservationRepository.deleteById(id));
+
+        assertFalse(jdbcTemplate.queryForObject(
+                """
+                SELECT EXISTS (
+                    SELECT 1
+                    FROM reservation
+                    WHERE id = ?
+                )
+                """,
+                Boolean.class,
+                id
+        ));
     }
 
     @Test
