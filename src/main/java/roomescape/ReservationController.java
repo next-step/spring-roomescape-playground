@@ -1,12 +1,12 @@
 package roomescape;
 
 import java.net.URI;
-import java.util.ArrayList;
+import java.sql.PreparedStatement;
 import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -22,10 +22,6 @@ import roomescape.exception.NotFoundException;
 public class ReservationController {
 
     private final JdbcTemplate jdbcTemplate;
-
-    private final AtomicLong index = new AtomicLong(0);
-
-    private List<Reservation> reservations = new ArrayList<>();
 
     public ReservationController(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -62,31 +58,42 @@ public class ReservationController {
     }
 
     @PostMapping("/reservations")
-    public ResponseEntity<Reservation> createReservation(
+    public ResponseEntity<Void> createReservation(
         @RequestBody ReservationRequest reservationRequest) {
         reservationRequest.validate();
-        Reservation newReservation = Reservation.create(
-            index.incrementAndGet(),
-            reservationRequest.name(),
-            reservationRequest.date(),
-            reservationRequest.time()
-        );
+        String sql = "INSERT INTO reservation(name, date, time) VALUES (?, ?, ?)";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
 
-        reservations.add(newReservation);
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(
+                sql,
+                new String[]{"id"}
+            );
+
+            ps.setString(1, reservationRequest.name());
+            ps.setString(2, reservationRequest.date());
+            ps.setString(3, reservationRequest.time());
+
+            return ps;
+        }, keyHolder);
+
+        long id = keyHolder.getKey().longValue();
 
         return ResponseEntity
-            .created(URI.create("/reservations/" + newReservation.getId()))
-            .body(newReservation);
+            .created(URI.create("/reservations/" + id))
+            .build();
     }
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable long id) {
-        Reservation reservation = reservations.stream()
-            .filter(it -> Objects.equals(it.getId(), id))
-            .findFirst()
-            .orElseThrow(() -> new NotFoundException("Reservation not found: id=" + id));
+        int deletedCount = jdbcTemplate.update(
+            "DELETE FROM reservation WHERE id = ?",
+            id
+        );
 
-        reservations.remove(reservation);
+        if (deletedCount == 0) {
+            throw new NotFoundException("Reservation not found: id=" + id);
+        }
 
         return ResponseEntity.noContent().build();
     }
