@@ -1,13 +1,28 @@
 package roomescape;
 
+import java.util.stream.Stream;
+import roomescape.exception.InvalidReservationException;
+
 public class Reservation {
 
     private final long id;
     private final String name;
-    private String date;
-    private String time;
+    private final String date;
+    private final String time;
 
-    public Reservation(long id, String name, String date, String time) {
+    public static Reservation create(long id, String name, String date, String time) {
+        return new Reservation(id, name, date, time);
+    }
+
+    private Reservation(long id, String name, String date, String time) {
+        boolean hasEmpty = Stream.of(
+            name,
+            date,
+            time
+        ).anyMatch(value -> value == null || value.isBlank());
+        if (hasEmpty) {
+            throw new InvalidReservationException("예약 정보는 비어 있을 수 없습니다.");
+        }
         this.id = id;
         this.name = name;
         this.date = date;
