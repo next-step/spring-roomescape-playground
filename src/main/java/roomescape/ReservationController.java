@@ -8,6 +8,7 @@ import java.util.NoSuchElementException;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -60,14 +61,19 @@ public class ReservationController {
             throw new IllegalArgumentException();
         }
 
+        MapSqlParameterSource params = new MapSqlParameterSource()
+                .addValue("name", reservationRequest.getName())
+                .addValue("date", reservationRequest.getDate().toString())
+                .addValue("time", reservationRequest.getTime().toString());
+
+        Number id = simpleJdbcInsert.executeAndReturnKey(params);
+
         Reservation reservation = new Reservation(
-                index.incrementAndGet(),
+                id.longValue(),
                 reservationRequest.getName(),
                 reservationRequest.getDate(),
                 reservationRequest.getTime()
         );
-
-        reservations.add(reservation);
 
         return ResponseEntity.created(
                 URI.create("/reservations/" + reservation.getId()))
