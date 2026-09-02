@@ -40,14 +40,12 @@ public class ReservationService {
         }
         ReservationTime reservationTime = timeRepository.findById(timeId)
                 .orElseThrow(() -> new NotFoundTimeException(timeId));
-        Reservation reservation = new Reservation(null, name, date, reservationTime);
-        LocalDateTime reservationDateTime = LocalDateTime.of(
-                reservation.getDate(),
-                reservation.getTime().getTime()
+        Reservation reservation = Reservation.create(
+                name,
+                date,
+                reservationTime,
+                LocalDateTime.now(clock)
         );
-        if (reservationDateTime.isBefore(LocalDateTime.now(clock))) {
-            throw new InvalidReservationRequestException("지난 일시로는 예약할 수 없습니다.");
-        }
         return reservationRepository.save(reservation);
     }
 

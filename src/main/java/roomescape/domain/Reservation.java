@@ -1,6 +1,7 @@
 package roomescape.domain;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import roomescape.exception.InvalidReservationRequestException;
 
 public class Reservation {
@@ -18,6 +19,17 @@ public class Reservation {
         this.time = time;
     }
 
+    public static Reservation create(
+            String name,
+            LocalDate date,
+            ReservationTime time,
+            LocalDateTime now
+    ) {
+        Reservation reservation = new Reservation(null, name, date, time);
+        reservation.validateNotPast(now);
+        return reservation;
+    }
+
     public Reservation withId(Long id) {
         if (id == null) {
             throw new IllegalArgumentException("예약 ID는 null일 수 없습니다.");
@@ -28,6 +40,13 @@ public class Reservation {
     private void validate(String name, LocalDate date, ReservationTime time) {
         if (name == null || name.isBlank() || date == null || time == null) {
             throw new InvalidReservationRequestException();
+        }
+    }
+
+    private void validateNotPast(LocalDateTime now) {
+        LocalDateTime reservationDateTime = LocalDateTime.of(date, time.getTime());
+        if (reservationDateTime.isBefore(now)) {
+            throw new InvalidReservationRequestException("지난 일시로는 예약할 수 없습니다.");
         }
     }
 

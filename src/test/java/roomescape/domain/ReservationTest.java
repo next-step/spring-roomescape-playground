@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -41,5 +42,26 @@ class ReservationTest {
         assertThat(reservation.getId()).isNull();
         assertThat(savedReservation.getId()).isEqualTo(1L);
         assertThat(savedReservation.getName()).isEqualTo(reservation.getName());
+    }
+
+    @Test
+    @DisplayName("지난 일시로는 예약할 수 없다")
+    void rejectsPastReservation() {
+        LocalDateTime now = LocalDateTime.of(2026, 8, 13, 15, 41);
+
+        assertThatThrownBy(() -> Reservation.create("브라운", DATE, TIME, now))
+                .isInstanceOf(InvalidReservationRequestException.class)
+                .hasMessage("지난 일시로는 예약할 수 없습니다.");
+    }
+
+    @Test
+    @DisplayName("현재 일시에는 예약할 수 있다")
+    void createsReservationAtCurrentDateTime() {
+        LocalDateTime now = LocalDateTime.of(2026, 8, 13, 15, 40);
+
+        Reservation reservation = Reservation.create("브라운", DATE, TIME, now);
+
+        assertThat(reservation.getDate()).isEqualTo(DATE);
+        assertThat(reservation.getTime()).isEqualTo(TIME);
     }
 }
