@@ -13,11 +13,11 @@ public class ReservationRequest {
     private LocalDate date;
 
     @NotNull(message = "시간을 입력해주세요.")
-    private LocalTime time;
+    private Long time;
 
     public ReservationRequest() {}
 
     public String getName() { return name; }
     public LocalDate getDate() { return date; }
-    public LocalTime getTime() { return time; }
+    public Long getTime() { return time; }
 }

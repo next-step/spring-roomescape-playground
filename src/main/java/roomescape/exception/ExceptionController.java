@@ -2,6 +2,7 @@ package roomescape.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -41,5 +42,12 @@ public class ExceptionController {
         String message = "해당 시간을 찾을 수 없습니다";
 
         return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<String> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
+        String message = "요청 형식이 올바르지 않습니다";
+
+        return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
     }
 }

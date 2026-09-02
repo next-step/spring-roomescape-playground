@@ -49,4 +49,15 @@ public class TimeDAO {
 
         return keyHolder.getKey().longValue();
     }
+
+    public Time findById(Long id) {
+        String sql = "select id, time from time where id = ?";
+        return jdbcTemplate.queryForObject(
+                sql,
+                (resultSet, rowNum) -> new Time(
+                        resultSet.getLong("id"),
+                        resultSet.getObject("time", LocalTime.class)
+                ),
+                id);
+    }
 }
