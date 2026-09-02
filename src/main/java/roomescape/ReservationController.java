@@ -1,11 +1,17 @@
 package roomescape;
 
-import jakarta.validation.Valid;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
 import java.net.URI;
 import java.util.List;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/reservations")
@@ -18,35 +24,35 @@ public class ReservationController {
     }
 
     @GetMapping
-    public List<Reservation> getReservations() {
-        return reservationService.findAll();
+    public ResponseEntity<List<Reservation>> findAll() {
+        List<Reservation> reservations = reservationService.findAll();
+        return ResponseEntity.ok(reservations);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Reservation> findById(@PathVariable Long id) {
+        Reservation reservation = reservationService.findById(id);
+        return ResponseEntity.ok(reservation);
     }
 
     @PostMapping
-    public ResponseEntity<ReservationResponse> create(
-            @Valid @RequestBody ReservationRequest request
+    public ResponseEntity<Void> create(
+            @RequestBody ReservationRequest request
     ) {
-        Reservation reservation = reservationService.create(request);
-
-        ReservationResponse response =
-                ReservationResponse.from(reservation);
+        Reservation reservation = reservationService.save(request);
 
         return ResponseEntity
                 .created(URI.create("/reservations/" + reservation.getId()))
-                .body(response);
+                .build();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ReservationResponse> update(
+    public ResponseEntity<Reservation> update(
             @PathVariable Long id,
-            @Valid @RequestBody ReservationRequest request
+            @RequestBody ReservationRequest request
     ) {
-        Reservation reservation =
-                reservationService.update(id, request);
-
-        return ResponseEntity.ok(
-                ReservationResponse.from(reservation)
-        );
+        Reservation reservation = reservationService.update(id, request);
+        return ResponseEntity.ok(reservation);
     }
 
     @DeleteMapping("/{id}")
