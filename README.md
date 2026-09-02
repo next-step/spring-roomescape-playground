@@ -19,6 +19,20 @@
 ./gradlew test
 ```
 
+## 데이터베이스
+
+H2 인메모리(In-Memory) 데이터베이스를 사용합니다. 데이터가 메모리에만 저장되므로 **서버를 종료하면 모든 데이터가 사라지며**, 서버를 시작할 때마다 `schema.sql`이 실행되어 테이블이 새로 생성됩니다.
+
+### H2 콘솔 접속
+
+서버 실행 후 `http://localhost:8080/h2-console`로 접속합니다.
+
+| 항목 | 값 |
+|---|---|
+| JDBC URL | `jdbc:h2:mem:database` |
+| User Name | `sa` |
+| Password | (없음) |
+
 ## 기능 목록
 
 ### 1단계 - 홈 화면
@@ -48,6 +62,15 @@
 - [x] `POST /reservations` 요청 시 날짜가 비어있으면 400 응답
 - [x] `POST /reservations` 요청 시 시간이 비어있으면 400 응답
 - [x] `DELETE /reservations/{id}` 요청 시 존재하지 않는 예약이면 404 응답
+
+### 5단계 - 데이터베이스 적용
+
+- [x] H2 데이터베이스 의존성 추가 (`spring-boot-starter-jdbc`, `h2`)
+- [x] `schema.sql`로 `reservation` 테이블 정의
+- [x] datasource url을 `jdbc:h2:mem:database`로 지정
+- [x] H2 콘솔 활성화
+
+> 이 단계에서는 데이터베이스 연결과 테이블 생성까지만 다루며, 예약 데이터는 아직 애플리케이션 메모리(`List`)에 저장됩니다.
 
 ### 추가 구현 (미션 요구사항 외)
 
