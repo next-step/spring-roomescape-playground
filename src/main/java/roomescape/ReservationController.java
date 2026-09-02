@@ -83,10 +83,23 @@ public class ReservationController {
     @GetMapping("/reservations/{id}")
     @ResponseBody
     public Reservation getReservation(@PathVariable long id) {
-        return reservations.stream()
-                .filter(reservation -> reservation.getId() == id)
-                .findFirst()
-                .orElseThrow(NoSuchElementException::new);
+
+        String sql = "SELECT id, name, date, time FROM reservation WHERE id = ?";
+
+        return jdbcTemplate.queryForObject(
+                sql,
+                (resultSet, rowNum) -> {
+                    Reservation reservation = new Reservation(
+                            resultSet.getLong("id"),
+                            resultSet.getString("name"),
+                            LocalDate.parse(resultSet.getString("date")),
+                            LocalTime.parse(resultSet.getString("time"))
+                    );
+
+                    return reservation;
+                },
+                id
+        );
     }
 
     @DeleteMapping("/reservations/{id}")
