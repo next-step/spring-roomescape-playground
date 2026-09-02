@@ -31,7 +31,6 @@ public class ReservationController {
     }
 
     @GetMapping("/reservations")
-    @ResponseBody
     public ResponseEntity<List<Reservation>> getReservations() {
         synchronized (lock) {
             String sql = "SELECT id, name, date, time FROM reservation";
