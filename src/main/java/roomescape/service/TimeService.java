@@ -2,6 +2,7 @@ package roomescape.service;
 
 import org.springframework.stereotype.Service;
 import roomescape.domain.Time;
+import roomescape.dto.TimeRequest;
 import roomescape.exception.NotFoundTimeException;
 import roomescape.repository.TimeRepository;
 
@@ -20,7 +21,9 @@ public class TimeService {
         return timeRepository.findAll();
     }
 
-    public Time save(Time time) {
+    public Time save(TimeRequest request) {
+        Time time = request.toEntity();
+        
         return timeRepository.save(time);
     }
 
