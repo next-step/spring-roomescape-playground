@@ -34,7 +34,7 @@ public class ReservationService {
     }
 
     public void delete(Long id) {
-        Reservation deleteReservation = reservationRepository.find().stream()
+        Reservation deleteReservation = reservationRepository.findAllReservations().stream()
                 .filter(it -> Objects.equals(it.getId(), id))
                 .findFirst()
                 .orElseThrow(() -> new NotFoundException("삭제할 예약을 찾을 수 없습니다."));
