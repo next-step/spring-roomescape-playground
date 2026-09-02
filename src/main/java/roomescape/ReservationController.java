@@ -4,12 +4,11 @@ import java.net.URI;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.NoSuchElementException;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,12 +16,13 @@ import org.springframework.web.bind.annotation.*;
 public class ReservationController {
 
     private final JdbcTemplate jdbcTemplate;
-    private final List<Reservation> reservations = new ArrayList<>();
-    private final AtomicLong index = new AtomicLong(0);
-    private final Object lock = new Object();
+    private final SimpleJdbcInsert simpleJdbcInsert;
 
     public ReservationController(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+        this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("reservation")
+                .usingGeneratedKeyColumns("id");
     }
 
     @GetMapping("/reservation")
