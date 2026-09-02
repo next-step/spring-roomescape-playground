@@ -8,13 +8,20 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import roomescape.exception.InvalidReservationException;
 import roomescape.exception.NotFoundReservationException;
+import roomescape.exception.NotFoundTimeException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
     // 없는 예약 삭제 오류
     @ExceptionHandler(NotFoundReservationException.class)
-    public ResponseEntity<String> handleNotFoundException(NotFoundReservationException e) {
+    public ResponseEntity<String> handleNotFoundReservationException(NotFoundReservationException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+
+    // 없는 시간 삭제 오류
+    @ExceptionHandler(NotFoundTimeException.class)
+    public ResponseEntity<String> handleNotFoundTimeException(NotFoundTimeException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 

@@ -280,5 +280,39 @@ public class MissionStepTest {
         assertThat(countAfterDelete).isEqualTo(0);
     }
 
+    @Test
+    void 팔단계() {
+        Map<String, String> params = new HashMap<>();
+        params.put("time", "10:00");
 
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/times")
+                .then().log().all()
+                .statusCode(201)
+                .header("Location", "/times/1");
+
+        RestAssured.given().log().all()
+                .when().get("/times")
+                .then().log().all()
+                .statusCode(200)
+                .body("size()", is(1))
+                .body("[0].id", is(1))
+                .body("[0].time", is("10:00"));
+
+        RestAssured.given().log().all()
+                .when().delete("/times/1")
+                .then().log().all()
+                .statusCode(204);
+    }
+
+    @Test
+    void 존재하지_않는_시간을_삭제하면_404를_응답한다() {
+        RestAssured.given()
+                .when().delete("/times/1")
+                .then()
+                .statusCode(404)
+                .body(is("삭제할 시간을 찾을 수 없습니다."));
+    }
 }
