@@ -17,26 +17,15 @@ public class ReservationController {
         this.reservationService = reservationService;
     }
 
-    @GetMapping("/reservations")
+    @GetMapping
     public List<Reservation> getReservations() {
-        String sql = "SELECT id, name, date, time FROM reservation";
-
-        return jdbcTemplate.query(
-                sql,
-                (rs, rowNum) -> new Reservation(
-                        rs.getLong("id"),
-                        rs.getString("name"),
-                        rs.getString("date"),
-                        rs.getString("time")
-                )
-        );
+        return reservationService.findAll();
     }
 
     @PostMapping
     public ResponseEntity<ReservationResponse> create(
             @Valid @RequestBody ReservationRequest request
     ) {
-
         Reservation reservation = reservationService.create(request);
 
         ReservationResponse response =
@@ -52,7 +41,6 @@ public class ReservationController {
             @PathVariable Long id,
             @Valid @RequestBody ReservationRequest request
     ) {
-
         Reservation reservation =
                 reservationService.update(id, request);
 
@@ -63,7 +51,6 @@ public class ReservationController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-
         reservationService.delete(id);
 
         return ResponseEntity.noContent().build();
