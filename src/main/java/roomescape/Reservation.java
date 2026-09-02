@@ -1,6 +1,7 @@
 package roomescape;
 
 import java.util.stream.Stream;
+import roomescape.exception.InvalidReservationException;
 
 public class Reservation {
 
@@ -9,15 +10,11 @@ public class Reservation {
     private final String date;
     private final String time;
 
-    public static Reservation toEntity(ReservationRequest reservation, long id) {
-        return new Reservation(
-            id,
-            reservation.getName(),
-            reservation.getDate(),
-            reservation.getTime());
+    public static Reservation create(long id, String name, String date, String time) {
+        return new Reservation(id, name, date, time);
     }
 
-    public Reservation(long id, String name, String date, String time) {
+    private Reservation(long id, String name, String date, String time) {
         //검증먼저
         boolean hasEmpty = Stream.of(
             name,
@@ -25,8 +22,8 @@ public class Reservation {
             time
         ).anyMatch(value -> value == null || value.isBlank());
         //검증 실패하면 던지기
-        if ( hasEmpty ) {
-            throw new IllegalArgumentException();
+        if (hasEmpty) {
+            throw new InvalidReservationException("예약 정보는 비어 있을 수 없습니다.");
         }
         this.id = id;
         this.name = name;

@@ -1,20 +1,16 @@
 package roomescape;
 
-public class ReservationRequest {
+import roomescape.exception.InvalidReservationException;
 
-    private String name;
-    private String date;
-    private String time;
+public record ReservationRequest(String name, String date, String time) {
 
-    public String getName() {
-        return name;
+    public void validate() {
+        if (isBlank(name) || isBlank(date) || isBlank(time)) {
+            throw new InvalidReservationException("예약 정보는 비어 있을 수 없습니다.");
+        }
     }
 
-    public String getDate() {
-        return date;
-    }
-
-    public String getTime() {
-        return time;
+    private boolean isBlank(String value) {
+        return value == null || value.isBlank();
     }
 }
