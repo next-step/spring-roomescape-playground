@@ -7,7 +7,6 @@ import roomescape.domain.Reservation;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -24,12 +23,6 @@ public class ReservationRepository {
                 .withTableName("reservation")
                 .usingGeneratedKeyColumns("id");
     }
-
-    private final List<Reservation> reservations = new ArrayList<>(List.of(
-            new Reservation(1L, "브라운", LocalDate.now().plusDays(1), LocalTime.of(10, 0)),
-            new Reservation(2L, "브라운", LocalDate.now().plusDays(2), LocalTime.of(11, 0)),
-            new Reservation(3L, "브라운", LocalDate.now().plusDays(3), LocalTime.of(12, 0))
-    ));
 
     public List<Reservation> findAll() {
         return jdbcTemplate.query(
@@ -63,15 +56,29 @@ public class ReservationRepository {
     }
 
     public boolean deleteById(Long id) {
-        return reservations.removeIf(reservation -> reservation.getId().equals(id));
+        int deleteCount = jdbcTemplate.update(
+                "DELETE FROM reservation WHERE id = ?",
+                id
+        );
+
+        return deleteCount > 0;
     }
 
     public boolean existsByNameAndDateAndTime(String name, LocalDate date, LocalTime time) {
-        return reservations.stream()
-                .anyMatch(reservation ->
-                        reservation.getName().equals(name)
-                                && reservation.getDate().equals(date)
-                                && reservation.getTime().equals(time)
-                );
+        Boolean exists = jdbcTemplate.queryForObject(
+                """
+                SELECT EXISTS (
+                    SELECT 1
+                    FROM reservation
+                    WHERE name = ? AND date = ? AND time = ?
+                )
+                """,
+                Boolean.class,
+                name,
+                date,
+                time
+        );
+
+        return exists;
     }
 }
