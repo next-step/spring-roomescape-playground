@@ -31,8 +31,8 @@
 
 - [x] Spring Web 의존성을 추가한다.
 - [x] Thymeleaf 의존성을 추가한다.
-- [ ] Spring JDBC 의존성을 추가한다.
-- [ ] H2 의존성을 추가한다.
+- [x] Spring JDBC 의존성을 추가한다.
+- [x] H2 의존성을 추가한다.
 
 ### '데이터베이스 적용'
 - [ ] schema.sql 파일을 생성한다.
