@@ -7,10 +7,12 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
+import roomescape.domain.Time;
 import roomescape.exception.DuplicateReservationException;
 
 import java.sql.PreparedStatement;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 @Repository
@@ -22,12 +24,18 @@ public class ReservationRepository {
     }
 
     public List<Reservation> findAll() {
-        String sql = "SELECT id, name, reserved_at FROM reservation";
+        String sql = """
+                SELECT
+                    r.id AS reservation_id, r.name, r.reserved_date,
+                    t.id AS time_id, t.time AS time_value
+                FROM reservation AS r
+                INNER JOIN time AS t ON r.time_id = t.id
+                """;
         return jdbcTemplate.query(sql, reservationRowMapper);
     }
 
     public Reservation save(Reservation reservation) {
-        String sql = "INSERT INTO reservation (name, reserved_at) VALUES (?, ?)";
+        String sql = "INSERT INTO reservation (name, reserved_date, time_id) VALUES (?, ?, ?)";
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
         try {
@@ -35,13 +43,14 @@ public class ReservationRepository {
                 PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
 
                 ps.setString(1, reservation.getName());
-                ps.setObject(2, reservation.getReservedAt());
+                ps.setObject(2, reservation.getReservedDate());
+                ps.setLong(3, reservation.getTime().getId());
                 return ps;
             }, keyHolder);
         } catch (DuplicateKeyException e) {
             throw new DuplicateReservationException(
-                    "이미 예약된 시간입니다. date=" + reservation.getReservedAt().toLocalDate()
-                            + ", time=" + reservation.getReservedAt().toLocalTime());
+                    "이미 예약된 시간입니다. date=" + reservation.getReservedDate()
+                            + ", time=" + reservation.getTime().getTime());
         }
 
         Long id = keyHolder.getKey().longValue();
@@ -55,10 +64,15 @@ public class ReservationRepository {
     }
 
     private final RowMapper<Reservation> reservationRowMapper = (resultSet, rowNum) -> {
+        Time time = new Time(
+                resultSet.getObject("time_value", LocalTime.class)
+        ).withId(resultSet.getLong("time_id"));
+
         Reservation reservation = new Reservation(
                 resultSet.getString("name"),
-                resultSet.getObject("reserved_at", LocalDateTime.class)
+                resultSet.getObject("reserved_date", LocalDate.class),
+                time
         );
-        return reservation.withId(resultSet.getLong("id"));
+        return reservation.withId(resultSet.getLong("reservation_id"));
     };
 }

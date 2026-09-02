@@ -1,23 +1,36 @@
 package roomescape.dto;
 
-import roomescape.domain.Reservation;
 import roomescape.exception.InvalidReservationException;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
 
 public record ReservationRequest(
         String name,
         String date,
         String time
 ) {
-    public Reservation toReservation() {
+    public LocalDate toDate() {
         validate();
-        return new Reservation(
-                name,
-                LocalDateTime.of(LocalDate.parse(date), LocalTime.parse(time))
-        );
+        try {
+            return LocalDate.parse(date);
+        } catch (DateTimeParseException e) {
+            throw new InvalidReservationException("날짜 형식이 올바르지 않습니다. date=" + date);
+        }
+    }
+
+    public Long toTimeId() {
+        validate();
+
+        long timeId;
+        try {
+            timeId = Long.parseLong(time);
+        } catch (NumberFormatException e) {
+            throw new InvalidReservationException("시간 식별자는 숫자여야 합니다. time=" + time);
+        }
+
+        validatePositive(timeId);
+        return timeId;
     }
 
     private void validate() {
@@ -28,5 +41,11 @@ public record ReservationRequest(
 
     private boolean isBlank(String value) {
         return value == null || value.isBlank();
+    }
+
+    private void validatePositive(long timeId) {
+        if (timeId <= 0) {
+            throw new InvalidReservationException("시간 식별자는 1 이상이어야 합니다. time=" + time);
+        }
     }
 }
