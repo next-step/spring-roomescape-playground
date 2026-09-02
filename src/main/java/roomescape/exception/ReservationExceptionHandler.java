@@ -10,8 +10,8 @@ import roomescape.dto.ErrorResponse;
 public class ReservationExceptionHandler {
 
     @ExceptionHandler({
-            InvalidReservationRequestException.class,
-            InvalidTimeRequestException.class
+            InvalidReservationException.class,
+            InvalidReservationTimeException.class
     })
     public ResponseEntity<ErrorResponse> handleBadRequest(RuntimeException exception) {
         return ResponseEntity.badRequest().body(new ErrorResponse(exception.getMessage()));

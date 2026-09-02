@@ -13,11 +13,11 @@ import roomescape.domain.Reservation;
 import roomescape.domain.ReservationTime;
 
 @Repository
-public class JdbcReservationRepository implements ReservationRepository {
+class JdbcReservationRepository implements ReservationRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public JdbcReservationRepository(JdbcTemplate jdbcTemplate) {
+    JdbcReservationRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
@@ -34,11 +34,11 @@ public class JdbcReservationRepository implements ReservationRepository {
                 ORDER BY r.id
                 """;
 
-        return jdbcTemplate.query(sql, (resultSet, rowNumber) -> new Reservation(
+        return jdbcTemplate.query(sql, (resultSet, rowNumber) -> Reservation.restore(
                 resultSet.getLong("reservation_id"),
                 resultSet.getString("name"),
                 LocalDate.parse(resultSet.getString("date")),
-                new ReservationTime(
+                ReservationTime.restore(
                         resultSet.getLong("time_id"),
                         LocalTime.parse(resultSet.getString("time_value"))
                 )
@@ -62,7 +62,12 @@ public class JdbcReservationRepository implements ReservationRepository {
         if (generatedId == null) {
             throw new IllegalStateException("예약 ID를 생성하지 못했습니다.");
         }
-        return reservation.withId(generatedId.longValue());
+        return Reservation.restore(
+                generatedId.longValue(),
+                reservation.getName(),
+                reservation.getDate(),
+                reservation.getTime()
+        );
     }
 
     @Override

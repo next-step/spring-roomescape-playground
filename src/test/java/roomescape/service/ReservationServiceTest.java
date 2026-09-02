@@ -18,7 +18,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import roomescape.domain.Reservation;
 import roomescape.domain.ReservationTime;
-import roomescape.exception.InvalidReservationRequestException;
+import roomescape.exception.InvalidReservationException;
 import roomescape.exception.NotFoundReservationException;
 import roomescape.repository.ReservationRepository;
 import roomescape.repository.TimeRepository;
@@ -45,9 +45,8 @@ class ReservationServiceTest {
     @DisplayName("예약을 저장하고 조회한다")
     void savesAndFindsReservation() {
         LocalDate date = LocalDate.of(2026, 8, 13);
-        ReservationTime reservationTime = new ReservationTime(1L, LocalTime.of(15, 40));
-        Reservation reservation = new Reservation(null, "브라운", date, reservationTime);
-        Reservation savedReservation = reservation.withId(1L);
+        ReservationTime reservationTime = ReservationTime.restore(1L, LocalTime.of(15, 40));
+        Reservation savedReservation = Reservation.restore(1L, "브라운", date, reservationTime);
 
         when(timeRepository.findById(1L)).thenReturn(Optional.of(reservationTime));
         when(reservationRepository.save(any(Reservation.class))).thenReturn(savedReservation);
@@ -61,11 +60,11 @@ class ReservationServiceTest {
     @DisplayName("지난 일시로는 예약할 수 없다")
     void rejectsPastReservation() {
         LocalDate date = LocalDate.of(2026, 8, 12);
-        ReservationTime reservationTime = new ReservationTime(1L, LocalTime.of(11, 59));
+        ReservationTime reservationTime = ReservationTime.restore(1L, LocalTime.of(11, 59));
         when(timeRepository.findById(1L)).thenReturn(Optional.of(reservationTime));
 
         assertThatThrownBy(() -> reservationService.create("브라운", date, 1L))
-                .isInstanceOf(InvalidReservationRequestException.class);
+                .isInstanceOf(InvalidReservationException.class);
     }
 
     @Test

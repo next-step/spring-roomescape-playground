@@ -7,7 +7,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import roomescape.domain.Reservation;
 import roomescape.domain.ReservationTime;
-import roomescape.exception.InvalidReservationRequestException;
+import roomescape.exception.InvalidReservationException;
 import roomescape.exception.NotFoundReservationException;
 import roomescape.exception.NotFoundTimeException;
 import roomescape.repository.ReservationRepository;
@@ -36,7 +36,7 @@ public class ReservationService {
 
     public Reservation create(String name, LocalDate date, Long timeId) {
         if (timeId == null) {
-            throw new InvalidReservationRequestException();
+            throw new InvalidReservationException();
         }
         ReservationTime reservationTime = timeRepository.findById(timeId)
                 .orElseThrow(() -> new NotFoundTimeException(timeId));

@@ -12,18 +12,18 @@ import org.springframework.stereotype.Repository;
 import roomescape.domain.ReservationTime;
 
 @Repository
-public class JdbcTimeRepository implements TimeRepository {
+class JdbcTimeRepository implements TimeRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public JdbcTimeRepository(JdbcTemplate jdbcTemplate) {
+    JdbcTimeRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
     public List<ReservationTime> findAll() {
         String sql = "SELECT id, time FROM time ORDER BY id";
-        return jdbcTemplate.query(sql, (resultSet, rowNumber) -> new ReservationTime(
+        return jdbcTemplate.query(sql, (resultSet, rowNumber) -> ReservationTime.restore(
                 resultSet.getLong("id"),
                 LocalTime.parse(resultSet.getString("time"))
         ));
@@ -32,7 +32,7 @@ public class JdbcTimeRepository implements TimeRepository {
     @Override
     public Optional<ReservationTime> findById(Long id) {
         String sql = "SELECT id, time FROM time WHERE id = ?";
-        return jdbcTemplate.query(sql, (resultSet, rowNumber) -> new ReservationTime(
+        return jdbcTemplate.query(sql, (resultSet, rowNumber) -> ReservationTime.restore(
                 resultSet.getLong("id"),
                 LocalTime.parse(resultSet.getString("time"))
         ), id).stream().findFirst();
@@ -53,7 +53,7 @@ public class JdbcTimeRepository implements TimeRepository {
         if (generatedId == null) {
             throw new IllegalStateException("시간 ID를 생성하지 못했습니다.");
         }
-        return reservationTime.withId(generatedId.longValue());
+        return ReservationTime.restore(generatedId.longValue(), reservationTime.getTime());
     }
 
     @Override
