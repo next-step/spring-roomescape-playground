@@ -1,12 +1,9 @@
 package roomescape.controller;
 
+import jakarta.validation.Valid;
 import java.net.URI;
 import java.time.Clock;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicLong;
-import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,10 +23,6 @@ public class ReservationController {
 
     private final ReservationRepository reservationRepository;
 
-    private final List<Reservation> reservations = new ArrayList<>();
-
-    private final AtomicLong idGenerator = new AtomicLong(1);
-
     public ReservationController(Clock clock, ReservationRepository reservationRepository) {
         this.clock = clock;
         this.reservationRepository = reservationRepository;
@@ -37,14 +30,15 @@ public class ReservationController {
 
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> createReservation(@Valid @RequestBody ReservationRequest reservationRequest) {
-        Reservation newReservation = Reservation.create(
-                idGenerator.getAndIncrement(),
+        Reservation temporaryReservation = Reservation.create(
+                null,
                 reservationRequest.name(),
                 reservationRequest.date(),
                 reservationRequest.time(),
                 clock);
-        reservations.add(newReservation);
-        return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
+
+        Reservation savedReservation = reservationRepository.save(temporaryReservation);
+        return ResponseEntity.created(URI.create("/reservations/" + savedReservation.getId())).body(savedReservation);
     }
 
     @GetMapping("/reservation")
@@ -60,13 +54,10 @@ public class ReservationController {
 
     @DeleteMapping("/reservations/{reservationId}")
     public ResponseEntity<Void> deleteReservation(@PathVariable Long reservationId) {
-        Reservation reservation = reservations.stream()
-                .filter(existingReservation -> Objects.equals(existingReservation.getId(), reservationId))
-                .findFirst()
-                .orElseThrow(() -> new ReservationNotFoundException("id " + reservationId + "에 해당하는 예약을 찾을 수 없습니다."));
-
-        reservations.remove(reservation);
-
+        int deletedRows = reservationRepository.deleteById(reservationId);
+        if (deletedRows == 0) {
+            throw new ReservationNotFoundException("id " + reservationId + "에 해당하는 예약을 찾을 수 없습니다.");
+        }
         return ResponseEntity.noContent().build();
     }
 }
