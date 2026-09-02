@@ -1,5 +1,6 @@
 package roomescape.repository;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -14,6 +15,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class JdbcTimeRepository implements TimeRepository {
@@ -63,7 +65,19 @@ public class JdbcTimeRepository implements TimeRepository {
     @Override
     public boolean deleteById(Long id) {
         String sql = "delete from times where id = ?";
-        return jdbcTemplate.update(sql, id) > 0;
+
+        try {
+            return jdbcTemplate.update(sql, id) > 0;
+        } catch (DataIntegrityViolationException exception) {
+            throw new TimeException(TimeErrorCode.TIME_IN_USE);
+        }
+    }
+
+    @Override
+    public Optional<Time> findById(Long id) {
+        String sql = "select id, start_at from times where id = ?";
+        List<Time> times = jdbcTemplate.query(sql, this::mapRow, id);
+        return times.stream().findFirst();
     }
 
     private Time mapRow(ResultSet resultSet, int rowNum) throws SQLException {

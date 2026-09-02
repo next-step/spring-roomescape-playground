@@ -7,6 +7,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import roomescape.domain.Reservation;
+import roomescape.domain.Time;
 import roomescape.dto.ReservationCreateCommand;
 import roomescape.exception.ReservationErrorCode;
 import roomescape.exception.ReservationException;
@@ -31,6 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class ReservationControllerTest {
     private static final LocalDate RESERVATION_DATE = LocalDate.of(2027, 8, 15);
     private static final LocalTime RESERVATION_TIME = LocalTime.of(10, 0);
+    private static final Long TIME_ID = 1L;
 
     @Autowired
     private MockMvc mockMvc;
@@ -43,9 +45,9 @@ class ReservationControllerTest {
         // given
         given(reservationService.findAll())
                 .willReturn(List.of(
-                        new Reservation(1L, "브라운", RESERVATION_DATE, RESERVATION_TIME),
-                        new Reservation(2L, "철수", RESERVATION_DATE.plusDays(1), RESERVATION_TIME),
-                        new Reservation(3L, "영희", RESERVATION_DATE.plusDays(2), RESERVATION_TIME)
+                        new Reservation(1L, "브라운", RESERVATION_DATE, new Time(TIME_ID, RESERVATION_TIME)),
+                        new Reservation(2L, "철수", RESERVATION_DATE.plusDays(1), new Time(TIME_ID, RESERVATION_TIME)),
+                        new Reservation(3L, "영희", RESERVATION_DATE.plusDays(2), new Time(TIME_ID, RESERVATION_TIME))
                 ));
 
         // when & then
@@ -79,11 +81,11 @@ class ReservationControllerTest {
     @Test
     void 예약_추가_요청이_성공하면_상태코드_201과_생성된_예약을_반환한다() throws Exception {
         // given
-        String request = createReservationRequest(RESERVATION_DATE.toString(), "브라운", RESERVATION_TIME.toString());
-        ReservationCreateCommand expectedCommand = new ReservationCreateCommand("브라운", RESERVATION_DATE, RESERVATION_TIME);
+        String request = createReservationRequest(RESERVATION_DATE.toString(), "브라운", TIME_ID);
+        ReservationCreateCommand expectedCommand = new ReservationCreateCommand("브라운", RESERVATION_DATE, TIME_ID);
 
         given(reservationService.createReservation(expectedCommand))
-                .willReturn(new Reservation(1L, "브라운", RESERVATION_DATE, RESERVATION_TIME));
+                .willReturn(new Reservation(1L, "브라운", RESERVATION_DATE, new Time(TIME_ID, RESERVATION_TIME)));
 
         // when & then
         mockMvc.perform(post("/reservations")
@@ -102,7 +104,7 @@ class ReservationControllerTest {
     @Test
     void 날짜_형식이_올바르지_않으면_400을_반환한다() throws Exception {
         // given
-        String request = createReservationRequest("2027/08/15", "브라운", RESERVATION_TIME.toString());
+        String request = createReservationRequest("2027/08/15", "브라운", TIME_ID);
 
         // when & then
         assertBadReservationRequest(request, "GLOBAL_INVALID_BODY", "요청 본문 형식이 올바르지 않습니다.");
@@ -110,19 +112,19 @@ class ReservationControllerTest {
     }
 
     @Test
-    void 시간_형식이_올바르지_않으면_400을_반환한다() throws Exception {
+    void 시간대_id가_비어있으면_400을_반환한다() throws Exception {
         // given
-        String request = createReservationRequest(RESERVATION_DATE.toString(), "브라운", "10-00");
+        String request = createReservationRequest(RESERVATION_DATE.toString(), "브라운", null);
 
         // when & then
-        assertBadReservationRequest(request, "GLOBAL_INVALID_BODY", "요청 본문 형식이 올바르지 않습니다.");
+        assertBadReservationRequest(request, "GLOBAL_BAD_REQUEST", "예약 시간대 ID는 비어 있을 수 없습니다.");
         then(reservationService).shouldHaveNoInteractions();
     }
 
     @Test
     void 이름이_비어있으면_400을_반환한다() throws Exception {
         // given
-        String request = createReservationRequest(RESERVATION_DATE.toString(), "", RESERVATION_TIME.toString());
+        String request = createReservationRequest(RESERVATION_DATE.toString(), "", TIME_ID);
 
         // when & then
         assertBadReservationRequest(request, "GLOBAL_BAD_REQUEST", "예약자 이름은 비어 있을 수 없습니다.");
@@ -132,7 +134,7 @@ class ReservationControllerTest {
     @Test
     void 이름에_숫자나_특수기호가_포함되면_400을_반환한다() throws Exception {
         // given
-        String request = createReservationRequest(RESERVATION_DATE.toString(), "브라운1", RESERVATION_TIME.toString());
+        String request = createReservationRequest(RESERVATION_DATE.toString(), "브라운1", TIME_ID);
 
         // when & then
         assertBadReservationRequest(request, "GLOBAL_BAD_REQUEST", "예약자 이름 형식이 올바르지 않습니다.");
@@ -142,7 +144,7 @@ class ReservationControllerTest {
     @Test
     void 서비스에서_예약_충돌_예외가_발생하면_409를_반환한다() throws Exception {
         // given
-        String request = createReservationRequest(RESERVATION_DATE.toString(), "브라운", RESERVATION_TIME.toString());
+        String request = createReservationRequest(RESERVATION_DATE.toString(), "브라운", TIME_ID);
 
         given(reservationService.createReservation(any()))
                 .willThrow(new ReservationException(ReservationErrorCode.RESERVATION_CONFLICT));
@@ -159,7 +161,7 @@ class ReservationControllerTest {
     @Test
     void 서비스에서_잘못된_예약_예외가_발생하면_400을_반환한다() throws Exception {
         // given
-        String request = createReservationRequest(RESERVATION_DATE.toString(), "브라운", RESERVATION_TIME.toString());
+        String request = createReservationRequest(RESERVATION_DATE.toString(), "브라운", TIME_ID);
 
         given(reservationService.createReservation(any()))
                 .willThrow(new ReservationException(ReservationErrorCode.RESERVATION_IN_PAST));
@@ -240,13 +242,13 @@ class ReservationControllerTest {
                 .andExpect(jsonPath("$.message").value(message));
     }
 
-    private String createReservationRequest(String date, String name, String time) {
+    private String createReservationRequest(String date, String name, Long timeId) {
         return """
                 {
                     "date": "%s",
                     "name": "%s",
-                    "time": "%s"
+                    "timeId": %s
                 }
-                """.formatted(date, name, time);
+                """.formatted(date, name, timeId == null ? "null" : timeId);
     }
 }

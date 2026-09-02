@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.jdbc.core.JdbcTemplate;
 import roomescape.domain.Time;
 import roomescape.dto.TimeCreateCommand;
 import roomescape.exception.TimeErrorCode;
@@ -11,6 +12,7 @@ import roomescape.exception.TimeException;
 import roomescape.repository.JdbcTimeRepository;
 import roomescape.repository.TimeRepository;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,6 +28,9 @@ class TimeServiceTest {
 
     @Autowired
     private TimeRepository timeRepository;
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @Test
     void 유효한_시간대_요청이면_저장된_시간대를_반환한다() {
@@ -83,5 +88,22 @@ class TimeServiceTest {
                         exception -> assertThat(exception.getErrorCode())
                                 .isEqualTo(TimeErrorCode.TIME_NOT_FOUND)
                 );
+    }
+
+    @Test
+    void 예약이_존재하는_시간대는_삭제할_수_없다() {
+        // given
+        Time time = timeService.createTime(new TimeCreateCommand(TIME));
+        jdbcTemplate.update("insert into reservations (name, reservation_date, time_id) values (?, ?, ?)",
+                "브라운", LocalDate.of(2027, 8, 15), time.getId());
+
+        // when & then
+        assertThatThrownBy(() -> timeService.deleteTime(time.getId()))
+                .isInstanceOfSatisfying(
+                        TimeException.class,
+                        exception -> assertThat(exception.getErrorCode())
+                                .isEqualTo(TimeErrorCode.TIME_IN_USE)
+                );
+        assertThat(timeRepository.findById(time.getId())).isPresent();
     }
 }

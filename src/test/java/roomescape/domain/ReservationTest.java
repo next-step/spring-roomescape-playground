@@ -12,7 +12,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class ReservationTest {
     private static final LocalDate DATE = LocalDate.of(2027, 8, 14);
-    private static final LocalTime TIME = LocalTime.of(10, 0);
+    private static final Time TIME = new Time(1L, LocalTime.of(10, 0));
 
     @Test
     void 유효한_값으로_예약을_생성한다() {
@@ -70,6 +70,18 @@ class ReservationTest {
     @Test
     void 시간이_비어있는_예약_생성_시_예외를_던진다() {
         assertThatThrownBy(() -> new Reservation("브라운", DATE, null))
+                .isInstanceOfSatisfying(
+                        ReservationException.class,
+                        exception -> assertThat(exception.getErrorCode())
+                                .isEqualTo(ReservationErrorCode.RESERVATION_INVALID)
+                );
+    }
+
+    @Test
+    void id가_없는_시간대로_예약_생성_시_예외를_던진다() {
+        Time timeWithoutId = new Time(LocalTime.of(10, 0));
+
+        assertThatThrownBy(() -> new Reservation("브라운", DATE, timeWithoutId))
                 .isInstanceOfSatisfying(
                         ReservationException.class,
                         exception -> assertThat(exception.getErrorCode())

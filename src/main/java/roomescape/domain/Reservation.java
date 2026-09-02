@@ -4,7 +4,6 @@ import roomescape.exception.ReservationErrorCode;
 import roomescape.exception.ReservationException;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.regex.Pattern;
 
 public class Reservation {
@@ -16,9 +15,9 @@ public class Reservation {
 
     private final LocalDate date;
 
-    private final LocalTime time;
+    private final Time time;
 
-    public Reservation(Long id, String name, LocalDate date, LocalTime time) {
+    public Reservation(Long id, String name, LocalDate date, Time time) {
         validateName(name);
         validateDate(date);
         validateTime(time);
@@ -29,7 +28,7 @@ public class Reservation {
         this.time = time;
     }
 
-    public Reservation(String name, LocalDate date, LocalTime time) {
+    public Reservation(String name, LocalDate date, Time time) {
         this(null, name, date, time);
     }
 
@@ -45,7 +44,7 @@ public class Reservation {
         return date;
     }
 
-    public LocalTime getTime() {
+    public Time getTime() {
         return time;
     }
 
@@ -65,8 +64,8 @@ public class Reservation {
         }
     }
 
-    private void validateTime(LocalTime time) {
-        if (time == null) {
+    private void validateTime(Time time) {
+        if (time == null || time.getId() == null) {
             throw new ReservationException(ReservationErrorCode.RESERVATION_INVALID);
         }
     }

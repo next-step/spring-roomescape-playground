@@ -46,7 +46,7 @@ public class ReservationController {
         ReservationCreateCommand command = new ReservationCreateCommand(
                 request.name(),
                 request.date(),
-                request.time()
+                request.timeId()
         );
 
         Reservation reservation = reservationService.createReservation(command);

@@ -6,7 +6,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 public record ReservationRequest(
         @NotNull(message = "예약 날짜는 비어 있을 수 없습니다.")
@@ -20,8 +19,7 @@ public record ReservationRequest(
         )
         String name,
 
-        @NotNull(message = "예약 시간은 비어 있을 수 없습니다.")
-        @JsonFormat(pattern = "HH:mm")
-        LocalTime time
+        @NotNull(message = "예약 시간대 ID는 비어 있을 수 없습니다.")
+        Long timeId
 ) {
 }

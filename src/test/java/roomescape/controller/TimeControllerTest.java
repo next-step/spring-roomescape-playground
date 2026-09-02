@@ -157,6 +157,23 @@ class TimeControllerTest {
     }
 
     @Test
+    void 예약이_존재하는_시간대_삭제_요청이면_409를_반환한다() throws Exception {
+        // given
+        long id = 1L;
+
+        willThrow(new TimeException(TimeErrorCode.TIME_IN_USE))
+                .given(timeService).deleteTime(id);
+
+        // when & then
+        mockMvc.perform(delete("/times/{id}", id))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.code").value("TIME_IN_USE"))
+                .andExpect(jsonPath("$.message").value("예약이 존재하는 시간대는 삭제할 수 없습니다."));
+
+        then(timeService).should().deleteTime(id);
+    }
+
+    @Test
     void 서비스에서_시간대_충돌_예외가_발생하면_409를_반환한다() throws Exception {
         // given
         String request = createTimeRequest(TIME.toString());

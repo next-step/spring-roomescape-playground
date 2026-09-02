@@ -9,6 +9,7 @@ import roomescape.domain.Time;
 import roomescape.exception.TimeErrorCode;
 import roomescape.exception.TimeException;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -100,6 +101,23 @@ class TimeRepositoryTest {
 
         // then
         assertThat(deleted).isFalse();
+    }
+
+    @Test
+    void 예약이_존재하는_시간대를_삭제하면_예외를_던진다() {
+        // given
+        Time time = timeRepository.save(new Time(TIME));
+        jdbcTemplate.update("insert into reservations (name, reservation_date, time_id) values (?, ?, ?)",
+                "브라운", LocalDate.of(2027, 8, 15), time.getId());
+
+        // when & then
+        assertThatThrownBy(() -> timeRepository.deleteById(time.getId()))
+                .isInstanceOfSatisfying(
+                        TimeException.class,
+                        exception -> assertThat(exception.getErrorCode())
+                                .isEqualTo(TimeErrorCode.TIME_IN_USE)
+                );
+        assertThat(timeRepository.findById(time.getId())).isPresent();
     }
 
 }
