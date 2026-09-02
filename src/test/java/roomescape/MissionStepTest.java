@@ -55,10 +55,12 @@ public class MissionStepTest {
   @Test
   @DisplayName("POST /reservations 요청 시 201 상태 코드를 반환하는지 테스트")
   void test_post_요청시_예약이_생성되는지_테스트() {
+    jdbcTemplate.update("INSERT INTO reservation_time(time) VALUES (?)", "15:40");
+
     Map<String, String> params = new HashMap<>();
     params.put("name", "브라운");
     params.put("date", "2023-08-05");
-    params.put("time", "15:40");
+    params.put("time", "1");
 
     RestAssured.given().log().all()
         .contentType(ContentType.JSON)
@@ -71,11 +73,12 @@ public class MissionStepTest {
   @Test
   @DisplayName("DELETE /reservations/{id} 요청 시 204 상태 코드를 반환하는지 테스트")
   void test_delete_요청시_예약이_삭제되는지_테스트() {
+    jdbcTemplate.update("INSERT INTO reservation_time(time) VALUES (?)", "15:40");
 
     Map<String, String> params = new HashMap<>();
     params.put("name", "브라운");
     params.put("date", "2023-08-05");
-    params.put("time", "15:40");
+    params.put("time", "1");
 
     RestAssured.given().log().all()
         .contentType(ContentType.JSON)
@@ -91,10 +94,12 @@ public class MissionStepTest {
   @Test
   @DisplayName("POST /reservations 요청 시 필수값이 공백이면 400 상태 코드를 반환하는지 테스트")
   void test_post_요청시_필수값이_공백이면_400을_반환하는지_테스트() {
+    jdbcTemplate.update("INSERT INTO reservation_time(time) VALUES (?)", "10:00");
+
     Map<String, String> params = new HashMap<>();
-    params.put("name", "브라운");
-    params.put("date", "");
-    params.put("time", "");
+    params.put("name", "");
+    params.put("date", "2023-08-05");
+    params.put("time", "1");
 
     RestAssured.given().log().all()
         .contentType(ContentType.JSON)
@@ -129,8 +134,9 @@ public class MissionStepTest {
   @Test
   @DisplayName("예약 조회 API가 데이터베이스에 저장된 예약을 반환하는지 테스트")
   void test_예약_조회_API가_데이터베이스를_조회하는지_테스트() {
-    jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "브라운",
-        "2023-08-05", "15:40");
+    jdbcTemplate.update("INSERT INTO reservation_time(time) VALUES (?)", "15:40");
+    jdbcTemplate.update("INSERT INTO reservation (name, date, time_id) VALUES (?, ?, ?)", "브라운",
+        "2023-08-05", 1);
 
     List<Reservation> reservations = RestAssured.given().log().all()
         .when().get("/reservations")
@@ -146,10 +152,12 @@ public class MissionStepTest {
   @Test
   @DisplayName("예약 생성 및 삭제 API가 데이터베이스에 반영되는지 테스트")
   void test_예약_생성과_삭제가_데이터베이스에_반영되는지_테스트() {
+    jdbcTemplate.update("INSERT INTO reservation_time(time) VALUES (?)", "10:00");
+
     Map<String, String> params = new HashMap<>();
     params.put("name", "브라운");
     params.put("date", "2023-08-05");
-    params.put("time", "10:00");
+    params.put("time", "1");
 
     RestAssured.given().log().all()
         .contentType(ContentType.JSON)
@@ -170,5 +178,21 @@ public class MissionStepTest {
     Integer countAfterDelete = jdbcTemplate.queryForObject("SELECT count(1) from reservation",
         Integer.class);
     assertThat(countAfterDelete).isEqualTo(0);
+  }
+
+  @Test
+  @DisplayName("기존 예약 추가 스펙(시간 문자열)으로 요청하면 400 상태 코드를 반환하는지 테스트")
+  void test_post_요청시_기존_스펙의_시간_형식으로_요청하면_400을_반환하는지_테스트() {
+    Map<String, String> params = new HashMap<>();
+    params.put("name", "브라운");
+    params.put("date", "2023-08-05");
+    params.put("time", "10:00");
+
+    RestAssured.given().log().all()
+        .contentType(ContentType.JSON)
+        .body(params)
+        .when().post("/reservations")
+        .then().log().all()
+        .statusCode(400);
   }
 }
