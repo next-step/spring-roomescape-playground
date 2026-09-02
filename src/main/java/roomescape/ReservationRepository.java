@@ -1,13 +1,14 @@
 package roomescape;
 
+import java.sql.PreparedStatement;
+import java.sql.Statement;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-
-import java.sql.Statement;
-import java.util.List;
-import java.util.Optional;
 
 @Repository
 public class ReservationRepository {
@@ -58,15 +59,17 @@ public class ReservationRepository {
 
     public Reservation save(ReservationRequest request) {
         String sql = """
-                INSERT INTO reservation (name, date, time)
+                INSERT INTO reservation(name, date, time)
                 VALUES (?, ?, ?)
                 """;
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
-            var preparedStatement =
-                    connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement preparedStatement = connection.prepareStatement(
+                    sql,
+                    Statement.RETURN_GENERATED_KEYS
+            );
 
             preparedStatement.setString(1, request.getName());
             preparedStatement.setString(2, request.getDate());
@@ -112,9 +115,6 @@ public class ReservationRepository {
     }
 
     public void delete(Long id) {
-        findById(id)
-                .orElseThrow(NotFoundReservationException::new);
-
         String sql = """
                 DELETE FROM reservation
                 WHERE id = ?
