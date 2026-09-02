@@ -48,6 +48,6 @@
 - [x] `GET /reservations`는 `JdbcTemplate`으로 데이터베이스에서 예약을 조회한다.
 - [x] `POST /reservations`는 데이터베이스에 예약을 추가하고, 발급된 식별자를 응답한다.
 - [x] `DELETE /reservations/{id}`는 데이터베이스에서 예약을 삭제한다.
-- [x] `schema.sql`에 시간(`time_slot`) 테이블 생성 쿼리를 작성한다.
-  - [x] `id`(PK), `start_at` 컬럼을 가진다.
-  - [x] 같은 `start_at`에 시간이 중복될 수 없도록 유니크 제약을 건다.
+- [x] `schema.sql`에 시간(`time`) 테이블 생성 쿼리를 작성한다.
+  - [x] `id`(PK), `time` 컬럼을 가진다.
+  - [x] 같은 `time`에 시간이 중복될 수 없도록 유니크 제약을 건다.

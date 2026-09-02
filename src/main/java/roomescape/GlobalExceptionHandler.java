@@ -5,11 +5,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import roomescape.exception.DuplicateReservationException;
-import roomescape.exception.DuplicateTimeSlotException;
+import roomescape.exception.DuplicateTimeException;
 import roomescape.exception.InvalidReservationException;
-import roomescape.exception.InvalidTimeSlotException;
+import roomescape.exception.InvalidTimeException;
 import roomescape.exception.NotFoundReservationException;
-import roomescape.exception.NotFoundTimeSlotException;
+import roomescape.exception.NotFoundTimeException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -29,18 +29,18 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
     }
 
-    @ExceptionHandler(InvalidTimeSlotException.class)
-    public ResponseEntity<String> handleInvalidTimeSlotException(InvalidTimeSlotException e) {
+    @ExceptionHandler(InvalidTimeException.class)
+    public ResponseEntity<String> handleInvalidTimeException(InvalidTimeException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 
-    @ExceptionHandler(NotFoundTimeSlotException.class)
-    public ResponseEntity<String> handleNotFoundTimeSlotException(NotFoundTimeSlotException e) {
+    @ExceptionHandler(NotFoundTimeException.class)
+    public ResponseEntity<String> handleNotFoundTimeException(NotFoundTimeException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 
-    @ExceptionHandler(DuplicateTimeSlotException.class)
-    public ResponseEntity<String> handleDuplicateTimeSlotException(DuplicateTimeSlotException e) {
+    @ExceptionHandler(DuplicateTimeException.class)
+    public ResponseEntity<String> handleDuplicateTimeException(DuplicateTimeException e) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
     }
 }
