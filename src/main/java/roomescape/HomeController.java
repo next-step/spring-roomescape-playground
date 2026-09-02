@@ -89,4 +89,10 @@ public class HomeController {
         String sql = "INSERT INTO reservation(name, date, time) VALUES (?, ?, ?)";
         jdbcTemplate.update(sql, reservation.getName(), reservation.getDate(), reservation.getTime());
     }
+
+    public int deleteReservation(Long id) {
+        String sql = "DELETE FROM reservation WHERE id = ?";
+        int rowNum = jdbcTemplate.update(sql, Long.valueOf(id));
+        return rowNum;
+    }
 }
