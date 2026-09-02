@@ -4,7 +4,7 @@ import java.util.stream.Stream;
 
 public class Reservation {
 
-    private long id;
+    private final long id;
     private final String name;
     private final String date;
     private final String time;

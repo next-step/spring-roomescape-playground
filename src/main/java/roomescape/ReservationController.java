@@ -19,7 +19,7 @@ import roomescape.exception.NotFoundException;
 @Controller
 public class ReservationController {
 
-    private long index = 0;
+    private final AtomicLong index = new AtomicLong(0);
 
     private List<Reservation> reservations = new ArrayList<>();
 
@@ -57,8 +57,10 @@ public class ReservationController {
             throw new IllegalArgumentException();
         }
         //검증 성공하면
-        index = index + 1;
-        Reservation newReservaion = Reservation.toEntity(reservationRequest, index);
+        Reservation newReservaion = Reservation.toEntity(
+            reservationRequest,
+            index.incrementAndGet()
+        );
 
         reservations.add(newReservaion);
 
