@@ -26,7 +26,7 @@ public class ReservationService {
 
     public List<ReservationResponseDto> read() {
         List<ReservationResponseDto> responseDtos = new ArrayList<>();
-        List<Reservation> reservations = reservationRepository.find();
+        List<Reservation> reservations = reservationRepository.findAllReservations();
         for (Reservation reservation : reservations) {
             responseDtos.add(new ReservationResponseDto(reservation));
         }

@@ -10,7 +10,7 @@ public class Reservation {
     private String name;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
-    @JsonFormat(pattern = "HH:mm")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
     private LocalTime time;
 
     public Reservation() {
@@ -64,6 +64,7 @@ public class Reservation {
         return date;
     }
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
     public LocalTime getTime() {
         return time;
     }
