@@ -18,17 +18,21 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import roomescape.domain.Reservation;
 import roomescape.dto.ReservationRequest;
 import roomescape.exception.ReservationNotFoundException;
+import roomescape.repository.ReservationRepository;
 
 @Controller
 public class ReservationController {
     private final Clock clock;
 
+    private final ReservationRepository reservationRepository;
+
     private final List<Reservation> reservations = new ArrayList<>();
 
     private final AtomicLong idGenerator = new AtomicLong(1);
 
-    public ReservationController(Clock clock) {
+    public ReservationController(Clock clock, ReservationRepository reservationRepository) {
         this.clock = clock;
+        this.reservationRepository = reservationRepository;
     }
 
     @PostMapping("/reservations")
@@ -51,7 +55,7 @@ public class ReservationController {
     @GetMapping("/reservations")
     @ResponseBody
     public List<Reservation> findAllReservations() {
-        return List.copyOf(reservations);
+        return reservationRepository.findAll();
     }
 
     @DeleteMapping("/reservations/{reservationId}")
