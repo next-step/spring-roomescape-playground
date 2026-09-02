@@ -280,3 +280,40 @@ Content-Type: application/json
     "time": "15:40"
   }
 ]
+
+# 7단계 - 데이터 추가/삭제하기
+
+## 기능 명세
+
+- 예약 추가 시 데이터베이스에 예약 정보를 저장한다
+- 예약 추가 후 데이터베이스에서 생성된 예약 ID를 응답에 사용한다
+- 예약 삭제 시 예약 ID를 이용하여 데이터베이스에서 예약 정보를 삭제한다
+- 기존 List와 AtomicLong 대신 데이터베이스를 이용하여 예약 데이터를 관리한다
+
+## API 명세
+
+### 예약 추가
+
+- Method: `POST`
+- URL: `/reservations`
+- 설명: 새로운 예약 정보를 데이터베이스에 저장한다
+- 성공 상태 코드: `201 Created`
+- Response Header: `Location: /reservations/{id}`
+
+### 예약 삭제
+
+- Method: `DELETE`
+- URL: `/reservations/{id}`
+- 설명: 해당 ID의 예약 정보를 데이터베이스에서 삭제한다
+- 성공 상태 코드: `204 No Content`
+
+## 데이터베이스
+
+### 예약 추가
+
+- `JdbcTemplate`을 이용하여 예약 정보를 저장한다
+- 데이터베이스에서 생성된 ID를 이용하여 예약 객체를 생성한다
+
+```sql
+INSERT INTO reservation(name, date, time)
+VALUES (?, ?, ?)
