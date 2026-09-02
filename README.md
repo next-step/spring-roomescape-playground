@@ -33,64 +33,50 @@ H2 인메모리(In-Memory) 데이터베이스를 사용합니다. 데이터가 �
 | User Name | `sa` |
 | Password | (없음) |
 
-## 기능 목록
+## 기능
 
-### 1단계 - 홈 화면
+### 화면
 
-- [x] `GET /` 요청 시 200 응답
-- [x] `GET /` 요청 시 `templates/home.html` 렌더링
+| 화면 | 경로 |
+|---|---|
+| 어드민 메인 | `GET /` |
+| 예약 관리 | `GET /reservation` |
 
-### 2단계 - 예약 조회
+- 예약 관리 페이지는 로드 시점에 예약 목록 조회 API를 호출하여 목록을 채웁니다.
 
-- [x] `GET /reservation` 요청 시 200 응답
-- [x] `GET /reservation` 요청 시 `templates/reservation.html` 렌더링
-- [x] `GET /reservations` 요청 시 200 응답
-- [x] `GET /reservations` 요청 시 `Content-Type: application/json` 응답
-- [x] `GET /reservations` 요청 시 예약 목록을 JSON 배열로 응답
+### 예약
 
-### 3단계 - 예약 추가 / 취소
+하나의 예약은 다음 정보로 구성됩니다.
 
-- [x] `POST /reservations` 요청 시 201 응답
-- [x] `POST /reservations` 요청 시 `Location` 헤더에 생성된 예약의 경로 응답
-- [x] `POST /reservations` 요청 시 생성된 예약 정보를 JSON으로 응답
-- [x] `DELETE /reservations/{id}` 요청 시 204 응답
-- [x] `DELETE /reservations/{id}` 요청 시 해당 예약이 목록에서 제거됨
+| 항목 | 설명 |
+|---|---|
+| `id` | 예약 식별자 |
+| `name` | 예약자 이름 |
+| `date` | 예약 날짜 (`yyyy-MM-dd`) |
+| `time` | 예약 시간 (`HH:mm`) |
 
-### 4단계 - 예외 처리
+### 예약 조회
 
-- [x] `POST /reservations` 요청 시 이름이 비어있으면 400 응답
-- [x] `POST /reservations` 요청 시 날짜가 비어있으면 400 응답
-- [x] `POST /reservations` 요청 시 시간이 비어있으면 400 응답
-- [x] `DELETE /reservations/{id}` 요청 시 존재하지 않는 예약이면 404 응답
+- 저장된 모든 예약을 JSON 배열로 응답합니다.
+- 예약이 하나도 없으면 빈 배열을 응답합니다.
+- 과거 날짜의 예약도 조회 대상에 포함됩니다.
 
-### 5단계 - 데이터베이스 적용
+### 예약 추가
 
-- [x] H2 데이터베이스 의존성 추가 (`spring-boot-starter-jdbc`, `h2`)
-- [x] `schema.sql`로 `reservation` 테이블 정의
-- [x] datasource url을 `jdbc:h2:mem:database`로 지정
-- [x] H2 콘솔 활성화
+- 예약자 이름, 날짜, 시간을 받아 예약을 저장합니다.
+- 식별자는 요청에 포함하지 않으며, 데이터베이스가 자동으로 생성합니다.
+- 생성에 성공하면 생성된 예약의 경로를 `Location` 헤더에, 예약 정보를 본문에 담아 응답합니다.
+- 다음의 경우 예약을 생성하지 않습니다.
+  - 예약자 이름이 비어있거나 공백만 있는 경우
+  - 날짜가 비어있는 경우
+  - 시간이 비어있는 경우
+  - 예약 일시가 현재 시각보다 과거인 경우 *(미션 요구사항 외 자체 추가)*
 
-> 이 단계에서는 데이터베이스 연결과 테이블 생성까지만 다루며, 예약 데이터는 아직 애플리케이션 메모리(`List`)에 저장됩니다.
+### 예약 취소
 
-### 6단계 - 데이터 조회하기
-
-- [x] `GET /reservations` 요청 시 메모리가 아닌 데이터베이스에서 예약 목록을 조회
-- [x] `JdbcTemplate`과 `RowMapper`를 사용하는 `ReservationRepository` 추가
-
-> 조회만 데이터베이스로 전환된 단계로, 추가/취소는 아직 메모리를 사용합니다. 두 저장소가 분리되어 있어 예약 관리 기능은 정상 동작하지 않습니다.
-
-### 7단계 - 데이터 추가/삭제하기
-
-- [x] `POST /reservations` 요청 시 데이터베이스에 예약을 저장하고, DB가 생성한 id로 응답
-- [x] `DELETE /reservations/{id}` 요청 시 데이터베이스에서 예약을 삭제
-- [x] `DELETE /reservations/{id}` 요청 시 삭제된 행이 없으면 404 응답
-- [x] 메모리 저장소(`List`)와 식별자 생성기(`AtomicLong`) 제거
-
-> 식별자 생성은 `AtomicLong` 대신 데이터베이스의 `AUTO_INCREMENT`에 위임합니다.
-
-### 추가 구현 (미션 요구사항 외)
-
-- [x] `POST /reservations` 요청 시 현재 시각보다 과거의 날짜/시간으로 예약하면 400 응답
+- 식별자로 예약을 삭제합니다.
+- 존재하지 않는 식별자로 요청하면 예약을 찾을 수 없다는 응답을 반환합니다.
+- 삭제 성공 시 응답 본문은 비어 있습니다.
 
 ## API 명세
 
