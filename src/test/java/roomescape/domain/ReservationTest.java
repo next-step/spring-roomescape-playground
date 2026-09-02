@@ -12,7 +12,7 @@ import roomescape.exception.InvalidReservationRequestException;
 class ReservationTest {
 
     private static final LocalDate DATE = LocalDate.of(2026, 8, 13);
-    private static final LocalTime TIME = LocalTime.of(15, 40);
+    private static final ReservationTime TIME = new ReservationTime(1L, LocalTime.of(15, 40));
 
     @Test
     @DisplayName("예약 정보가 유효하면 예약을 생성한다")
