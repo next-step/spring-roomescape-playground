@@ -32,53 +32,46 @@ public class ReservationController {
 
     @GetMapping("/reservations")
     public ResponseEntity<List<Reservation>> getReservations() {
-        synchronized (lock) {
-            String sql = "SELECT id, name, date, time FROM reservation";
+        String sql = "SELECT id, name, date, time FROM reservation";
 
-            List<Reservation> reservations = jdbcTemplate.query(
-                    sql,
-                    (resultSet, rowNum) -> {
-                        Reservation reservation = new Reservation(
-                                resultSet.getLong("id"),
-                                resultSet.getString("name"),
-                                LocalDate.parse(resultSet.getString("date")),
-                                LocalTime.parse(resultSet.getString("time"))
-                        );
+        List<Reservation> reservations = jdbcTemplate.query(
+                sql,
+                (resultSet, rowNum) -> {
+                    Reservation reservation = new Reservation(
+                            resultSet.getLong("id"),
+                            resultSet.getString("name"),
+                            LocalDate.parse(resultSet.getString("date")),
+                            LocalTime.parse(resultSet.getString("time"))
+                    );
 
-                        return reservation;
-                    }
-            );
-            return ResponseEntity.ok().body(reservations);
-        }
+                    return reservation;});
+
+        return ResponseEntity.ok().body(reservations);
     }
 
     @PostMapping("/reservations")
     @ResponseBody
     public ResponseEntity<Reservation> postReservation(@RequestBody ReservationRequest reservationRequest) {
-
-        synchronized (lock) {
-
-            // 예외처리
-            if (reservationRequest.getName() == null
-                    || reservationRequest.getName().trim().isBlank()
-                    || reservationRequest.getDate() == null
-                    || reservationRequest.getTime() == null) {
-                throw new IllegalArgumentException();
-            }
-
-            Reservation reservation = new Reservation(
-                    index.incrementAndGet(),
-                    reservationRequest.getName(),
-                    reservationRequest.getDate(),
-                    reservationRequest.getTime()
-            );
-
-            reservations.add(reservation);
-
-            return ResponseEntity.created(
-                            URI.create("/reservations/" + reservation.getId()))
-                    .body(reservation);
+        // 예외처리
+        if (reservationRequest.getName() == null
+                || reservationRequest.getName().trim().isBlank()
+                || reservationRequest.getDate() == null
+                || reservationRequest.getTime() == null) {
+            throw new IllegalArgumentException();
         }
+
+        Reservation reservation = new Reservation(
+                index.incrementAndGet(),
+                reservationRequest.getName(),
+                reservationRequest.getDate(),
+                reservationRequest.getTime()
+        );
+
+        reservations.add(reservation);
+
+        return ResponseEntity.created(
+                URI.create("/reservations/" + reservation.getId()))
+                .body(reservation);
     }
 
     @GetMapping("/reservations/{id}")
@@ -93,15 +86,13 @@ public class ReservationController {
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable long id) {
 
-        synchronized (lock) {
-            boolean removed = reservations.removeIf(reservation -> reservation.getId() == id);
+        boolean removed = reservations.removeIf(reservation -> reservation.getId() == id);
 
-            // 4단계
-            if (!removed) {
-                throw new NoSuchElementException();
-            }
-
-            return ResponseEntity.noContent().build();
+        // 4단계
+        if (!removed) {
+            throw new NoSuchElementException();
         }
+
+        return ResponseEntity.noContent().build();
     }
 }
