@@ -1,57 +1,125 @@
 package roomescape;
 
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
+import java.sql.Statement;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Repository
 public class ReservationRepository {
 
-    private final List<Reservation> reservations = new ArrayList<>();
-    private final AtomicLong index = new AtomicLong(1);
+    private final JdbcTemplate jdbcTemplate;
+
+    public ReservationRepository(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     public List<Reservation> findAll() {
-        return new ArrayList<>(reservations);
+        String sql = """
+                SELECT id, name, date, time
+                FROM reservation
+                """;
+
+        return jdbcTemplate.query(
+                sql,
+                (resultSet, rowNum) -> new Reservation(
+                        resultSet.getLong("id"),
+                        resultSet.getString("name"),
+                        resultSet.getString("date"),
+                        resultSet.getString("time")
+                )
+        );
     }
 
     public Optional<Reservation> findById(Long id) {
-        return reservations.stream()
-                .filter(reservation -> reservation.getId().equals(id))
-                .findFirst();
+        String sql = """
+                SELECT id, name, date, time
+                FROM reservation
+                WHERE id = ?
+                """;
+
+        List<Reservation> reservations = jdbcTemplate.query(
+                sql,
+                (resultSet, rowNum) -> new Reservation(
+                        resultSet.getLong("id"),
+                        resultSet.getString("name"),
+                        resultSet.getString("date"),
+                        resultSet.getString("time")
+                ),
+                id
+        );
+
+        return reservations.stream().findFirst();
     }
 
     public Reservation save(ReservationRequest request) {
-        Reservation reservation = new Reservation(
-                index.getAndIncrement(),
+        String sql = """
+                INSERT INTO reservation (name, date, time)
+                VALUES (?, ?, ?)
+                """;
+
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        jdbcTemplate.update(connection -> {
+            var preparedStatement =
+                    connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+
+            preparedStatement.setString(1, request.getName());
+            preparedStatement.setString(2, request.getDate());
+            preparedStatement.setString(3, request.getTime());
+
+            return preparedStatement;
+        }, keyHolder);
+
+        Long id = keyHolder.getKey().longValue();
+
+        return new Reservation(
+                id,
                 request.getName(),
                 request.getDate(),
                 request.getTime()
         );
-
-        reservations.add(reservation);
-        return reservation;
     }
 
     public Reservation update(Long id, ReservationRequest request) {
-        Reservation reservation = findById(id)
+        findById(id)
                 .orElseThrow(NotFoundReservationException::new);
 
-        reservation.update(
+        String sql = """
+                UPDATE reservation
+                SET name = ?, date = ?, time = ?
+                WHERE id = ?
+                """;
+
+        jdbcTemplate.update(
+                sql,
+                request.getName(),
+                request.getDate(),
+                request.getTime(),
+                id
+        );
+
+        return new Reservation(
+                id,
                 request.getName(),
                 request.getDate(),
                 request.getTime()
         );
-
-        return reservation;
     }
 
     public void delete(Long id) {
-        Reservation reservation = findById(id)
+        findById(id)
                 .orElseThrow(NotFoundReservationException::new);
 
-        reservations.remove(reservation);
+        String sql = """
+                DELETE FROM reservation
+                WHERE id = ?
+                """;
+
+        jdbcTemplate.update(sql, id);
     }
 }
