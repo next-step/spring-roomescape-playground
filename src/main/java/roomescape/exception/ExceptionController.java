@@ -6,8 +6,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
+import java.util.NoSuchElementException;
+
+
 @RestControllerAdvice
-public class ReservationExceptionController {
+public class ExceptionController {
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex) {
@@ -31,5 +34,12 @@ public class ReservationExceptionController {
         String message = "서버 내부 오류가 발생했습니다.";
 
         return new ResponseEntity<>(message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<String> handleNoSuchElementException(NoSuchElementException ex) {
+        String message = "해당 시간을 찾을 수 없습니다";
+
+        return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
     }
 }

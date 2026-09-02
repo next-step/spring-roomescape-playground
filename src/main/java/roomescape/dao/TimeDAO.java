@@ -4,52 +4,46 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import roomescape.domain.reservation.Reservation;
-import roomescape.domain.reservation.ReservationRequest;
+import roomescape.domain.time.TimeRequest;
 
 import java.sql.PreparedStatement;
-import java.time.LocalDate;
+import roomescape.domain.time.Time;
 import java.time.LocalTime;
 import java.util.List;
 
 @Repository
-public class ReservationDAO {
+public class TimeDAO {
     private final JdbcTemplate jdbcTemplate;
 
-    public ReservationDAO(JdbcTemplate jdbcTemplate) {
+    public TimeDAO(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public List<Reservation> findAllReservations() {
-        String sql = "select id, name, date, time from reservation";
+    public List<Time> findAllTimes() {
+        String sql = "select id, time from time";
         return jdbcTemplate.query(
                 sql,
                 (resultSet, rowNum) -> {
-                    Reservation reservation = new Reservation(
+                    Time time = new Time(
                             resultSet.getLong("id"),
-                            resultSet.getString("name"),
-                            resultSet.getObject("date", LocalDate.class),
                             resultSet.getObject("time", LocalTime.class)
                     );
-                    return reservation;
+                    return time;
                 });
     }
 
-
     public int delete(Long id) {
-        int delete = jdbcTemplate.update("delete from reservation where id = ?", id);
+        int delete = jdbcTemplate.update("delete from time where id = ?", id);
         return delete;
     }
 
-    public Long insertWithKeyHolder(ReservationRequest request) {
-        String sql = "insert into reservation (name, date, time) values (?, ?, ?)";
+    public Long insertWithKeyHolder(TimeRequest request) {
+        String sql = "insert into time (time) values (?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
-            ps.setString(1, request.getName());
-            ps.setObject(2, request.getDate());
-            ps.setObject(3, request.getTime());
+            ps.setObject(1, request.getTime());
             return ps;
         }, keyHolder);
 

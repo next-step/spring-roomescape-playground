@@ -1,4 +1,4 @@
-package roomescape.domain;
+package roomescape.domain.reservation;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
