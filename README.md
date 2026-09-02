@@ -43,4 +43,32 @@
 - [x] **예외 테스트 통과**:
   - 필요한 인자값이 없는 경우 400 상태 코드 검증
   - 삭제할 예약이 없는 경우 404 상태 코드 검증 
+---
 
+### 5단계 - 데이터베이스 적용하기
+- [x] **gradle 의존성 추가**:
+  - build.gradle에 spring-boot-starter-jdbc와 h2 의존성 추가
+- [x] **테이블 스키마 정의**:
+  - `schema.sql`을 통해 `reservation` 테이블 스키마 작성
+  - `id`를 기본키로 가지며 `AUTO_INCREMENT` 설정
+- [x] **데이터베이스 연결 테스트 통과**:
+  - `DatabaseTest`를 통한 테이블 생성 검증
+---
+
+### 6단계 - 데이터 조회하기
+- [x] **예약목록 DB 조회 기능 구현**:
+  - `JdbcTemplate`과 `RowMapper`를 활용하여 `Reservation` 으로 매핑
+- [x] **날짜/시간 직렬화 규격 적용**:
+  - `ReservationResponseDto`의 `time` 필드 포맷팅을 통한 역직렬화 보장
+- [x] **데이터 조회 테스트 통과**:
+  - `ReservationDatabaseTest`의 예약목록 조회 검증 통과
+---
+
+### 7단계 - 데이터 추가 / 삭제하기
+- [x] **SimpleJdbcTemplate를 활용한 예약 추가**:
+  - `SimpleJdbcInsert`와 `BeanPropertySqlParameterSource`를 활용해 예약 추가
+  - 자동생성된 기본키를 합쳐서 객체 반환
+- [x] **JdbcTemplate을 활용한 예약 삭제**:
+  - sql문을 통해 해당 ID의 예약 DB 데이터 삭제
+- [x] **예약 추가/삭제 테스트 통과**:
+  - `ReservationDatabaseTest`를 통한 생성 및 삭제 DB 반영 검증 
