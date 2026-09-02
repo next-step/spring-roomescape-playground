@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -13,15 +14,22 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 import roomescape.exception.InvalidReservationException;
 import roomescape.exception.NotFoundException;
 
 @Controller
 public class ReservationController {
 
+    private final JdbcTemplate jdbcTemplate;
+
     private final AtomicLong index = new AtomicLong(0);
 
     private List<Reservation> reservations = new ArrayList<>();
+
+    public ReservationController(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<Void> handleNotFoundException() {
@@ -39,8 +47,18 @@ public class ReservationController {
     }
 
     @GetMapping("/reservations")
-    public ResponseEntity<List<Reservation>> read() {
-        return ResponseEntity.ok(reservations);
+    @ResponseBody
+    public List<Reservation> read() {
+        String sql = "SELECT id, name, date, time FROM reservation";
+        return jdbcTemplate.query(
+            sql,
+            (rs, rowNum) -> Reservation.create(
+                rs.getLong("id"),
+                rs.getString("name"),
+                rs.getString("date"),
+                rs.getString("time")
+            )
+        );
     }
 
     @PostMapping("/reservations")
