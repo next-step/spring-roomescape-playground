@@ -1,5 +1,6 @@
 package roomescape.dto;
 
+import roomescape.domain.Time;
 import roomescape.exception.BlankReservationException;
 
 import java.time.DateTimeException;
@@ -9,7 +10,7 @@ import java.time.LocalTime;
 public class ReservationRequest {
     private String name;
     private String date;
-    private String time;
+    private Time time;
 
     public LocalDate getParsedDate() {
         validateBlank();

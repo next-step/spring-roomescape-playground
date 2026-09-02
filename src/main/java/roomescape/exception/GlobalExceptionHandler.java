@@ -42,4 +42,10 @@ public class GlobalExceptionHandler {
         log.warn(e.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
+
+    @ExceptionHandler(BlankTimeException.class)
+    public ResponseEntity<String> handleBlankTime(BlankTimeException e) {
+        log.warn(e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
 }

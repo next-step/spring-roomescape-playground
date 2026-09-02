@@ -1,6 +1,7 @@
 package roomescape.domain;
 
-import roomescape.exception.BlankReservationException;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import roomescape.exception.BlankTimeException;
 
 import java.time.LocalTime;
 
@@ -12,6 +13,7 @@ public class Time {
         this(0, time);
     }
 
+    @JsonCreator
     public Time(long id, LocalTime time) {
         validateTime(time);
         this.id = id;
@@ -20,7 +22,7 @@ public class Time {
 
     private static void validateTime(LocalTime time) {
         if (time == null) {
-            throw new BlankReservationException("시간을 입력해주세요.");
+            throw new BlankTimeException("시간을 입력해주세요.");
         }
     }
 
