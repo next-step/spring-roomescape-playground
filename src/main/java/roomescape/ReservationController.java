@@ -17,15 +17,19 @@ public class ReservationController {
         this.reservationService = reservationService;
     }
 
-    @GetMapping
-    public ResponseEntity<List<ReservationResponse>> reservations() {
+    @GetMapping("/reservations")
+    public List<Reservation> getReservations() {
+        String sql = "SELECT id, name, date, time FROM reservation";
 
-        List<ReservationResponse> responses = reservationService.findAll()
-                .stream()
-                .map(ReservationResponse::from)
-                .toList();
-
-        return ResponseEntity.ok(responses);
+        return jdbcTemplate.query(
+                sql,
+                (rs, rowNum) -> new Reservation(
+                        rs.getLong("id"),
+                        rs.getString("name"),
+                        rs.getString("date"),
+                        rs.getString("time")
+                )
+        );
     }
 
     @PostMapping
