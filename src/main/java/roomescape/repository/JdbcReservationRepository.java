@@ -10,6 +10,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
+import roomescape.domain.ReservationTime;
 
 @Repository
 public class JdbcReservationRepository implements ReservationRepository {
@@ -22,26 +23,38 @@ public class JdbcReservationRepository implements ReservationRepository {
 
     @Override
     public List<Reservation> findAll() {
-        String sql = "SELECT id, name, date, time FROM reservation";
+        String sql = """
+                SELECT r.id AS reservation_id,
+                       r.name,
+                       r.date,
+                       t.id AS time_id,
+                       t.time AS time_value
+                FROM reservation AS r
+                INNER JOIN time AS t ON r.time_id = t.id
+                ORDER BY r.id
+                """;
 
         return jdbcTemplate.query(sql, (resultSet, rowNumber) -> new Reservation(
-                resultSet.getLong("id"),
+                resultSet.getLong("reservation_id"),
                 resultSet.getString("name"),
                 LocalDate.parse(resultSet.getString("date")),
-                LocalTime.parse(resultSet.getString("time"))
+                new ReservationTime(
+                        resultSet.getLong("time_id"),
+                        LocalTime.parse(resultSet.getString("time_value"))
+                )
         ));
     }
 
     @Override
     public Reservation save(Reservation reservation) {
-        String sql = "INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO reservation (name, date, time_id) VALUES (?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
             PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, reservation.getName());
             statement.setString(2, reservation.getDate().toString());
-            statement.setString(3, reservation.getTime().toString());
+            statement.setLong(3, reservation.getTime().getId());
             return statement;
         }, keyHolder);
 
