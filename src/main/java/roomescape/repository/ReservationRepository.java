@@ -45,14 +45,12 @@ public class ReservationRepository {
 
         Long id = simpleJdbcInsert.executeAndReturnKey(parameters).longValue();
 
-        Reservation savedReservation = new Reservation(
+        return new Reservation(
                 id,
                 reservation.getName(),
                 reservation.getDate(),
                 reservation.getTime()
         );
-
-        return savedReservation;
     }
 
     public boolean deleteById(Long id) {
