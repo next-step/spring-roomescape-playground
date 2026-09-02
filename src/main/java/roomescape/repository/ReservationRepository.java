@@ -46,7 +46,7 @@ public class ReservationRepository {
 
         Long id = keyHolder.getKey().longValue();
 
-        return new Reservation(id, reservation.getName(), reservation.getReservedAt());
+        return reservation.withId(id);
     }
 
     public int deleteById(Long id) {
@@ -56,10 +56,9 @@ public class ReservationRepository {
 
     private final RowMapper<Reservation> reservationRowMapper = (resultSet, rowNum) -> {
         Reservation reservation = new Reservation(
-                resultSet.getLong("id"),
                 resultSet.getString("name"),
                 resultSet.getObject("reserved_at", LocalDateTime.class)
         );
-        return reservation;
+        return reservation.withId(resultSet.getLong("id"));
     };
 }

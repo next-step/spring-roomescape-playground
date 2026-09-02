@@ -8,7 +8,7 @@ public class Reservation {
     private String name;
     private LocalDateTime reservedAt;
 
-    public Reservation(Long id, String name, LocalDateTime reservedAt) {
+    private Reservation(Long id, String name, LocalDateTime reservedAt) {
         this.id = id;
         this.name = name;
         this.reservedAt = reservedAt;
@@ -28,5 +28,9 @@ public class Reservation {
 
     public LocalDateTime getReservedAt() {
         return reservedAt;
+    }
+
+    public Reservation withId(Long id) {
+        return new Reservation(id, name, reservedAt);
     }
 }
