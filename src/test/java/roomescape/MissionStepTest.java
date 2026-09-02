@@ -4,6 +4,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
+import roomescape.controller.ReservationController;
 import roomescape.domain.Reservation;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
@@ -23,6 +25,9 @@ public class MissionStepTest {
 
   @Autowired
   private JdbcTemplate jdbcTemplate;
+
+  @Autowired
+  private ReservationController reservationController;
 
   @Test
   @DisplayName("홈 요청 시 200 OK를 반환하는지 테스트")
@@ -194,5 +199,20 @@ public class MissionStepTest {
         .when().post("/reservations")
         .then().log().all()
         .statusCode(400);
+  }
+
+  @Test
+  @DisplayName("ReservationController에 JdbcTemplate 필드가 없어 데이터베이스 접근 책임이 분리되었는지 테스트")
+  void test_데이터베이스_접근_책임이_컨트롤러에서_분리되었는지_테스트() {
+    boolean isJdbcTemplateInjected = false;
+
+    for (Field field : reservationController.getClass().getDeclaredFields()) {
+      if (field.getType().equals(JdbcTemplate.class)) {
+        isJdbcTemplateInjected = true;
+        break;
+      }
+    }
+
+    assertThat(isJdbcTemplateInjected).isFalse();
   }
 }
