@@ -187,3 +187,68 @@ Content-Type: application/json
   "message": "예약을 찾을 수 없습니다."
 }
 ```
+
+# 5단계 - 데이터베이스 적용하기
+
+## 기능 명세
+
+- H2 인메모리 데이터베이스를 사용하여 예약 데이터를 저장한다
+- `JdbcTemplate`을 이용하여 데이터베이스에 접근한다
+- 예약 생성 시 `reservation` 테이블에 예약 정보를 저장한다
+- 예약 목록 조회 시 데이터베이스에 저장된 예약 정보를 조회한다
+- 예약 수정 시 해당 예약 정보를 데이터베이스에서 수정한다
+- 예약 삭제 시 해당 예약 정보를 데이터베이스에서 삭제한다
+- 존재하지 않는 예약을 수정하거나 삭제할 경우 예외를 발생시킨다
+
+## 데이터베이스 명세
+
+### 예약 테이블
+
+- Table: `reservation`
+- `id`: 예약 번호, `BIGINT`, 자동 증가, 기본키
+- `name`: 예약자 이름, `VARCHAR(255)`, NOT NULL
+- `date`: 예약 날짜, `VARCHAR(255)`, NOT NULL
+- `time`: 예약 시간, `VARCHAR(255)`, NOT NULL
+
+## 데이터베이스 설정
+
+- Database: H2
+- JDBC URL: `jdbc:h2:mem:database`
+- H2 Console을 활성화하여 데이터베이스 상태를 확인할 수 있다
+- `schema.sql`을 이용하여 애플리케이션 실행 시 예약 테이블을 생성한다
+
+## API 명세
+
+### 예약 목록 조회
+
+- Method: `GET`
+- URL: `/reservations`
+- 설명: 데이터베이스에 저장된 전체 예약 목록을 조회한다
+- 성공 상태 코드: `200 OK`
+
+### 예약 생성
+
+- Method: `POST`
+- URL: `/reservations`
+- 설명: 새로운 예약 정보를 데이터베이스에 저장한다
+- 성공 상태 코드: `200 OK`
+- Request:
+  - `name`: 예약자 이름
+  - `date`: 예약 날짜
+  - `time`: 예약 시간
+
+### 예약 수정
+
+- Method: `PUT`
+- URL: `/reservations/{id}`
+- 설명: 예약 번호에 해당하는 예약 정보를 수정한다
+- 성공 상태 코드: `200 OK`
+- 예약이 존재하지 않는 경우: `404 Not Found`
+
+### 예약 삭제
+
+- Method: `DELETE`
+- URL: `/reservations/{id}`
+- 설명: 예약 번호에 해당하는 예약 정보를 삭제한다
+- 성공 상태 코드: `200 OK`
+- 예약이 존재하지 않는 경우: `404 Not Found`
