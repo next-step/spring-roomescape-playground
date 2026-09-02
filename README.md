@@ -37,8 +37,8 @@
 ### '데이터베이스 적용'
 - [ ] schema.sql 파일을 생성한다.
 - [ ] 예약 테이블을 생성한다.
-- [ ] h2 console을 활성화한다.
-- [ ] datasource url을 지정한다.
+- [x] h2 console을 활성화한다.
+- [x] datasource url을 지정한다.
 
 
 ### 리뷰 반영
