@@ -72,9 +72,9 @@
   - 결과 : 응답으로 NotFoundException을 던짐
   - 상태코드 : 404
 ### 5단계
-- JdbcTemplate을 이용하여 DataSource객체에 접근하기 
-- DataSource 객체를 이용하여 Connection 확인하기 
-- Connection 객체를 이용하여 데이터베이스 이름 검증 
+- JdbcTemplate을 이용하여 DataSource객체에 접근하기
+- DataSource 객체를 이용하여 Connection 확인하기
+- Connection 객체를 이용하여 데이터베이스 이름 검증
 - Connection 객체를 이용하여 테이블 이름 검증
 ### 6단계
 - 경로 : /reservations에 POST요청 후 sql로 2차 검증
@@ -95,5 +95,5 @@
 5. ReservationController의 /reservations의 DELETE요청 검증
 6. ReservationController의 /reservations POST의 예외처리 검증
 7. ReservationController의 /reservations DELETE의 예외처리 검증
-8. ReservationController의 /reservations POST처리 검증 
+8. ReservationController의 /reservations POST처리 검증
 9. ReservationController의 /reservations DELETE처리 검증
