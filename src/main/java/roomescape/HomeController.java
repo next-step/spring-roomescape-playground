@@ -1,6 +1,7 @@
 package roomescape;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,9 +11,27 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.springframework.jdbc.core.JdbcTemplate;
+
 @Controller
 public class HomeController {
     private List<Reservation> reservations = new ArrayList<>();
+
+    private JdbcTemplate jdbcTemplate;
+
+    public HomeController(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
+    private final RowMapper<Reservation> reservationRowMapper = (resultSet, rowNum) -> {
+        Reservation reservation = new Reservation(
+                resultSet.getLong("id"),
+                resultSet.getString("name"),
+                resultSet.getString("date"),
+                resultSet.getString("time")
+        );
+        return reservation;
+    };
 
     @GetMapping("/")
     public String home() {
@@ -57,5 +76,12 @@ public class HomeController {
     public ResponseEntity<Void> handleIllegalArgumentException(IllegalArgumentException e) {
         System.out.println("IllegalArgumentException occurred: " + e.getMessage());
         return ResponseEntity.badRequest().build();
+    }
+
+    public List<Reservation> findAllReservations() {
+        String sql = "SELECT id, name, date, time FROM reservation";
+        List<Reservation> reservations = jdbcTemplate.query(sql, reservationRowMapper);
+
+        return reservations;
     }
 }
