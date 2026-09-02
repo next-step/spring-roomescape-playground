@@ -46,7 +46,7 @@ public class HomeController {
 
     @GetMapping("reservations")
     public ResponseEntity<List<Reservation>> reservations() {
-        return ResponseEntity.ok().body(reservations);
+        return ResponseEntity.ok().body(findAllReservations());
     }
 
     @PostMapping("/reservations")
