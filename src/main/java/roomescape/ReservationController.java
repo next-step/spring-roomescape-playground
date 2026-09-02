@@ -105,10 +105,11 @@ public class ReservationController {
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable long id) {
 
-        boolean removed = reservations.removeIf(reservation -> reservation.getId() == id);
+        String sql = "DELETE FROM reservation WHERE id = ?";
 
-        // 4단계
-        if (!removed) {
+        int deletedCount = jdbcTemplate.update(sql, id);
+
+        if (deletedCount == 0) {
             throw new NoSuchElementException();
         }
 
