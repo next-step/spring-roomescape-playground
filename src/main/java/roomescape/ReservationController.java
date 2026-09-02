@@ -58,7 +58,7 @@ public class ReservationController {
     }
 
     @PostMapping("/reservations")
-    public ResponseEntity<Void> createReservation(
+    public ResponseEntity<Reservation> createReservation(
         @RequestBody ReservationRequest reservationRequest) {
         reservationRequest.validate();
         String sql = "INSERT INTO reservation(name, date, time) VALUES (?, ?, ?)";
@@ -78,10 +78,16 @@ public class ReservationController {
         }, keyHolder);
 
         long id = keyHolder.getKey().longValue();
+        Reservation reservation = Reservation.create(
+            id,
+            reservationRequest.name(),
+            reservationRequest.date(),
+            reservationRequest.time()
+        );
 
         return ResponseEntity
             .created(URI.create("/reservations/" + id))
-            .build();
+            .body(reservation);
     }
 
     @DeleteMapping("/reservations/{id}")
