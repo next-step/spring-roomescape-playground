@@ -18,8 +18,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 @Controller
 public class HomeController {
-    private List<Reservation> reservations = new ArrayList<>();
-
     private JdbcTemplate jdbcTemplate;
 
     public HomeController(JdbcTemplate jdbcTemplate) {
@@ -51,27 +49,26 @@ public class HomeController {
         return ResponseEntity.ok().body(reservations);
     }
 
-    private final AtomicLong index = new AtomicLong(1);
-
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> create(@RequestBody Reservation reservation) {
         if (reservation.getName().isBlank() || reservation.getDate().isBlank() || reservation.getTime().isBlank()) {
             throw new IllegalArgumentException("Invalid reservation");
         }
 
-        Reservation newReservation = Reservation.toEntity(reservation, index.getAndIncrement());
-        reservations.add(newReservation);
-        return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
+        Long id = insertWithKeyHolder(reservation);
+
+        Reservation newReservation = Reservation.toEntity(reservation, id);
+        return ResponseEntity.created(URI.create("/reservations/" + id)).body(newReservation);
     }
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        Reservation reservation = reservations.stream()
-                .filter(it -> Objects.equals(it.getId(), id))
-                .findFirst()
-                .orElseThrow(() -> new NotFoundReservationException("Reservation not found: id=" + id));
+        int deleteNumber = deleteReservation(id);
 
-        reservations.remove(reservation);
+        if(deleteNumber == 0) {
+            throw new NotFoundReservationException("Reservation not found: id=" + id);
+        }
+
         return ResponseEntity.noContent().build();
     }
 
