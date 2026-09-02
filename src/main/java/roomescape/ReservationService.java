@@ -1,8 +1,8 @@
 package roomescape;
 
-import org.springframework.stereotype.Service;
-
 import java.util.List;
+
+import org.springframework.stereotype.Service;
 
 @Service
 public class ReservationService {
@@ -17,7 +17,12 @@ public class ReservationService {
         return reservationRepository.findAll();
     }
 
-    public Reservation create(ReservationRequest request) {
+    public Reservation findById(Long id) {
+        return reservationRepository.findById(id)
+                .orElseThrow(NotFoundReservationException::new);
+    }
+
+    public Reservation save(ReservationRequest request) {
         return reservationRepository.save(request);
     }
 
