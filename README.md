@@ -72,6 +72,22 @@ H2 인메모리(In-Memory) 데이터베이스를 사용합니다. 데이터가 �
 
 > 이 단계에서는 데이터베이스 연결과 테이블 생성까지만 다루며, 예약 데이터는 아직 애플리케이션 메모리(`List`)에 저장됩니다.
 
+### 6단계 - 데이터 조회하기
+
+- [x] `GET /reservations` 요청 시 메모리가 아닌 데이터베이스에서 예약 목록을 조회
+- [x] `JdbcTemplate`과 `RowMapper`를 사용하는 `ReservationRepository` 추가
+
+> 조회만 데이터베이스로 전환된 단계로, 추가/취소는 아직 메모리를 사용합니다. 두 저장소가 분리되어 있어 예약 관리 기능은 정상 동작하지 않습니다.
+
+### 7단계 - 데이터 추가/삭제하기
+
+- [x] `POST /reservations` 요청 시 데이터베이스에 예약을 저장하고, DB가 생성한 id로 응답
+- [x] `DELETE /reservations/{id}` 요청 시 데이터베이스에서 예약을 삭제
+- [x] `DELETE /reservations/{id}` 요청 시 삭제된 행이 없으면 404 응답
+- [x] 메모리 저장소(`List`)와 식별자 생성기(`AtomicLong`) 제거
+
+> 식별자 생성은 `AtomicLong` 대신 데이터베이스의 `AUTO_INCREMENT`에 위임합니다.
+
 ### 추가 구현 (미션 요구사항 외)
 
 - [x] `POST /reservations` 요청 시 현재 시각보다 과거의 날짜/시간으로 예약하면 400 응답
@@ -124,7 +140,7 @@ content-type: application/json
 
 {
     "name": "브라운",
-    "date": "2023-08-05",
+    "date": "2030-08-05",
     "time": "15:40"
 }
 ```
@@ -139,10 +155,12 @@ Content-Type: application/json
 {
     "id": 1,
     "name": "브라운",
-    "date": "2023-08-05",
+    "date": "2030-08-05",
     "time": "15:40"
 }
 ```
+
+> `id`는 데이터베이스의 `AUTO_INCREMENT`가 생성합니다.
 
 ### 예약 취소
 
