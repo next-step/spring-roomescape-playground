@@ -47,20 +47,18 @@ public class ReservationController {
     public ResponseEntity<Reservation> createReservation(
         @RequestBody ReservationRequest reservationRequest) {
         reservationRequest.validate();
-        //검증 성공하면
-        Reservation newReservaion = Reservation.create(
+        Reservation newReservation = Reservation.create(
             index.incrementAndGet(),
             reservationRequest.name(),
             reservationRequest.date(),
             reservationRequest.time()
         );
 
-        reservations.add(newReservaion);
+        reservations.add(newReservation);
 
         return ResponseEntity
-            .created(
-                URI.create("/reservations/" + newReservaion.getId())) //201 Created, /reservations/1
-            .body(newReservaion);
+            .created(URI.create("/reservations/" + newReservation.getId()))
+            .body(newReservation);
     }
 
     @DeleteMapping("/reservations/{id}")
@@ -72,6 +70,6 @@ public class ReservationController {
 
         reservations.remove(reservation);
 
-        return ResponseEntity.noContent().build(); //204
+        return ResponseEntity.noContent().build();
     }
 }

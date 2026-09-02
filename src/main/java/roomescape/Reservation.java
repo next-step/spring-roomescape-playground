@@ -15,13 +15,11 @@ public class Reservation {
     }
 
     private Reservation(long id, String name, String date, String time) {
-        //검증먼저
         boolean hasEmpty = Stream.of(
             name,
             date,
             time
         ).anyMatch(value -> value == null || value.isBlank());
-        //검증 실패하면 던지기
         if (hasEmpty) {
             throw new InvalidReservationException("예약 정보는 비어 있을 수 없습니다.");
         }
