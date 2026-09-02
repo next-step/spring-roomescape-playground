@@ -55,6 +55,14 @@ public class TimeRepository {
         return time.withId(id);
     }
 
+    public boolean existsByTime(LocalTime time) {
+        String sql = "SELECT COUNT(*) FROM time WHERE time = ?";
+
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, time.toString());
+
+        return count != null && count > 0;
+    }
+
     public boolean deleteById(long id) {
         int deletedCount = jdbcTemplate.update(
                 "DELETE FROM time WHERE id = ?",
