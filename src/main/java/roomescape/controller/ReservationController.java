@@ -4,10 +4,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import roomescape.domain.Reservation;
+import roomescape.domain.Time;
 import roomescape.dto.ReservationRequest;
 import roomescape.dto.ReservationResponse;
 import roomescape.exception.NotFoundReservationException;
+import roomescape.exception.NotFoundTimeException;
 import roomescape.repository.ReservationRepository;
+import roomescape.repository.TimeRepository;
 
 import java.net.URI;
 import java.util.List;
@@ -16,9 +19,11 @@ import java.util.List;
 public class ReservationController {
     private static final int NO_ROWS = 0;
     private final ReservationRepository reservationRepository;
+    private final TimeRepository timeRepository;
 
-    public ReservationController(ReservationRepository reservationRepository){
+    public ReservationController(ReservationRepository reservationRepository, TimeRepository timeRepository){
         this.reservationRepository = reservationRepository;
+        this.timeRepository = timeRepository;
     }
 
     @GetMapping("/reservations")
@@ -39,7 +44,8 @@ public class ReservationController {
 
     @PostMapping("/reservations")
     public ResponseEntity<ReservationResponse> addReservation(@RequestBody ReservationRequest request) {
-        Reservation reservation = request.toEntity();
+        Time time = findTimeById(request.time());
+        Reservation reservation = request.toEntity(time);
         Reservation savedReservation = reservationRepository.save(reservation);
 
         return ResponseEntity.created(URI.create("/reservations/" + savedReservation.getId()))
@@ -59,5 +65,10 @@ public class ReservationController {
     private Reservation findReservationById(Long id) {
         return reservationRepository.findById(id)
                 .orElseThrow(() -> new NotFoundReservationException("조회할 예약을 찾을 수 없습니다."));
+    }
+
+    private Time findTimeById(Long id) {
+        return timeRepository.findById(id)
+                .orElseThrow(() -> new NotFoundTimeException("예약 시간을 찾을 수 없습니다."));
     }
 }

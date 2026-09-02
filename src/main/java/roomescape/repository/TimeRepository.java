@@ -8,7 +8,9 @@ import org.springframework.stereotype.Repository;
 import roomescape.domain.Time;
 
 import java.sql.PreparedStatement;
+import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class TimeRepository {
@@ -21,7 +23,7 @@ public class TimeRepository {
     private final RowMapper<Time> timeRowMapper = (resultSet, rowNum) ->
             new Time(
                     resultSet.getLong("id"),
-                    resultSet.getString("time")
+                    resultSet.getObject("time", LocalTime.class)
             );
 
     public List<Time> findAll() {
@@ -30,13 +32,21 @@ public class TimeRepository {
         return jdbcTemplate.query(sql, timeRowMapper);
     }
 
+    public Optional<Time> findById(Long id) {
+        String sql = "select id, time from time where id = ?";
+
+        return jdbcTemplate.query(sql, timeRowMapper, id)
+                .stream()
+                .findFirst();
+    }
+
     public Time save(Time time) {
         String sql = "insert into time (time) values (?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
             PreparedStatement preparedStatement = connection.prepareStatement(sql, new String[]{"id"});
-            preparedStatement.setString(1, time.getTime());
+            preparedStatement.setObject(1, time.getTime());
             return preparedStatement;
         }, keyHolder);
 
