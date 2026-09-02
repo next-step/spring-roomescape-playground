@@ -1,23 +1,28 @@
 package roomescape;
 
 import java.net.URI;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class ReservationController {
 
+    private final JdbcTemplate jdbcTemplate;
     private final List<Reservation> reservations = new ArrayList<>();
     private final AtomicLong index = new AtomicLong(0);
     private final Object lock = new Object();
 
-    public ReservationController() {
+    public ReservationController(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     @GetMapping("/reservation")
@@ -27,9 +32,24 @@ public class ReservationController {
 
     @GetMapping("/reservations")
     @ResponseBody
-    public List<Reservation> getReservations() {
+    public ResponseEntity<List<Reservation>> getReservations() {
         synchronized (lock) {
-            return reservations;
+            String sql = "SELECT id, name, date, time FROM reservation";
+
+            List<Reservation> reservations = jdbcTemplate.query(
+                    sql,
+                    (resultSet, rowNum) -> {
+                        Reservation reservation = new Reservation(
+                                resultSet.getLong("id"),
+                                resultSet.getString("name"),
+                                LocalDate.parse(resultSet.getString("date")),
+                                LocalTime.parse(resultSet.getString("time"))
+                        );
+
+                        return reservation;
+                    }
+            );
+            return ResponseEntity.ok().body(reservations);
         }
     }
 
