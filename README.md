@@ -56,10 +56,15 @@
 
 ## 요구사항
 - GET "/time" 요청 시 시간 관리 페이지가 응답한다.
+- 기존 예약 관리 페이지를 `new-reservation.html`로 변경한다.
 - 시간 관리 기능을 추가한다.
   - DB 스키마에 time 테이블을 추가하고, 시간 조회/추가/삭제 API를 작성한다.
+- 예약 생성 시 시간 관리 기능에 등록된 시간을 선택한다.
 
 ## 적용 사항
 - `time` 테이블과 `Time` domain/DTO/Controller/Repository를 추가했다.
 - 존재하지 않는 시간의 삭제 요청은 `404 Not Found`를 반환하도록 처리했다.
 - 동일한 시간이 중복 저장되지 않도록 유니크 제약을 추가했다.
+- `Reservation`의 시간 필드를 `LocalTime`에서 `Time` 도메인 객체로 변경했다.
+- 예약 요청으로 전달받은 시간 id를 조회하여 `Reservation`과 연결했다.
+- 예약 조회 시 `reservation`과 `time` 테이블을 JOIN하여 시간 정보를 함께 반환하도록 변경했다.
