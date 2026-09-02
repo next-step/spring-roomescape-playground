@@ -115,10 +115,13 @@ public class ReservationRepository {
     }
 
     public void delete(Long id) {
+        findById(id)
+                .orElseThrow(NotFoundReservationException::new);
+
         String sql = """
-                DELETE FROM reservation
-                WHERE id = ?
-                """;
+            DELETE FROM reservation
+            WHERE id = ?
+            """;
 
         jdbcTemplate.update(sql, id);
     }
