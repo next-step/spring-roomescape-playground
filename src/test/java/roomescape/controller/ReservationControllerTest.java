@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.web.servlet.MockMvc;
 import roomescape.domain.Reservation;
 import roomescape.domain.Time;
@@ -13,10 +14,12 @@ import roomescape.exception.ReservationErrorCode;
 import roomescape.exception.ReservationException;
 import roomescape.service.ReservationService;
 
+import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
@@ -37,8 +40,25 @@ class ReservationControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private ReservationController reservationController;
+
     @MockBean
     private ReservationService reservationService;
+
+    @Test
+    void ReservationController는_JdbcTemplate을_필드로_가지지_않는다() {
+        boolean isJdbcTemplateInjected = false;
+
+        for (Field field : reservationController.getClass().getDeclaredFields()) {
+            if (field.getType().equals(JdbcTemplate.class)) {
+                isJdbcTemplateInjected = true;
+                break;
+            }
+        }
+
+        assertThat(isJdbcTemplateInjected).isFalse();
+    }
 
     @Test
     void 예약_목록_조회_요청_시_예약_목록을_반환한다() throws Exception {
