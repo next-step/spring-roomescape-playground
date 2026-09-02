@@ -119,7 +119,9 @@ class MissionStepTest {
                 .contentType(ContentType.JSON)
                 .body(reservation)
                 .post("/reservations")
-                .then().statusCode(400);
+                .then()
+                .statusCode(400)
+                .body("message", is("예약 정보를 모두 입력해야 합니다."));
     }
 
     @Test
@@ -136,7 +138,9 @@ class MissionStepTest {
                 .contentType(ContentType.JSON)
                 .body(reservation)
                 .post("/reservations")
-                .then().statusCode(400);
+                .then()
+                .statusCode(400)
+                .body("message", is("지난 일시로는 예약할 수 없습니다."));
     }
 
     @Test

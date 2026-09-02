@@ -23,7 +23,10 @@ function createFormControl(timeData) {
   select.id = 'time-select';
 
   const defaultOption = document.createElement('option');
+  defaultOption.value = '';
   defaultOption.textContent = "시간 선택";
+  defaultOption.disabled = true;
+  defaultOption.selected = true;
   select.appendChild(defaultOption);
 
   timeData.forEach(time => {
@@ -91,6 +94,7 @@ function createEditableFieldsFor(row) {
   const nameInput = createInput('text');
   const dateInput = createInput('date');
   const timeDropdown = document.getElementById('time-select').cloneNode(true);
+  timeDropdown.required = true;
 
   const fields = ['', nameInput, dateInput, timeDropdown];
 
@@ -117,7 +121,20 @@ function createInput(type) {
   const input = document.createElement('input');
   input.type = type;
   input.className = 'form-control';
+  input.required = true;
+
+  if (type === 'date') {
+    input.min = formatLocalDate(new Date());
+  }
+
   return input;
+}
+
+function formatLocalDate(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
 }
 
 function saveRow(event) {
@@ -127,16 +144,44 @@ function saveRow(event) {
   const timeSelect = row.querySelector('select');
 
   const reservation = {
-    name: nameInput.value,
+    name: nameInput.value.trim(),
     date: dateInput.value,
-    time: timeSelect.value
+    time: Number(timeSelect.value)
   };
+
+  try {
+    validateReservation(reservation, timeSelect);
+  } catch (error) {
+    showCreateError(error);
+    return;
+  }
 
   requestCreate(reservation)
       .then(data => updateRowWithReservationData(row, data))
-      .catch(error => console.error('Error:', error));
+      .catch(showCreateError);
+}
 
-  isEditing = false;  // isEditing 값을 false로 설정
+function validateReservation(reservation, timeSelect) {
+  if (!reservation.name) {
+    throw new Error('예약자 이름을 입력해 주세요.');
+  }
+  if (!reservation.date) {
+    throw new Error('예약 날짜를 선택해 주세요.');
+  }
+  if (!reservation.time) {
+    throw new Error('예약 시간을 선택해 주세요.');
+  }
+
+  const selectedTime = timeSelect.options[timeSelect.selectedIndex].textContent;
+  const reservationDateTime = new Date(`${reservation.date}T${selectedTime}`);
+  if (reservationDateTime < new Date()) {
+    throw new Error('지난 일시로는 예약할 수 없습니다.');
+  }
+}
+
+function showCreateError(error) {
+  console.error('Error:', error);
+  window.alert(error.message);
 }
 
 function updateRowWithReservationData(row, data) {
@@ -178,9 +223,13 @@ function requestCreate(reservation) {
   };
 
   return fetch(RESERVATION_API_ENDPOINT, requestOptions)
-      .then(response => {
-        if (response.status === 201) return response.json();
-        throw new Error('Create failed');
+      .then(async response => {
+        if (response.status === 201) {
+          return response.json();
+        }
+
+        const errorResponse = await response.json().catch(() => null);
+        throw new Error(errorResponse?.message ?? '예약 생성에 실패했습니다.');
       });
 }
 
