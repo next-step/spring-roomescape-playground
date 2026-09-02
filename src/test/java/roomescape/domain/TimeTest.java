@@ -1,7 +1,7 @@
 package roomescape.domain;
 
 import org.junit.jupiter.api.Test;
-import roomescape.exception.BlankReservationException;
+import roomescape.exception.BlankTimeException;
 
 import java.time.LocalTime;
 
@@ -35,7 +35,7 @@ class TimeTest {
         LocalTime time = null;
         // When & Then
         assertThatThrownBy(() -> new Time(time))
-                .isInstanceOf(BlankReservationException.class)
+                .isInstanceOf(BlankTimeException.class)
                 .hasMessage("시간을 입력해주세요.");
     }
 

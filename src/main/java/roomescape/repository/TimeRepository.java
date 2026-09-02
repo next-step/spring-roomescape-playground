@@ -10,6 +10,7 @@ import roomescape.domain.Time;
 import java.sql.PreparedStatement;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
 
 @Repository
@@ -27,6 +28,15 @@ public class TimeRepository {
 
     public List<Time> findAll() {
         return jdbcTemplate.query("SELECT id, time FROM time", rowMapper);
+    }
+
+    public Optional<Time> findById(long id) {
+        List<Time> result = jdbcTemplate.query(
+                "SELECT id, time FROM time WHERE id = ?",
+                rowMapper,
+                id
+        );
+        return result.stream().findFirst();
     }
 
     public Time save(Time time) {

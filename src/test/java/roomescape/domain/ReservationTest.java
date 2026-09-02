@@ -15,7 +15,7 @@ class ReservationTest {
         //Given
         String name = "이준환";
         //When & Then
-        assertDoesNotThrow(() -> new Reservation(1, name, LocalDate.of(2026, 8, 5), LocalTime.of(10, 0)));
+        assertDoesNotThrow(() -> new Reservation(1, name, LocalDate.of(2026, 8, 5), new Time(LocalTime.of(10, 0))));
     }
 
     @Test
@@ -23,7 +23,7 @@ class ReservationTest {
         //Given
         String name = null;
         //When & Then
-        assertThatThrownBy(() -> new Reservation(1, name, LocalDate.of(2026, 8, 5), LocalTime.of(10, 0)))
+        assertThatThrownBy(() -> new Reservation(1, name, LocalDate.of(2026, 8, 5), new Time(LocalTime.of(10, 0))))
                 .isInstanceOf(BlankReservationException.class)
                 .hasMessage("이름을 입력해주세요");
     }
@@ -33,7 +33,7 @@ class ReservationTest {
         //Given
         String name = " ";
         //When & Then
-        assertThatThrownBy(() -> new Reservation(1, name, LocalDate.of(2026, 8, 5), LocalTime.of(10, 0)))
+        assertThatThrownBy(() -> new Reservation(1, name, LocalDate.of(2026, 8, 5), new Time(LocalTime.of(10, 0))))
                 .isInstanceOf(BlankReservationException.class)
                 .hasMessage("이름을 입력해주세요");
     }
@@ -43,7 +43,7 @@ class ReservationTest {
         //Given
         LocalDate date = LocalDate.of(2026, 8, 5);
         //When & Then
-        assertDoesNotThrow(() -> new Reservation(1, "이준환", date, LocalTime.of(10, 0)));
+        assertDoesNotThrow(() -> new Reservation(1, "이준환", date, new Time(LocalTime.of(10, 0))));
     }
 
     @Test
@@ -51,7 +51,7 @@ class ReservationTest {
         //Given
         LocalDate date = null;
         //When & Then
-        assertThatThrownBy(() -> new Reservation(1, "이준환", date, LocalTime.of(10, 0)))
+        assertThatThrownBy(() -> new Reservation(1, "이준환", date, new Time(LocalTime.of(10, 0))))
                 .isInstanceOf(BlankReservationException.class)
                 .hasMessage("날짜를 선택해주세요");
     }
@@ -59,7 +59,7 @@ class ReservationTest {
     @Test
     void 시간이_정상이면_예약이_생성된다() {
         //Given
-        LocalTime time = LocalTime.of(10, 0);
+        Time time = new Time(LocalTime.of(10, 0));
         //When & Then
         assertDoesNotThrow(() -> new Reservation(1, "이준환", LocalDate.of(2026, 8, 5), time));
     }
@@ -67,7 +67,7 @@ class ReservationTest {
     @Test
     void 시간이_null이면_예외가_발생한다() {
         //Given
-        LocalTime time = null;
+        Time time = null;
         //When & Then
         assertThatThrownBy(() -> new Reservation(1, "이준환", LocalDate.of(2026, 8, 5), time))
                 .isInstanceOf(BlankReservationException.class)
