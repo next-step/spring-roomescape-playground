@@ -1,5 +1,6 @@
 package com.cholog.roomescape.roomescape.business.reservation;
 
+import com.cholog.roomescape.roomescape.dto.request.ReservationRequest;
 import com.cholog.roomescape.roomescape.dto.request.TimeRequest;
 import com.cholog.roomescape.roomescape.dto.response.TimeResponse;
 import io.restassured.RestAssured;
@@ -10,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
-import com.cholog.roomescape.roomescape.dto.request.ReservationRequest;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.time.LocalDate;

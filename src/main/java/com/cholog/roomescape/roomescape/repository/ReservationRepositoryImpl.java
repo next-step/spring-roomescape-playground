@@ -1,5 +1,6 @@
 package com.cholog.roomescape.roomescape.repository;
 
+import com.cholog.roomescape.roomescape.entity.Reservation;
 import com.cholog.roomescape.roomescape.entity.Time;
 import com.cholog.roomescape.roomescape.exception.badrequest.TimeNotValidException;
 import com.cholog.roomescape.roomescape.exception.conflict.ReservationConflictException;
@@ -9,7 +10,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import com.cholog.roomescape.roomescape.entity.Reservation;
 import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;

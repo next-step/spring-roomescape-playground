@@ -5,7 +5,6 @@ import com.cholog.roomescape.roomescape.dto.request.TimeRequest;
 import com.cholog.roomescape.roomescape.dto.response.TimeResponse;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import io.restassured.response.ValidatableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

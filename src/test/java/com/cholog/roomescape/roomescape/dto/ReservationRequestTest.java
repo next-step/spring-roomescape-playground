@@ -1,12 +1,12 @@
 package com.cholog.roomescape.roomescape.dto;
 
+import com.cholog.roomescape.roomescape.dto.request.ReservationRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import com.cholog.roomescape.roomescape.dto.request.ReservationRequest;
 
 import java.time.LocalDate;
 import java.util.Set;
