@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import com.cholog.roomescape.roomescape.dto.request.ReservationRequest;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -30,10 +29,10 @@ public class ReservationRequestTest {
         // given
         String name = "";
         LocalDate reservedDate = LocalDate.now();
-        LocalTime reservedTime = LocalTime.now();
+        String reservedTimeId = "1";
 
         ReservationRequest request = new ReservationRequest(
-                name, reservedDate, reservedTime
+                name, reservedDate, reservedTimeId
         );
 
        // when
@@ -50,10 +49,10 @@ public class ReservationRequestTest {
         // given
         String name = "abcdefghijklmnopqrstu";
         LocalDate reservedDate = LocalDate.now();
-        LocalTime reservedTime = LocalTime.now();
+        String reservedTimeId = "1";
 
         ReservationRequest request = new ReservationRequest(
-                name, reservedDate, reservedTime
+                name, reservedDate, reservedTimeId
         );
 
         // when
@@ -69,10 +68,10 @@ public class ReservationRequestTest {
 
         // given
         LocalDate reservedDate = LocalDate.now();
-        LocalTime reservedTime = LocalTime.now();
+        String reservedTimeId = "1";
 
         ReservationRequest request = new ReservationRequest(
-                null, reservedDate, reservedTime
+                null, reservedDate, reservedTimeId
         );
 
         // when
@@ -89,10 +88,10 @@ public class ReservationRequestTest {
         // given
         String name = "Alice";
         LocalDate reservedDate = null;
-        LocalTime reservedTime = LocalTime.now();
+        String reservedTimeId = "1";
 
         ReservationRequest request = new ReservationRequest(
-                name, reservedDate, reservedTime
+                name, reservedDate, reservedTimeId
         );
 
         // when
@@ -109,10 +108,30 @@ public class ReservationRequestTest {
         // given
         String name = "Alice";
         LocalDate reservedDate = LocalDate.now();
-        LocalTime reservedTime = null;
+        String reservedTimeId = null;
 
         ReservationRequest request = new ReservationRequest(
-                name, reservedDate, reservedTime
+                name, reservedDate, reservedTimeId
+        );
+
+        // when
+        Set<ConstraintViolation<ReservationRequest>> violations = validator.validate(request);
+
+        // then
+        assertThat(violations).hasSize(1);
+    }
+
+    @Test
+    @DisplayName("예약 시각 필드는 빈 문자열을 허용하지 않는다")
+    void timeMustNotBeBlankInCreateReservationRequest() {
+
+        // given
+        String name = "Alice";
+        LocalDate reservedDate = LocalDate.now();
+        String reservedTimeId = "";
+
+        ReservationRequest request = new ReservationRequest(
+                name, reservedDate, reservedTimeId
         );
 
         // when
@@ -129,10 +148,10 @@ public class ReservationRequestTest {
         // given
         String name = "Alice";
         LocalDate reservedDate = LocalDate.now();
-        LocalTime reservedTime = LocalTime.now();
+        String reservedTimeId = "1";
 
         ReservationRequest request = new ReservationRequest(
-                name, reservedDate, reservedTime
+                name, reservedDate, reservedTimeId
         );
 
         // when
