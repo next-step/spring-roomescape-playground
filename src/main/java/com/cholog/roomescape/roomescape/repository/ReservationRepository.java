@@ -1,12 +1,18 @@
 package com.cholog.roomescape.roomescape.repository;
 
 import com.cholog.roomescape.roomescape.entity.Reservation;
+import com.cholog.roomescape.roomescape.exception.conflict.ReservationConflictException;
+import com.cholog.roomescape.roomescape.exception.notfound.TimeNotFoundException;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface ReservationRepository {
 
+    /**
+     * @throws TimeNotFoundException 예약이 참조하는 시간 객체가 존재하지 않는 경우 이 예외를 던집니다.
+     * @throws ReservationConflictException 이미 예약된 시각에 예약을 시도하는 경우 이 예외를 던집니다.
+     */
     Reservation save(Reservation reservation);
 
     List<Reservation> findAll();

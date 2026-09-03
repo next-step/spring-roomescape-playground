@@ -1,6 +1,6 @@
 package com.cholog.roomescape.roomescape.entity;
 
-import com.cholog.roomescape.roomescape.exception.TimeNotValidException;
+import com.cholog.roomescape.roomescape.exception.badrequest.TimeNotValidException;
 
 import java.time.LocalTime;
 import java.util.Objects;
@@ -36,6 +36,10 @@ public class Time {
 
     public LocalTime getTime() {
         return time;
+    }
+
+    public boolean isNotPersist() {
+        return id == null;
     }
 
     @Override

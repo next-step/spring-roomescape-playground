@@ -2,6 +2,7 @@ package com.cholog.roomescape.exception;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -30,5 +31,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Void> handleRuntimeException(NotFoundException e){
         logger.warn(e.getMessage(), e);
         return ResponseEntity.notFound().build();
+    }
+
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<Void> handleConflictException(ConflictException e){
+        logger.warn(e.getMessage(), e);
+        return ResponseEntity.status(HttpStatus.CONFLICT).build();
     }
 }

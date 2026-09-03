@@ -1,8 +1,10 @@
 package com.cholog.roomescape.roomescape.controller;
 
+import com.cholog.roomescape.exception.BadRequestException;
 import com.cholog.roomescape.roomescape.dto.request.ReservationRequest;
 import com.cholog.roomescape.roomescape.dto.response.ReservationResponse;
 import com.cholog.roomescape.roomescape.entity.Reservation;
+import com.cholog.roomescape.roomescape.exception.notfound.TimeNotFoundException;
 import com.cholog.roomescape.roomescape.service.ReservationService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +35,13 @@ public class ReservationApiController {
     public ResponseEntity<ReservationResponse> postReservation(
             @RequestBody @Valid ReservationRequest request
     ) {
-        Reservation reservation = reservationService.createReservation(request);
+        Reservation reservation;
+
+        try {
+            reservation = reservationService.createReservation(request);
+        } catch (TimeNotFoundException e) {
+            throw new BadRequestException(e.getMessage());
+        }
 
         return ResponseEntity
                 .created(URI.create("/reservations/" + reservation.getId()))

@@ -11,19 +11,15 @@ import java.time.LocalTime;
 
 public record ReservationRequest(
 
-        @NotBlank(message = "이름 필드는 비어있을 수 없습니다.")
+        @NotBlank(message = "이름 필드는 null값일 수 없습니다.")
         @Size(max = 20, message = "이름은 20자를 넘길 수 없습니다.")
         String name,
 
-        @NotNull(message = "예약 날짜는 비어있을 수 없습니다.")
+        @NotNull(message = "예약 날짜는 null값일 수 없습니다.")
         @JsonFormat(pattern = "yyyy-MM-dd")
         LocalDate date,
 
-        @NotNull(message = "예약 시각은 비어있을 수 없습니다.")
-        @JsonFormat(pattern = "HH:mm")
-        LocalTime time
+        @NotBlank(message = "예약 시각 기본 키는 비어 있는 값일 수 없습니다.")
+        String time
 ) {
-        public static Reservation toReservationWithoutId(ReservationRequest request) {
-            return new Reservation(request.name, request.date, request.time);
-        }
 }

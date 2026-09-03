@@ -1,4 +1,4 @@
-package com.cholog.roomescape.roomescape.exception;
+package com.cholog.roomescape.roomescape.exception.badrequest;
 
 import com.cholog.roomescape.exception.BadRequestException;
 

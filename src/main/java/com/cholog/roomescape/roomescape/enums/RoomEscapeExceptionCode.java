@@ -1,4 +1,4 @@
-package com.cholog.roomescape.roomescape.exception.code;
+package com.cholog.roomescape.roomescape.enums;
 
 public enum RoomEscapeExceptionCode {
 
@@ -7,6 +7,7 @@ public enum RoomEscapeExceptionCode {
 
     TIME_NOT_FOUND("해당 시간을 찾을 수 없습니다."),
     TIME_CONFLICT("이미 존재하는 시각입니다."),
+    TIME_IN_USE("해당 시각을 참조하는 예약이 존재하여 삭제할 수 없습니다."),
     ;
 
     private final String message;
