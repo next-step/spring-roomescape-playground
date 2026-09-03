@@ -30,6 +30,10 @@ public class ReservationService {
     }
 
     public void delete(Long id) {
-        reservationRepository.delete(id);
+        int deletedCount = reservationRepository.delete(id);
+
+        if (deletedCount == 0) {
+            throw new NotFoundReservationException();
+        }
     }
 }
