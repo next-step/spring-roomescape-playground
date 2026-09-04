@@ -30,7 +30,24 @@ class ReservationTest {
     @DisplayName("예약 이름은 공백일 수 없다")
     void rejectsBlankReservationName() {
         assertThatThrownBy(() -> Reservation.create(" ", DATE, TIME, NOW))
-                .isInstanceOf(InvalidReservationException.class);
+                .isInstanceOf(InvalidReservationException.class)
+                .hasMessage("예약자 이름은 필수입니다.");
+    }
+
+    @Test
+    @DisplayName("예약 날짜는 필수이다")
+    void rejectsNullReservationDate() {
+        assertThatThrownBy(() -> Reservation.create("브라운", null, TIME, NOW))
+                .isInstanceOf(InvalidReservationException.class)
+                .hasMessage("예약 날짜는 필수입니다.");
+    }
+
+    @Test
+    @DisplayName("예약 시간은 필수이다")
+    void rejectsNullReservationTime() {
+        assertThatThrownBy(() -> Reservation.create("브라운", DATE, null, NOW))
+                .isInstanceOf(InvalidReservationException.class)
+                .hasMessage("예약 시간은 필수입니다.");
     }
 
     @Test

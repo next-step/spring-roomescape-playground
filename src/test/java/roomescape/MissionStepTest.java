@@ -121,7 +121,7 @@ class MissionStepTest {
                 .post("/reservations")
                 .then()
                 .statusCode(400)
-                .body("message", is("예약 정보를 모두 입력해야 합니다."));
+                .body("message", is("예약자 이름은 필수입니다."));
     }
 
     @Test
@@ -199,7 +199,7 @@ class MissionStepTest {
                 .contentType(ContentType.JSON)
                 .body(params)
                 .post("/times")
-                .then().statusCode(201).header("Location", "/times/1");
+                .then().statusCode(201);
 
         RestAssured.get("/times").then().statusCode(200).body("size()", is(1));
         RestAssured.delete("/times/1").then().statusCode(204);

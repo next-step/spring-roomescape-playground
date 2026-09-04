@@ -18,6 +18,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import roomescape.domain.Reservation;
 import roomescape.domain.ReservationTime;
+import roomescape.exception.DuplicateReservationException;
 import roomescape.exception.InvalidReservationException;
 import roomescape.exception.NotFoundReservationException;
 import roomescape.repository.ReservationRepository;
@@ -65,6 +66,19 @@ class ReservationServiceTest {
 
         assertThatThrownBy(() -> reservationService.create("브라운", date, 1L))
                 .isInstanceOf(InvalidReservationException.class);
+    }
+
+    @Test
+    @DisplayName("같은 날짜와 시간에는 중복으로 예약할 수 없다")
+    void rejectsDuplicateReservation() {
+        LocalDate date = LocalDate.of(2026, 8, 13);
+        ReservationTime reservationTime = ReservationTime.restore(1L, LocalTime.of(15, 40));
+        when(timeRepository.findById(1L)).thenReturn(Optional.of(reservationTime));
+        when(reservationRepository.existsByDateAndTimeId(date, 1L)).thenReturn(true);
+
+        assertThatThrownBy(() -> reservationService.create("브라운", date, 1L))
+                .isInstanceOf(DuplicateReservationException.class)
+                .hasMessage("이미 예약된 날짜와 시간입니다.");
     }
 
     @Test
