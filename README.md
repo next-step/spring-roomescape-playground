@@ -33,6 +33,7 @@
 - [x] Thymeleaf 의존성을 추가한다.
 - [x] Spring JDBC 의존성을 추가한다.
 - [x] H2 의존성을 추가한다.
+- [x] Bean Validation 의존성을 추가한다.
 
 ### `데이터베이스 적용`
 
@@ -62,7 +63,7 @@
 
 ### `5~7단계 리뷰 반영`
 
-- [ ] DTO에 Bean Validation을 적용하여 빈 값과 null을 검증한다.
+- [x] DTO에 Bean Validation을 적용하여 빈 값과 null을 검증한다.
 - [ ] `NotFoundReservationException`과 `IllegalArgumentException`의 예외 처리 위치를 수정한다.
 - [ ] `HomeController`의 책임을 분리한다.
 - [ ] 메서드 접근 제한자를 수정한다.

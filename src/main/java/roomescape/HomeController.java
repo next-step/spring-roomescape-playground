@@ -1,5 +1,6 @@
 package roomescape;
 
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -50,10 +51,13 @@ public class HomeController {
     }
 
     @PostMapping("/reservations")
-    public ResponseEntity<Reservation> create(@RequestBody Reservation reservation) {
-        if (reservation.getName().isBlank() || reservation.getDate().isBlank() || reservation.getTime().isBlank()) {
-            throw new IllegalArgumentException("Invalid reservation");
-        }
+    public ResponseEntity<Reservation> create(@Valid @RequestBody ReservationRequestDto requestDto) {
+        Reservation reservation = new Reservation(
+                null,
+                requestDto.getName(),
+                requestDto.getDate(),
+                requestDto.getTime()
+        );
 
         Long id = insertWithKeyHolder(reservation);
 
