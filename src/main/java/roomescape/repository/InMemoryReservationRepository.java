@@ -3,7 +3,6 @@ package roomescape.repository;
 import roomescape.domain.Reservation;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -45,9 +44,11 @@ public class InMemoryReservationRepository implements ReservationRepository {
     }
 
     @Override
-    public boolean existsByDateAndTime(LocalDate date, LocalTime time) {
+    public boolean existsByDateAndTimeId(LocalDate date, Long timeId) {
         return reservations.stream()
-                .anyMatch(reservation -> reservation.getDate().equals(date)
-                        && reservation.getTime().equals(time));
+                .anyMatch(reservation ->
+                        reservation.getDate().equals(date)
+                                && reservation.getTime().getId().equals(timeId)
+                );
     }
 }

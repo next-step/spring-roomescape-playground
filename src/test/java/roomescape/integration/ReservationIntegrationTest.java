@@ -1,4 +1,4 @@
-package roomescape;
+package roomescape.integration;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -6,6 +6,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import roomescape.IntegrationTestSupport;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -23,15 +24,16 @@ class ReservationIntegrationTest extends IntegrationTestSupport {
 
     @AfterEach
     void tearDown() {
-        jdbcTemplate.update("delete from reservations where reservation_date = ? and reservation_time = ?",
-                DATE, TIME);
+        jdbcTemplate.update("delete from reservations where time_id in (select id from times where start_at = ?)", TIME);
+        jdbcTemplate.update("delete from times where start_at = ?", TIME);
     }
 
     @Test
     void 조회_API_결과와_DB_조회_결과가_일치한다() {
         // given
-        jdbcTemplate.update("insert into reservations (name, reservation_date, reservation_time) values (?, ?, ?)",
-                "브라운", DATE, TIME);
+        Long timeId = insertTime();
+        jdbcTemplate.update("insert into reservations (name, reservation_date, time_id) values (?, ?, ?)",
+                "브라운", DATE, timeId);
 
         // when
         int apiCount = RestAssured.given().log().all()
@@ -47,10 +49,11 @@ class ReservationIntegrationTest extends IntegrationTestSupport {
     @Test
     void 추가_API_요청_후_DB에_데이터가_저장된다() {
         // given
-        Map<String, String> request = new HashMap<>();
+        Long timeId = insertTime();
+        Map<String, Object> request = new HashMap<>();
         request.put("name", "브라운");
         request.put("date", DATE.toString());
-        request.put("time", TIME.toString());
+        request.put("timeId", timeId);
 
         // when
         Long id = RestAssured.given().log().all()
@@ -67,13 +70,30 @@ class ReservationIntegrationTest extends IntegrationTestSupport {
     }
 
     @Test
+    void 기존_예약_추가_API_형식으로_요청하면_400을_반환한다() {
+        // given
+        Map<String, String> reservation = new HashMap<>();
+        reservation.put("name", "브라운");
+        reservation.put("date", "2023-08-05");
+        reservation.put("time", "10:00");
+
+        // when & then
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(reservation)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(400);
+    }
+
+    @Test
     void 삭제_API_요청_후_DB에_데이터가_삭제된다() {
         // given
-        jdbcTemplate.update("insert into reservations (name, reservation_date, reservation_time) values (?, ?, ?)",
-                "브라운", DATE, TIME);
-        Long id = jdbcTemplate.queryForObject(
-                "select id from reservations where reservation_date = ? and reservation_time = ?",
-                Long.class, DATE, TIME);
+        Long timeId = insertTime();
+        jdbcTemplate.update("insert into reservations (name, reservation_date, time_id) values (?, ?, ?)",
+                "브라운", DATE, timeId);
+        Long id = jdbcTemplate.queryForObject("select id from reservations where reservation_date = ? and time_id = ?",
+                Long.class, DATE, timeId);
 
         // when
         RestAssured.given().log().all()
@@ -84,5 +104,10 @@ class ReservationIntegrationTest extends IntegrationTestSupport {
         Integer dbCount = jdbcTemplate.queryForObject(
                 "select count(*) from reservations where id = ?", Integer.class, id);
         assertThat(dbCount).isZero();
+    }
+
+    private Long insertTime() {
+        jdbcTemplate.update("insert into times (start_at) values (?)", TIME);
+        return jdbcTemplate.queryForObject("select id from times where start_at = ?", Long.class, TIME);
     }
 }
