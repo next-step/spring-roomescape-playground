@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import roomescape.domain.Reservation;
 import roomescape.dto.ReservationRequest;
+import roomescape.dto.ReservationResponse;
 import roomescape.exception.ReservationNotFoundException;
 import roomescape.repository.ReservationRepository;
 
@@ -29,7 +30,8 @@ public class ReservationController {
     }
 
     @PostMapping("/reservations")
-    public ResponseEntity<Reservation> createReservation(@Valid @RequestBody ReservationRequest reservationRequest) {
+    public ResponseEntity<ReservationResponse> createReservation(
+            @Valid @RequestBody ReservationRequest reservationRequest) {
         Reservation temporaryReservation = Reservation.createNewReservation(
                 reservationRequest.name(),
                 reservationRequest.date(),
@@ -37,7 +39,8 @@ public class ReservationController {
                 clock);
 
         Reservation savedReservation = reservationRepository.save(temporaryReservation);
-        return ResponseEntity.created(URI.create("/reservations/" + savedReservation.getId())).body(savedReservation);
+        ReservationResponse response = ReservationResponse.from(savedReservation);
+        return ResponseEntity.created(URI.create("/reservations/" + response.id())).body(response);
     }
 
     @GetMapping("/reservation")
@@ -47,8 +50,8 @@ public class ReservationController {
 
     @GetMapping("/reservations")
     @ResponseBody
-    public List<Reservation> findAllReservations() {
-        return reservationRepository.findAll();
+    public List<ReservationResponse> findAllReservations() {
+        return reservationRepository.findAll().stream().map(ReservationResponse::from).toList();
     }
 
     @DeleteMapping("/reservations/{reservationId}")
