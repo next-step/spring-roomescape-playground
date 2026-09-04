@@ -1,8 +1,10 @@
 package roomescape.service;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import roomescape.domain.Time;
+import roomescape.exception.InUseTimeException;
 import roomescape.exception.NotFoundTimeException;
 import roomescape.repository.TimeRepository;
 
@@ -32,7 +34,13 @@ public class TimeService {
     public void deleteById(Long id) {
         Objects.requireNonNull(id, "id는 null일 수 없습니다.");
 
-        int deleted = timeRepository.deleteById(id);
+        int deleted;
+        try {
+            deleted = timeRepository.deleteById(id);
+        } catch (DataIntegrityViolationException e) {
+            throw new InUseTimeException("예약에서 사용 중인 시간은 삭제할 수 없습니다. id=" + id);
+        }
+
         if (deleted == 0) {
             throw new NotFoundTimeException("시간을 찾을 수 없습니다. id=" + id);
         }

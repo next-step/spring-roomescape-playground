@@ -98,6 +98,30 @@ class TimeControllerTest {
                 .statusCode(409);
     }
 
+    @Test
+    void 예약이_사용_중인_시간_삭제시_예외_처리() {
+        시간을_추가한다();
+        예약을_추가한다();
+
+        RestAssured.given().log().all()
+                .when().delete("/times/1")
+                .then().log().all()
+                .statusCode(409);
+    }
+
+    private void 예약을_추가한다() {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", "브라운");
+        params.put("date", "2023-08-05");
+        params.put("time", "1");
+
+        RestAssured.given()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/reservations")
+                .then().statusCode(201);
+    }
+
     private void 시간을_추가한다() {
         Map<String, String> params = new HashMap<>();
         params.put("time", "10:00");

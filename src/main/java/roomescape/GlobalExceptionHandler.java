@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import roomescape.exception.DuplicateReservationException;
 import roomescape.exception.DuplicateTimeException;
+import roomescape.exception.InUseTimeException;
 import roomescape.exception.InvalidReservationException;
 import roomescape.exception.InvalidTimeException;
 import roomescape.exception.NotFoundReservationException;
@@ -41,6 +42,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DuplicateTimeException.class)
     public ResponseEntity<String> handleDuplicateTimeException(DuplicateTimeException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+    }
+
+    @ExceptionHandler(InUseTimeException.class)
+    public ResponseEntity<String> handleInUseTimeException(InUseTimeException e) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
     }
 }
