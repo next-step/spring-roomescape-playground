@@ -81,4 +81,29 @@ public class ReservationTimeTest {
         .then().log().all()
         .statusCode(409);
   }
+
+  @Test
+  @DisplayName("DELETE /times/{id} 요청 시 예약이 등록된 시간이면 409 상태 코드를 반환하는지 테스트")
+  void test_시간_삭제시_예약이_등록된_시간이면_409를_반환하는지_테스트() {
+    Map<String, String> timeParams = new HashMap<>();
+    timeParams.put("time", "10:00");
+    RestAssured.given()
+        .contentType(ContentType.JSON)
+        .body(timeParams)
+        .when().post("/times");
+
+    Map<String, String> reservationParams = new HashMap<>();
+    reservationParams.put("name", "브라운");
+    reservationParams.put("date", "2023-08-05");
+    reservationParams.put("time", "1");
+    RestAssured.given()
+        .contentType(ContentType.JSON)
+        .body(reservationParams)
+        .when().post("/reservations");
+
+    RestAssured.given().log().all()
+        .when().delete("/times/1")
+        .then().log().all()
+        .statusCode(409);
+  }
 }
