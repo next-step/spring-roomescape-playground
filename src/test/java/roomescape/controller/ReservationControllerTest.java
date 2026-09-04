@@ -50,7 +50,7 @@ class ReservationControllerTest {
                 .when().post("/reservations")
                 .then().log().all()
                 .statusCode(400)
-                .body(equalTo("날짜와 시간을 입력해주세요."));
+                .body("message", equalTo("날짜와 시간을 입력해주세요."));
     }
 
     @Test
