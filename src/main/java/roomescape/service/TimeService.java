@@ -20,10 +20,9 @@ public class TimeService {
     }
 
     public Time save(Time time) {
-        if (timeRepository.existsByTime(time.getTime())) {
-            throw new IllegalArgumentException("이미 존재하는 시간대입니다.");
-        }
-
+//        if (timeRepository.existsByTime(time.getTime())) {
+//            throw new IllegalArgumentException("이미 존재하는 시간대입니다.");
+//        }
         return timeRepository.save(time);
     }
 
