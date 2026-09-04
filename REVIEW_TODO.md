@@ -34,3 +34,4 @@
 - [ ] schema.sql의 reservation의 date, reservation_time의 time 컬럼을 VARCHAR에서 DATE/TIME으로 변경해서 도메인과 테이블 필드 통일
 - [ ] 예약 시간 등록 시 동일한 time 값이 이미 존재하면 예외를 던지도록 ReservationTimeService에 중복 검사 추가
 - [ ] 예약 생성 시 동일 날짜/시간에 이미 예약이 있으면 거부하도록 변경  
+- [ ] Lombok으로 만들던 DTO와 도메인을 record로 변경하고 Lombok 의존성 제거
