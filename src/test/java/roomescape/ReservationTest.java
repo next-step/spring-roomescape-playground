@@ -60,10 +60,10 @@ public class ReservationTest {
     Reservation reservation = assertDoesNotThrow(() -> new Reservation(1L, "브라운", date, time));
 
     assertAll(
-        () -> assertEquals(1L, reservation.getId()),
-        () -> assertEquals("브라운", reservation.getName()),
-        () -> assertEquals(date, reservation.getDate()),
-        () -> assertEquals(time, reservation.getTime())
+        () -> assertEquals(1L, reservation.id()),
+        () -> assertEquals("브라운", reservation.name()),
+        () -> assertEquals(date, reservation.date()),
+        () -> assertEquals(time, reservation.time())
     );
   }
 }
