@@ -1,7 +1,9 @@
 package roomescape.repository;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import roomescape.domain.Reservation;
 import roomescape.domain.Time;
@@ -12,21 +14,25 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DatabaseTest
+@JdbcTest
 class JdbcReservationRepositoryTest {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    @Autowired
     private TimeRepository timeRepository;
+
+    @BeforeEach
+    void setUp() {
+        timeRepository = new TimeRepository(jdbcTemplate);
+    }
 
     @Test
     void 저장된_예약_목록을_정상적으로_반환한다() {
         // Given
         JdbcReservationRepository reservationRepository = new JdbcReservationRepository(jdbcTemplate);
-        Time savedTime = timeRepository.save(new Time(LocalTime.of(10, 0)));
 
+        Time savedTime = timeRepository.save(new Time(LocalTime.of(10, 0)));
         reservationRepository.save(
                 new Reservation("이준환", LocalDate.of(2026, 8, 5), savedTime)
         );
