@@ -215,4 +215,20 @@ public class MissionStepTest {
 
     assertThat(isJdbcTemplateInjected).isFalse();
   }
+
+  @Test
+  @DisplayName("POST /reservations 요청 시 존재하지 않는 시간 id면 404 상태 코드를 반환하는지 테스트")
+  void test_post_요청시_존재하지_않는_시간_id면_404를_반환하는지_테스트() {
+    Map<String, String> params = new HashMap<>();
+    params.put("name", "브라운");
+    params.put("date", "2023-08-05");
+    params.put("time", "1");
+
+    RestAssured.given().log().all()
+        .contentType(ContentType.JSON)
+        .body(params)
+        .when().post("/reservations")
+        .then().log().all()
+        .statusCode(404);
+  }
 }
