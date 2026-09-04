@@ -16,7 +16,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 @Controller
 public class HomeController {
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
     public HomeController(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;

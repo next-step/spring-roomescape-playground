@@ -68,5 +68,5 @@
 - [ ] `HomeController`의 책임을 분리한다.
 - [x] 메서드 접근 제한자를 수정한다.
 - [x] 중복되는 `insert()` 메서드를 제거한다.
-- [ ] `JdbcTemplate` 필드를 `final`로 선언한다.
+- [x] `JdbcTemplate` 필드를 `final`로 선언한다.
 - [ ] id 값을 처리하기 위한 방식을 비교해 보고 적절한 방식을 적용한다.
