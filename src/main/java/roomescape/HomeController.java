@@ -76,12 +76,6 @@ public class HomeController {
         return ResponseEntity.noContent().build();
     }
 
-    @ExceptionHandler
-    public ResponseEntity<Void> handleIllegalArgumentException(IllegalArgumentException e) {
-        System.out.println("IllegalArgumentException occurred: " + e.getMessage());
-        return ResponseEntity.badRequest().build();
-    }
-
     public List<Reservation> findAllReservations() {
         String sql = "SELECT id, name, date, time FROM reservation";
         List<Reservation> reservations = jdbcTemplate.query(sql, reservationRowMapper);

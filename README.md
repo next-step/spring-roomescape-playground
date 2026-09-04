@@ -64,7 +64,7 @@
 ### `5~7단계 리뷰 반영`
 
 - [x] DTO에 Bean Validation을 적용하여 빈 값과 null을 검증한다.
-- [ ] `NotFoundReservationException`과 `IllegalArgumentException`의 예외 처리 위치를 수정한다.
+- [x] `NotFoundReservationException`과 `IllegalArgumentException`의 예외 처리 위치를 수정한다.
 - [ ] `HomeController`의 책임을 분리한다.
 - [ ] 메서드 접근 제한자를 수정한다.
 - [ ] 중복되는 `insert()` 메서드를 제거한다.
