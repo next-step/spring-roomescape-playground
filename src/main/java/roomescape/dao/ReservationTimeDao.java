@@ -35,6 +35,12 @@ public class ReservationTimeDao {
         .stream().findFirst();
   }
 
+  public boolean existsByTime(LocalTime time) {
+    Integer count = jdbcTemplate.queryForObject(
+        "SELECT COUNT(*) FROM reservation_time WHERE time = ?", Integer.class, time);
+    return  count > 0;
+  }
+
   public ReservationTime save(ReservationTime reservationTime) {
     KeyHolder keyHolder = new GeneratedKeyHolder();
     jdbcTemplate.update(connection -> {

@@ -27,4 +27,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ExceptionResponse> handleNotFoundReservationTimeException(NotFoundReservationTimeException ex){
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ExceptionResponse(ex.getMessage()));
     }
+
+    @ExceptionHandler(DuplicateReservationTimeException.class)
+    public ResponseEntity<ExceptionResponse> handleDuplicateReservationTimeException(DuplicateReservationTimeException ex){
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ExceptionResponse(ex.getMessage()));
+    }
 }

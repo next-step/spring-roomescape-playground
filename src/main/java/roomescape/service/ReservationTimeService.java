@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import roomescape.dao.ReservationTimeDao;
 import roomescape.domain.ReservationTime;
+import roomescape.exception.DuplicateReservationTimeException;
 import roomescape.exception.NotFoundReservationTimeException;
 
 @Service
@@ -20,6 +21,9 @@ public class ReservationTimeService {
   }
 
   public ReservationTime create(ReservationTime reservationTime) {
+    if (reservationTimeDao.existsByTime(reservationTime.getTime())) {
+      throw new DuplicateReservationTimeException("이미 등록된 예약 시간입니다.");
+    }
     return reservationTimeDao.save(reservationTime);
   }
 
