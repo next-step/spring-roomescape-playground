@@ -16,13 +16,12 @@ public class ReservationRepository {
     private final JdbcTemplate jdbcTemplate;
 
     private final RowMapper<Reservation> reservationRowMapper = (resultSet, rowNum) -> {
-        Reservation reservation = new Reservation(
+        return Reservation.createFromPersistedData(
                 resultSet.getLong("id"),
                 resultSet.getString("name"),
                 resultSet.getObject("date", LocalDate.class),
                 resultSet.getObject("time", LocalTime.class)
         );
-        return reservation;
     };
 
     public ReservationRepository(JdbcTemplate jdbcTemplate) {
@@ -50,7 +49,7 @@ public class ReservationRepository {
 
         Long id = keyHolder.getKey().longValue();
 
-        return new Reservation(id, reservation.getName(), reservation.getDate(), reservation.getTime());
+        return Reservation.createFromPersistedData(id, reservation.getName(), reservation.getDate(), reservation.getTime());
     }
 
     public int deleteById(Long id) {

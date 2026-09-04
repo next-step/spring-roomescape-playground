@@ -30,7 +30,7 @@ public class ReservationController {
 
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> createReservation(@Valid @RequestBody ReservationRequest reservationRequest) {
-        Reservation temporaryReservation = Reservation.create(
+        Reservation temporaryReservation = Reservation.createNewReservation(
                 reservationRequest.name(),
                 reservationRequest.date(),
                 reservationRequest.time(),

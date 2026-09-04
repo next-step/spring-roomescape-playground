@@ -16,7 +16,7 @@ class ReservationTest {
 
     @Test
     void 현재_시간보다_이전이면_예약할_수_없다() {
-        assertThatThrownBy(() -> Reservation.create(
+        assertThatThrownBy(() -> Reservation.createNewReservation(
                 "브라운", LocalDate.of(2030, 8, 5), LocalTime.of(11, 59), clock))
                 .isInstanceOf(ReservationInvalidException.class)
                 .hasMessage("과거 시간으로 예약할 수 없습니다");
@@ -24,7 +24,7 @@ class ReservationTest {
 
     @Test
     void 현재_시간이면_예약할_수_있다() {
-        assertThatCode(() -> Reservation.create(
+        assertThatCode(() -> Reservation.createNewReservation(
                 "브라운", LocalDate.of(2030, 8, 5), LocalTime.of(12, 0), clock))
                 .doesNotThrowAnyException();
     }
