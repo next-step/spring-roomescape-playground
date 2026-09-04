@@ -29,9 +29,9 @@
 
 # 리뷰 피드백 체크리스트 (8~10단계)
 
-- [ ] 존재하지 않는 예약 시간을 참조/삭제할 때 재사용하던 예약 시간 전용 예외로 분리
-- [ ] 사용 중인 예약 시간 삭제 시 FK 제약 위반이 500으로 응답되는 문제를, 삭제 전 참조 예약 존재 여부를 확인해 전용 예외로 처리하도록 변경
-- [ ] schema.sql의 reservation의 date, reservation_time의 time 컬럼을 VARCHAR에서 DATE/TIME으로 변경해서 도메인과 테이블 필드 통일
-- [ ] 예약 시간 등록 시 동일한 time 값이 이미 존재하면 예외를 던지도록 ReservationTimeService에 중복 검사 추가
-- [ ] 예약 생성 시 동일 날짜/시간에 이미 예약이 있으면 거부하도록 변경  
-- [ ] Lombok으로 만들던 DTO와 도메인을 record로 변경하고 Lombok 의존성 제거
+- [x] 존재하지 않는 예약 시간을 참조/삭제할 때 재사용하던 예약 시간 전용 예외로 분리
+- [x] 사용 중인 예약 시간 삭제 시 FK 제약 위반이 500으로 응답되는 문제를, 삭제 전 참조 예약 존재 여부를 확인해 전용 예외로 처리하도록 변경
+- [x] schema.sql의 reservation의 date, reservation_time의 time 컬럼을 VARCHAR에서 DATE/TIME으로 변경해서 도메인과 테이블 필드 통일
+- [x] 예약 시간 등록 시 동일한 time 값이 이미 존재하면 예외를 던지도록 ReservationTimeService에 중복 검사 추가
+- [x] 예약 생성 시 동일 날짜/시간에 이미 예약이 있으면 거부하도록 변경  
+- [x] Lombok으로 만들던 DTO와 도메인을 record로 변경하고 Lombok 의존성 제거
