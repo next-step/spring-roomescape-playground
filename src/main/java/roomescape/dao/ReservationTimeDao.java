@@ -23,7 +23,7 @@ public class ReservationTimeDao {
 
   private final RowMapper<ReservationTime> reservationTimeRowMapper = (rs, rowNum) ->
       new ReservationTime(rs.getLong("id"),
-          LocalTime.parse(rs.getString("time"))
+          rs.getObject("time", LocalTime.class)
       );
 
   public List<ReservationTime> findAll() {
@@ -41,7 +41,7 @@ public class ReservationTimeDao {
       PreparedStatement ps = connection.prepareStatement(
           "INSERT INTO reservation_time(time) VALUES (?)",
           new String[]{"id"});
-      ps.setString(1, reservationTime.getTime().toString());
+      ps.setObject(1, reservationTime.getTime());
       return ps;
     }, keyHolder);
 

@@ -25,8 +25,8 @@ public class ReservationDao {
   private final RowMapper<Reservation> reservationRowMapper = (rs, rowNum) ->
       new Reservation(rs.getLong("reservation_id"),
           rs.getString("name"),
-          LocalDate.parse(rs.getString("date")),
-          new ReservationTime(rs.getLong("time_id"), LocalTime.parse(rs.getString("time_value")))
+          rs.getObject("date", LocalDate.class),
+          new ReservationTime(rs.getLong("time_id"), rs.getObject("time_value", LocalTime.class))
       );
 
   public List<Reservation> findAll() {
@@ -43,7 +43,7 @@ public class ReservationDao {
           "INSERT INTO reservation(name, date, time_id) VALUES (?, ?, ?)",
           new String[]{"id"});
       ps.setString(1, reservation.getName());
-      ps.setString(2, reservation.getDate().toString());
+      ps.setObject(2, reservation.getDate());
       ps.setLong(3, reservation.getTime().getId());
       return ps;
     }, keyHolder);
