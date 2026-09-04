@@ -12,5 +12,6 @@ CREATE TABLE reservation
     date    VARCHAR(255) NOT NULL,
     time_id BIGINT       NOT NULL,
     PRIMARY KEY (id),
+    UNIQUE (date, time_id),
     FOREIGN KEY (time_id) REFERENCES time (id)
 );

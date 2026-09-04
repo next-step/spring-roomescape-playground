@@ -4,10 +4,12 @@ import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import roomescape.domain.Reservation;
 import roomescape.domain.ReservationTime;
+import roomescape.exception.DuplicateReservationException;
 import roomescape.exception.InvalidReservationException;
 import roomescape.exception.NotFoundReservationException;
 import roomescape.exception.NotFoundTimeException;
@@ -48,7 +50,14 @@ public class ReservationService {
                 reservationTime,
                 LocalDateTime.now(clock)
         );
-        return reservationRepository.save(reservation);
+        if (reservationRepository.existsByDateAndTimeId(date, timeId)) {
+            throw new DuplicateReservationException();
+        }
+        try {
+            return reservationRepository.save(reservation);
+        } catch (DataIntegrityViolationException exception) {
+            throw new DuplicateReservationException();
+        }
     }
 
     public void deleteById(Long id) {
