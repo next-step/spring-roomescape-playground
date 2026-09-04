@@ -76,7 +76,7 @@ public class HomeController {
         return ResponseEntity.noContent().build();
     }
 
-    public List<Reservation> findAllReservations() {
+    private List<Reservation> findAllReservations() {
         String sql = "SELECT id, name, date, time FROM reservation";
         List<Reservation> reservations = jdbcTemplate.query(sql, reservationRowMapper);
 
@@ -88,13 +88,13 @@ public class HomeController {
         jdbcTemplate.update(sql, reservation.getName(), reservation.getDate(), reservation.getTime());
     }
 
-    public int deleteReservation(Long id) {
+    private int deleteReservation(Long id) {
         String sql = "DELETE FROM reservation WHERE id = ?";
         int rowNum = jdbcTemplate.update(sql, Long.valueOf(id));
         return rowNum;
     }
 
-    public Long insertWithKeyHolder(Reservation reservation) {
+    private Long insertWithKeyHolder(Reservation reservation) {
         String sql = "INSERT INTO reservation(name, date, time) VALUES (?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
