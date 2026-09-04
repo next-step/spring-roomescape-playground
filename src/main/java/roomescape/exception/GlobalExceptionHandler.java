@@ -37,4 +37,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ExceptionResponse> handleReservationTimeInUseException(ReservationTimeInUseException ex){
         return ResponseEntity.status(HttpStatus.CONFLICT).body(new ExceptionResponse(ex.getMessage()));
     }
+
+    @ExceptionHandler(DuplicateReservationException.class)
+    public ResponseEntity<ExceptionResponse> handleDuplicateReservationException(DuplicateReservationException ex){
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ExceptionResponse(ex.getMessage()));
+    }
 }

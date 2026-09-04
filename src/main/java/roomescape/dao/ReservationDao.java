@@ -66,6 +66,13 @@ public class ReservationDao {
     return count > 0;
   }
 
+  public boolean existsByDateAndTimeId(LocalDate date, Long timeId) {
+    Integer count = jdbcTemplate.queryForObject(
+        "SELECT COUNT(*) FROM reservation WHERE date = ? AND time_id = ?",
+        Integer.class, date, timeId);
+    return count > 0;
+  }
+
   public int delete(Long id) {
     return jdbcTemplate.update("DELETE FROM reservation WHERE id=?", id);
   }

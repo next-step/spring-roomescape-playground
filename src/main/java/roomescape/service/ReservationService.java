@@ -7,6 +7,7 @@ import roomescape.dao.ReservationDao;
 import roomescape.dao.ReservationTimeDao;
 import roomescape.domain.Reservation;
 import roomescape.domain.ReservationTime;
+import roomescape.exception.DuplicateReservationException;
 import roomescape.exception.NotFoundReservationException;
 import roomescape.exception.NotFoundReservationTimeException;
 
@@ -28,6 +29,9 @@ public class ReservationService {
   public Reservation create(String name, LocalDate date, Long timeId) {
     ReservationTime time = requireReservationTime(timeId);
     Reservation reservation = new Reservation(null, name, date, time);
+    if(reservationDao.existsByDateAndTimeId(date, timeId)){
+      throw new DuplicateReservationException("이미 예약된 날짜와 시간에는 예약할 수 없습니다.");
+    }
     return reservationDao.save(reservation);
   }
 
