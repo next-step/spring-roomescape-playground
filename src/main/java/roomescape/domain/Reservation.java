@@ -2,26 +2,15 @@ package roomescape.domain;
 
 import java.time.LocalDate;
 
-import lombok.Getter;
 import roomescape.exception.BlankReservationException;
 
-@Getter
-public class Reservation {
+public record Reservation(Long id, String name, LocalDate date, ReservationTime time) {
 
-  private final Long id;
-  private final String name;
-  private final LocalDate date;
-  private final ReservationTime time;
-
-  public Reservation(Long id, String name, LocalDate date, ReservationTime time) {
+  public Reservation {
     validate(name, date, time);
-    this.id = id;
-    this.name = name;
-    this.date = date;
-    this.time = time;
   }
 
-  public static void validate(String name, LocalDate date, ReservationTime time) {
+  private static void validate(String name, LocalDate date, ReservationTime time) {
     if (name == null || name.isBlank()) {
       throw new BlankReservationException("이름은 공백이 될 수 없습니다.");
     }

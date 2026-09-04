@@ -42,14 +42,14 @@ public class ReservationDao {
       PreparedStatement ps = connection.prepareStatement(
           "INSERT INTO reservation(name, date, time_id) VALUES (?, ?, ?)",
           new String[]{"id"});
-      ps.setString(1, reservation.getName());
-      ps.setObject(2, reservation.getDate());
-      ps.setLong(3, reservation.getTime().getId());
+      ps.setString(1, reservation.name());
+      ps.setObject(2, reservation.date());
+      ps.setLong(3, reservation.time().id());
       return ps;
     }, keyHolder);
 
-    return new Reservation(extractGeneratedId(keyHolder), reservation.getName(),
-        reservation.getDate(), reservation.getTime());
+    return new Reservation(extractGeneratedId(keyHolder), reservation.name(),
+        reservation.date(), reservation.time());
   }
 
   private Long extractGeneratedId(KeyHolder keyHolder) {

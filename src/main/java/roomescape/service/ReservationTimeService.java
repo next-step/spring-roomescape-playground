@@ -25,7 +25,7 @@ public class ReservationTimeService {
   }
 
   public ReservationTime create(ReservationTime reservationTime) {
-    if (reservationTimeDao.existsByTime(reservationTime.getTime())) {
+    if (reservationTimeDao.existsByTime(reservationTime.time())) {
       throw new DuplicateReservationTimeException("이미 등록된 예약 시간입니다.");
     }
     return reservationTimeDao.save(reservationTime);

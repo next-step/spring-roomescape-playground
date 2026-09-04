@@ -34,7 +34,7 @@ public class ReservationTimeController {
       @RequestBody ReservationTimeRequest reservationTimeRequest) {
     ReservationTime newReservationTime =
         reservationTimeService.create(reservationTimeRequest.toDomain(null));
-    return ResponseEntity.created(URI.create("/times/" + newReservationTime.getId()))
+    return ResponseEntity.created(URI.create("/times/" + newReservationTime.id()))
         .body(newReservationTime);
   }
 

@@ -47,11 +47,11 @@ public class ReservationTimeDao {
       PreparedStatement ps = connection.prepareStatement(
           "INSERT INTO reservation_time(time) VALUES (?)",
           new String[]{"id"});
-      ps.setObject(1, reservationTime.getTime());
+      ps.setObject(1, reservationTime.time());
       return ps;
     }, keyHolder);
 
-    return new ReservationTime(extractGeneratedId(keyHolder), reservationTime.getTime());
+    return new ReservationTime(extractGeneratedId(keyHolder), reservationTime.time());
   }
 
   private Long extractGeneratedId(KeyHolder keyHolder) {
