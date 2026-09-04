@@ -25,8 +25,8 @@ public class ReservationService {
     }
 
     public Reservation create(ReservationRequest request) {
-        Long generatedId = reservationDAO.insertWithKeyHolder(request);
         Time time = timeDAO.findById(request.getTime());
+        Long generatedId = reservationDAO.insertWithKeyHolder(request);
 
         return Reservation.toEntity(request, generatedId, time);
     }

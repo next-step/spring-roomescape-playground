@@ -1,5 +1,6 @@
 package roomescape.exception;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -49,5 +50,11 @@ public class ExceptionController {
         String message = "요청 형식이 올바르지 않습니다";
 
         return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(EmptyResultDataAccessException.class)
+    public ResponseEntity<String> handleEmptyResultDataAccessException(EmptyResultDataAccessException ex) {
+        String message = "해당 시간을 찾을 수 없습니다";
+        return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
     }
 }
