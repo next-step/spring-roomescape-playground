@@ -1,5 +1,6 @@
 package roomescape.service;
 
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import roomescape.domain.Reservation;
 import roomescape.exception.DuplicateReservationException;
@@ -34,7 +35,11 @@ public class ReservationService {
 
         Reservation reservation = new Reservation(name, date, time);
 
-        return reservationRepository.save(reservation);
+        try {
+            return reservationRepository.save(reservation);
+        } catch (DuplicateKeyException e) {
+            throw new DuplicateReservationException("이미 존재하는 예약입니다.");
+        }
     }
 
     public void delete(Long id) {
