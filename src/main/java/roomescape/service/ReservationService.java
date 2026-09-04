@@ -8,6 +8,7 @@ import roomescape.dao.ReservationTimeDao;
 import roomescape.domain.Reservation;
 import roomescape.domain.ReservationTime;
 import roomescape.exception.NotFoundReservationException;
+import roomescape.exception.NotFoundReservationTimeException;
 
 @Service
 public class ReservationService {
@@ -39,7 +40,7 @@ public class ReservationService {
   private ReservationTime requireReservationTime(Long timeId) {
     ReservationTime time = reservationTimeDao.findById(timeId).orElse(null);
     if (time == null) {
-      throw new NotFoundReservationException("존재하지 않는 예약 시간입니다.");
+      throw new NotFoundReservationTimeException("존재하지 않는 예약 시간입니다.");
     }
     return time;
   }

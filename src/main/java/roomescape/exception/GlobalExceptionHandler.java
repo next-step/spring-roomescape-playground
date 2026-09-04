@@ -22,4 +22,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ExceptionResponse> handleReservationSaveFailedException(ReservationSaveFailedException ex){
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ExceptionResponse(ex.getMessage()));
     }
+
+    @ExceptionHandler(NotFoundReservationTimeException.class)
+    public ResponseEntity<ExceptionResponse> handleNotFoundReservationTimeException(NotFoundReservationTimeException ex){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ExceptionResponse(ex.getMessage()));
+    }
 }

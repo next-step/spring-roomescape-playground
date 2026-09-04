@@ -4,7 +4,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import roomescape.dao.ReservationTimeDao;
 import roomescape.domain.ReservationTime;
-import roomescape.exception.NotFoundReservationException;
+import roomescape.exception.NotFoundReservationTimeException;
 
 @Service
 public class ReservationTimeService {
@@ -25,7 +25,7 @@ public class ReservationTimeService {
 
   public void delete(Long id) {
     if (reservationTimeDao.delete(id) == 0) {
-      throw new NotFoundReservationException("해당 id의 예약시간이 존재하지 않습니다.");
+      throw new NotFoundReservationTimeException("해당 id의 예약시간이 존재하지 않습니다.");
     }
   }
 }
