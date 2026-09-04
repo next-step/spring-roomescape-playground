@@ -62,4 +62,23 @@ public class ReservationTimeTest {
         .then().log().all()
         .statusCode(204);
   }
+
+  @Test
+  @DisplayName("POST /times 요청 시 이미 등록된 시간이면 409 상태 코드를 반환하는지 테스트")
+  void test_시간_생성시_중복된_시간이면_409를_반환하는지_테스트() {
+    Map<String, String> params = new HashMap<>();
+    params.put("time", "10:00");
+
+    RestAssured.given()
+        .contentType(ContentType.JSON)
+        .body(params)
+        .when().post("/times");
+
+    RestAssured.given().log().all()
+        .contentType(ContentType.JSON)
+        .body(params)
+        .when().post("/times")
+        .then().log().all()
+        .statusCode(409);
+  }
 }
