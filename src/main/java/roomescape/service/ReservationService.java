@@ -33,7 +33,7 @@ public class ReservationService {
         } catch (EmptyResultDataAccessException e) {
             throw new NoSuchElementException("해당 시간을 찾을 수 없습니다");
         }
-        Long generatedId = reservationDAO.insertWithKeyHolder(request);
+        Long generatedId = reservationDAO.insertWithKeyHolder(request.getName(), request.getDate(), request.getTime());
 
         return Reservation.toEntity(request, generatedId, time);
     }
