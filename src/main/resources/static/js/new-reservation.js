@@ -134,9 +134,10 @@ function saveRow(event) {
 
   requestCreate(reservation)
       .then(data => updateRowWithReservationData(row, data))
-      .catch(error => console.error('Error:', error));
-
-  isEditing = false;  // isEditing 값을 false로 설정
+      .catch(error => {
+        alert(error.message);
+        isEditing = true;
+      });
 }
 
 function updateRowWithReservationData(row, data) {
@@ -167,7 +168,7 @@ function deleteRow(event) {
 
   requestDelete(reservationId)
       .then(() => row.remove())
-      .catch(error => console.error('Error:', error));
+      .catch(error => alert(error.message));
 }
 
 function requestCreate(reservation) {
@@ -178,9 +179,9 @@ function requestCreate(reservation) {
   };
 
   return fetch(RESERVATION_API_ENDPOINT, requestOptions)
-      .then(response => {
+      .then(async response => {
         if (response.status === 201) return response.json();
-        throw new Error('Create failed');
+        throw new Error(await getErrorMessage(response, '예약 생성에 실패했습니다.'));
       });
 }
 
@@ -198,9 +199,15 @@ function requestDelete(id) {
   };
 
   return fetch(`${RESERVATION_API_ENDPOINT}/${id}`, requestOptions)
-      .then(response => {
-        if (response.status !== 204) throw new Error('Delete failed');
+      .then(async response => {
+        if (response.status === 204) return;
+        throw new Error(await getErrorMessage(response, '예약 삭제에 실패했습니다.'));
       });
+}
+
+async function getErrorMessage(response, defaultMessage) {
+  const errorResponse = await response.json().catch(() => null);
+  return errorResponse?.message ?? defaultMessage;
 }
 
 function requestReadTimes() {

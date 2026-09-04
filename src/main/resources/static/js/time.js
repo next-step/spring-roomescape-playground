@@ -64,9 +64,10 @@ function saveRow(event) {
 
   requestCreate(time)
       .then(data => updateRowWithTimeData(row, data))
-      .catch(error => console.error('Error:', error));
-
-  isEditing = false;  // isEditing 값을 false로 설정
+      .catch(error => {
+        alert(error.message);
+        isEditing = true;
+      });
 }
 
 function updateRowWithTimeData(row, data) {
@@ -95,13 +96,13 @@ function deleteRow(event) {
 
   requestDelete(id)
       .then(() => row.remove())
-      .catch(error => console.error('Error:', error));
+      .catch(error => alert(error.message));
 }
 
 function fetchTimes() {
   requestRead()
       .then(renderTimes)
-      .catch(error => console.error('Error fetching times:', error));
+      .catch(error => alert(error.message));
 }
 
 function renderTimes(timesResponse) {
@@ -131,17 +132,17 @@ function requestCreate(time) {
   };
 
   return fetch(TIME_API_ENDPOINT, requestOptions)
-      .then(response => {
+      .then(async response => {
         if (response.status === 201) return response.json();
-        throw new Error('Create failed');
+        throw new Error(await getErrorMessage(response, '시간대 생성에 실패했습니다.'));
       });
 }
 
 function requestRead() {
   return fetch(TIME_API_ENDPOINT)
-      .then(response => {
+      .then(async response => {
         if (response.status === 200) return response.json();
-        throw new Error('Read failed');
+        throw new Error(await getErrorMessage(response, '시간대 조회에 실패했습니다.'));
       });
 }
 
@@ -151,7 +152,13 @@ function requestDelete(id) {
   };
 
   return fetch(`${TIME_API_ENDPOINT}/${id}`, requestOptions)
-      .then(response => {
-        if (response.status !== 204) throw new Error('Delete failed');
+      .then(async response => {
+        if (response.status === 204) return;
+        throw new Error(await getErrorMessage(response, '시간대 삭제에 실패했습니다.'));
       });
+}
+
+async function getErrorMessage(response, defaultMessage) {
+  const errorResponse = await response.json().catch(() => null);
+  return errorResponse?.message ?? defaultMessage;
 }
