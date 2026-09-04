@@ -1,4 +1,6 @@
-package roomescape.domain.time;
+package roomescape.domain;
+
+import roomescape.dto.TimeRequest;
 
 import java.time.LocalTime;
 

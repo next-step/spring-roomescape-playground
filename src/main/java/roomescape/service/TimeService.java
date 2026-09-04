@@ -2,8 +2,8 @@ package roomescape.service;
 
 import org.springframework.stereotype.Service;
 import roomescape.dao.TimeDAO;
-import roomescape.domain.time.Time;
-import roomescape.domain.time.TimeRequest;
+import roomescape.domain.Time;
+import roomescape.dto.TimeRequest;
 
 
 import java.util.List;

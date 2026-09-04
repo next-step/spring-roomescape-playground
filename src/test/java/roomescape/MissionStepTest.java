@@ -8,7 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import roomescape.controller.ReservationController;
-import roomescape.domain.reservation.Reservation;
+import roomescape.domain.Reservation;
 
 import java.lang.reflect.Field;
 import java.sql.Connection;
@@ -48,14 +48,25 @@ public class MissionStepTest {
 
     @Test
     void 삼단계() {
-        Map<String, String> params = new HashMap<>();
-        params.put("name", "브라운");
-        params.put("date", "2023-08-05");
-        params.put("time", "15:40");
+        Map<String, String> timeParams = new HashMap<>();
+        timeParams.put("time", "15:40");
+
+        Long timeId = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(timeParams)
+                .when().post("/times")
+                .then().log().all()
+                .statusCode(201)
+                .extract().jsonPath().getLong("id");
+
+        Map<String, Object> reservationParams = new HashMap<>();
+        reservationParams.put("name", "브라운");
+        reservationParams.put("date", "2023-08-05");
+        reservationParams.put("time", timeId);
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
-                .body(params)
+                .body(reservationParams)
                 .when().post("/reservations")
                 .then().log().all()
                 .statusCode(201)
@@ -140,7 +151,10 @@ public class MissionStepTest {
 
     @Test
     void 육단계() {
-        jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "브라운", "2023-08-05", "15:40");
+        jdbcTemplate.update("INSERT INTO time (time) VALUES (?)", "15:40");
+        Long timeId = 1L;
+
+        jdbcTemplate.update("INSERT INTO reservation (name, date, time_id) VALUES (?, ?, ?)", "브라운", "2023-08-05", timeId);
 
         List<Reservation> reservations = RestAssured.given().log().all()
                 .when().get("/reservations")
@@ -155,10 +169,21 @@ public class MissionStepTest {
 
     @Test
     void 칠단계() {
-        Map<String, String> params = new HashMap<>();
+        Map<String, String> timeParams = new HashMap<>();
+        timeParams.put("time", "15:40");
+
+        Long timeId = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(timeParams)
+                .when().post("/times")
+                .then().log().all()
+                .statusCode(201)
+                .extract().jsonPath().getLong("id");
+
+        Map<String, Object> params = new HashMap<>();
         params.put("name", "브라운");
         params.put("date", "2023-08-05");
-        params.put("time", "10:00");
+        params.put("time", timeId);
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)

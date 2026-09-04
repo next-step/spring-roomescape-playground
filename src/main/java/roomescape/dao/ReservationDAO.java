@@ -4,9 +4,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import roomescape.domain.reservation.Reservation;
-import roomescape.domain.reservation.ReservationRequest;
-import roomescape.domain.time.Time;
+import roomescape.domain.Reservation;
+import roomescape.dto.ReservationRequest;
+import roomescape.domain.Time;
 
 import java.sql.PreparedStatement;
 import java.time.LocalDate;

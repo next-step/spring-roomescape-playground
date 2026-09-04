@@ -3,9 +3,9 @@ package roomescape.service;
 import org.springframework.stereotype.Service;
 import roomescape.dao.ReservationDAO;
 import roomescape.dao.TimeDAO;
-import roomescape.domain.reservation.Reservation;
-import roomescape.domain.reservation.ReservationRequest;
-import roomescape.domain.time.Time;
+import roomescape.domain.Reservation;
+import roomescape.dto.ReservationRequest;
+import roomescape.domain.Time;
 import roomescape.exception.NotFoundReservationException;
 
 import java.util.List;

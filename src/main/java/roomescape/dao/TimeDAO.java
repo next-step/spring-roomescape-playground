@@ -4,10 +4,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import roomescape.domain.time.TimeRequest;
+import roomescape.dto.TimeRequest;
 
 import java.sql.PreparedStatement;
-import roomescape.domain.time.Time;
+import roomescape.domain.Time;
 import java.time.LocalTime;
 import java.util.List;
 
