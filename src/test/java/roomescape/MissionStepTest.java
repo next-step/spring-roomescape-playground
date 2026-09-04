@@ -231,4 +231,27 @@ public class MissionStepTest {
         .then().log().all()
         .statusCode(404);
   }
+
+  @Test
+  @DisplayName("POST /reservations 요청 시 같은 날짜와 시간에 이미 예약이 있으면 409 상태 코드를 반환하는지 테스트")
+  void test_post_요청시_중복_예약이면_409를_반환하는지_테스트() {
+    jdbcTemplate.update("INSERT INTO reservation_time(time) VALUES (?)", "10:00");
+
+    Map<String, String> params = new HashMap<>();
+    params.put("name", "브라운");
+    params.put("date", "2023-08-05");
+    params.put("time", "1");
+
+    RestAssured.given()
+        .contentType(ContentType.JSON)
+        .body(params)
+        .when().post("/reservations");
+
+    RestAssured.given().log().all()
+        .contentType(ContentType.JSON)
+        .body(params)
+        .when().post("/reservations")
+        .then().log().all()
+        .statusCode(409);
+  }
 }
