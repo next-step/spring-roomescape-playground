@@ -14,17 +14,19 @@
 
 ## API 명세서
 
+> 모든 실패 응답은 `{ "message": "<사유>" }` 형태의 JSON 본문을 가진다.
+
 | 기능 | Method | URL | Request | Response |
 |---|---|---|---|---|
 | 홈 화면 | GET | / | - | 200 OK, home.html |
 | 예약 화면 | GET | /reservation | - | 200 OK, new-reservation.html |
 | 예약 목록 조회 | GET | /reservations | - | 200 OK |
-| 예약 생성 | POST | /reservations | Request Body (JSON) | 201 Created, Location : /reservations/{id} |
-| 예약 삭제 | DELETE | /reservations/{id} | 삭제하고자 하는 예약의 id | 204 No Content |
+| 예약 생성 | POST | /reservations | Request Body (JSON) | 201 Created, Location : /reservations/{id}<br>400 Bad Request<br>404 Not Found<br>409 Conflict |
+| 예약 삭제 | DELETE | /reservations/{id} | 삭제하고자 하는 예약의 id | 204 No Content<br>404 Not Found |
 | 시간 관리 화면 | GET | /time | - | 200 OK, time.html |
 | 예약 시간 목록 조회 | GET | /times | - | 200 OK |
-| 예약 시간 생성 | POST | /times | Request Body (JSON) | 201 Created, Location : /times/{id} |
-| 예약 시간 삭제 | DELETE | /times/{id} | 삭제하고자 하는 시간의 id | 204 No Content |
+| 예약 시간 생성 | POST | /times | Request Body (JSON) | 201 Created, Location : /times/{id}<br>400 Bad Request<br>409 Conflict |
+| 예약 시간 삭제 | DELETE | /times/{id} | 삭제하고자 하는 시간의 id | 204 No Content<br>404 Not Found<br>409 Conflict |
 
 ### 예약 목록 조회 - Response Body 예시
 ```json
@@ -79,6 +81,14 @@
   }
 ```
 
+### 예약 생성 - 실패 응답 (409 Conflict)
+이미 예약된 날짜와 시간에 예약을 신청한 경우.
+```json
+  {
+    "message": "이미 예약된 날짜와 시간에는 예약할 수 없습니다."
+  }
+```
+
 ### 예약 삭제 - 실패 응답 (404 Not Found)
 ```json
   {
@@ -118,9 +128,25 @@
   }
 ```
 
+### 예약 시간 생성 - 실패 응답 (409 Conflict)
+이미 등록된 시간을 다시 추가한 경우.
+```json
+  {
+    "message": "이미 등록된 예약 시간입니다."
+  }
+```
+
 ### 예약 시간 삭제 - 실패 응답 (404 Not Found)
 ```json
   {
     "message": "해당 id의 예약시간이 존재하지 않습니다."
+  }
+```
+
+### 예약 시간 삭제 - 실패 응답 (409 Conflict)
+예약이 등록되어 있는 시간을 삭제하려는 경우.
+```json
+  {
+    "message": "예약이 등록된 시간은 삭제할 수 없습니다."
   }
 ```
