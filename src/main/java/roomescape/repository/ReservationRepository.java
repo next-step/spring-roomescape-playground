@@ -1,6 +1,5 @@
 package roomescape.repository;
 
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -8,7 +7,6 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
 import roomescape.domain.Time;
-import roomescape.exception.DuplicateReservationException;
 
 import java.sql.PreparedStatement;
 import java.time.LocalDate;
@@ -38,24 +36,23 @@ public class ReservationRepository {
         String sql = "INSERT INTO reservation (name, reserved_date, time_id) VALUES (?, ?, ?)";
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        try {
-            jdbcTemplate.update(connection -> {
-                PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
 
-                ps.setString(1, reservation.getName());
-                ps.setObject(2, reservation.getReservedDate());
-                ps.setLong(3, reservation.getTime().getId());
-                return ps;
-            }, keyHolder);
-        } catch (DuplicateKeyException e) {
-            throw new DuplicateReservationException(
-                    "이미 예약된 시간입니다. date=" + reservation.getReservedDate()
-                            + ", time=" + reservation.getTime().getTime());
-        }
+            ps.setString(1, reservation.getName());
+            ps.setObject(2, reservation.getReservedDate());
+            ps.setLong(3, reservation.getTime().getId());
+            return ps;
+        }, keyHolder);
 
         Long id = keyHolder.getKey().longValue();
 
         return reservation.withId(id);
+    }
+
+    public boolean existsByDateAndTimeId(LocalDate date, Long timeId) {
+        String sql = "SELECT EXISTS (SELECT 1 FROM reservation WHERE reserved_date = ? AND time_id = ?)";
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, date, timeId));
     }
 
     public int deleteById(Long id) {

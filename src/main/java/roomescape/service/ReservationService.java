@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import roomescape.domain.Reservation;
 import roomescape.domain.Time;
+import roomescape.exception.DuplicateReservationException;
 import roomescape.exception.InvalidReservationException;
 import roomescape.exception.NotFoundReservationException;
 import roomescape.repository.ReservationRepository;
@@ -33,6 +34,11 @@ public class ReservationService {
     public Reservation save(String name, LocalDate date, Long timeId) {
         Time time = timeRepository.findById(timeId)
                 .orElseThrow(() -> new InvalidReservationException("존재하지 않는 시간입니다. timeId=" + timeId));
+
+        if (reservationRepository.existsByDateAndTimeId(date, timeId)) {
+            throw new DuplicateReservationException(
+                    "이미 예약된 시간입니다. date=" + date + ", time=" + time.getTime());
+        }
 
         return reservationRepository.save(new Reservation(name, date, time));
     }
