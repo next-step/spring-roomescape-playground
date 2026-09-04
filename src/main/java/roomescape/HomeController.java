@@ -10,10 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.sql.PreparedStatement;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -81,11 +78,6 @@ public class HomeController {
         List<Reservation> reservations = jdbcTemplate.query(sql, reservationRowMapper);
 
         return reservations;
-    }
-
-    public void insert(Reservation reservation) {
-        String sql = "INSERT INTO reservation(name, date, time) VALUES (?, ?, ?)";
-        jdbcTemplate.update(sql, reservation.getName(), reservation.getDate(), reservation.getTime());
     }
 
     private int deleteReservation(Long id) {
