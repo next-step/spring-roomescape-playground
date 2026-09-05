@@ -1,14 +1,7 @@
 package roomescape;
 
-import java.net.URI;
-import java.sql.PreparedStatement;
 import java.util.List;
-import org.springframework.http.ResponseEntity;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import roomescape.exception.NotFoundException;
 
 @Service
