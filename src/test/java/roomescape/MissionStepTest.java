@@ -82,7 +82,12 @@ public class MissionStepTest {
         Map<String, String> params = new HashMap<>();
 
         params.put("name", "브라운");
-        params.put("date", "2023-08-05");
+        params.put(
+                "date",
+                java.time.LocalDate.now(java.time.ZoneId.of("Asia/Seoul"))
+                        .plusDays(1)
+                        .toString()
+        );
         params.put("time", "10:00");
 
         RestAssured.given().log().all()

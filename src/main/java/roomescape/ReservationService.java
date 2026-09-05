@@ -3,6 +3,13 @@ package roomescape;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
 
 @Service
 public class ReservationService {
@@ -15,10 +22,6 @@ public class ReservationService {
 
     public List<Reservation> findAll() {
         return reservationRepository.findAll();
-    }
-
-    public Reservation create(ReservationRequest request) {
-        return reservationRepository.save(request);
     }
 
     public void delete(Long id) {
@@ -34,13 +37,62 @@ public class ReservationService {
                 .orElseThrow(NotFoundReservationException::new);
     }
 
+    private static final ZoneId RESERVATION_ZONE =
+            ZoneId.of("Asia/Seoul");
+
+    private static final DateTimeFormatter DATE_FORMATTER =
+            DateTimeFormatter.ofPattern("uuuu-MM-dd")
+                    .withResolverStyle(ResolverStyle.STRICT);
+
+    private static final DateTimeFormatter TIME_FORMATTER =
+            DateTimeFormatter.ofPattern("HH:mm")
+                    .withResolverStyle(ResolverStyle.STRICT);
+
+    private void validateReservationDateTime(ReservationRequest request) {
+        String date = request.getDate();
+        String time = request.getTime();
+
+        if (date == null || time == null
+                || !date.matches("[0-9]{4}-[0-9]{2}-[0-9]{2}")
+                || !time.matches("[0-9]{2}:[0-9]{2}")) {
+            throw new InvalidReservationException();
+        }
+
+        LocalDateTime reservationDateTime;
+
+        try {
+            LocalDate parsedDate = LocalDate.parse(date, DATE_FORMATTER);
+            LocalTime parsedTime = LocalTime.parse(time, TIME_FORMATTER);
+            reservationDateTime = LocalDateTime.of(parsedDate, parsedTime);
+        } catch (DateTimeParseException exception) {
+            throw new InvalidReservationException();
+        }
+
+        if (!reservationDateTime.isAfter(
+                LocalDateTime.now(RESERVATION_ZONE))) {
+            throw new InvalidReservationException();
+        }
+    }
+
+    public Reservation create(ReservationRequest request) {
+        validateReservationDateTime(request);
+        return reservationRepository.save(request);
+    }
+
     public Reservation update(Long id, ReservationRequest request) {
+        validateReservationDateTime(request);
+
         int updatedCount = reservationRepository.update(id, request);
 
         if (updatedCount == 0) {
             throw new NotFoundReservationException();
         }
 
-        return findById(id);
+        return new Reservation(
+                id,
+                request.getName(),
+                request.getDate(),
+                request.getTime()
+        );
     }
 }
