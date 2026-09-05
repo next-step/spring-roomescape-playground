@@ -19,11 +19,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @JdbcTest
 @Import(ReservationRepository.class)
-@Sql(
-        scripts = "/reservation-test-data.sql",
-        executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
-        config = @SqlConfig(encoding = "UTF-8")
-)
 public class ReservationRepositoryTest {
 
     @Autowired
@@ -39,6 +34,10 @@ public class ReservationRepositoryTest {
     private static final Long NON_EXISTENT_ID = 999L;
 
     @Test
+    @Sql(
+            scripts = "/reservation-test-data.sql",
+            config = @SqlConfig(encoding = "UTF-8")
+    )
     void 저장된_예약_목록을_조회할_수_있다() {
         List<Reservation> reservations = reservationRepository.findAll();
         Reservation first = reservations.get(0);

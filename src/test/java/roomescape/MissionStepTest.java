@@ -24,10 +24,6 @@ import static org.hamcrest.Matchers.is;
 
 @Import(FixedClockConfig.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-@Sql(
-        scripts = "/reservation-test-data.sql",
-        executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD
-)
 public class MissionStepTest {
 
     @Autowired
@@ -45,6 +41,7 @@ public class MissionStepTest {
     }
 
     @Test
+    @Sql("/reservation-test-data.sql")
     void 이단계() {
         RestAssured.given().log().all()
                 .when().get("/reservation")
@@ -59,6 +56,7 @@ public class MissionStepTest {
     }
 
     @Test
+    @Sql("/reservation-test-data.sql")
     void 삼단계() {
         Map<String, String> params = new HashMap<>();
         LocalDate reservationDate = LocalDate.now(clock).plusDays(1);
@@ -143,6 +141,7 @@ public class MissionStepTest {
     }
 
     @Test
+    @Sql(statements = "TRUNCATE TABLE reservation RESTART IDENTITY")
     void 칠단계() {
         LocalDate reservationDate = LocalDate.now(clock).plusDays(1);
 
@@ -157,17 +156,17 @@ public class MissionStepTest {
                 .when().post("/reservations")
                 .then().log().all()
                 .statusCode(201)
-                .header("Location", "/reservations/4");
+                .header("Location", "/reservations/1");
 
         Integer count = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
-        assertThat(count).isEqualTo(4);
+        assertThat(count).isEqualTo(1);
 
         RestAssured.given().log().all()
-                .when().delete("/reservations/4")
+                .when().delete("/reservations/1")
                 .then().log().all()
                 .statusCode(204);
 
         Integer countAfterDelete = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
-        assertThat(countAfterDelete).isEqualTo(3);
+        assertThat(countAfterDelete).isEqualTo(0);
     }
 }
