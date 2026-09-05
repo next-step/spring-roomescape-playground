@@ -1,6 +1,7 @@
 package roomescape;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
@@ -8,9 +9,18 @@ import org.springframework.stereotype.Repository;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class ReservationRepository {
+
+    private static final RowMapper<Reservation> ROW_MAPPER =
+            (rs, rowNum) -> new Reservation(
+                    rs.getLong("id"),
+                    rs.getString("name"),
+                    rs.getString("date"),
+                    rs.getString("time")
+            );
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -21,40 +31,30 @@ public class ReservationRepository {
     public List<Reservation> findAll() {
         String sql = "SELECT id, name, date, time FROM reservation";
 
-        return jdbcTemplate.query(
-                sql,
-                (rs, rowNum) -> new Reservation(
-                        rs.getLong("id"),
-                        rs.getString("name"),
-                        rs.getString("date"),
-                        rs.getString("time")
-                )
-        );
+        return jdbcTemplate.query(sql, ROW_MAPPER);
     }
 
-    public Reservation findById(Long id) {
-        String sql = "SELECT id, name, date, time FROM reservation WHERE id = ?";
+    public Optional<Reservation> findById(Long id) {
+        String sql =
+                "SELECT id, name, date, time FROM reservation WHERE id = ?";
 
-        return jdbcTemplate.queryForObject(
-                sql,
-                (rs, rowNum) -> new Reservation(
-                        rs.getLong("id"),
-                        rs.getString("name"),
-                        rs.getString("date"),
-                        rs.getString("time")
-                ),
-                id
-        );
+        return jdbcTemplate.query(sql, ROW_MAPPER, id)
+                .stream()
+                .findFirst();
     }
 
     public Reservation save(ReservationRequest request) {
-        String sql = "INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)";
+        String sql =
+                "INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)";
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps =
-                    connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+                    connection.prepareStatement(
+                            sql,
+                            Statement.RETURN_GENERATED_KEYS
+                    );
 
             ps.setString(1, request.getName());
             ps.setString(2, request.getDate());
@@ -73,22 +73,22 @@ public class ReservationRepository {
         );
     }
 
-    public Reservation update(Long id, ReservationRequest request) {
-        String sql = "UPDATE reservation SET name = ?, date = ?, time = ? WHERE id = ?";
+    public int update(Long id, ReservationRequest request) {
+        String sql =
+                "UPDATE reservation SET name = ?, date = ?, time = ? WHERE id = ?";
 
-        jdbcTemplate.update(
+        return jdbcTemplate.update(
                 sql,
                 request.getName(),
                 request.getDate(),
                 request.getTime(),
                 id
         );
-
-        return findById(id);
     }
 
     public int delete(Long id) {
         String sql = "DELETE FROM reservation WHERE id = ?";
+
         return jdbcTemplate.update(sql, id);
     }
 }

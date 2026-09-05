@@ -17,16 +17,8 @@ public class ReservationService {
         return reservationRepository.findAll();
     }
 
-    public Reservation findById(Long id) {
-        return reservationRepository.findById(id);
-    }
-
     public Reservation create(ReservationRequest request) {
         return reservationRepository.save(request);
-    }
-
-    public Reservation update(Long id, ReservationRequest request) {
-        return reservationRepository.update(id, request);
     }
 
     public void delete(Long id) {
@@ -35,5 +27,20 @@ public class ReservationService {
         if (deletedCount == 0) {
             throw new NotFoundReservationException();
         }
+    }
+
+    public Reservation findById(Long id) {
+        return reservationRepository.findById(id)
+                .orElseThrow(NotFoundReservationException::new);
+    }
+
+    public Reservation update(Long id, ReservationRequest request) {
+        int updatedCount = reservationRepository.update(id, request);
+
+        if (updatedCount == 0) {
+            throw new NotFoundReservationException();
+        }
+
+        return findById(id);
     }
 }
