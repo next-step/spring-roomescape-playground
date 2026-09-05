@@ -34,10 +34,9 @@ public class ReservationService {
     }
 
     public void delete(Long id) {
-        Reservation deleteReservation = reservationRepository.findAllReservations().stream()
-                .filter(it -> Objects.equals(it.getId(), id))
-                .findFirst()
-                .orElseThrow(() -> new NotFoundException("삭제할 예약을 찾을 수 없습니다."));
-        reservationRepository.delete(deleteReservation);
+        int affectedRow = reservationRepository.delete(id);
+        if (affectedRow == 0) {
+            throw new NotFoundException("삭제 할 예약이 없습니다.");
+        }
     }
 }
