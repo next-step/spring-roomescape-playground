@@ -39,6 +39,13 @@ class JdbcTimeRepository implements TimeRepository {
     }
 
     @Override
+    public boolean existsByTime(LocalTime time) {
+        String sql = "SELECT COUNT(1) FROM time WHERE time = ?";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, time.toString());
+        return count != null && count > 0;
+    }
+
+    @Override
     public ReservationTime save(ReservationTime reservationTime) {
         String sql = "INSERT INTO time (time) VALUES (?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();

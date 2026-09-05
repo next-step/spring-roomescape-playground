@@ -2,7 +2,6 @@ package roomescape.domain;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Objects;
 import roomescape.exception.InvalidReservationException;
 
 public final class Reservation {
@@ -25,8 +24,7 @@ public final class Reservation {
             ReservationTime time,
             LocalDateTime now
     ) {
-        Objects.requireNonNull(now, "현재 일시는 null일 수 없습니다.");
-        validate(name, date, time);
+        validate(name, date, time, now);
         validateNotPast(date, time, now);
         return new Reservation(null, name, date, time);
     }
@@ -37,6 +35,13 @@ public final class Reservation {
         }
         validate(name, date, time);
         return new Reservation(id, name, date, time);
+    }
+
+    private static void validate(String name, LocalDate date, ReservationTime time, LocalDateTime now) {
+        validate(name, date, time);
+        if (now == null) {
+            throw new InvalidReservationException("현재 일시는 필수입니다.");
+        }
     }
 
     private static void validate(String name, LocalDate date, ReservationTime time) {

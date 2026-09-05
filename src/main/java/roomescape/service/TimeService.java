@@ -1,10 +1,12 @@
 package roomescape.service;
 
+import java.time.LocalTime;
 import java.util.List;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import roomescape.domain.ReservationTime;
+import roomescape.exception.DuplicateReservationTimeException;
 import roomescape.exception.NotFoundTimeException;
 import roomescape.exception.TimeInUseException;
 import roomescape.repository.ReservationRepository;
@@ -25,8 +27,17 @@ public class TimeService {
         return timeRepository.findAll();
     }
 
-    public ReservationTime create(ReservationTime reservationTime) {
-        return timeRepository.save(reservationTime);
+    @Transactional
+    public ReservationTime create(LocalTime time) {
+        ReservationTime reservationTime = ReservationTime.create(time);
+        if (timeRepository.existsByTime(time)) {
+            throw new DuplicateReservationTimeException();
+        }
+        try {
+            return timeRepository.save(reservationTime);
+        } catch (DataIntegrityViolationException exception) {
+            throw new DuplicateReservationTimeException();
+        }
     }
 
     @Transactional
