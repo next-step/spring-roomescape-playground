@@ -21,11 +21,12 @@ import roomescape.exception.NotFoundException;
 @Controller
 public class ReservationController {
 
-    private final JdbcTemplate jdbcTemplate;
+    private final ReservationService reservationService;
 
-    public ReservationController(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    public ReservationController(ReservationService reservationService) {
+        this.reservationService = reservationService;
     }
+
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<Void> handleNotFoundException() {
@@ -42,65 +43,28 @@ public class ReservationController {
         return "reservation";
     }
 
+    /// ///////////////////////////////////////////////////////////////////////
+
     @GetMapping("/reservations")
     @ResponseBody
     public List<Reservation> read() {
-        String sql = "SELECT id, name, date, time FROM reservation";
-        return jdbcTemplate.query(
-            sql,
-            (rs, rowNum) -> Reservation.create(
-                rs.getLong("id"),
-                rs.getString("name"),
-                rs.getString("date"),
-                rs.getString("time")
-            )
-        );
+        return reservationService.read();
     }
 
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> createReservation(
         @RequestBody ReservationRequest reservationRequest) {
         reservationRequest.validate();
-        String sql = "INSERT INTO reservation(name, date, time) VALUES (?, ?, ?)";
-        KeyHolder keyHolder = new GeneratedKeyHolder();
 
-        jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(
-                sql,
-                new String[]{"id"}
-            );
-
-            ps.setString(1, reservationRequest.name());
-            ps.setString(2, reservationRequest.date());
-            ps.setString(3, reservationRequest.time());
-
-            return ps;
-        }, keyHolder);
-
-        long id = keyHolder.getKey().longValue();
-        Reservation reservation = Reservation.create(
-            id,
-            reservationRequest.name(),
-            reservationRequest.date(),
-            reservationRequest.time()
-        );
-
+        Reservation reservation = reservationService.createReservation(reservationRequest);
         return ResponseEntity
-            .created(URI.create("/reservations/" + id))
+            .created(URI.create("/reservations/" + reservation.getId()))
             .body(reservation);
     }
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable long id) {
-        int deletedCount = jdbcTemplate.update(
-            "DELETE FROM reservation WHERE id = ?",
-            id
-        );
-
-        if (deletedCount == 0) {
-            throw new NotFoundException("Reservation not found: id=" + id);
-        }
-
+        reservationService.deleteReservation(id);
         return ResponseEntity.noContent().build();
     }
 }
