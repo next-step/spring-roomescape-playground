@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import roomescape.domain.Reservation;
 import roomescape.domain.Time;
 import roomescape.dto.ReservationRequest;
+import roomescape.exception.InvalidReservationException;
 import roomescape.exception.NotFoundReservationException;
 import roomescape.exception.NotFoundTimeException;
 import roomescape.repository.ReservationRepository;
@@ -42,6 +43,10 @@ public class ReservationService {
     }
 
     public Reservation save(ReservationRequest request) {
+        if (request.time() == null) {
+            throw new InvalidReservationException("예약 시간을 선택해야 합니다.");
+        }
+
         Time time = findTimeById(request.time());
         Reservation reservation = request.toEntity(time);
 

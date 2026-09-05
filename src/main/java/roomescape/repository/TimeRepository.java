@@ -1,11 +1,15 @@
 package roomescape.repository;
 
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Time;
+import roomescape.exception.DuplicateTimeException;
+import roomescape.exception.TimeInUseException;
 
 import java.sql.PreparedStatement;
 import java.time.LocalTime;
@@ -44,11 +48,15 @@ public class TimeRepository {
         String sql = "insert into time (time) values (?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
-        jdbcTemplate.update(connection -> {
-            PreparedStatement preparedStatement = connection.prepareStatement(sql, new String[]{"id"});
-            preparedStatement.setObject(1, time.getTime());
-            return preparedStatement;
-        }, keyHolder);
+        try {
+            jdbcTemplate.update(connection -> {
+                PreparedStatement preparedStatement = connection.prepareStatement(sql, new String[]{"id"});
+                preparedStatement.setObject(1, time.getTime());
+                return preparedStatement;
+            }, keyHolder);
+        } catch (DuplicateKeyException e) {
+            throw new DuplicateTimeException("이미 등록된 시간입니다.");
+        }
 
         Long id = keyHolder.getKey().longValue();
         return new Time(id, time.getTime());
@@ -57,6 +65,13 @@ public class TimeRepository {
     public int deleteById(Long id) {
         String sql = "delete from time where id = ?";
 
-        return jdbcTemplate.update(sql, id);
+        try {
+            return jdbcTemplate.update(sql, id);
+        } catch (DataIntegrityViolationException e) {
+            throw new TimeInUseException(
+                    "예약에서 사용 중인 시간은 삭제할 수 없습니다. 관련 예약을 먼저 취소해 주세요."
+            );
+        }
+
     }
 }

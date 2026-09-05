@@ -6,9 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import roomescape.exception.InvalidReservationException;
-import roomescape.exception.NotFoundReservationException;
-import roomescape.exception.NotFoundTimeException;
+import roomescape.exception.*;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -41,5 +39,26 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DuplicateKeyException.class)
     public ResponseEntity<String> handleDuplicateReservationException() {
         return ResponseEntity.status(HttpStatus.CONFLICT).body("이미 해당 날짜와 시간에 예약이 존재합니다.");
+    }
+
+    //시간 값 누락 오류
+    @ExceptionHandler(InvalidTimeException.class)
+    public ResponseEntity<String> handleInvalidTimeException(InvalidTimeException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(e.getMessage());
+    }
+
+    //예약에서 사용 중인 시간 삭제 오류
+    @ExceptionHandler(TimeInUseException.class)
+    public ResponseEntity<String> handleTimeInUseException(TimeInUseException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(e.getMessage());
+    }
+
+    // 시간 중복 오류
+    @ExceptionHandler(DuplicateTimeException.class)
+    public ResponseEntity<String> handleDuplicateTimeException(DuplicateTimeException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(e.getMessage());
     }
 }

@@ -16,7 +16,6 @@ public class Reservation {
     public Reservation(Long id, String name, LocalDate date, Time time) {
         validateRequiredValues(name, date, time);
         validateNameLength(name);
-        validateFutureDateTime(date, time);
 
         this.id = id;
         this.name = name;
@@ -40,6 +39,13 @@ public class Reservation {
         return time;
     }
 
+    public static Reservation create(String name, LocalDate date, Time time) {
+        Reservation reservation = new Reservation(null, name, date, time);
+        validateFutureDateTime(date, time);
+
+        return reservation;
+    }
+
     private void validateRequiredValues(String name, LocalDate date, Time time) {
         if (name == null || name.isBlank() || date == null || time == null) {
             throw new InvalidReservationException("예약 정보는 모두 입력해야 합니다.");
@@ -52,7 +58,7 @@ public class Reservation {
         }
     }
 
-    private void validateFutureDateTime(LocalDate date, Time time) {
+    private static void validateFutureDateTime(LocalDate date, Time time) {
         LocalDateTime reservationDateTime = LocalDateTime.of(date, time.getTime());
 
         if (!reservationDateTime.isAfter(LocalDateTime.now())) {

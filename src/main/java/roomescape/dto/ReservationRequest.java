@@ -11,6 +11,6 @@ public record ReservationRequest (
     Long time
 ) {
     public Reservation toEntity(Time reservationTime) {
-        return new Reservation(null, name, date, reservationTime);
+        return Reservation.create(name, date, reservationTime);
     }
 }
