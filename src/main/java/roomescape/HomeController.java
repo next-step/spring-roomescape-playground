@@ -3,14 +3,14 @@ package roomescape;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.sql.PreparedStatement;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -56,7 +56,7 @@ public class HomeController {
                 requestDto.getTime()
         );
 
-        Long id = insertWithKeyHolder(reservation);
+        Long id = insert(reservation);
 
         Reservation newReservation = Reservation.toEntity(reservation, id);
         return ResponseEntity.created(URI.create("/reservations/" + id)).body(newReservation);
@@ -86,18 +86,16 @@ public class HomeController {
         return rowNum;
     }
 
-    private Long insertWithKeyHolder(Reservation reservation) {
-        String sql = "INSERT INTO reservation(name, date, time) VALUES (?, ?, ?)";
-        KeyHolder keyHolder = new GeneratedKeyHolder();
+    private Long insert(Reservation reservation) {
+        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("reservation")
+                .usingGeneratedKeyColumns("id");
 
-        jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
-            ps.setString(1,reservation.getName());
-            ps.setString(2, reservation.getDate());
-            ps.setString(3, reservation.getTime());
-            return ps;
-        }, keyHolder);
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("name", reservation.getName());
+        parameters.put("date", reservation.getDate());
+        parameters.put("time", reservation.getTime());
 
-        return keyHolder.getKey().longValue();
+        return simpleJdbcInsert.executeAndReturnKey(parameters).longValue();
     }
 }
