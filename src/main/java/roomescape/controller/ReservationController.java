@@ -29,7 +29,7 @@ public class ReservationController {
     @PostMapping("/reservations")
     public ResponseEntity<ReservationResponseDto> create(@RequestBody ReservationRequestDto reservationDTO) {
         ReservationResponseDto responseDto = reservationService.create(reservationDTO);
-        return ResponseEntity.created(URI.create("/reservations/" + responseDto.getId())).body(responseDto);
+        return ResponseEntity.created(URI.create("/reservations/" + responseDto.id())).body(responseDto);
     }
 
     @DeleteMapping("/reservations/{id}")
