@@ -1,8 +1,8 @@
 package com.cholog.roomescape.roomescape;
 
-import com.cholog.roomescape.roomescape.entity.Reservation;
-import com.cholog.roomescape.roomescape.entity.Time;
-import com.cholog.roomescape.roomescape.exception.badrequest.ReservationNotValidException;
+import com.cholog.roomescape.domain.entity.Reservation;
+import com.cholog.roomescape.domain.entity.Time;
+import com.cholog.roomescape.domain.exception.badrequest.ReservationNotValidException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

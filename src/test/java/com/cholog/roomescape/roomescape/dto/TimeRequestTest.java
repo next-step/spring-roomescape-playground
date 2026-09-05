@@ -1,6 +1,6 @@
 package com.cholog.roomescape.roomescape.dto;
 
-import com.cholog.roomescape.roomescape.dto.request.TimeRequest;
+import com.cholog.roomescape.domain.dto.request.TimeRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;

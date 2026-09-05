@@ -1,8 +1,8 @@
 package com.cholog.roomescape.roomescape.business.reservation;
 
-import com.cholog.roomescape.roomescape.dto.request.ReservationRequest;
-import com.cholog.roomescape.roomescape.dto.request.TimeRequest;
-import com.cholog.roomescape.roomescape.dto.response.TimeResponse;
+import com.cholog.roomescape.domain.dto.request.ReservationRequest;
+import com.cholog.roomescape.domain.dto.request.TimeRequest;
+import com.cholog.roomescape.domain.dto.response.TimeResponse;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeEach;

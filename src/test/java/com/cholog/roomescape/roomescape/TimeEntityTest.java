@@ -1,7 +1,7 @@
 package com.cholog.roomescape.roomescape;
 
-import com.cholog.roomescape.roomescape.entity.Time;
-import com.cholog.roomescape.roomescape.exception.badrequest.TimeNotValidException;
+import com.cholog.roomescape.domain.entity.Time;
+import com.cholog.roomescape.domain.exception.badrequest.TimeNotValidException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

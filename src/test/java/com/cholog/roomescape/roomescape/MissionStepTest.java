@@ -1,6 +1,6 @@
 package com.cholog.roomescape.roomescape;
 
-import com.cholog.roomescape.roomescape.controller.ReservationApiController;
+import com.cholog.roomescape.domain.controller.ReservationApiController;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeEach;
