@@ -9,9 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(NotFoundReservationException.class)
-    public ResponseEntity<ErrorResponse> handleNotFound(
-            NotFoundReservationException exception
-    ) {
+    public ResponseEntity<ErrorResponse> handleInvalidRequest() {
         return ResponseEntity
                 .status(404)
                 .body(new ErrorResponse(exception.getMessage()));
