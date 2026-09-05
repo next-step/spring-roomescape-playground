@@ -1,15 +1,14 @@
 package com.cholog.roomescape.roomescape.dto;
 
+import com.cholog.roomescape.domain.dto.request.ReservationRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import com.cholog.roomescape.roomescape.dto.request.ReservationRequest;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,15 +24,15 @@ public class ReservationRequestTest {
 
     @Test
     @DisplayName("이름 필드는 비어있을 수 없다")
-    void nameMustRequiredIncreateReservationRequest() {
+    void nameMustRequiredInCreateReservationRequest() {
 
         // given
         String name = "";
         LocalDate reservedDate = LocalDate.now();
-        LocalTime reservedTime = LocalTime.now();
+        String reservedTimeId = "1";
 
         ReservationRequest request = new ReservationRequest(
-                name, reservedDate, reservedTime
+                name, reservedDate, reservedTimeId
         );
 
        // when
@@ -45,15 +44,15 @@ public class ReservationRequestTest {
 
     @Test
     @DisplayName("이름 필드는 최대 20자를 초과할 수 없다")
-    void nameCannotExceed20CharIncreateReservationRequest() {
+    void nameCannotExceed20CharInCreateReservationRequest() {
 
         // given
         String name = "abcdefghijklmnopqrstu";
         LocalDate reservedDate = LocalDate.now();
-        LocalTime reservedTime = LocalTime.now();
+        String reservedTimeId = "1";
 
         ReservationRequest request = new ReservationRequest(
-                name, reservedDate, reservedTime
+                name, reservedDate, reservedTimeId
         );
 
         // when
@@ -65,14 +64,14 @@ public class ReservationRequestTest {
 
     @Test
     @DisplayName("이름 필드는 null값을 허용하지 않는다")
-    void nameMustNotBeNullIncreateReservationRequest() {
+    void nameMustNotBeNullInCreateReservationRequest() {
 
         // given
         LocalDate reservedDate = LocalDate.now();
-        LocalTime reservedTime = LocalTime.now();
+        String reservedTimeId = "1";
 
         ReservationRequest request = new ReservationRequest(
-                null, reservedDate, reservedTime
+                null, reservedDate, reservedTimeId
         );
 
         // when
@@ -84,15 +83,15 @@ public class ReservationRequestTest {
 
     @Test
     @DisplayName("예약 날짜 필드는 null값을 허용하지 않는다")
-    void dateMustNotBeNullIncreateReservationRequest() {
+    void dateMustNotBeNullInCreateReservationRequest() {
 
         // given
         String name = "Alice";
         LocalDate reservedDate = null;
-        LocalTime reservedTime = LocalTime.now();
+        String reservedTimeId = "1";
 
         ReservationRequest request = new ReservationRequest(
-                name, reservedDate, reservedTime
+                name, reservedDate, reservedTimeId
         );
 
         // when
@@ -104,15 +103,35 @@ public class ReservationRequestTest {
 
     @Test
     @DisplayName("예약 시각 필드는 null값을 허용하지 않는다")
-    void timeMustNotBeNullIncreateReservationRequest() {
+    void timeMustNotBeNullInCreateReservationRequest() {
 
         // given
         String name = "Alice";
         LocalDate reservedDate = LocalDate.now();
-        LocalTime reservedTime = null;
+        String reservedTimeId = null;
 
         ReservationRequest request = new ReservationRequest(
-                name, reservedDate, reservedTime
+                name, reservedDate, reservedTimeId
+        );
+
+        // when
+        Set<ConstraintViolation<ReservationRequest>> violations = validator.validate(request);
+
+        // then
+        assertThat(violations).hasSize(1);
+    }
+
+    @Test
+    @DisplayName("예약 시각 필드는 빈 문자열을 허용하지 않는다")
+    void timeMustNotBeBlankInCreateReservationRequest() {
+
+        // given
+        String name = "Alice";
+        LocalDate reservedDate = LocalDate.now();
+        String reservedTimeId = "";
+
+        ReservationRequest request = new ReservationRequest(
+                name, reservedDate, reservedTimeId
         );
 
         // when
@@ -124,15 +143,15 @@ public class ReservationRequestTest {
 
     @Test
     @DisplayName("예약을 정상적으로 처리한 경우")
-    void allValidatedIncreateReservationRequest() {
+    void allValidatedInCreateReservationRequest() {
 
         // given
         String name = "Alice";
         LocalDate reservedDate = LocalDate.now();
-        LocalTime reservedTime = LocalTime.now();
+        String reservedTimeId = "1";
 
         ReservationRequest request = new ReservationRequest(
-                name, reservedDate, reservedTime
+                name, reservedDate, reservedTimeId
         );
 
         // when
