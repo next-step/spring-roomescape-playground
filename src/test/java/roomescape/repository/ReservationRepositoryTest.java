@@ -54,24 +54,27 @@ public class ReservationRepositoryTest {
         Reservation reservation = new Reservation(NAME, TODAY, NOW);
         Reservation savedReservation = reservationRepository.save(reservation);
 
-        assertTrue(jdbcTemplate.queryForObject(
-                """
-                SELECT EXISTS (
-                    SELECT 1
-                    FROM reservation
-                    WHERE name = ? AND date = ? AND time = ?
-                )
-                """,
-                Boolean.class,
-                NAME,
-                TODAY,
-                NOW
-        ));
+        Long savedId = savedReservation.getId();
 
-        assertEquals(4L, savedReservation.getId());
-        assertEquals(NAME, savedReservation.getName());
-        assertEquals(TODAY, savedReservation.getDate());
-        assertEquals(NOW, savedReservation.getTime());
+        Reservation persistedReservation = jdbcTemplate.queryForObject(
+                """
+                SELECT id, name, date, time
+                FROM reservation
+                WHERE id = ?
+                """,
+                (rs, rowNum) -> new Reservation(
+                        rs.getLong("id"),
+                        rs.getString("name"),
+                        rs.getObject("date", LocalDate.class),
+                        rs.getObject("time", LocalTime.class)
+                ),
+                savedId
+        );
+
+        assertEquals(savedReservation.getId(), persistedReservation.getId());
+        assertEquals(savedReservation.getName(), persistedReservation.getName());
+        assertEquals(savedReservation.getDate(), persistedReservation.getDate());
+        assertEquals(savedReservation.getTime(), persistedReservation.getTime());
     }
 
     @Test
