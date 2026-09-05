@@ -51,6 +51,14 @@ class ReservationTest {
     }
 
     @Test
+    @DisplayName("현재 일시는 필수이다")
+    void rejectsNullCurrentDateTime() {
+        assertThatThrownBy(() -> Reservation.create("브라운", DATE, TIME, null))
+                .isInstanceOf(InvalidReservationException.class)
+                .hasMessage("현재 일시는 필수입니다.");
+    }
+
+    @Test
     @DisplayName("저장된 예약을 식별자와 함께 복원한다")
     void restoresReservationWithId() {
         Reservation restoredReservation = Reservation.restore(1L, "브라운", DATE, TIME);

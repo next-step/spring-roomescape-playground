@@ -49,6 +49,17 @@ class TimeControllerIntegrationTest {
     }
 
     @Test
+    @DisplayName("같은 예약 시간은 중복으로 생성할 수 없다")
+    void rejectsDuplicateReservationTime() throws Exception {
+        createTime("15:40")
+                .andExpect(status().isCreated());
+
+        createTime("15:40")
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.message").value("이미 등록된 시간입니다."));
+    }
+
+    @Test
     @DisplayName("예약에서 참조 중인 시간은 삭제할 수 없다")
     void rejectsDeletingTimeInUse() throws Exception {
         long timeId = createdTimeId("15:40");
