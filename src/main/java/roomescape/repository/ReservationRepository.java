@@ -8,12 +8,9 @@ import org.springframework.stereotype.Repository;
 import roomescape.model.Reservation;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import javax.sql.DataSource;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Repository
 public class ReservationRepository {
