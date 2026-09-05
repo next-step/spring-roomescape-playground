@@ -2,7 +2,6 @@ package roomescape.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.jdbc.core.JdbcTemplate;
 import roomescape.domain.Reservation;
 import roomescape.exception.DuplicateReservationException;
 import roomescape.exception.ReservationNotFoundException;
@@ -14,12 +13,14 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+import org.mockito.ArgumentCaptor;
 
 public class ReservationServiceTest {
 
@@ -84,19 +85,24 @@ public class ReservationServiceTest {
     @Test
     void 현재보다_이후_시간으로_예약할_수_있다() {
         LocalTime reservationTime = NOW.plusMinutes(1);
-
         Reservation savedReservation = new Reservation(1L, NAME, TODAY, reservationTime);
 
         when(reservationRepository.save(any(Reservation.class)))
                 .thenReturn(savedReservation);
 
-        assertDoesNotThrow(
-                () -> reservationService.create(
-                        NAME,
-                        TODAY,
-                        reservationTime
-                )
-        );
+        Reservation result = reservationService.create(NAME, TODAY, reservationTime);
+
+        ArgumentCaptor<Reservation> captor =
+                ArgumentCaptor.forClass(Reservation.class);
+
+        verify(reservationRepository).save(captor.capture());
+
+        Reservation requestedReservation = captor.getValue();
+
+        assertSame(savedReservation, result);
+        assertEquals(NAME, requestedReservation.getName());
+        assertEquals(TODAY, requestedReservation.getDate());
+        assertEquals(reservationTime, requestedReservation.getTime());
     }
 
     @Test
@@ -126,9 +132,9 @@ public class ReservationServiceTest {
         when(reservationRepository.deleteById(id))
                 .thenReturn(true);
 
-        assertDoesNotThrow(
-                () -> reservationService.delete(id)
-        );
+        reservationService.delete(id);
+
+        verify(reservationRepository).deleteById(id);
     }
 
     @Test
