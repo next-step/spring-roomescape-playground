@@ -1,33 +1,29 @@
 package roomescape.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class Reservation {
-    private Long id;
-    private String name;
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDate date;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
-    private LocalTime time;
+    private final Long id;
+    private final String name;
+    private final LocalDate date;
+    private final LocalTime time;
 
-    public Reservation() {
-    }
 
-    public Reservation(Long id, String name, LocalDate date, LocalTime time) {
+    private Reservation(Long id, String name, LocalDate date, LocalTime time) {
         this.id = id;
         this.name = name;
         this.date = date;
         this.time = time;
     }
 
-    public Reservation(String name, LocalDate date, LocalTime time) {
+    public static Reservation create(String name, LocalDate date, LocalTime time) {
         validateReservationArgument(name, date, time);
-        this.name = name;
-        this.date = date;
-        this.time = time;
+        return new Reservation(null, name, date, time);
+    }
+
+    public static Reservation restore(Long id, String name, LocalDate date, LocalTime time) {
+        return new Reservation(id, name, date, time);
     }
 
     public Reservation withId(Long id) {
@@ -35,7 +31,7 @@ public class Reservation {
     }
 
 
-    public void validateReservationArgument(String name, LocalDate date, LocalTime time) {
+    public static void validateReservationArgument(String name, LocalDate date, LocalTime time) {
         LocalDate todayDate = LocalDate.now();
         LocalTime nowTime = LocalTime.now();
         if (name == null || name.isBlank()) {
@@ -64,7 +60,6 @@ public class Reservation {
         return date;
     }
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
     public LocalTime getTime() {
         return time;
     }

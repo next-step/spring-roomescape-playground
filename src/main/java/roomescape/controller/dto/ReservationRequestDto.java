@@ -21,7 +21,7 @@ public class ReservationRequestDto {
     }
 
     public Reservation toEntity() {
-        return new Reservation(this.name, this.date, this.time);
+        return Reservation.create(this.name, this.date, this.time);
     }
 
     public String getName() {

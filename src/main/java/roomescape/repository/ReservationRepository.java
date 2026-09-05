@@ -16,7 +16,7 @@ import java.util.List;
 public class ReservationRepository {
     private JdbcTemplate jdbcTemplate;
     private final RowMapper<Reservation> reservationRowMapper = (resultSet, rowNum) -> {
-            Reservation reservation = new Reservation(
+            Reservation reservation = Reservation.restore(
                     resultSet.getLong("id"),
                     resultSet.getString("name"),
                     LocalDate.parse(resultSet.getString("date")),
