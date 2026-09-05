@@ -1,16 +1,13 @@
 package roomescape;
 
-import java.net.URI;
 import java.sql.PreparedStatement;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
-import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import roomescape.exception.NotFoundException;
 
 @Repository
 public class ReservationRepository {
@@ -28,8 +25,8 @@ public class ReservationRepository {
             (rs, rowNum) -> Reservation.create(
                 rs.getLong("id"),
                 rs.getString("name"),
-                rs.getString("date"),
-                rs.getString("time")
+                rs.getObject("date", LocalDate.class),
+                rs.getObject("time", LocalTime.class)
             )
         );
     }
@@ -44,9 +41,9 @@ public class ReservationRepository {
                 new String[]{"id"}
             );
 
-            ps.setString(1, reservationRequest.name());
-            ps.setString(2, reservationRequest.date());
-            ps.setString(3, reservationRequest.time());
+            ps.setString(1, reservationRequest.getName());
+            ps.setObject(2, reservationRequest.getDate());
+            ps.setObject(3, reservationRequest.getTime());
 
             return ps;
         }, keyHolder);
