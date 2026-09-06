@@ -1,8 +1,10 @@
-# 방탈출 1,2단계 진행
+# 방탈출 1-7단계 진행
 
 ## 추가한 의존성
 - 스프링부트 스타터 웹 : org.springframework.boot:spring-boot-starter-web
 - 타임리프 : org.springframework.boot:spring-boot-starter-thymeleaf
+- org.springframework.boot:spring-boot-starter-jdbc
+- com.h2database:h2
 
 ## 구현 기능
 ### 어드민 페이지
@@ -11,6 +13,10 @@
 ### 예약목록 조회
 - `GET /reservations`
 - json형식으로 실제 예약된 목록이 보임
+### 예약 추가
+- `POST /reservations`
+### 예약 삭제
+- `DELETE /reservations/{id}`
 ### API
 - 요청 : GET /reservations
 - 응답예시
@@ -65,6 +71,21 @@
   - 경로 : /reservations/{id}에 존재하지않는 id로 DELETE요청
   - 결과 : 응답으로 NotFoundException을 던짐
   - 상태코드 : 404
+### 5단계
+- JdbcTemplate을 이용하여 DataSource객체에 접근하기
+- DataSource 객체를 이용하여 Connection 확인하기
+- Connection 객체를 이용하여 데이터베이스 이름 검증
+- Connection 객체를 이용하여 테이블 이름 검증
+### 6단계
+- 경로 : /reservations에 POST요청 후 sql로 2차 검증
+- 상태코드 : 200
+### 7단계
+- 1차
+  - 경로 : /reservations에 POST요청하여 정상적으로 추가됐는지 검증
+  - 상태코드 : 201
+- 2차
+  - 경로 : /reservations/1에 DELETE요청하여 정상적으로 제거됐는지 검증
+  - 상태코드 : 204
 ---
 ### 검증범위
 1. 루트의('/') GET 요청 검증
@@ -74,3 +95,5 @@
 5. ReservationController의 /reservations의 DELETE요청 검증
 6. ReservationController의 /reservations POST의 예외처리 검증
 7. ReservationController의 /reservations DELETE의 예외처리 검증
+8. ReservationController의 /reservations POST처리 검증
+9. ReservationController의 /reservations DELETE처리 검증
