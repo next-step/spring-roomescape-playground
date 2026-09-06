@@ -1,29 +1,20 @@
 package roomescape;
 
 import java.net.URI;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class ReservationController {
 
-    private final JdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsert simpleJdbcInsert;
+    private final ReservationRepository reservationRepository;
 
-    public ReservationController(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-        this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
-                .withTableName("reservation")
-                .usingGeneratedKeyColumns("id");
+    public ReservationController(ReservationRepository reservationRepository) {
+        this.reservationRepository = reservationRepository;
     }
 
     @GetMapping("/reservation")
@@ -33,26 +24,18 @@ public class ReservationController {
 
     @GetMapping("/reservations")
     public ResponseEntity<List<Reservation>> getReservations() {
-        String sql = "SELECT id, name, date, time FROM reservation";
 
-        List<Reservation> reservations = jdbcTemplate.query(
-                sql,
-                (resultSet, rowNum) -> {
-                    Reservation reservation = new Reservation(
-                            resultSet.getLong("id"),
-                            resultSet.getString("name"),
-                            LocalDate.parse(resultSet.getString("date")),
-                            LocalTime.parse(resultSet.getString("time"))
-                    );
-
-                    return reservation;});
+        List<Reservation> reservations = reservationRepository.getReservations();
 
         return ResponseEntity.ok().body(reservations);
     }
 
     @PostMapping("/reservations")
     @ResponseBody
-    public ResponseEntity<Reservation> postReservation(@RequestBody ReservationRequest reservationRequest) {
+    public ResponseEntity<Reservation> postReservation(
+            @RequestBody ReservationRequest reservationRequest
+    ) {
+
         // 예외처리
         if (reservationRequest.getName() == null
                 || reservationRequest.getName().trim().isBlank()
@@ -61,22 +44,14 @@ public class ReservationController {
             throw new IllegalArgumentException();
         }
 
-        MapSqlParameterSource params = new MapSqlParameterSource()
-                .addValue("name", reservationRequest.getName())
-                .addValue("date", reservationRequest.getDate().toString())
-                .addValue("time", reservationRequest.getTime().toString());
-
-        Number id = simpleJdbcInsert.executeAndReturnKey(params);
-
-        Reservation reservation = new Reservation(
-                id.longValue(),
+        Reservation reservation = reservationRepository.postReservation(
                 reservationRequest.getName(),
                 reservationRequest.getDate(),
                 reservationRequest.getTime()
         );
 
         return ResponseEntity.created(
-                URI.create("/reservations/" + reservation.getId()))
+                        URI.create("/reservations/" + reservation.getId()))
                 .body(reservation);
     }
 
@@ -84,30 +59,13 @@ public class ReservationController {
     @ResponseBody
     public Reservation getReservation(@PathVariable long id) {
 
-        String sql = "SELECT id, name, date, time FROM reservation WHERE id = ?";
-
-        return jdbcTemplate.queryForObject(
-                sql,
-                (resultSet, rowNum) -> {
-                    Reservation reservation = new Reservation(
-                            resultSet.getLong("id"),
-                            resultSet.getString("name"),
-                            LocalDate.parse(resultSet.getString("date")),
-                            LocalTime.parse(resultSet.getString("time"))
-                    );
-
-                    return reservation;
-                },
-                id
-        );
+        return reservationRepository.getReservation(id);
     }
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable long id) {
 
-        String sql = "DELETE FROM reservation WHERE id = ?";
-
-        int deletedCount = jdbcTemplate.update(sql, id);
+        int deletedCount = reservationRepository.deleteReservation(id);
 
         if (deletedCount == 0) {
             throw new NoSuchElementException();
