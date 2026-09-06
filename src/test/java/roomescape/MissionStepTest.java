@@ -240,7 +240,7 @@ public class MissionStepTest {
                 .body("id", is(1))
                 .body("name", is("브라운"))
                 .body("date", is("2023-08-05"))
-                .body("time", is("15:40"));
+                .body("time", is("15:40:00"));
 
         // 존재하지 않는 예약 조회
         RestAssured.given().log().all()
