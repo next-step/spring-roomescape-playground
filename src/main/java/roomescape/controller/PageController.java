@@ -13,7 +13,12 @@ public class PageController {
 
     @GetMapping("/reservation")
     public String reservationPage() {
-        return "reservation";
+        return "new-reservation";
+    }
+
+    @GetMapping("/time")
+    public String timePage() {
+        return "time";
     }
 
 }

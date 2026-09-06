@@ -1,22 +1,35 @@
 package roomescape.service;
 
 import java.time.Clock;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import roomescape.domain.Reservation;
-import roomescape.exception.InvalidReservationRequestException;
+import roomescape.domain.ReservationTime;
+import roomescape.exception.DuplicateReservationException;
+import roomescape.exception.InvalidReservationException;
 import roomescape.exception.NotFoundReservationException;
+import roomescape.exception.NotFoundTimeException;
 import roomescape.repository.ReservationRepository;
+import roomescape.repository.TimeRepository;
 
 @Service
 public class ReservationService {
 
     private final ReservationRepository reservationRepository;
+    private final TimeRepository timeRepository;
     private final Clock clock;
 
-    public ReservationService(ReservationRepository reservationRepository, Clock clock) {
+    public ReservationService(
+            ReservationRepository reservationRepository,
+            TimeRepository timeRepository,
+            Clock clock
+    ) {
         this.reservationRepository = reservationRepository;
+        this.timeRepository = timeRepository;
         this.clock = clock;
     }
 
@@ -24,15 +37,27 @@ public class ReservationService {
         return reservationRepository.findAll();
     }
 
-    public Reservation create(Reservation reservation) {
-        LocalDateTime reservationDateTime = LocalDateTime.of(
-                reservation.getDate(),
-                reservation.getTime()
-        );
-        if (reservationDateTime.isBefore(LocalDateTime.now(clock))) {
-            throw new InvalidReservationRequestException("지난 일시로는 예약할 수 없습니다.");
+    @Transactional
+    public Reservation create(String name, LocalDate date, Long timeId) {
+        if (timeId == null) {
+            throw new InvalidReservationException();
         }
-        return reservationRepository.save(reservation);
+        ReservationTime reservationTime = timeRepository.findById(timeId)
+                .orElseThrow(() -> new NotFoundTimeException(timeId));
+        Reservation reservation = Reservation.create(
+                name,
+                date,
+                reservationTime,
+                LocalDateTime.now(clock)
+        );
+        if (reservationRepository.existsByDateAndTimeId(date, timeId)) {
+            throw new DuplicateReservationException();
+        }
+        try {
+            return reservationRepository.save(reservation);
+        } catch (DataIntegrityViolationException exception) {
+            throw new DuplicateReservationException();
+        }
     }
 
     public void deleteById(Long id) {

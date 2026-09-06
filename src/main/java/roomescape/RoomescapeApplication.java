@@ -13,7 +13,7 @@ public class RoomescapeApplication {
     }
 
     @Bean
-    public Clock clock() {
+    Clock clock() {
         return Clock.systemDefaultZone();
     }
 }
