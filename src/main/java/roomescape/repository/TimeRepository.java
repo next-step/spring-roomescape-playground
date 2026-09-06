@@ -1,13 +1,16 @@
 package roomescape.repository;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Time;
+import roomescape.exception.DuplicateTimeException;
 
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
@@ -40,19 +43,27 @@ public class TimeRepository {
     }
 
     public Time save(Time time) {
-        KeyHolder keyHolder = new GeneratedKeyHolder();
+        try {
+            KeyHolder keyHolder = new GeneratedKeyHolder();
 
-        jdbcTemplate.update(connection -> {
-            PreparedStatement preparedStatement = connection.prepareStatement(
-                    "INSERT INTO time(time) VALUES (?)",
-                    new String[]{"id"}
-            );
-            preparedStatement.setString(1, time.getTime().toString());
-            return preparedStatement;
-        }, keyHolder);
+            jdbcTemplate.update(connection -> {
+                PreparedStatement preparedStatement = connection.prepareStatement(
+                        "INSERT INTO time(time) VALUES (?)",
+                        new String[]{"id"}
+                );
+                preparedStatement.setString(1, time.getTime().toString());
+                return preparedStatement;
+            }, keyHolder);
 
-        long id = keyHolder.getKey().longValue();
-        return time.withId(id);
+            long id = keyHolder.getKey().longValue();
+            return time.withId(id);
+        } catch (DataIntegrityViolationException e) {
+            Throwable cause = e.getRootCause();
+            if (cause instanceof SQLException sqlException && sqlException.getErrorCode() == 23505) {
+                throw new DuplicateTimeException("이미 존재하는 시간대입니다.");
+            }
+            throw e;
+        }
     }
 
     public boolean existsByTime(LocalTime time) {

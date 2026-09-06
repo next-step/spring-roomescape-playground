@@ -59,16 +59,21 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorResponse(e.getMessage()));
     }
 
+//    @ExceptionHandler(DataIntegrityViolationException.class)
+//    public ResponseEntity<ErrorResponse> handleDataIntegrityViolation(DataIntegrityViolationException e) {
+//        log.error(e.getMessage());
+//        Throwable cause = e.getRootCause();
+//
+//        if (cause instanceof SQLException sqlException) {
+//            if (sqlException.getErrorCode() == 23505) {
+//                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse("이미 존재하는 시간대입니다."));
+//            }
+//        }
+//        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse("잘못된 요청입니다."));
+//    }
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ErrorResponse> handleDataIntegrityViolation(DataIntegrityViolationException e) {
         log.error(e.getMessage());
-        Throwable cause = e.getRootCause();
-
-        if (cause instanceof SQLException sqlException) {
-            if (sqlException.getErrorCode() == 23505) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse("이미 존재하는 시간대입니다."));
-            }
-        }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse("잘못된 요청입니다."));
     }
 }
