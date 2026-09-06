@@ -20,7 +20,7 @@ public class ReservationRepository {
                     resultSet.getLong("id"),
                     resultSet.getString("name"),
                     LocalDate.parse(resultSet.getString("date")),
-                    LocalTime.parse(resultSet.getString("time").substring(0, 5))
+                    LocalTime.parse(resultSet.getString("time"))
             );
             return reservation;
     };

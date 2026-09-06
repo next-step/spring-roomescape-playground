@@ -2,6 +2,7 @@ package roomescape.model;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 
 public class Reservation {
     private final Long id;
@@ -20,8 +21,9 @@ public class Reservation {
 
     public static Reservation create(String name, LocalDate date, LocalTime time) {
         Reservation reservation= new Reservation(null, name, date, time);
-        validatePastReservation(date, time);
-        return reservation;
+        LocalTime minuteTime = time.truncatedTo(ChronoUnit.MINUTES);
+        validatePastReservation(date, minuteTime);
+        return new Reservation(null, name, date, minuteTime);
     }
 
     public static Reservation restore(Long id, String name, LocalDate date, LocalTime time) {
