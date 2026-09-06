@@ -20,7 +20,7 @@ public class DatabaseTest {
 
     @DisplayName("DB에 정상연결된다.")
     @Test
-    void chaeckDatabase() {
+    void checkDatabase() {
         try (Connection connection = jdbcTemplate.getDataSource().getConnection()) {
             assertThat(connection).isNotNull();
             assertThat(connection.getCatalog()).isEqualTo("DATABASE");
