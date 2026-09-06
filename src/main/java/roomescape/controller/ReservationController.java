@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import roomescape.dto.ReservationRequest;
 import roomescape.domain.Reservation;
+import roomescape.dto.ReservationResponse;
 import roomescape.service.ReservationService;
 import jakarta.validation.Valid;
 import java.net.URI;
@@ -19,15 +20,18 @@ public class ReservationController {
     }
 
     @GetMapping("/reservations")
-    public ResponseEntity<List<Reservation>> read() {
-        return ResponseEntity.ok(reservationService.read());
+    public ResponseEntity<List<ReservationResponse>> read() {
+        List<ReservationResponse> responses = reservationService.read().stream()
+                .map(ReservationResponse::from)
+                .toList();
+        return ResponseEntity.ok(responses);
     }
 
     @PostMapping("/reservations")
-    public ResponseEntity<Reservation> create(@Valid @RequestBody ReservationRequest request) {
+    public ResponseEntity<ReservationResponse> create(@Valid @RequestBody ReservationRequest request) {
         Reservation newReservation = reservationService.create(request);
-
-        return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
+        ReservationResponse response = ReservationResponse.from(newReservation);
+        return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(response);
     }
 
     @DeleteMapping("/reservations/{id}")
