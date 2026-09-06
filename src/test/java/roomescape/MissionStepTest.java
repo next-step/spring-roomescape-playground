@@ -12,6 +12,7 @@ import roomescape.domain.Reservation;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,12 +32,26 @@ public class MissionStepTest {
                 .then().log().all()
                 .statusCode(200);
     }
-
-    void 예약_생성(String name, String date, String time) {
+    Long 시간_생성(String time) {
         Map<String, String> params = new HashMap<>();
+        params.put("time", time);
+
+        return RestAssured.given()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/times")
+                .then()
+                .statusCode(201)
+                .extract()
+                .jsonPath()
+                .getLong("id");
+    }
+
+    void 예약_생성(String name, String date, Long timeId) {
+        Map<String, Object> params = new HashMap<>();
         params.put("name", name);
         params.put("date", date);
-        params.put("time", time);
+        params.put("time", timeId);
 
         RestAssured.given()
                 .contentType(ContentType.JSON)
@@ -48,9 +63,13 @@ public class MissionStepTest {
 
     @Test
     void 이단계() {
-        예약_생성("브라운", "2027-01-01", "10:00");
-        예약_생성("브라운", "2027-01-02", "11:00");
-        예약_생성("브라운", "2027-01-03", "12:00");
+        Long firstTimeId = 시간_생성("10:00");
+        Long secondTimeId = 시간_생성("11:00");
+        Long thirdTimeId = 시간_생성("12:00");
+
+        예약_생성("브라운", LocalDate.now().plusDays(1).toString(), firstTimeId);
+        예약_생성("브라운", LocalDate.now().plusDays(2).toString(), secondTimeId);
+        예약_생성("브라운", LocalDate.now().plusDays(3).toString(), thirdTimeId);
 
         RestAssured.given().log().all()
                 .when().get("/reservation")
@@ -62,16 +81,18 @@ public class MissionStepTest {
                 .then().log().all()
                 .statusCode(200)
                 .body("size()", is(3))
-                .body("[0].date", is("2027-01-01"))
-                .body("[0].time", is("10:00"));
+                .body("[0].date", is(LocalDate.now().plusDays(1).toString()))
+                .body("[0].time.id", is(1))
+                .body("[0].time.time", is("10:00"));
     }
 
     @Test
     void 삼단계() {
-        Map<String, String> params = new HashMap<>();
+        Long timeId = 시간_생성("15:40");
+        Map<String, Object> params = new HashMap<>();
         params.put("name", "브라운");
-        params.put("date", "2027-08-05");
-        params.put("time", "15:40");
+        params.put("date", LocalDate.now().plusDays(1).toString());
+        params.put("time", timeId);
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -102,9 +123,10 @@ public class MissionStepTest {
 
     @Test
     void 사단계() {
-        Map<String, String> params = new HashMap<>();
-        params.put("date", "2023-01-01");
-        params.put("time", "15:40");
+        Long timeId = 시간_생성("15:40");
+        Map<String, Object> params = new HashMap<>();
+        params.put("date", LocalDate.now().plusDays(1).toString());
+        params.put("time", timeId);
 
         // 필요한 인자가 없는 경우
         RestAssured.given().log().all()
@@ -125,10 +147,11 @@ public class MissionStepTest {
 
     @Test
     void 날짜_또는_시간_올바르지_못한_형식() {
-        Map<String, String> dateParams = new HashMap<>();
+        Long timeId = 시간_생성("15:40");
+        Map<String, Object> dateParams = new HashMap<>();
         dateParams.put("name", "브라운");
         dateParams.put("date", "날짜");
-        dateParams.put("time", "15:40");
+        dateParams.put("time", timeId);
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -140,7 +163,7 @@ public class MissionStepTest {
 
         Map<String, String> timeParams = new HashMap<>();
         timeParams.put("name", "브라운");
-        timeParams.put("date", "2027-01-01");
+        timeParams.put("date", LocalDate.now().plusDays(1).toString());
         timeParams.put("time", "시간");
 
         RestAssured.given().log().all()
@@ -154,10 +177,11 @@ public class MissionStepTest {
 
     @Test
     void 예약자_이름은_20자를_초과할_수_없다() {
-        Map<String, String> params = new HashMap<>();
+        Long timeId = 시간_생성("10:00");
+        Map<String, Object> params = new HashMap<>();
         params.put("name", "a".repeat(21));
-        params.put("date", "2027-01-01");
-        params.put("time", "10:00");
+        params.put("date", LocalDate.now().plusDays(1).toString());
+        params.put("time", timeId);
 
         RestAssured.given()
                 .contentType(ContentType.JSON)
@@ -170,7 +194,8 @@ public class MissionStepTest {
 
     @Test
     void 예약을_1개_조회한다() {
-        예약_생성("브라운", "2027-01-01", "10:00");
+        Long timeId = 시간_생성("10:00");
+        예약_생성("브라운", LocalDate.now().plusDays(1).toString(), timeId);
 
         RestAssured.given().log().all()
                 .when().get("/reservations/1")
@@ -191,12 +216,13 @@ public class MissionStepTest {
 
     @Test
     void 동일한_날짜와_시간에는_중복_예약할_수_없다() {
-        예약_생성("브라운", "2027-01-01", "10:00");
+        Long timeId = 시간_생성("10:00");
+        예약_생성("브라운", LocalDate.now().plusDays(1).toString(), timeId);
 
-        Map<String, String> params = new HashMap<>();
+        Map<String, Object> params = new HashMap<>();
         params.put("name", "브라운");
-        params.put("date", "2027-01-01");
-        params.put("time", "10:00");
+        params.put("date", LocalDate.now().plusDays(1).toString());
+        params.put("time", timeId);
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -209,10 +235,11 @@ public class MissionStepTest {
 
     @Test
     void 과거_날짜에는_예약할_수_없다() {
-        Map<String, String> params = new HashMap<>();
+        Long timeId = 시간_생성("10:00");
+        Map<String, Object> params = new HashMap<>();
         params.put("name", "브라운");
-        params.put("date", "2023-01-01");
-        params.put("time", "10:00");
+        params.put("date", LocalDate.now().minusDays(1).toString());
+        params.put("time", timeId);
 
         RestAssured.given()
                 .contentType(ContentType.JSON)
@@ -240,7 +267,8 @@ public class MissionStepTest {
 
     @Test
     void 육단계() {
-        jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "브라운", "2027-08-05", "15:40");
+        jdbcTemplate.update("INSERT INTO time (time) VALUES (?)", LocalTime.of(15, 40));
+        jdbcTemplate.update("INSERT INTO reservation (name, date, time_id) VALUES (?, ?, ?)", "브라운", LocalDate.now().plusDays(1).toString(), 1L);
 
         List<Reservation> reservations = RestAssured.given().log().all()
                 .when().get("/reservations")
@@ -255,10 +283,11 @@ public class MissionStepTest {
 
     @Test
     void 칠단계() {
-        Map<String, String> params = new HashMap<>();
+        Long timeId = 시간_생성("10:00");
+        Map<String, Object> params = new HashMap<>();
         params.put("name", "브라운");
-        params.put("date", "2027-08-05");
-        params.put("time", "10:00");
+        params.put("date", LocalDate.now().plusDays(1).toString());
+        params.put("time", timeId);
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -280,5 +309,129 @@ public class MissionStepTest {
         assertThat(countAfterDelete).isEqualTo(0);
     }
 
+    @Test
+    void 팔단계() {
+        Map<String, String> params = new HashMap<>();
+        params.put("time", "10:00");
 
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/times")
+                .then().log().all()
+                .statusCode(201)
+                .header("Location", "/times/1");
+
+        RestAssured.given().log().all()
+                .when().get("/times")
+                .then().log().all()
+                .statusCode(200)
+                .body("size()", is(1))
+                .body("[0].id", is(1))
+                .body("[0].time", is("10:00"));
+
+        RestAssured.given().log().all()
+                .when().delete("/times/1")
+                .then().log().all()
+                .statusCode(204);
+    }
+
+    @Test
+    void 존재하지_않는_시간을_삭제하면_404를_응답한다() {
+        RestAssured.given()
+                .when().delete("/times/1")
+                .then()
+                .statusCode(404)
+                .body(is("삭제할 시간을 찾을 수 없습니다."));
+    }
+
+    @Test
+    void 구단계() {
+        Map<String, String> reservation = new HashMap<>();
+        reservation.put("name", "브라운");
+        reservation.put("date", LocalDate.now().plusDays(1).toString());
+        reservation.put("time", "10:00");
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(reservation)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(400);
+    }
+
+    @Test
+    void 예약_시간이_누락되면_400을_응답한다() {
+        Map<String, Object> params = new HashMap<>();
+        params.put("name", "브라운");
+        params.put("date", LocalDate.now().plusDays(1).toString());
+
+        RestAssured.given()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/reservations")
+                .then()
+                .statusCode(400)
+                .body(is("예약 시간을 선택해야 합니다."));
+    }
+
+    @Test
+    void 시간_등록시_시간이_누락되면_400을_응답한다() {
+        RestAssured.given()
+                .contentType(ContentType.JSON)
+                .body("{}")
+                .when().post("/times")
+                .then()
+                .statusCode(400)
+                .body(is("시간을 입력해야 합니다."));
+    }
+
+    @Test
+    void 예약에서_사용_중인_시간은_삭제할_수_없다() {
+        Long timeId = 시간_생성("10:00");
+        예약_생성("브라운", LocalDate.now().plusDays(1).toString(), timeId);
+
+        RestAssured.given()
+                .when().delete("/times/" + timeId)
+                .then()
+                .statusCode(409)
+                .body(is(
+                        "예약에서 사용 중인 시간은 삭제할 수 없습니다. 관련 예약을 먼저 취소해 주세요."
+                ));
+    }
+
+    @Test
+    void 동일한_시간은_중복_등록할_수_없다() {
+        시간_생성("10:00");
+
+        Map<String, String> params = new HashMap<>();
+        params.put("time", "10:00");
+
+        RestAssured.given()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/times")
+                .then()
+                .statusCode(409)
+                .body(is("이미 등록된 시간입니다."));
+    }
+
+    @Test
+    void 시간이_지난_과거_예약도_조회할_수_있다() {
+        Long timeId = 시간_생성("10:00");
+
+        jdbcTemplate.update(
+                "insert into reservation (name, date, time_id) values (?, ?, ?)",
+                "브라운",
+                LocalDate.now().minusDays(1).toString(),
+                timeId
+        );
+
+        RestAssured.given()
+                .when().get("/reservations")
+                .then()
+                .statusCode(200)
+                .body("size()", is(1))
+                .body("[0].date", is(LocalDate.now().minusDays(1).toString()));
+    }
 }

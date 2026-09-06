@@ -6,24 +6,22 @@ import org.springframework.web.bind.annotation.*;
 import roomescape.domain.Reservation;
 import roomescape.dto.ReservationRequest;
 import roomescape.dto.ReservationResponse;
-import roomescape.exception.NotFoundReservationException;
-import roomescape.repository.ReservationRepository;
+import roomescape.service.ReservationService;
 
 import java.net.URI;
 import java.util.List;
 
 @Controller
 public class ReservationController {
-    private static final int NO_ROWS = 0;
-    private final ReservationRepository reservationRepository;
+    private final ReservationService reservationService;
 
-    public ReservationController(ReservationRepository reservationRepository){
-        this.reservationRepository = reservationRepository;
+    public ReservationController(ReservationService reservationService) {
+        this.reservationService = reservationService;
     }
 
     @GetMapping("/reservations")
     public ResponseEntity<List<ReservationResponse>> readReservationList() {
-        List<ReservationResponse> reservationResponses = reservationRepository.findAll()
+        List<ReservationResponse> reservationResponses = reservationService.findAll()
                 .stream()
                 .map(ReservationResponse::from)
                 .toList();
@@ -32,15 +30,14 @@ public class ReservationController {
 
     @GetMapping("/reservations/{id}")
     public ResponseEntity<ReservationResponse> readReservation(@PathVariable Long id) {
-        Reservation reservation = findReservationById(id);
+        Reservation reservation = reservationService.findReservationById(id);
 
         return ResponseEntity.ok(ReservationResponse.from(reservation));
     }
 
     @PostMapping("/reservations")
     public ResponseEntity<ReservationResponse> addReservation(@RequestBody ReservationRequest request) {
-        Reservation reservation = request.toEntity();
-        Reservation savedReservation = reservationRepository.save(reservation);
+        Reservation savedReservation = reservationService.save(request);
 
         return ResponseEntity.created(URI.create("/reservations/" + savedReservation.getId()))
                 .body(ReservationResponse.from(savedReservation));
@@ -48,16 +45,8 @@ public class ReservationController {
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
-        int deletedCount = reservationRepository.deleteById(id);
+        reservationService.deleteById(id);
 
-        if (deletedCount == NO_ROWS) {
-            throw new NotFoundReservationException("삭제할 예약을 찾을 수 없습니다.");
-        }
         return ResponseEntity.noContent().build();
-    }
-
-    private Reservation findReservationById(Long id) {
-        return reservationRepository.findById(id)
-                .orElseThrow(() -> new NotFoundReservationException("조회할 예약을 찾을 수 없습니다."));
     }
 }
