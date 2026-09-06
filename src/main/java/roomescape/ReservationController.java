@@ -5,21 +5,15 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
+@RestController
 public class ReservationController {
 
     private final ReservationRepository reservationRepository;
 
     public ReservationController(ReservationRepository reservationRepository) {
         this.reservationRepository = reservationRepository;
-    }
-
-    @GetMapping("/reservation")
-    public String reservation() {
-        return "reservation";
     }
 
     @GetMapping("/reservations")
@@ -31,12 +25,10 @@ public class ReservationController {
     }
 
     @PostMapping("/reservations")
-    @ResponseBody
     public ResponseEntity<Reservation> postReservation(
             @RequestBody ReservationRequest reservationRequest
     ) {
 
-        // 예외처리
         if (reservationRequest.getName() == null
                 || reservationRequest.getName().trim().isBlank()
                 || reservationRequest.getDate() == null
@@ -56,11 +48,12 @@ public class ReservationController {
     }
 
     @GetMapping("/reservations/{id}")
-    @ResponseBody
-    public Reservation getReservation(@PathVariable long id) {
+    public ResponseEntity<Reservation> getReservation(@PathVariable long id) {
 
-        return reservationRepository.getReservation(id)
+        Reservation reservation = reservationRepository.getReservation(id)
                 .orElseThrow(NoSuchElementException::new);
+
+        return ResponseEntity.ok().body(reservation);
     }
 
     @DeleteMapping("/reservations/{id}")
