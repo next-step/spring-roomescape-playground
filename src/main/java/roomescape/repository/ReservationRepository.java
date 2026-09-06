@@ -1,5 +1,6 @@
 package roomescape.repository;
 
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -7,6 +8,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
 import roomescape.domain.Time;
+import roomescape.exception.DuplicateReservationException;
 
 import java.sql.PreparedStatement;
 import java.time.LocalDate;
@@ -36,14 +38,18 @@ public class ReservationRepository {
         String sql = "INSERT INTO reservation (name, reserved_date, time_id) VALUES (?, ?, ?)";
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
+        try {
+            jdbcTemplate.update(connection -> {
+                PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
 
-            ps.setString(1, reservation.getName());
-            ps.setObject(2, reservation.getReservedDate());
-            ps.setLong(3, reservation.getTime().getId());
-            return ps;
-        }, keyHolder);
+                ps.setString(1, reservation.getName());
+                ps.setObject(2, reservation.getReservedDate());
+                ps.setLong(3, reservation.getTime().getId());
+                return ps;
+            }, keyHolder);
+        } catch (DuplicateKeyException e) {
+            throw new DuplicateReservationException("이미 예약이 존재합니다.");
+        }
 
         Long id = keyHolder.getKey().longValue();
 
