@@ -1,8 +1,11 @@
 package roomescape;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -25,21 +28,10 @@ public class ReservationRepository {
     public List<Reservation> getReservations() {
         String sql = "SELECT id, name, date, time FROM reservation";
 
-        List<Reservation> reservations = jdbcTemplate.query(
+        return jdbcTemplate.query(
                 sql,
-                (resultSet, rowNum) -> {
-                    Reservation reservation = new Reservation(
-                            resultSet.getLong("id"),
-                            resultSet.getString("name"),
-                            LocalDate.parse(resultSet.getString("date")),
-                            LocalTime.parse(resultSet.getString("time"))
-                    );
-
-                    return reservation;
-                }
+                (resultSet, rowNum) -> mapReservation(resultSet)
         );
-
-        return reservations;
     }
 
     public Reservation postReservation(
@@ -62,28 +54,30 @@ public class ReservationRepository {
         );
     }
 
-    public Reservation getReservation(long id) {
+    public Optional<Reservation> getReservation(long id) {
         String sql = "SELECT id, name, date, time FROM reservation WHERE id = ?";
 
-        return jdbcTemplate.queryForObject(
+        List<Reservation> reservations = jdbcTemplate.query(
                 sql,
-                (resultSet, rowNum) -> {
-                    Reservation reservation = new Reservation(
-                            resultSet.getLong("id"),
-                            resultSet.getString("name"),
-                            LocalDate.parse(resultSet.getString("date")),
-                            LocalTime.parse(resultSet.getString("time"))
-                    );
-
-                    return reservation;
-                },
+                (resultSet, rowNum) -> mapReservation(resultSet),
                 id
         );
+
+        return reservations.stream().findFirst();
     }
 
     public int deleteReservation(long id) {
         String sql = "DELETE FROM reservation WHERE id = ?";
 
         return jdbcTemplate.update(sql, id);
+    }
+
+    private Reservation mapReservation(ResultSet resultSet) throws SQLException {
+        return new Reservation(
+                resultSet.getLong("id"),
+                resultSet.getString("name"),
+                LocalDate.parse(resultSet.getString("date")),
+                LocalTime.parse(resultSet.getString("time"))
+        );
     }
 }

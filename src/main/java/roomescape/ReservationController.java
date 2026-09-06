@@ -59,7 +59,8 @@ public class ReservationController {
     @ResponseBody
     public Reservation getReservation(@PathVariable long id) {
 
-        return reservationRepository.getReservation(id);
+        return reservationRepository.getReservation(id)
+                .orElseThrow(NoSuchElementException::new);
     }
 
     @DeleteMapping("/reservations/{id}")
