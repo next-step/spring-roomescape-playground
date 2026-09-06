@@ -50,7 +50,6 @@ public class ReservationController {
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> createReservation(
         @RequestBody ReservationRequest reservationRequest) {
-        reservationRequest.validate();
 
         Reservation reservation = reservationService.createReservation(reservationRequest);
         return ResponseEntity
