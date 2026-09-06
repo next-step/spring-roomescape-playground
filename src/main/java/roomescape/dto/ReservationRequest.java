@@ -8,7 +8,7 @@ import java.time.format.DateTimeParseException;
 public record ReservationRequest(
         String name,
         String date,
-        Long time
+        Long timeId
 ) {
     public LocalDate toDate() {
         validate();
@@ -20,11 +20,11 @@ public record ReservationRequest(
     }
 
     private void validate() {
-        if (isBlank(name) || isBlank(date) || time == null) {
+        if (isBlank(name) || isBlank(date) || timeId == null) {
             throw new InvalidReservationException("예약에 필요한 인자가 없습니다.");
         }
-        if (time <= 0) {
-            throw new InvalidReservationException("시간 식별자는 1 이상이어야 합니다. time=" + time);
+        if (timeId <= 0) {
+            throw new InvalidReservationException("시간 식별자는 1 이상이어야 합니다. timeId=" + timeId);
         }
     }
 

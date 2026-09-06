@@ -113,7 +113,7 @@ class TimeControllerTest {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
         params.put("date", "2023-08-05");
-        params.put("time", "1");
+        params.put("timeId", "1");
 
         RestAssured.given()
                 .contentType(ContentType.JSON)

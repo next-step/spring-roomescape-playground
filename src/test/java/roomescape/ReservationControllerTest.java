@@ -55,7 +55,7 @@ class ReservationControllerTest {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
         params.put("date", "2023-08-05");
-        params.put("time", "1");
+        params.put("timeId", "1");
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -82,7 +82,7 @@ class ReservationControllerTest {
         Map<String, String> blank = new HashMap<>();
         blank.put("name", "브라운");
         blank.put("date", "");
-        blank.put("time", "");
+        blank.put("timeId", "");
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -94,7 +94,7 @@ class ReservationControllerTest {
         Map<String, String> negativeTimeId = new HashMap<>();
         negativeTimeId.put("name", "브라운");
         negativeTimeId.put("date", "2023-08-05");
-        negativeTimeId.put("time", "-1");
+        negativeTimeId.put("timeId", "-1");
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -106,7 +106,7 @@ class ReservationControllerTest {
         Map<String, String> notFoundTime = new HashMap<>();
         notFoundTime.put("name", "브라운");
         notFoundTime.put("date", "2023-08-05");
-        notFoundTime.put("time", "999");
+        notFoundTime.put("timeId", "999");
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -125,7 +125,7 @@ class ReservationControllerTest {
         Map<String, String> duplicated = new HashMap<>();
         duplicated.put("name", "네오");
         duplicated.put("date", "2023-08-05");
-        duplicated.put("time", "1");
+        duplicated.put("timeId", "1");
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -180,7 +180,7 @@ class ReservationControllerTest {
         Map<String, String> reservation = new HashMap<>();
         reservation.put("name", "브라운");
         reservation.put("date", "2023-08-05");
-        reservation.put("time", "10:00");
+        reservation.put("timeId", "10:00");
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -210,7 +210,7 @@ class ReservationControllerTest {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
         params.put("date", "2023-08-05");
-        params.put("time", "1");
+        params.put("timeId", "1");
 
         RestAssured.given()
                 .contentType(ContentType.JSON)
