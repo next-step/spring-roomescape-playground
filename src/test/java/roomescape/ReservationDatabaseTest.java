@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,6 +20,7 @@ import static org.hamcrest.Matchers.is;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class ReservationDatabaseTest {
+    private LocalDate testDate = LocalDate.now().plusDays(1);
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -41,7 +43,7 @@ public class ReservationDatabaseTest {
     void testUpdateReservationsFromDatabase() {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
-        params.put("date", "2026-10-10");
+        params.put("date", testDate.toString());
         params.put("time", "10:00");
 
         RestAssured.given().log().all()
