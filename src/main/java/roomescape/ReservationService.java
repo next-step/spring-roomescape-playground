@@ -18,15 +18,14 @@ public class ReservationService {
     }
 
     public Reservation createReservation(ReservationRequest reservationRequest) {
-
-        long id = reservationRepository.createReservation(reservationRequest);
-        Reservation reservation = Reservation.create(
-            id,
+        reservationRequest.validate();
+        Reservation newReservation = Reservation.create(
             reservationRequest.name(),
             reservationRequest.date(),
             reservationRequest.time()
         );
-        return reservation;
+        long id = reservationRepository.createReservation(newReservation);
+        return newReservation.withId(id);
     }
 
     public int deleteReservation(long id) {

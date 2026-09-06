@@ -31,7 +31,7 @@ public class ReservationRepository {
         );
     }
 
-    public long createReservation(ReservationRequest reservationRequest) {
+    public long createReservation(Reservation reservation) {
         String sql = "INSERT INTO reservation(name, date, time) VALUES (?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
@@ -41,9 +41,9 @@ public class ReservationRepository {
                 new String[]{"id"}
             );
 
-            ps.setString(1, reservationRequest.getName());
-            ps.setObject(2, reservationRequest.getDate());
-            ps.setObject(3, reservationRequest.getTime());
+            ps.setString(1, reservation.getName());
+            ps.setObject(2, reservation.getDate());
+            ps.setObject(3, reservation.getTime());
 
             return ps;
         }, keyHolder);
