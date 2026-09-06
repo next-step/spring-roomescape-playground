@@ -216,4 +216,36 @@ public class MissionStepTest {
         Integer countAfterDelete = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
         assertThat(countAfterDelete).isEqualTo(0);
     }
+
+    @Test
+    void getReservationTest() {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", "브라운");
+        params.put("date", "2023-08-05");
+        params.put("time", "15:40");
+
+        // 예약 생성
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(201);
+
+        // 존재하는 예약 조회
+        RestAssured.given().log().all()
+                .when().get("/reservations/1")
+                .then().log().all()
+                .statusCode(200)
+                .body("id", is(1))
+                .body("name", is("브라운"))
+                .body("date", is("2023-08-05"))
+                .body("time", is("15:40"));
+
+        // 존재하지 않는 예약 조회
+        RestAssured.given().log().all()
+                .when().get("/reservations/999")
+                .then().log().all()
+                .statusCode(404);
+    }
 }
