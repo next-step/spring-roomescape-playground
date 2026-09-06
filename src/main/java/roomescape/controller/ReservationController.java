@@ -1,12 +1,9 @@
 package roomescape.controller;
 
+import jakarta.validation.Valid;
 import java.net.URI;
 import java.time.Clock;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicLong;
-import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,30 +14,33 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import roomescape.domain.Reservation;
 import roomescape.dto.ReservationRequest;
+import roomescape.dto.ReservationResponse;
 import roomescape.exception.ReservationNotFoundException;
+import roomescape.repository.ReservationRepository;
 
 @Controller
 public class ReservationController {
     private final Clock clock;
 
-    private final List<Reservation> reservations = new ArrayList<>();
+    private final ReservationRepository reservationRepository;
 
-    private final AtomicLong idGenerator = new AtomicLong(1);
-
-    public ReservationController(Clock clock) {
+    public ReservationController(Clock clock, ReservationRepository reservationRepository) {
         this.clock = clock;
+        this.reservationRepository = reservationRepository;
     }
 
     @PostMapping("/reservations")
-    public ResponseEntity<Reservation> createReservation(@Valid @RequestBody ReservationRequest reservationRequest) {
-        Reservation newReservation = Reservation.create(
-                idGenerator.getAndIncrement(),
+    public ResponseEntity<ReservationResponse> createReservation(
+            @Valid @RequestBody ReservationRequest reservationRequest) {
+        Reservation temporaryReservation = Reservation.createNewReservation(
                 reservationRequest.name(),
                 reservationRequest.date(),
                 reservationRequest.time(),
                 clock);
-        reservations.add(newReservation);
-        return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
+
+        Reservation savedReservation = reservationRepository.save(temporaryReservation);
+        ReservationResponse response = ReservationResponse.from(savedReservation);
+        return ResponseEntity.created(URI.create("/reservations/" + response.id())).body(response);
     }
 
     @GetMapping("/reservation")
@@ -50,19 +50,16 @@ public class ReservationController {
 
     @GetMapping("/reservations")
     @ResponseBody
-    public List<Reservation> findAllReservations() {
-        return List.copyOf(reservations);
+    public List<ReservationResponse> findAllReservations() {
+        return reservationRepository.findAll().stream().map(ReservationResponse::from).toList();
     }
 
     @DeleteMapping("/reservations/{reservationId}")
     public ResponseEntity<Void> deleteReservation(@PathVariable Long reservationId) {
-        Reservation reservation = reservations.stream()
-                .filter(existingReservation -> Objects.equals(existingReservation.getId(), reservationId))
-                .findFirst()
-                .orElseThrow(() -> new ReservationNotFoundException("id " + reservationId + "에 해당하는 예약을 찾을 수 없습니다."));
-
-        reservations.remove(reservation);
-
+        int deletedRows = reservationRepository.deleteById(reservationId);
+        if (deletedRows == 0) {
+            throw new ReservationNotFoundException("id " + reservationId + "에 해당하는 예약을 찾을 수 없습니다.");
+        }
         return ResponseEntity.noContent().build();
     }
 }
