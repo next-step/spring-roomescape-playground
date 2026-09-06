@@ -1,6 +1,8 @@
 package roomescape.service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import roomescape.dao.ReservationDao;
@@ -10,6 +12,7 @@ import roomescape.domain.ReservationTime;
 import roomescape.exception.DuplicateReservationException;
 import roomescape.exception.NotFoundReservationException;
 import roomescape.exception.NotFoundReservationTimeException;
+import roomescape.exception.ReservationInPastException;
 
 @Service
 public class ReservationService {
@@ -28,11 +31,18 @@ public class ReservationService {
 
   public Reservation create(String name, LocalDate date, Long timeId) {
     ReservationTime time = requireReservationTime(timeId);
+    validateNotPast(date, time.getTime());
     Reservation reservation = new Reservation(null, name, date, time);
     if(reservationDao.existsByDateAndTimeId(date, timeId)){
       throw new DuplicateReservationException("이미 예약된 날짜와 시간에는 예약할 수 없습니다.");
     }
     return reservationDao.save(reservation);
+  }
+
+  private void validateNotPast(LocalDate date, LocalTime time) {
+    if (LocalDateTime.of(date, time).isBefore(LocalDateTime.now())) {
+      throw new ReservationInPastException("지난 날짜와 시간은 예약할 수 없습니다.");
+    }
   }
 
   public void delete(Long id) {

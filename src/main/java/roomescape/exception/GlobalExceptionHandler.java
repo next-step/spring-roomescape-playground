@@ -42,4 +42,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ExceptionResponse> handleDuplicateReservationException(DuplicateReservationException ex){
         return ResponseEntity.status(HttpStatus.CONFLICT).body(new ExceptionResponse(ex.getMessage()));
     }
+
+    @ExceptionHandler(ReservationInPastException.class)
+    public ResponseEntity<ExceptionResponse> handleReservationInPastException(ReservationInPastException ex){
+        return ResponseEntity.badRequest().body(new ExceptionResponse(ex.getMessage()));
+    }
 }

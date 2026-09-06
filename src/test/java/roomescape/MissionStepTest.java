@@ -64,7 +64,7 @@ public class MissionStepTest {
 
     Map<String, String> params = new HashMap<>();
     params.put("name", "브라운");
-    params.put("date", "2023-08-05");
+    params.put("date", "2030-01-01");
     params.put("time", "1");
 
     RestAssured.given().log().all()
@@ -82,7 +82,7 @@ public class MissionStepTest {
 
     Map<String, String> params = new HashMap<>();
     params.put("name", "브라운");
-    params.put("date", "2023-08-05");
+    params.put("date", "2030-01-01");
     params.put("time", "1");
 
     RestAssured.given().log().all()
@@ -103,7 +103,7 @@ public class MissionStepTest {
 
     Map<String, String> params = new HashMap<>();
     params.put("name", "");
-    params.put("date", "2023-08-05");
+    params.put("date", "2030-01-01");
     params.put("time", "1");
 
     RestAssured.given().log().all()
@@ -141,7 +141,7 @@ public class MissionStepTest {
   void test_예약_조회_API가_데이터베이스를_조회하는지_테스트() {
     jdbcTemplate.update("INSERT INTO reservation_time(time) VALUES (?)", "15:40");
     jdbcTemplate.update("INSERT INTO reservation (name, date, time_id) VALUES (?, ?, ?)", "브라운",
-        "2023-08-05", 1);
+        "2030-01-01", 1);
 
     List<Reservation> reservations = RestAssured.given().log().all()
         .when().get("/reservations")
@@ -161,7 +161,7 @@ public class MissionStepTest {
 
     Map<String, String> params = new HashMap<>();
     params.put("name", "브라운");
-    params.put("date", "2023-08-05");
+    params.put("date", "2030-01-01");
     params.put("time", "1");
 
     RestAssured.given().log().all()
@@ -190,7 +190,7 @@ public class MissionStepTest {
   void test_post_요청시_기존_스펙의_시간_형식으로_요청하면_400을_반환하는지_테스트() {
     Map<String, String> params = new HashMap<>();
     params.put("name", "브라운");
-    params.put("date", "2023-08-05");
+    params.put("date", "2030-01-01");
     params.put("time", "10:00");
 
     RestAssured.given().log().all()
@@ -221,7 +221,7 @@ public class MissionStepTest {
   void test_post_요청시_존재하지_않는_시간_id면_404를_반환하는지_테스트() {
     Map<String, String> params = new HashMap<>();
     params.put("name", "브라운");
-    params.put("date", "2023-08-05");
+    params.put("date", "2030-01-01");
     params.put("time", "1");
 
     RestAssured.given().log().all()
@@ -239,7 +239,7 @@ public class MissionStepTest {
 
     Map<String, String> params = new HashMap<>();
     params.put("name", "브라운");
-    params.put("date", "2023-08-05");
+    params.put("date", "2030-01-01");
     params.put("time", "1");
 
     RestAssured.given()
@@ -253,5 +253,23 @@ public class MissionStepTest {
         .when().post("/reservations")
         .then().log().all()
         .statusCode(409);
+  }
+
+  @Test
+  @DisplayName("POST /reservations 요청 시 과거 날짜면 400 상태 코드를 반환하는지 테스트")
+  void test_post_요청시_과거_날짜면_400을_반환하는지_테스트() {
+    jdbcTemplate.update("INSERT INTO reservation_time(time) VALUES (?)", "10:00");
+
+    Map<String, String> params = new HashMap<>();
+    params.put("name", "브라운");
+    params.put("date", "2020-01-01");
+    params.put("time", "1");
+
+    RestAssured.given().log().all()
+        .contentType(ContentType.JSON)
+        .body(params)
+        .when().post("/reservations")
+        .then().log().all()
+        .statusCode(400);
   }
 }
