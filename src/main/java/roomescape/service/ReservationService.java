@@ -9,7 +9,7 @@ import roomescape.repository.ReservationRepository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+
 
 @Service
 public class ReservationService {
@@ -26,7 +26,7 @@ public class ReservationService {
 
     public List<ReservationResponseDto> read() {
         List<ReservationResponseDto> responseDtos = new ArrayList<>();
-        List<Reservation> reservations = reservationRepository.find();
+        List<Reservation> reservations = reservationRepository.findAllReservations();
         for (Reservation reservation : reservations) {
             responseDtos.add(new ReservationResponseDto(reservation));
         }
@@ -34,10 +34,9 @@ public class ReservationService {
     }
 
     public void delete(Long id) {
-        Reservation deleteReservation = reservationRepository.find().stream()
-                .filter(it -> Objects.equals(it.getId(), id))
-                .findFirst()
-                .orElseThrow(() -> new NotFoundException("삭제할 예약을 찾을 수 없습니다."));
-        reservationRepository.delete(deleteReservation);
+        int affectedRow = reservationRepository.delete(id);
+        if (affectedRow == 0) {
+            throw new NotFoundException("삭제 할 예약이 없습니다.");
+        }
     }
 }

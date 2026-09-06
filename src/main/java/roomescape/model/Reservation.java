@@ -1,33 +1,33 @@
 package roomescape.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 
 public class Reservation {
-    private Long id;
-    private String name;
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDate date;
-    @JsonFormat(pattern = "HH:mm")
-    private LocalTime time;
+    private final Long id;
+    private final String name;
+    private final LocalDate date;
+    private final LocalTime time;
 
-    public Reservation() {
-    }
 
-    public Reservation(Long id, String name, LocalDate date, LocalTime time) {
+    private Reservation(Long id, String name, LocalDate date, LocalTime time) {
+        validateReservationArgument(name, date, time);
         this.id = id;
         this.name = name;
         this.date = date;
         this.time = time;
     }
 
-    public Reservation(String name, LocalDate date, LocalTime time) {
-        validateReservationArgument(name, date, time);
-        this.name = name;
-        this.date = date;
-        this.time = time;
+    public static Reservation create(String name, LocalDate date, LocalTime time) {
+        Reservation reservation= new Reservation(null, name, date, time);
+        LocalTime minuteTime = time.truncatedTo(ChronoUnit.MINUTES);
+        validatePastReservation(date, minuteTime);
+        return new Reservation(null, name, date, minuteTime);
+    }
+
+    public static Reservation restore(Long id, String name, LocalDate date, LocalTime time) {
+        return new Reservation(id, name, date, time);
     }
 
     public Reservation withId(Long id) {
@@ -35,20 +35,23 @@ public class Reservation {
     }
 
 
-    public void validateReservationArgument(String name, LocalDate date, LocalTime time) {
-        LocalDate todayDate = LocalDate.now();
-        LocalTime nowTime = LocalTime.now();
+    public static void validateReservationArgument(String name, LocalDate date, LocalTime time) {
         if (name == null || name.isBlank()) {
             throw new IllegalArgumentException("이름은 비워져있을 수 없습니다.");
         }
         if (date == null) {
             throw new IllegalArgumentException("날짜는 비워져있을 수 없습니다.");
         }
-        if (date.isBefore(todayDate)) {
-            throw new IllegalArgumentException("지난 날짜를 예약할 수 없습니다.");
-        }
         if (time == null) {
             throw new IllegalArgumentException("시간은 비워져있을 수 없습니다.");
+        }
+    }
+
+    public static void validatePastReservation(LocalDate date, LocalTime time) {
+        LocalDate todayDate = LocalDate.now();
+        LocalTime nowTime = LocalTime.now();
+        if(date.isBefore(todayDate)) {
+            throw new IllegalArgumentException("지난 날짜를 예약할 수 없습니다.");
         }
         if (date.isEqual(todayDate) && time.isBefore(nowTime)) {
             throw new IllegalArgumentException("지난 시간을 예약할 수 없습니다.");
