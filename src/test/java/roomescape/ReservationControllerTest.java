@@ -64,7 +64,9 @@ class ReservationControllerTest {
                 .then().log().all()
                 .statusCode(201)
                 .header("Location", "/reservations/1")
-                .body("id", is(1));
+                .body("id", is(1))
+                .body("time.id", is(1))
+                .body("time.time", is("15:40"));
     }
 
     @Test
@@ -150,6 +152,10 @@ class ReservationControllerTest {
         Integer count = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
 
         assertThat(reservations.size()).isEqualTo(count);
+
+        ReservationResponse reservation = reservations.get(0);
+        assertThat(reservation.time().id()).isEqualTo(1L);
+        assertThat(reservation.time().time()).isEqualTo("15:40");
     }
 
     @Test
