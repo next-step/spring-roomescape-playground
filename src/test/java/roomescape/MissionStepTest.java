@@ -2,6 +2,7 @@ package roomescape;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,6 +26,7 @@ import static org.hamcrest.Matchers.is;
 public class MissionStepTest {
 
     @Test
+    @DisplayName("루트 경로로 요청하면 200을 반환한다")
     void 일단계() {
         RestAssured.given().log().all()
                 .when().get("/")
@@ -33,6 +35,7 @@ public class MissionStepTest {
     }
 
     @Test
+    @DisplayName("예약이 없을 때 예약 목록을 조회하면 200과 빈 목록을 반환한다")
     void 이단계() {
         RestAssured.given().log().all()
                 .when().get("/reservation")
@@ -47,6 +50,7 @@ public class MissionStepTest {
     }
 
     @Test
+    @DisplayName("시간과 예약을 생성하고 조회한 뒤 삭제하면 목록에서 사라진다")
     void 삼단계() {
         Map<String, String> timeParams = new HashMap<>();
         timeParams.put("time", "15:40");
@@ -92,6 +96,7 @@ public class MissionStepTest {
     }
 
     @Test
+    @DisplayName("날짜가 비어있으면 400을, 존재하지 않는 예약을 삭제하면 404를 반환한다")
     void 사단계_날짜테스트() {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
@@ -114,6 +119,7 @@ public class MissionStepTest {
     }
 
     @Test
+    @DisplayName("시간이 비어있으면 400을, 존재하지 않는 예약을 삭제하면 404를 반환한다")
     void 사단계_시간테스트() {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
@@ -139,6 +145,7 @@ public class MissionStepTest {
     private JdbcTemplate jdbcTemplate;
 
     @Test
+    @DisplayName("DB 커넥션이 정상적으로 연결되고 RESERVATION 테이블이 존재한다")
     void 오단계() {
         try (Connection connection = jdbcTemplate.getDataSource().getConnection()) {
             assertThat(connection).isNotNull();
@@ -150,6 +157,7 @@ public class MissionStepTest {
     }
 
     @Test
+    @DisplayName("DB에 직접 삽입한 예약이 예약 목록 조회 결과에 반영된다")
     void 육단계() {
         jdbcTemplate.update("INSERT INTO time (time) VALUES (?)", "15:40");
         Long timeId = 1L;
@@ -168,6 +176,7 @@ public class MissionStepTest {
     }
 
     @Test
+    @DisplayName("예약을 생성하면 DB에 저장되고 삭제하면 DB에서도 제거된다")
     void 칠단계() {
         Map<String, String> timeParams = new HashMap<>();
         timeParams.put("time", "15:40");
@@ -206,6 +215,7 @@ public class MissionStepTest {
     }
 
     @Test
+    @DisplayName("시간을 생성하고 조회한 뒤 삭제할 수 있다")
     void 팔단계() {
         Map<String, String> params = new HashMap<>();
         params.put("time", "10:00");
@@ -231,6 +241,7 @@ public class MissionStepTest {
     }
 
     @Test
+    @DisplayName("시간 ID가 숫자 형식이 아니면 400을 반환한다")
     void 구단계() {
         Map<String, String> reservation = new HashMap<>();
         reservation.put("name", "브라운");
@@ -249,6 +260,7 @@ public class MissionStepTest {
     private ReservationController reservationController;
 
     @Test
+    @DisplayName("Controller는 JdbcTemplate을 직접 주입받지 않는다")
     void 십단계() {
         boolean isJdbcTemplateInjected = false;
 
