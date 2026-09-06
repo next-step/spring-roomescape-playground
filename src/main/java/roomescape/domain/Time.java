@@ -1,7 +1,5 @@
 package roomescape.domain;
 
-import roomescape.dto.TimeRequest;
-
 import java.time.LocalTime;
 
 public class Time {
@@ -21,10 +19,6 @@ public class Time {
 
     public LocalTime getTime() {
         return time;
-    }
-
-    public static Time toEntity(TimeRequest request, Long id) {
-        return new Time(id, request.getTime());
     }
 
     private void validateTime(LocalTime time) {

@@ -4,7 +4,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import roomescape.dto.TimeRequest;
 
 import java.sql.PreparedStatement;
 import roomescape.domain.Time;
@@ -37,13 +36,13 @@ public class TimeDAO {
         return delete;
     }
 
-    public Long insertWithKeyHolder(TimeRequest request) {
+    public Long insertWithKeyHolder(LocalTime time) {
         String sql = "insert into time (time) values (?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
-            ps.setObject(1, request.getTime());
+            ps.setObject(1, time);
             return ps;
         }, keyHolder);
 

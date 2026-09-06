@@ -35,7 +35,7 @@ public class ReservationService {
         }
         Long generatedId = reservationDAO.insertWithKeyHolder(request.getName(), request.getDate(), request.getTime());
 
-        return Reservation.toEntity(request, generatedId, time);
+        return new Reservation(generatedId, request.getName(), request.getDate(), time);
     }
 
     public void delete(Long id) {

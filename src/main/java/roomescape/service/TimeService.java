@@ -5,7 +5,6 @@ import roomescape.dao.TimeDAO;
 import roomescape.domain.Time;
 import roomescape.dto.TimeRequest;
 
-
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -22,9 +21,9 @@ public class TimeService {
     }
 
     public Time create(TimeRequest request) {
-        Long generatedId = timeDAO.insertWithKeyHolder(request);
+        Long generatedId = timeDAO.insertWithKeyHolder(request.getTime());
 
-        return Time.toEntity(request, generatedId);
+        return new Time(generatedId, request.getTime());
     }
 
     public void delete(Long id) {

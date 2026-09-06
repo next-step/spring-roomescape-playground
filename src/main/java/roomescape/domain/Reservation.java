@@ -1,7 +1,5 @@
 package roomescape.domain;
 
-import roomescape.dto.ReservationRequest;
-
 import java.time.LocalDate;
 
 
@@ -36,10 +34,6 @@ public class Reservation {
 
     public LocalDate getDate() {
         return date;
-    }
-
-    public static Reservation toEntity(ReservationRequest request, Long id, Time time) {
-        return new Reservation(id, request.getName(), request.getDate(), time);
     }
 
     private void validateName(String name) {
