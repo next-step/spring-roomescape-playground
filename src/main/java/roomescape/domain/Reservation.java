@@ -4,20 +4,19 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import roomescape.exception.BlankReservationException;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 public class Reservation {
     private final long id;
     private final String name;
     private final LocalDate date;
-    private final LocalTime time;
+    private final Time time;
 
-    public Reservation(String name, LocalDate date, LocalTime time) {
+    public Reservation(String name, LocalDate date, Time time) {
         this(0, name, date, time);
     }
 
     @JsonCreator
-    public Reservation(long id, String name, LocalDate date, LocalTime time) {
+    public Reservation(long id, String name, LocalDate date, Time time) {
         validateName(name);
         validateDate(date);
         validateTime(time);
@@ -43,7 +42,7 @@ public class Reservation {
         return date;
     }
 
-    public LocalTime getTime() {
+    public Time getTime() {
         return time;
     }
 
@@ -59,7 +58,7 @@ public class Reservation {
         }
     }
 
-    private static void validateTime(LocalTime time) {
+    private static void validateTime(Time time) {
         if (time == null) {
             throw new BlankReservationException("시간을 선택해주세요");
         }

@@ -5,9 +5,11 @@ import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import roomescape.controller.ReservationController;
 import roomescape.domain.Reservation;
 import roomescape.repository.DatabaseTest;
 
+import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -35,9 +37,13 @@ public class MissionStepTest {
                 .then().log().all()
                 .statusCode(200);
 
-        createReservation("2023-08-05", "10:00");
-        createReservation("2023-08-06", "11:00");
-        createReservation("2023-08-07", "12:00");
+        long timeId1 = createTime("10:00");
+        long timeId2 = createTime("11:00");
+        long timeId3 = createTime("12:00");
+
+        createReservation("2023-08-05", timeId1);
+        createReservation("2023-08-06", timeId2);
+        createReservation("2023-08-07", timeId3);
 
         RestAssured.given().log().all()
                 .when().get("/reservations")
@@ -48,10 +54,12 @@ public class MissionStepTest {
 
     @Test
     void 삼단계() {
-        Map<String, String> params = new HashMap<>();
+        long timeId = createTime("15:40");
+
+        Map<String, Object> params = new HashMap<>();
         params.put("name", "브라운");
         params.put("date", "2023-08-05");
-        params.put("time", "15:40");
+        params.put("time", timeId);
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -102,11 +110,11 @@ public class MissionStepTest {
                 .statusCode(404);
     }
 
-    private void createReservation(String date, String time) {
-        Map<String, String> params = new HashMap<>();
+    private void createReservation(String date, long timeId) {
+        Map<String, Object> params = new HashMap<>();
         params.put("name", "브라운");
         params.put("date", date);
-        params.put("time", time);
+        params.put("time", timeId);
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -114,6 +122,21 @@ public class MissionStepTest {
                 .when().post("/reservations")
                 .then().log().all()
                 .statusCode(201);
+    }
+
+    private long createTime(String time) {
+        Map<String, String> params = new HashMap<>();
+        params.put("time", time);
+
+        String location = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/times")
+                .then().log().all()
+                .statusCode(201)
+                .extract().header("Location");
+
+        return Long.parseLong(location.substring(location.lastIndexOf("/") + 1));
     }
 
     @Autowired
@@ -132,7 +155,8 @@ public class MissionStepTest {
 
     @Test
     void 육단계() {
-        jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "브라운", "2023-08-05", "15:40");
+        long timeId = createTime("15:40");
+        jdbcTemplate.update("INSERT INTO reservation (name, date, time_id) VALUES (?, ?, ?)", "브라운", "2023-08-05", timeId);
 
         List<Reservation> reservations = RestAssured.given().log().all()
                 .when().get("/reservations")
@@ -147,10 +171,12 @@ public class MissionStepTest {
 
     @Test
     void 칠단계() {
-        Map<String, String> params = new HashMap<>();
+        long timeId = createTime("10:00");
+
+        Map<String, Object> params = new HashMap<>();
         params.put("name", "브라운");
         params.put("date", "2023-08-05");
-        params.put("time", "10:00");
+        params.put("time", timeId);
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -172,4 +198,60 @@ public class MissionStepTest {
         assertThat(countAfterDelete).isEqualTo(0);
     }
 
+    @Test
+    void 팔단계() {
+        Map<String, String> params = new HashMap<>();
+        params.put("time", "10:00");
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/times")
+                .then().log().all()
+                .statusCode(201)
+                .header("Location", "/times/1");
+
+        RestAssured.given().log().all()
+                .when().get("/times")
+                .then().log().all()
+                .statusCode(200)
+                .body("size()", is(1));
+
+        RestAssured.given().log().all()
+                .when().delete("/times/1")
+                .then().log().all()
+                .statusCode(204);
+    }
+
+    @Test
+    void 구단계() {
+        Map<String, String> reservation = new HashMap<>();
+        reservation.put("name", "브라운");
+        reservation.put("date", "2023-08-05");
+        reservation.put("time", "10:00");
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(reservation)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(400);
+    }
+
+    @Autowired
+    private ReservationController reservationController;
+
+    @Test
+    void 십단계() {
+        boolean isJdbcTemplateInjected = false;
+
+        for (Field field : reservationController.getClass().getDeclaredFields()) {
+            if (field.getType().equals(JdbcTemplate.class)) {
+                isJdbcTemplateInjected = true;
+                break;
+            }
+        }
+
+        assertThat(isJdbcTemplateInjected).isFalse();
+    }
 }

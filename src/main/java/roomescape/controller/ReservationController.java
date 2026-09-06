@@ -25,7 +25,7 @@ public class ReservationController {
 
     @GetMapping("/reservation")
     public String showReservationPage() {
-        return "reservation";
+        return "new-reservation";
     }
 
     @ResponseBody
@@ -37,7 +37,7 @@ public class ReservationController {
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> addReservation(@RequestBody ReservationRequest request) {
         Reservation newReservation = reservationService.createReservation(
-                request.getName(), request.getParsedDate(), request.getParsedTime()
+                request.getName(), request.getParsedDate(), request.getTime()
         );
 
         return ResponseEntity

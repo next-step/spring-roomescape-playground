@@ -1,7 +1,6 @@
 package roomescape.controller;
 
 import io.restassured.http.ContentType;
-
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.Test;
 import roomescape.repository.DatabaseTest;
@@ -23,10 +22,12 @@ class ReservationControllerTest {
 
     @Test
     void 예약을_생성하면_201이_반환된다() {
-        Map<String, String> params = new HashMap<>();
+        long timeId = createTime("15:40");
+
+        Map<String, Object> params = new HashMap<>();
         params.put("name", "브라운");
         params.put("date", "2026-08-20");
-        params.put("time", "15:40");
+        params.put("time", timeId);
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -49,15 +50,17 @@ class ReservationControllerTest {
                 .when().post("/reservations")
                 .then().log().all()
                 .statusCode(400)
-                .body(equalTo("날짜와 시간을 입력해주세요."));
+                .body("message", equalTo("날짜와 시간을 입력해주세요."));
     }
 
     @Test
     void 예약을_삭제하면_204가_반환된다() {
-        Map<String, String> params = new HashMap<>();
+        long timeId = createTime("16:00");
+
+        Map<String, Object> params = new HashMap<>();
         params.put("name", "브라운");
         params.put("date", "2026-08-21");
-        params.put("time", "16:00");
+        params.put("time", timeId);
 
         String location = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -91,5 +94,20 @@ class ReservationControllerTest {
                 .when().post("/reservations")
                 .then().log().all()
                 .statusCode(400);
+    }
+
+    private long createTime(String time) {
+        Map<String, String> params = new HashMap<>();
+        params.put("time", time);
+
+        String location = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/times")
+                .then().log().all()
+                .statusCode(201)
+                .extract().header("Location");
+
+        return Long.parseLong(location.substring(location.lastIndexOf("/") + 1));
     }
 }

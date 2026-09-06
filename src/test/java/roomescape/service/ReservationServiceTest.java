@@ -6,12 +6,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import roomescape.domain.Reservation;
+import roomescape.domain.Time;
 import roomescape.exception.NotFoundReservationException;
 import roomescape.repository.ReservationRepository;
+import roomescape.repository.TimeRepository;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -22,6 +25,9 @@ class ReservationServiceTest {
     @Mock
     private ReservationRepository reservationRepository;
 
+    @Mock
+    private TimeRepository timeRepository;
+
     @InjectMocks
     private ReservationService reservationService;
 
@@ -29,7 +35,7 @@ class ReservationServiceTest {
     void 예약_목록을_정상적으로_반환한다() {
         // Given
         List<Reservation> reservations = List.of(
-                new Reservation(1, "이준환", LocalDate.of(2026, 8, 20), LocalTime.of(10, 0))
+                new Reservation(1, "이준환", LocalDate.of(2026, 8, 20), new Time(1, LocalTime.of(10, 0)))
         );
         when(reservationRepository.findAll()).thenReturn(reservations);
 
@@ -43,8 +49,10 @@ class ReservationServiceTest {
     @Test
     void 예약을_생성하면_생성된_예약을_반환한다() {
         // Given
-        Reservation savedReservation = new Reservation(1, "이준환", LocalDate.of(2026, 8, 20), LocalTime.of(10, 0));
+        Time time = new Time(1, LocalTime.of(10, 0));
+        Reservation savedReservation = new Reservation(1, "이준환", LocalDate.of(2026, 8, 20), time);
 
+        when(timeRepository.findById(1)).thenReturn(Optional.of(time));
         when(reservationRepository.save(any(Reservation.class)))
                 .thenReturn(savedReservation);
 
@@ -52,7 +60,7 @@ class ReservationServiceTest {
         Reservation result = reservationService.createReservation(
                 "이준환",
                 LocalDate.of(2026, 8, 20),
-                LocalTime.of(10, 0)
+                1
         );
 
         // Then
