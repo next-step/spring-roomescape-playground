@@ -122,12 +122,11 @@ public class MissionStepTest {
         );
 
         String name_delete = """
-                {
-                    "date" = LocalDate.of(2023, 8, 5),
-                    "time" = LocalTime.of(15, 53)
-                }
-                """;
-
+            {
+                "date": "2023-08-05",
+                "time": "15:53"
+            }
+            """;
 
         RestAssured.given()
                 .contentType(ContentType.JSON)
