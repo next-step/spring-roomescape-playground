@@ -6,18 +6,23 @@ import java.util.List;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.format.ResolverStyle;
+import java.time.Clock;
 
 @Service
 public class ReservationService {
 
     private final ReservationRepository reservationRepository;
+    private final Clock clock;
 
-    public ReservationService(ReservationRepository reservationRepository) {
+    public ReservationService(
+            ReservationRepository reservationRepository,
+            Clock clock
+    ) {
         this.reservationRepository = reservationRepository;
+        this.clock = clock;
     }
 
     public List<Reservation> findAll() {
@@ -36,9 +41,6 @@ public class ReservationService {
         return reservationRepository.findById(id)
                 .orElseThrow(NotFoundReservationException::new);
     }
-
-    private static final ZoneId RESERVATION_ZONE =
-            ZoneId.of("Asia/Seoul");
 
     private static final DateTimeFormatter DATE_FORMATTER =
             DateTimeFormatter.ofPattern("uuuu-MM-dd")
@@ -68,8 +70,7 @@ public class ReservationService {
             throw new InvalidReservationException();
         }
 
-        if (!reservationDateTime.isAfter(
-                LocalDateTime.now(RESERVATION_ZONE))) {
+        if (!reservationDateTime.isAfter(LocalDateTime.now(clock))) {
             throw new InvalidReservationException();
         }
     }
