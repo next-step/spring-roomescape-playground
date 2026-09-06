@@ -36,7 +36,7 @@ public class ReservationController {
             throw new IllegalArgumentException();
         }
 
-        Reservation reservation = reservationRepository.postReservation(
+        Reservation reservation = reservationRepository.saveReservation(
                 reservationRequest.getName(),
                 reservationRequest.getDate(),
                 reservationRequest.getTime()

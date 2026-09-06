@@ -34,7 +34,7 @@ public class ReservationRepository {
         );
     }
 
-    public Reservation postReservation(
+    public Reservation saveReservation(
             String name,
             LocalDate date,
             LocalTime time
