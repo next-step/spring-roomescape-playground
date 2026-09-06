@@ -6,16 +6,28 @@
 - [x] 사용자는 저장된 예약 목록을 조회할 수 있다.
 - [x] 사용자가 직접 예약을 신청 및 취소를 할 수 있다.
 - [x] 사용자는 필수 입력값을 모두 입력해야만 예약을 신청할 수 있다.
+- [x] 사용자는 시간 관리 페이지에 접속할 수 있다.
+- [x] 사용자는 저장된 예약 시간 목록을 조회할 수 있다.
+- [x] 사용자가 직접 예약 시간을 추가 및 삭제할 수 있다.
+- [x] 사용자는 시간 값을 입력해야만 예약 시간을 추가할 수 있다.
+- [x] 사용자는 등록된 예약 시간 중 하나를 선택해 예약을 신청한다.
+- [x] 사용자는 현재 시각보다 이전인 날짜·시간에는 예약을 신청할 수 없다.
 
 ## API 명세서
+
+> 모든 실패 응답은 `{ "message": "<사유>" }` 형태의 JSON 본문을 가진다.
 
 | 기능 | Method | URL | Request | Response |
 |---|---|---|---|---|
 | 홈 화면 | GET | / | - | 200 OK, home.html |
-| 예약 화면 | GET | /reservation | - | 200 OK, reservation.html |
+| 예약 화면 | GET | /reservation | - | 200 OK, new-reservation.html |
 | 예약 목록 조회 | GET | /reservations | - | 200 OK |
-| 예약 생성 | POST | /reservations | Request Body (JSON) | 201 Created, Location : /reservations/{id} |
-| 예약 삭제 | DELETE | /reservations/{id} | 삭제하고자 하는 예약의 id | 204 No Content |
+| 예약 생성 | POST | /reservations | Request Body (JSON) | 201 Created, Location : /reservations/{id}<br>400 Bad Request<br>404 Not Found<br>409 Conflict |
+| 예약 삭제 | DELETE | /reservations/{id} | 삭제하고자 하는 예약의 id | 204 No Content<br>404 Not Found |
+| 시간 관리 화면 | GET | /time | - | 200 OK, time.html |
+| 예약 시간 목록 조회 | GET | /times | - | 200 OK |
+| 예약 시간 생성 | POST | /times | Request Body (JSON) | 201 Created, Location : /times/{id}<br>400 Bad Request<br>409 Conflict |
+| 예약 시간 삭제 | DELETE | /times/{id} | 삭제하고자 하는 시간의 id | 204 No Content<br>404 Not Found<br>409 Conflict |
 
 ### 예약 목록 조회 - Response Body 예시
 ```json
@@ -24,34 +36,64 @@
     "id": 1,
     "name": "브라운",
     "date": "2026-01-01",
-    "time": "10:00"
+    "time": {
+      "id": 1,
+      "time": "10:00"
+    }
   }
 ]
 ```
 
 ### 예약 생성 - Request Body 예시
+`time`은 선택한 예약 시간의 id 이다.
 ```json
   {
     "name": "브라운",
     "date": "2026-01-01",
-    "time": "10:00"
+    "time": 1
   }
 ```
 
 ### 예약 생성 - Response Body 예시
 ```json
   {
-    "id"  : 1,
+    "id": 1,
     "name": "브라운",
     "date": "2026-01-01",
-    "time": "10:00"
+    "time": {
+      "id": 1,
+      "time": "10:00"
+    }
   }
 ```
 
 ### 예약 생성 - 실패 응답 (400 Bad Request)
+필수 입력값이 비어 있는 경우.
 ```json
   {
     "message": "이름은 공백이 될 수 없습니다."
+  }
+```
+현재 시각보다 이전인 날짜 혹은 시간으로 예약을 신청한 경우.
+```json
+  {
+    "message": "지난 날짜와 시간은 예약할 수 없습니다."
+  }
+```
+
+### 예약 생성 - 실패 응답 (404 Not Found)
+존재하지 않는 시간 id로 예약을 신청한 경우.
+```json
+  {
+    "message": "존재하지 않는 예약 시간입니다."
+  }
+```
+
+### 예약 생성 - 실패 응답 (409 Conflict)
+이미 예약된 날짜와 시간에 예약을 신청한 경우.
+```json
+  {
+    "message": "이미 예약된 날짜와 시간에는 예약할 수 없습니다."
   }
 ```
 
@@ -59,5 +101,60 @@
 ```json
   {
     "message": "해당 id의 예약이 존재하지 않습니다."
+  }
+```
+
+### 예약 시간 목록 조회 - Response Body 예시
+```json
+[
+  {
+    "id": 1,
+    "time": "10:00"
+  }
+]
+```
+
+### 예약 시간 생성 - Request Body 예시
+```json
+  {
+    "time": "10:00"
+  }
+```
+
+### 예약 시간 생성 - Response Body 예시
+```json
+  {
+    "id"  : 1,
+    "time": "10:00"
+  }
+```
+
+### 예약 시간 생성 - 실패 응답 (400 Bad Request)
+```json
+  {
+    "message": "예약시간은 누락될 수 없습니다."
+  }
+```
+
+### 예약 시간 생성 - 실패 응답 (409 Conflict)
+이미 등록된 시간을 다시 추가한 경우.
+```json
+  {
+    "message": "이미 등록된 예약 시간입니다."
+  }
+```
+
+### 예약 시간 삭제 - 실패 응답 (404 Not Found)
+```json
+  {
+    "message": "해당 id의 예약시간이 존재하지 않습니다."
+  }
+```
+
+### 예약 시간 삭제 - 실패 응답 (409 Conflict)
+예약이 등록되어 있는 시간을 삭제하려는 경우.
+```json
+  {
+    "message": "예약이 등록된 시간은 삭제할 수 없습니다."
   }
 ```

@@ -22,4 +22,29 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ExceptionResponse> handleReservationSaveFailedException(ReservationSaveFailedException ex){
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ExceptionResponse(ex.getMessage()));
     }
+
+    @ExceptionHandler(NotFoundReservationTimeException.class)
+    public ResponseEntity<ExceptionResponse> handleNotFoundReservationTimeException(NotFoundReservationTimeException ex){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ExceptionResponse(ex.getMessage()));
+    }
+
+    @ExceptionHandler(DuplicateReservationTimeException.class)
+    public ResponseEntity<ExceptionResponse> handleDuplicateReservationTimeException(DuplicateReservationTimeException ex){
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ExceptionResponse(ex.getMessage()));
+    }
+
+    @ExceptionHandler(ReservationTimeInUseException.class)
+    public ResponseEntity<ExceptionResponse> handleReservationTimeInUseException(ReservationTimeInUseException ex){
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ExceptionResponse(ex.getMessage()));
+    }
+
+    @ExceptionHandler(DuplicateReservationException.class)
+    public ResponseEntity<ExceptionResponse> handleDuplicateReservationException(DuplicateReservationException ex){
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ExceptionResponse(ex.getMessage()));
+    }
+
+    @ExceptionHandler(ReservationInPastException.class)
+    public ResponseEntity<ExceptionResponse> handleReservationInPastException(ReservationInPastException ex){
+        return ResponseEntity.badRequest().body(new ExceptionResponse(ex.getMessage()));
+    }
 }
