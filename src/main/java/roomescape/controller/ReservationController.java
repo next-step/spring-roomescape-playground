@@ -40,16 +40,16 @@ public class ReservationController {
     }
 
     @PostMapping
-    public ResponseEntity<ReservationResponse> addReservation(
+    public ResponseEntity<ReservationResponse> createReservation(
             @Valid @RequestBody ReservationRequest request
     ) {
         ReservationCreateCommand command = new ReservationCreateCommand(
                 request.name(),
                 request.date(),
-                request.time()
+                request.timeId()
         );
 
-        Reservation reservation = reservationService.addReservation(command);
+        Reservation reservation = reservationService.createReservation(command);
         ReservationResponse response = ReservationResponse.from(reservation);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);

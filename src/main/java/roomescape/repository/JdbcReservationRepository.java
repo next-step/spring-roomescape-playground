@@ -6,6 +6,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
+import roomescape.domain.Time;
 import roomescape.exception.ReservationErrorCode;
 import roomescape.exception.ReservationException;
 
@@ -27,14 +28,19 @@ public class JdbcReservationRepository implements ReservationRepository {
 
     @Override
     public List<Reservation> findAll() {
-        String sql = "select id, name, reservation_date, reservation_time from reservations "
-                + "order by reservation_date, reservation_time";
+        String sql = """
+                select r.id as reservation_id, r.name, r.reservation_date,
+                    t.id as time_id, t.start_at
+                from reservations r
+                inner join times t on r.time_id = t.id
+                order by r.id
+                """;
         return jdbcTemplate.query(sql, this::mapRow);
     }
 
     @Override
     public Reservation save(Reservation reservation) {
-        String sql = "insert into reservations (name, reservation_date, reservation_time) values(?, ?, ?)";
+        String sql = "insert into reservations (name, reservation_date, time_id) values(?, ?, ?)";
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
         try {
@@ -42,7 +48,7 @@ public class JdbcReservationRepository implements ReservationRepository {
                 PreparedStatement preparedStatement = connection.prepareStatement(sql, new String[]{"id"});
                 preparedStatement.setString(1, reservation.getName());
                 preparedStatement.setObject(2, reservation.getDate());
-                preparedStatement.setObject(3, reservation.getTime());
+                preparedStatement.setObject(3, reservation.getTime().getId());
                 return preparedStatement;
             }, keyHolder);
         } catch (DuplicateKeyException exception) {
@@ -59,7 +65,13 @@ public class JdbcReservationRepository implements ReservationRepository {
 
     @Override
     public Optional<Reservation> findById(Long id) {
-        String sql = "select id, name, reservation_date, reservation_time from reservations where id = ?";
+        String sql = """
+                select r.id as reservation_id, r.name, r.reservation_date,
+                    t.id as time_id, t.start_at
+                from reservations r
+                inner join times t on r.time_id = t.id
+                where r.id = ?
+                """;
         List<Reservation> reservations = jdbcTemplate.query(sql, this::mapRow, id);
         return reservations.stream().findFirst();
     }
@@ -71,17 +83,20 @@ public class JdbcReservationRepository implements ReservationRepository {
     }
 
     @Override
-    public boolean existsByDateAndTime(LocalDate date, LocalTime time) {
-        String sql = "select exists(select 1 from reservations where reservation_date = ? and reservation_time = ?)";
-        return jdbcTemplate.queryForObject(sql, Boolean.class, date, time);
+    public boolean existsByDateAndTimeId(LocalDate date, Long timeId) {
+        String sql = "select exists(select 1 from reservations where reservation_date = ? and time_id = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, date, timeId);
     }
 
     private Reservation mapRow(ResultSet resultSet, int rowNum) throws SQLException {
         return new Reservation(
-                resultSet.getLong("id"),
+                resultSet.getLong("reservation_id"),
                 resultSet.getString("name"),
                 resultSet.getObject("reservation_date", LocalDate.class),
-                resultSet.getObject("reservation_time", LocalTime.class)
+                new Time(
+                        resultSet.getLong("time_id"),
+                        resultSet.getObject("start_at", LocalTime.class)
+                )
         );
     }
 }

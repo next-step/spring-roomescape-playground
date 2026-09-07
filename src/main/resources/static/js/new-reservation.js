@@ -17,7 +17,7 @@ function fetchTimes() {
       .catch(error => console.error('Error fetching time:', error));
 }
 
-function createFormControl(timeData) {
+function createFormControl(timesResponse) {
   const select = document.createElement('select');
   select.className = 'form-control';
   select.id = 'time-select';
@@ -26,7 +26,7 @@ function createFormControl(timeData) {
   defaultOption.textContent = "시간 선택";
   select.appendChild(defaultOption);
 
-  timeData.forEach(time => {
+  timesResponse.times.forEach(time => {
     const option = document.createElement('option');
     option.value = time.id;
     option.textContent = time.time;
@@ -46,11 +46,11 @@ function fetchReservations() {
       .catch(error => console.error('Error fetching reservations:', error));
 }
 
-function renderReservations(data) {
+function renderReservations(reservationsResponse) {
   const tableBody = document.getElementById('reservation-table-body');
   tableBody.innerHTML = '';
 
-  data.forEach(reservation => {
+  reservationsResponse.reservations.forEach(reservation => {
     const row = tableBody.insertRow();
     insertReservationRow(row, reservation);
   });
@@ -61,7 +61,7 @@ function insertReservationRow(row, reservation) {
     row.insertCell(index).textContent = reservation[field];
   });
 
-  row.insertCell(3).textContent = reservation.time.time;
+  row.insertCell(3).textContent = reservation.time;
 
   const actionCell = row.insertCell(4);
   actionCell.appendChild(createActionButton('삭제', 'btn-danger', deleteRow));
@@ -129,14 +129,15 @@ function saveRow(event) {
   const reservation = {
     name: nameInput.value,
     date: dateInput.value,
-    time: timeSelect.value
+    timeId: timeSelect.value
   };
 
   requestCreate(reservation)
       .then(data => updateRowWithReservationData(row, data))
-      .catch(error => console.error('Error:', error));
-
-  isEditing = false;  // isEditing 값을 false로 설정
+      .catch(error => {
+        alert(error.message);
+        isEditing = true;
+      });
 }
 
 function updateRowWithReservationData(row, data) {
@@ -144,7 +145,7 @@ function updateRowWithReservationData(row, data) {
   cells[0].textContent = data.id;
   cells[1].textContent = data.name;
   cells[2].textContent = data.date;
-  cells[3].textContent = data.time.time;
+  cells[3].textContent = data.time;
 
   // 버튼 변경: 삭제 버튼으로 변경
   cells[4].innerHTML = '';
@@ -167,7 +168,7 @@ function deleteRow(event) {
 
   requestDelete(reservationId)
       .then(() => row.remove())
-      .catch(error => console.error('Error:', error));
+      .catch(error => alert(error.message));
 }
 
 function requestCreate(reservation) {
@@ -178,9 +179,9 @@ function requestCreate(reservation) {
   };
 
   return fetch(RESERVATION_API_ENDPOINT, requestOptions)
-      .then(response => {
+      .then(async response => {
         if (response.status === 201) return response.json();
-        throw new Error('Create failed');
+        throw new Error(await getErrorMessage(response, '예약 생성에 실패했습니다.'));
       });
 }
 
@@ -198,9 +199,15 @@ function requestDelete(id) {
   };
 
   return fetch(`${RESERVATION_API_ENDPOINT}/${id}`, requestOptions)
-      .then(response => {
-        if (response.status !== 204) throw new Error('Delete failed');
+      .then(async response => {
+        if (response.status === 204) return;
+        throw new Error(await getErrorMessage(response, '예약 삭제에 실패했습니다.'));
       });
+}
+
+async function getErrorMessage(response, defaultMessage) {
+  const errorResponse = await response.json().catch(() => null);
+  return errorResponse?.message ?? defaultMessage;
 }
 
 function requestReadTimes() {

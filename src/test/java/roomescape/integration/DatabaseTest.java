@@ -1,8 +1,9 @@
-package roomescape;
+package roomescape.integration;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import roomescape.IntegrationTestSupport;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -33,6 +34,15 @@ class DatabaseTest extends IntegrationTestSupport {
         try (Connection connection = jdbcTemplate.getDataSource().getConnection();
              ResultSet tables = connection.getMetaData()
                      .getTables(null, null, "RESERVATIONS", new String[]{"TABLE"})) {
+            assertThat(tables.next()).isTrue();
+        }
+    }
+
+    @Test
+    void times_테이블이_생성되어_있다() throws SQLException {
+        try (Connection connection = jdbcTemplate.getDataSource().getConnection();
+             ResultSet tables = connection.getMetaData()
+                     .getTables(null, null, "TIMES", new String[]{"TABLE"})) {
             assertThat(tables.next()).isTrue();
         }
     }

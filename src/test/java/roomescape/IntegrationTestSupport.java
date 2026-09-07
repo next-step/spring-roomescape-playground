@@ -8,13 +8,13 @@ import org.springframework.context.annotation.Import;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import(TestClockConfig.class)
-abstract class IntegrationTestSupport {
+public abstract class IntegrationTestSupport {
 
     @LocalServerPort
     private int port;
 
     @BeforeEach
-    void setRestAssuredPort() {
+    protected void setRestAssuredPort() {
         RestAssured.port = port;
     }
 }

@@ -2,23 +2,31 @@ package roomescape.service;
 
 import org.springframework.stereotype.Service;
 import roomescape.domain.Reservation;
+import roomescape.domain.Time;
 import roomescape.dto.ReservationCreateCommand;
 import roomescape.exception.ReservationErrorCode;
 import roomescape.exception.ReservationException;
+import roomescape.exception.TimeErrorCode;
+import roomescape.exception.TimeException;
 import roomescape.repository.ReservationRepository;
+import roomescape.repository.TimeRepository;
 
 import java.time.Clock;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
 public class ReservationService {
 
     private final ReservationRepository reservationRepository;
+    private final TimeRepository timeRepository;
     private final Clock clock;
 
-    public ReservationService(ReservationRepository reservationRepository, Clock clock) {
+    public ReservationService(ReservationRepository reservationRepository, TimeRepository timeRepository, Clock clock) {
         this.reservationRepository = reservationRepository;
+        this.timeRepository = timeRepository;
         this.clock = clock;
     }
 
@@ -26,14 +34,17 @@ public class ReservationService {
         return reservationRepository.findAll();
     }
 
-    public Reservation addReservation(ReservationCreateCommand command) {
-        validateNotPast(command);
-        validateNotDuplicated(command);
+    public Reservation createReservation(ReservationCreateCommand command) {
+        Time time = timeRepository.findById(command.timeId())
+                .orElseThrow(() -> new TimeException(TimeErrorCode.TIME_NOT_FOUND));
+
+        validateNotPast(command.date(), time.getStartAt());
+        validateNotDuplicate(command.date(), time.getId());
 
         Reservation reservation = new Reservation(
                 command.name(),
                 command.date(),
-                command.time()
+                time
         );
 
         return reservationRepository.save(reservation);
@@ -47,16 +58,16 @@ public class ReservationService {
         }
     }
 
-    private void validateNotPast(ReservationCreateCommand command) {
-        LocalDateTime reservationDateTime = LocalDateTime.of(command.date(), command.time());
+    private void validateNotPast(LocalDate date, LocalTime startAt) {
+        LocalDateTime reservationDateTime = LocalDateTime.of(date, startAt);
 
         if (reservationDateTime.isBefore(LocalDateTime.now(clock))) {
             throw new ReservationException(ReservationErrorCode.RESERVATION_IN_PAST);
         }
     }
 
-    private void validateNotDuplicated(ReservationCreateCommand command) {
-        if (reservationRepository.existsByDateAndTime(command.date(), command.time())) {
+    private void validateNotDuplicate(LocalDate date, Long timeId) {
+        if (reservationRepository.existsByDateAndTimeId(date, timeId)) {
             throw new ReservationException(ReservationErrorCode.RESERVATION_CONFLICT);
         }
     }
