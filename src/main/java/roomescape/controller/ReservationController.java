@@ -21,7 +21,7 @@ public class ReservationController {
     }
 
     @GetMapping("reservations")
-    public ResponseEntity<List<Reservation>> reservations() {
+    public ResponseEntity<List<Reservation>> readAll() {
         return ResponseEntity.ok().body(reservationDao.findAllReservations());
     }
 
