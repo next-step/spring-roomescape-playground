@@ -1,4 +1,4 @@
-package roomescape;
+package roomescape.exception;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -13,7 +13,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.notFound().build();
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
+    @ExceptionHandler(roomescape.exception.IllegalArgumentException.class)
     public ResponseEntity<Void> handleIllegalArgumentException(IllegalArgumentException e) {
         System.out.println("IllegalArgumentException occurred: " + e.getMessage());
         return ResponseEntity.badRequest().build();

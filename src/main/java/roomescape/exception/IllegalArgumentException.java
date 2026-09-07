@@ -1,4 +1,4 @@
-package roomescape;
+package roomescape.exception;
 
 public class IllegalArgumentException extends RuntimeException {
     public IllegalArgumentException(String message) {

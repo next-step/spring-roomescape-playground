@@ -1,8 +1,12 @@
-package roomescape;
+package roomescape.controller;
 
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import roomescape.exception.NotFoundReservationException;
+import roomescape.domain.Reservation;
+import roomescape.repository.ReservationDao;
+import roomescape.dto.ReservationRequestDto;
 
 import java.net.URI;
 import java.util.List;
@@ -10,15 +14,15 @@ import java.util.List;
 @RestController
 public class ReservationController {
 
-    private final DbController dbController;
+    private final ReservationDao reservationDao;
 
-    public ReservationController(DbController dbController) {
-        this.dbController = dbController;
+    public ReservationController(ReservationDao reservationDao) {
+        this.reservationDao = reservationDao;
     }
 
     @GetMapping("reservations")
     public ResponseEntity<List<Reservation>> reservations() {
-        return ResponseEntity.ok().body(dbController.findAllReservations());
+        return ResponseEntity.ok().body(reservationDao.findAllReservations());
     }
 
     @PostMapping("/reservations")
@@ -30,7 +34,7 @@ public class ReservationController {
                 requestDto.getTime()
         );
 
-        Long id = dbController.insert(reservation);
+        Long id = reservationDao.insert(reservation);
 
         Reservation newReservation = Reservation.toEntity(reservation, id);
         return ResponseEntity.created(URI.create("/reservations/" + id)).body(newReservation);
@@ -38,7 +42,7 @@ public class ReservationController {
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        int deleteNumber = dbController.deleteReservation(id);
+        int deleteNumber = reservationDao.deleteReservation(id);
 
         if(deleteNumber == 0) {
             throw new NotFoundReservationException("Reservation not found: id=" + id);

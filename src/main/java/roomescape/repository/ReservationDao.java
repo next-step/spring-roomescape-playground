@@ -1,19 +1,20 @@
-package roomescape;
+package roomescape.repository;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import roomescape.domain.Reservation;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Repository
-public class DbController {
+public class ReservationDao {
     private final JdbcTemplate jdbcTemplate;
 
-    public DbController(JdbcTemplate jdbcTemplate) {
+    public ReservationDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
