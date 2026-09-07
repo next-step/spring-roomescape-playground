@@ -7,18 +7,16 @@ import roomescape.exception.NotFoundReservationException;
 import roomescape.domain.Reservation;
 import roomescape.repository.ReservationDao;
 import roomescape.dto.ReservationRequestDto;
+import lombok.RequiredArgsConstructor;
 
 import java.net.URI;
 import java.util.List;
 
+@RequiredArgsConstructor
 @RestController
 public class ReservationController {
 
     private final ReservationDao reservationDao;
-
-    public ReservationController(ReservationDao reservationDao) {
-        this.reservationDao = reservationDao;
-    }
 
     @GetMapping("reservations")
     public ResponseEntity<List<Reservation>> readAll() {

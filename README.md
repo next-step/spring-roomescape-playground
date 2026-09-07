@@ -34,6 +34,7 @@
 - [x] Spring JDBC 의존성을 추가한다.
 - [x] H2 의존성을 추가한다.
 - [x] Bean Validation 의존성을 추가한다.
+- [x] Lombok 의존성을 추가한다.
 
 ### `데이터베이스 적용`
 
@@ -71,3 +72,4 @@
 - [x] `JdbcTemplate` 필드를 `final`로 선언한다.
 - [x] id 값을 처리하기 위한 방식을 비교해 보고 적절한 방식을 적용한다.
 - [x] DB 접근 클래스를 `@Repository`로 Spring Bean으로 등록한다.
+- [x] `@RequiredArgsConstructor`를 적용하여 생성자를 주입한다.
