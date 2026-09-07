@@ -70,3 +70,4 @@
 - [x] 중복되는 `insert()` 메서드를 제거한다.
 - [x] `JdbcTemplate` 필드를 `final`로 선언한다.
 - [x] id 값을 처리하기 위한 방식을 비교해 보고 적절한 방식을 적용한다.
+- [x] DB 접근 클래스를 `@Repository`로 Spring Bean으로 등록한다.
