@@ -67,7 +67,7 @@
 
 ### `예약 시간 선택 기능`
 
-- [ ] 예약 관리 페이지에서 `new-reservation.html`을 사용한다.
+- [x] 예약 관리 페이지에서 `new-reservation.html`을 사용한다.
 - [ ] 예약 테이블의 시간 정보를 `time_id` 외래키로 변경한다.
 - [ ] `Reservation`의 시간 타입을 `String`에서 `Time`으로 변경한다.
 - [ ] 예약 추가 시 `Time`의 식별자를 저장하도록 수정한다.
