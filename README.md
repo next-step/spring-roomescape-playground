@@ -79,8 +79,8 @@
 - [x] `ReservationService`를 생성한다.
 - [x] `ReservationService`를 Spring Bean으로 등록한다.
 - [x] `ReservationService`에 `ReservationDao`를 생성자 주입한다.
-- [ ] `ReservationController`의 예약 처리 로직을 `ReservationService`로 분리한다.
-- [ ] `ReservationController`가 `ReservationService`를 사용하도록 수정한다.
+- [x] `ReservationController`의 예약 처리 로직을 `ReservationService`로 분리한다.
+- [x] `ReservationController`가 `ReservationService`를 사용하도록 수정한다.
 
 ### `1~4단계 리뷰 반영`
 

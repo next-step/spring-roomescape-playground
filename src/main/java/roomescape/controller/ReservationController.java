@@ -1,14 +1,12 @@
 package roomescape.controller;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import roomescape.domain.Time;
-import roomescape.exception.NotFoundReservationException;
 import roomescape.domain.Reservation;
-import roomescape.repository.ReservationDao;
 import roomescape.dto.ReservationRequestDto;
-import lombok.RequiredArgsConstructor;
+import roomescape.service.ReservationService;
 
 import java.net.URI;
 import java.util.List;
@@ -17,37 +15,23 @@ import java.util.List;
 @RestController
 public class ReservationController {
 
-    private final ReservationDao reservationDao;
+    private final ReservationService reservationService;
 
     @GetMapping("reservations")
     public ResponseEntity<List<Reservation>> readAll() {
-        return ResponseEntity.ok().body(reservationDao.findAllReservations());
+        return ResponseEntity.ok().body(reservationService.findAllReservations());
     }
 
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> create(@Valid @RequestBody ReservationRequestDto requestDto) {
-        Time time = new Time((long) requestDto.getTime(), null);
+        Reservation newReservation = reservationService.createReservation(requestDto);
 
-        Reservation reservation = new Reservation(
-                null,
-                requestDto.getName(),
-                requestDto.getDate(),
-                time
-        );
-
-        Long id = reservationDao.insert(reservation);
-
-        Reservation newReservation = Reservation.toEntity(reservation, id);
-        return ResponseEntity.created(URI.create("/reservations/" + id)).body(newReservation);
+        return ResponseEntity.created(URI.create("/reservations/" + newReservation.getId())).body(newReservation);
     }
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        int deleteNumber = reservationDao.deleteReservation(id);
-
-        if(deleteNumber == 0) {
-            throw new NotFoundReservationException("Reservation not found: id=" + id);
-        }
+        reservationService.deleteReservation(id);
 
         return ResponseEntity.noContent().build();
     }
