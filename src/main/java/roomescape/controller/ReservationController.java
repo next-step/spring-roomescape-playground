@@ -3,6 +3,7 @@ package roomescape.controller;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import roomescape.domain.Time;
 import roomescape.exception.NotFoundReservationException;
 import roomescape.domain.Reservation;
 import roomescape.repository.ReservationDao;
@@ -25,11 +26,13 @@ public class ReservationController {
 
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> create(@Valid @RequestBody ReservationRequestDto requestDto) {
+        Time time = new Time((long) requestDto.getTime(), null);
+
         Reservation reservation = new Reservation(
                 null,
                 requestDto.getName(),
                 requestDto.getDate(),
-                requestDto.getTime()
+                time
         );
 
         Long id = reservationDao.insert(reservation);

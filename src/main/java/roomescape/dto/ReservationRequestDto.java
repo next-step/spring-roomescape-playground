@@ -9,10 +9,9 @@ public class ReservationRequestDto {
     @NotBlank
     private String date;
 
-    @NotBlank
-    private String time;
+    private int time;
 
-    public ReservationRequestDto(String name, String date, String time) {
+    public ReservationRequestDto(String name, String date, int time) {
         this.name = name;
         this.date = date;
         this.time = time;
@@ -26,7 +25,7 @@ public class ReservationRequestDto {
         return date;
     }
 
-    public String getTime() {
+    public int getTime() {
         return time;
     }
 }
