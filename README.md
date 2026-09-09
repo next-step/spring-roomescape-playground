@@ -74,6 +74,13 @@
 - [x] 예약 조회 시 `time` 테이블을 조인하여 시간 정보를 함께 조회한다.
 - [x] 예약과 시간의 의존 관계에 따라 영향을 받는 로직을 수정한다.
 
+### `레이어드 아키텍처 적용`
+
+- [ ] `ReservationService`를 생성한다.
+- [ ] `ReservationService`를 Spring Bean으로 등록한다.
+- [ ] `ReservationController`의 예약 처리 로직을 `ReservationService`로 분리한다.
+- [ ] `ReservationController`가 `ReservationService`를 사용하도록 수정한다.
+
 ### `1~4단계 리뷰 반영`
 
 - [x] 예약 조회 시 예약 데이터가 중복으로 추가되지 않도록 수정한다.
