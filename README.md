@@ -76,8 +76,8 @@
 
 ### `레이어드 아키텍처 적용`
 
-- [ ] `ReservationService`를 생성한다.
-- [ ] `ReservationService`를 Spring Bean으로 등록한다.
+- [x] `ReservationService`를 생성한다.
+- [x] `ReservationService`를 Spring Bean으로 등록한다.
 - [ ] `ReservationController`의 예약 처리 로직을 `ReservationService`로 분리한다.
 - [ ] `ReservationController`가 `ReservationService`를 사용하도록 수정한다.
 
