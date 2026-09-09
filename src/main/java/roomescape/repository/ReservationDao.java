@@ -64,7 +64,7 @@ public class ReservationDao {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("name", reservation.getName());
         parameters.put("date", reservation.getDate());
-        parameters.put("time", reservation.getTime());
+        parameters.put("time_id", reservation.getTime().getId());
 
         return simpleJdbcInsert.executeAndReturnKey(parameters).longValue();
     }
