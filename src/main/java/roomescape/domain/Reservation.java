@@ -1,15 +1,15 @@
 package roomescape.domain;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
+
 
 public class Reservation {
     private final Long id;
     private final String name;
     private final LocalDate date;
-    private final LocalTime time;
+    private final Time time;
 
-    public Reservation (Long id, String name, LocalDate date, LocalTime time){
+    public Reservation (Long id, String name, LocalDate date, Time time){
         validateName(name);
         validateDate(date);
         validateTime(time);
@@ -24,7 +24,7 @@ public class Reservation {
         return id;
     }
 
-    public LocalTime getTime() {
+    public Time getTime() {
         return time;
     }
 
@@ -34,10 +34,6 @@ public class Reservation {
 
     public LocalDate getDate() {
         return date;
-    }
-
-    public static Reservation toEntity(ReservationRequest request, Long id) {
-        return new Reservation(id, request.getName(), request.getDate(), request.getTime());
     }
 
     private void validateName(String name) {
@@ -52,7 +48,7 @@ public class Reservation {
         }
     }
 
-    private void validateTime(LocalTime time) {
+    private void validateTime(Time time) {
         if (time == null) {
             throw new IllegalArgumentException("시간을 입력해주세요.");
         }
