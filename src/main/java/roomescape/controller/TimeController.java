@@ -4,25 +4,24 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import roomescape.domain.Time;
 import roomescape.dto.TimeRequest;
-import roomescape.repository.TimeRepository;
+import roomescape.service.TimeService;
 
 import java.net.URI;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @RestController
 public class TimeController {
 
-    private final TimeRepository timeRepository;
+    private final TimeService timeService;
 
-    public TimeController(TimeRepository timeRepository) {
-        this.timeRepository = timeRepository;
+    public TimeController(TimeService timeService) {
+        this.timeService = timeService;
     }
 
     @GetMapping("/times")
     public ResponseEntity<List<Time>> getTimes() {
 
-        List<Time> times = timeRepository.getTimes();
+        List<Time> times = timeService.getTimes();
 
         return ResponseEntity.ok().body(times);
     }
@@ -32,11 +31,9 @@ public class TimeController {
             @RequestBody TimeRequest timeRequest
     ) {
 
-        if (timeRequest.getTime() == null) {
-            throw new IllegalArgumentException();
-        }
-
-        Time time = timeRepository.saveTime(timeRequest.getTime());
+        Time time = timeService.createTime(
+                timeRequest.getTime()
+        );
 
         return ResponseEntity.created(
                         URI.create("/times/" + time.getId()))
@@ -44,22 +41,21 @@ public class TimeController {
     }
 
     @GetMapping("/times/{id}")
-    public ResponseEntity<Time> getTime(@PathVariable long id) {
+    public ResponseEntity<Time> getTime(
+            @PathVariable long id
+    ) {
 
-        Time time = timeRepository.getTime(id)
-                .orElseThrow(NoSuchElementException::new);
+        Time time = timeService.getTime(id);
 
         return ResponseEntity.ok().body(time);
     }
 
     @DeleteMapping("/times/{id}")
-    public ResponseEntity<Void> deleteTime(@PathVariable long id) {
+    public ResponseEntity<Void> deleteTime(
+            @PathVariable long id
+    ) {
 
-        int deletedCount = timeRepository.deleteTime(id);
-
-        if (deletedCount == 0) {
-            throw new NoSuchElementException();
-        }
+        timeService.deleteTime(id);
 
         return ResponseEntity.noContent().build();
     }
