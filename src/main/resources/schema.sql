@@ -1,7 +1,7 @@
 CREATE TABLE time
 (
     id   BIGINT       NOT NULL AUTO_INCREMENT,
-    time VARCHAR(255) NOT NULL,
+    time Time NOT NULL,
     PRIMARY KEY (id)
 );
 

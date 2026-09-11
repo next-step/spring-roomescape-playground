@@ -108,7 +108,7 @@
 - [ ]  미사용 import를 제거한다.
 - [x]  요청 값이 누락되거나 빈 값일 때의 예외 처리를 추가한다.
 - [x]  Reservation과 마찬가지로 Time에도 Service 계층을 추가한다.
-- [ ]  DB에 있는 시간 데이터 타입을 확인하고 수정한다.
+- [x]  DB에 있는 시간 데이터 타입을 확인하고 수정한다.
 - [ ]  TimeController의 create 메서드의 반환 형식을 검토한다.
 - [ ]  Reservation과 Time 도메인에 필요한 검증하는 코드를 추가한다.
 - [ ]  TimeController의 반복되는 매핑 경로의 중복을 수정한다.
