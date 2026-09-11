@@ -32,7 +32,7 @@ public class TimeController {
         return ResponseEntity.created(URI.create("/times/" + newTime.getId())).body(newTime);
     }
 
-    @DeleteMapping("/times/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         timeService.deleteTime(id);
 
