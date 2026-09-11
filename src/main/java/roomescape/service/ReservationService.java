@@ -23,7 +23,7 @@ public class ReservationService {
     }
 
     public Reservation createReservation(ReservationRequestDto requestDto) {
-        Time time = new Time((long) requestDto.getTime(), null);
+        Time time = new Time(requestDto.getTime(), null);
 
         Reservation reservation = new Reservation(
                 null,
