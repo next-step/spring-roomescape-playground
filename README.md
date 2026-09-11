@@ -111,4 +111,4 @@
 - [x]  DB에 있는 시간 데이터 타입을 확인하고 수정한다.
 - [x]  TimeController의 create 메서드의 반환 형식을 검토한다.
 - [x]  Reservation과 Time 도메인에 필요한 검증하는 코드를 추가한다.
-- [ ]  TimeController의 반복되는 매핑 경로의 중복을 수정한다.
+- [x]  TimeController의 반복되는 매핑 경로의 중복을 수정한다.

@@ -13,6 +13,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
+@RequestMapping("/times")
 public class TimeController {
 
     private final TimeService timeService;
@@ -21,12 +22,12 @@ public class TimeController {
         this.timeService = timeService;
     }
 
-    @GetMapping("/times")
+    @GetMapping
     public ResponseEntity<List<Time>> readAll() {
         return ResponseEntity.ok().body(timeService.findAllTimes());
     }
 
-    @PostMapping("/times")
+    @PostMapping
     public ResponseEntity<Time> create(@Valid @RequestBody TimeRequestDto requestDto) {
         Time newTime = timeService.createTime(requestDto);
 
