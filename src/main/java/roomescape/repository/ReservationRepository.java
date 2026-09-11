@@ -12,6 +12,7 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
+import roomescape.domain.Time;
 
 @Repository
 public class ReservationRepository {
@@ -27,7 +28,15 @@ public class ReservationRepository {
     }
 
     public List<Reservation> getReservations() {
-        String sql = "SELECT id, name, date, time FROM reservation";
+        String sql = """
+                SELECT
+                    r.id as reservation_id,
+                    r.name,
+                    r.date,
+                    t.id as time_id,
+                    t.time as time_value
+                FROM reservation as r inner join time as t on r.time_id = t.id
+                """;
 
         return jdbcTemplate.query(
                 sql,
@@ -38,12 +47,12 @@ public class ReservationRepository {
     public Reservation saveReservation(
             String name,
             LocalDate date,
-            LocalTime time
+            Time time
     ) {
         MapSqlParameterSource params = new MapSqlParameterSource()
                 .addValue("name", name)
                 .addValue("date", date.toString())
-                .addValue("time", time.toString());
+                .addValue("time_id", time.getId());
 
         Number id = simpleJdbcInsert.executeAndReturnKey(params);
 
@@ -56,7 +65,17 @@ public class ReservationRepository {
     }
 
     public Optional<Reservation> getReservation(long id) {
-        String sql = "SELECT id, name, date, time FROM reservation WHERE id = ?";
+        String sql = """
+                SELECT
+                    r.id as reservation_id,
+                    r.name,
+                    r.date,
+                    t.id as time_id,
+                    t.time as time_value
+                FROM reservation as r
+                INNER JOIN time as t ON r.time_id = t.id
+                WHERE r.id = ?
+                """;
 
         List<Reservation> reservations = jdbcTemplate.query(
                 sql,
@@ -74,11 +93,17 @@ public class ReservationRepository {
     }
 
     private Reservation mapReservation(ResultSet resultSet) throws SQLException {
+
+        Time time = new Time(
+                resultSet.getLong("time_id"),
+                LocalTime.parse(resultSet.getString("time_value"))
+        );
+
         return new Reservation(
-                resultSet.getLong("id"),
+                resultSet.getLong("reservation_id"),
                 resultSet.getString("name"),
                 LocalDate.parse(resultSet.getString("date")),
-                LocalTime.parse(resultSet.getString("time"))
+                time
         );
     }
 }

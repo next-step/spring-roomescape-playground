@@ -7,16 +7,23 @@ import java.util.NoSuchElementException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import roomescape.domain.Reservation;
+import roomescape.domain.Time;
 import roomescape.dto.ReservationRequest;
 import roomescape.repository.ReservationRepository;
+import roomescape.repository.TimeRepository;
 
 @RestController
 public class ReservationController {
 
     private final ReservationRepository reservationRepository;
+    private final TimeRepository timeRepository;
 
-    public ReservationController(ReservationRepository reservationRepository) {
+    public ReservationController(
+            ReservationRepository reservationRepository,
+            TimeRepository timeRepository
+    ) {
         this.reservationRepository = reservationRepository;
+        this.timeRepository = timeRepository;
     }
 
     @GetMapping("/reservations")
@@ -39,10 +46,13 @@ public class ReservationController {
             throw new IllegalArgumentException();
         }
 
+        Time time = timeRepository.getTime(reservationRequest.getTime())
+                .orElseThrow(NoSuchElementException::new);
+
         Reservation reservation = reservationRepository.saveReservation(
                 reservationRequest.getName(),
                 reservationRequest.getDate(),
-                reservationRequest.getTime()
+                time
         );
 
         return ResponseEntity.created(
