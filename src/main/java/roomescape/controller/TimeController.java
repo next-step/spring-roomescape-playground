@@ -1,12 +1,10 @@
 package roomescape.controller;
 
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import roomescape.domain.Time;
 import roomescape.dto.TimeRequestDto;
-import roomescape.repository.TimeDao;
 import roomescape.service.TimeService;
 
 import java.net.URI;
