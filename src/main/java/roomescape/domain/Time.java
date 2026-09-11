@@ -6,8 +6,15 @@ public class Time {
     private String time;
 
     public Time(Long id, String time) {
+        validateTime(time);
         this.id = id;
         this.time = time;
+    }
+
+    private void validateTime(String time) {
+        if (time == null || time.isBlank()) {
+            throw new IllegalArgumentException("Invalid time.");
+        }
     }
 
     public Long getId() {

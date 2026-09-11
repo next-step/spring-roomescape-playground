@@ -7,10 +7,32 @@ public class Reservation {
     private Time time;
 
     public Reservation(Long id, String name, String date, Time time) {
+        validateName(name);
+        validateDate(date);
+        validateTime(time);
+
         this.id = id;
         this.name = name;
         this.date = date;
         this.time = time;
+    }
+
+    private void validateName(String name) {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("Invalid name.");
+        }
+    }
+
+    private void validateDate(String date) {
+        if (date == null || date.isBlank()) {
+            throw new IllegalArgumentException("Invalid date.");
+        }
+    }
+
+    private void validateTime(Time time) {
+        if (time == null) {
+            throw new IllegalArgumentException("Invalid time.");
+        }
     }
 
     public Long getId() {
