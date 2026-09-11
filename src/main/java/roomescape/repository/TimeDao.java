@@ -46,4 +46,11 @@ public class TimeDao {
 
         return simpleJdbcInsert.executeAndReturnKey(parameters).longValue();
     }
+
+    public Time findById(Long id) {
+        String sql = "SELECT id, time FROM time WHERE id = ?";
+
+        return jdbcTemplate.queryForObject(sql,
+                (rs, rowNum) -> new Time(rs.getLong("id"), rs.getString("time")), id);
+    }
 }

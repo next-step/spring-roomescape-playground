@@ -6,6 +6,7 @@ import roomescape.domain.Time;
 import roomescape.dto.ReservationRequestDto;
 import roomescape.exception.NotFoundReservationException;
 import roomescape.repository.ReservationDao;
+import roomescape.repository.TimeDao;
 
 import java.util.List;
 
@@ -13,9 +14,12 @@ import java.util.List;
 public class ReservationService {
 
     private final ReservationDao reservationDao;
+    private final TimeDao timeDao;
 
-    public ReservationService(ReservationDao reservationDao) {
+
+    public ReservationService(ReservationDao reservationDao, TimeDao timeDao) {
         this.reservationDao = reservationDao;
+        this.timeDao = timeDao;
     }
 
     public List<Reservation> findAllReservations() {
@@ -23,7 +27,7 @@ public class ReservationService {
     }
 
     public Reservation createReservation(ReservationRequestDto requestDto) {
-        Time time = new Time(requestDto.getTime(), null);
+        Time time = timeDao.findById(requestDto.getTime());
 
         Reservation reservation = new Reservation(
                 null,
