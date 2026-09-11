@@ -105,22 +105,25 @@ public class MissionStepTest {
 
     @Test
     void nameTest() {
+        Map<String, String> timeParams = new HashMap<>();
+        timeParams.put("time", "15:53");
+
         ReservationRequest name_null = new ReservationRequest(
                 LocalDate.of(2023, 8, 5),
                 null,
-                LocalTime.of(15, 53)
+                1L
         );
 
         ReservationRequest name_empty = new ReservationRequest(
                 LocalDate.of(2023, 8, 5),
                 "",
-                LocalTime.of(15, 53)
+                1L
         );
 
         ReservationRequest name_blank = new ReservationRequest(
                 LocalDate.of(2023, 8, 5),
                 "    ",
-                LocalTime.of(15, 53)
+                1L
         );
 
         String name_delete = """
