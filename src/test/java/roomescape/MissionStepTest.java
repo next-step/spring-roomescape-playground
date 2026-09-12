@@ -2,6 +2,7 @@ package roomescape;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -9,8 +10,10 @@ import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
 import roomescape.config.FixedClockConfig;
+import roomescape.controller.ReservationController;
 import roomescape.domain.Reservation;
 
+import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.Clock;
@@ -63,7 +66,7 @@ public class MissionStepTest {
 
         params.put("name", "브라운");
         params.put("date", reservationDate.toString());
-        params.put("time", "15:40");
+        params.put("time", "1");
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -126,8 +129,24 @@ public class MissionStepTest {
     }
 
     @Test
+    @Sql(statements = {
+            "DELETE FROM reservation",
+            "DELETE FROM time",
+            "ALTER TABLE reservation ALTER COLUMN id RESTART WITH 1",
+            "ALTER TABLE time ALTER COLUMN id RESTART WITH 1"
+    })
     void 육단계() {
-        jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "브라운", "2023-08-05", "15:40");
+        jdbcTemplate.update(
+                "INSERT INTO time (id, time) VALUES (?, ?)",
+                1L,
+                "15:40"
+        );
+
+        jdbcTemplate.update("INSERT INTO reservation (name, date, time_id) VALUES (?, ?, ?)",
+                "브라운",
+                "2023-08-05",
+                1L
+        );
 
         List<Reservation> reservations = RestAssured.given().log().all()
                 .when().get("/reservations")
@@ -141,14 +160,25 @@ public class MissionStepTest {
     }
 
     @Test
-    @Sql(statements = "TRUNCATE TABLE reservation RESTART IDENTITY")
+    @Sql(statements = {
+            "DELETE FROM reservation",
+            "DELETE FROM time",
+            "ALTER TABLE reservation ALTER COLUMN id RESTART WITH 1",
+            "ALTER TABLE time ALTER COLUMN id RESTART WITH 1"
+    })
     void 칠단계() {
+        jdbcTemplate.update(
+                "INSERT INTO time (id, time) VALUES (?, ?)",
+                1L,
+                "10:00"
+        );
+
         LocalDate reservationDate = LocalDate.now(clock).plusDays(1);
 
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
         params.put("date", reservationDate.toString());
-        params.put("time", "10:00");
+        params.put("time", "1");
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -168,5 +198,68 @@ public class MissionStepTest {
 
         Integer countAfterDelete = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
         assertThat(countAfterDelete).isEqualTo(0);
+    }
+
+    @Test
+    @Sql(statements = {
+            "DELETE FROM reservation",
+            "DELETE FROM time",
+            "ALTER TABLE reservation ALTER COLUMN id RESTART WITH 1",
+            "ALTER TABLE time ALTER COLUMN id RESTART WITH 1"
+    })
+    void 팔단계() {
+        Map<String, String> params = new HashMap<>();
+        params.put("time", "10:00");
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/times")
+                .then().log().all()
+                .statusCode(201)
+                .header("Location", "/times/1");
+
+        RestAssured.given().log().all()
+                .when().get("/times")
+                .then().log().all()
+                .statusCode(200)
+                .body("size()", is(1));
+
+        RestAssured.given().log().all()
+                .when().delete("/times/1")
+                .then().log().all()
+                .statusCode(204);
+    }
+
+    @Test
+    void 구단계() {
+        Map<String, String> reservation = new HashMap<>();
+        reservation.put("name", "브라운");
+        reservation.put("date", "2023-08-05");
+        reservation.put("time", "10:00");
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(reservation)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(400);
+    }
+
+    @Autowired
+    private ReservationController reservationController;
+
+    @Test
+    void 십단계() {
+        boolean isJdbcTemplateInjected = false;
+
+        for (Field field : reservationController.getClass().getDeclaredFields()) {
+            if (field.getType().equals(JdbcTemplate.class)) {
+                isJdbcTemplateInjected = true;
+                break;
+            }
+        }
+
+        assertThat(isJdbcTemplateInjected).isFalse();
     }
 }

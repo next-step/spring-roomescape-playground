@@ -12,6 +12,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ReservationTest {
 
+    private static final Time TIME = new Time(1L, LocalTime.of(10, 0));
+
     @ParameterizedTest
     @NullAndEmptySource
     @ValueSource(strings = {"    "})
@@ -22,7 +24,7 @@ public class ReservationTest {
                         1L,
                         name,
                         LocalDate.of(2023,1,1),
-                        LocalTime.of(10, 0)
+                        TIME
                 )
         );
     }
@@ -35,7 +37,7 @@ public class ReservationTest {
                         1L,
                         "브라운",
                         null,
-                        LocalTime.of(10, 0)
+                        TIME
                 )
         );
     }

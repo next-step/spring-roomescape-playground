@@ -3,9 +3,12 @@ package roomescape.service;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import roomescape.domain.Reservation;
+import roomescape.domain.Time;
 import roomescape.exception.DuplicateReservationException;
 import roomescape.exception.ReservationNotFoundException;
+import roomescape.exception.TimeNotFoundException;
 import roomescape.repository.ReservationRepository;
+import roomescape.repository.TimeRepository;
 
 import java.time.Clock;
 import java.time.LocalDate;
@@ -18,10 +21,12 @@ import java.util.List;
 public class ReservationService {
 
     private final ReservationRepository reservationRepository;
+    private final TimeRepository timeRepository;
     private final Clock clock;
 
-    ReservationService(ReservationRepository reservationRepository, Clock clock) {
+    ReservationService(ReservationRepository reservationRepository, TimeRepository timeRepository, Clock clock) {
         this.reservationRepository = reservationRepository;
+        this.timeRepository = timeRepository;
         this.clock = clock;
     }
 
@@ -29,9 +34,12 @@ public class ReservationService {
         return reservationRepository.findAll();
     }
 
-    public Reservation create(String name, LocalDate date, LocalTime time) {
-        validateReservationDateTime(date, time);
-        validateDuplicateReservation(name, date, time);
+    public Reservation create(String name, LocalDate date, Long timeId) {
+        Time time = timeRepository.findById(timeId)
+                .orElseThrow(() -> new TimeNotFoundException("존재하지 않는 시간입니다."));
+
+        validateReservationDateTime(date, time.getTime());
+        validateDuplicateReservation(name, date, timeId);
 
         Reservation reservation = new Reservation(name, date, time);
 
@@ -57,8 +65,8 @@ public class ReservationService {
         }
     }
 
-    private void validateDuplicateReservation(String name, LocalDate date, LocalTime time) {
-        boolean isDuplicate = reservationRepository.existsByNameAndDateAndTime(name, date, time);
+    private void validateDuplicateReservation(String name, LocalDate date, Long timeId) {
+        boolean isDuplicate = reservationRepository.existsByNameAndDateAndTime(name, date, timeId);
 
         if (isDuplicate) {
             throw new DuplicateReservationException("이미 존재하는 예약입니다.");

@@ -4,6 +4,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
+import roomescape.domain.Time;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -26,13 +27,29 @@ public class ReservationRepository {
 
     public List<Reservation> findAll() {
         return jdbcTemplate.query(
-                "SELECT id, name, date, time FROM reservation ORDER BY id",
-                (rs, rowNum) -> new Reservation(
-                        rs.getLong("id"),
-                        rs.getString("name"),
-                        rs.getObject("date", LocalDate.class),
-                        rs.getObject("time", LocalTime.class)
-                )
+                """
+                SELECT 
+                    r.id AS reservation_id,
+                    r.name,
+                    r.date,
+                    t.id AS time_id,
+                    t.time AS time_value
+                FROM reservation AS r INNER JOIN time AS t ON r.time_id = t.id
+                ORDER BY r.id
+                """,
+                (rs, rowNum) -> {
+                    Time time = new Time(
+                            rs.getLong("time_id"),
+                            rs.getObject("time_value", LocalTime.class)
+                    );
+
+                    return new Reservation(
+                            rs.getLong("reservation_id"),
+                            rs.getString("name"),
+                            rs.getObject("date", LocalDate.class),
+                            time
+                    );
+                }
         );
     }
 
@@ -40,7 +57,7 @@ public class ReservationRepository {
         Map<String, Object> parameters = Map.of(
                 "name", reservation.getName(),
                 "date", reservation.getDate(),
-                "time", reservation.getTime()
+                "time_id", reservation.getTime().getId()
         );
 
         Long id = simpleJdbcInsert.executeAndReturnKey(parameters).longValue();
@@ -62,19 +79,35 @@ public class ReservationRepository {
         return deleteCount > 0;
     }
 
-    public boolean existsByNameAndDateAndTime(String name, LocalDate date, LocalTime time) {
+    public boolean existsByNameAndDateAndTime(String name, LocalDate date, Long timeId) {
         Boolean exists = jdbcTemplate.queryForObject(
                 """
                 SELECT EXISTS (
                     SELECT 1
                     FROM reservation
-                    WHERE name = ? AND date = ? AND time = ?
+                    WHERE name = ? AND date = ? AND time_id = ?
                 )
                 """,
                 Boolean.class,
                 name,
                 date,
-                time
+                timeId
+        );
+
+        return exists;
+    }
+
+    public boolean existsByTimeId(Long timeId) {
+        Boolean exists = jdbcTemplate.queryForObject(
+                """
+                SELECT EXISTS (
+                    SELECT 1
+                    FROM reservation
+                    WHERE time_id = ?
+                )
+                """,
+                Boolean.class,
+                timeId
         );
 
         return exists;

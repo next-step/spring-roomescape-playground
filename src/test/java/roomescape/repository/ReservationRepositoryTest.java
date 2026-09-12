@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import roomescape.domain.Reservation;
+import roomescape.domain.Time;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -29,7 +30,8 @@ public class ReservationRepositoryTest {
 
     private static final String NAME = "브라운";
     private static final LocalDate TODAY = LocalDate.of(2023, 1, 2);
-    private static final LocalTime NOW = LocalTime.of(10, 30);
+    private static final LocalTime NOW = LocalTime.of(10, 0);
+    private static final Time TIME = new Time(1L, NOW);
 
     private static final Long NON_EXISTENT_ID = 999L;
 
@@ -45,19 +47,32 @@ public class ReservationRepositoryTest {
         assertEquals(3, reservations.size());
         assertEquals(1L, first.getId());
         assertEquals("브라운", first.getName());
-        assertEquals(LocalTime.of(10, 0), first.getTime());
+        assertEquals(1L, first.getTime().getId());
+        assertEquals(LocalTime.of(10, 0), first.getTime().getTime());
     }
 
     @Test
     void 예약을_저장할_수_있다() {
-        Reservation reservation = new Reservation(NAME, TODAY, NOW);
+        jdbcTemplate.update(
+                "INSERT INTO time (id, time) VALUES (?, ?)",
+                1L,
+                NOW
+        );
+
+        Reservation reservation = new Reservation(NAME, TODAY, TIME);
         Reservation savedReservation = reservationRepository.save(reservation);
 
         Long savedId = savedReservation.getId();
 
+        Long persistedTimeId = jdbcTemplate.queryForObject(
+                "SELECT time_id FROM reservation WHERE id = ?",
+                Long.class,
+                savedReservation.getId()
+        );
+
         Reservation persistedReservation = jdbcTemplate.queryForObject(
                 """
-                SELECT id, name, date, time
+                SELECT id, name, date, time_id
                 FROM reservation
                 WHERE id = ?
                 """,
@@ -65,7 +80,7 @@ public class ReservationRepositoryTest {
                         rs.getLong("id"),
                         rs.getString("name"),
                         rs.getObject("date", LocalDate.class),
-                        rs.getObject("time", LocalTime.class)
+                        TIME
                 ),
                 savedId
         );
@@ -73,55 +88,78 @@ public class ReservationRepositoryTest {
         assertEquals(savedReservation.getId(), persistedReservation.getId());
         assertEquals(savedReservation.getName(), persistedReservation.getName());
         assertEquals(savedReservation.getDate(), persistedReservation.getDate());
-        assertEquals(savedReservation.getTime(), persistedReservation.getTime());
+        assertEquals(savedReservation.getTime().getId(), persistedTimeId);
     }
 
     @Test
     void 동일한_이름_날짜_시간의_예약이_존재하면_true를_반환한다() {
         jdbcTemplate.update(
-                "INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)",
+                "INSERT INTO time (id, time) VALUES (?, ?)",
+                TIME.getId(),
+                TIME.getTime()
+        );
+
+        jdbcTemplate.update(
+                "INSERT INTO reservation (name, date, time_id) VALUES (?, ?, ?)",
                 NAME,
                 TODAY,
-                NOW
+                TIME.getId()
         );
 
         assertTrue(reservationRepository.existsByNameAndDateAndTime(
                 NAME,
                 TODAY,
-                NOW
+                TIME.getId()
         ));
     }
 
     @Test
     void 동일한_이름_날짜_시간의_예약이_없으면_false를_반환한다() {
         jdbcTemplate.update(
-                "INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)",
+                "INSERT INTO time (id, time) VALUES (?, ?)",
+                1L,
+                LocalTime.of(10, 0)
+        );
+
+        jdbcTemplate.update(
+                "INSERT INTO time (id, time) VALUES (?, ?)",
+                2L,
+                LocalTime.of(11, 0)
+        );
+
+        jdbcTemplate.update(
+                "INSERT INTO reservation (name, date, time_id) VALUES (?, ?, ?)",
                 NAME,
                 TODAY,
-                NOW
+                1L
         );
 
         assertFalse(reservationRepository.existsByNameAndDateAndTime(
                 NAME,
                 TODAY,
-                NOW.plusMinutes(1)
+                2L
         ));
     }
 
     @Test
     void 존재하는_예약_id로_삭제하면_true를_반환한다() {
-        LocalTime reservationTime = NOW.plusHours(2);
-        Long id = 100L;
-
         jdbcTemplate.update(
-                "INSERT INTO reservation (id, name, date, time) VALUES (?, ?, ?, ?)",
-                id,
-                NAME,
-                TODAY,
-                reservationTime
+                "INSERT INTO time (id, time) VALUES (?, ?)",
+                TIME.getId(),
+                TIME.getTime()
         );
 
-        assertTrue(reservationRepository.deleteById(id));
+        Long reservationId = 100L;
+
+        jdbcTemplate.update(
+                "INSERT INTO reservation (id, name, date, time_id) VALUES (?, ?, ?, ?)",
+                reservationId,
+                NAME,
+                TODAY,
+                TIME.getId()
+        );
+
+        assertTrue(reservationRepository.deleteById(reservationId));
 
         assertFalse(jdbcTemplate.queryForObject(
                 """
@@ -132,12 +170,45 @@ public class ReservationRepositoryTest {
                 )
                 """,
                 Boolean.class,
-                id
+                reservationId
         ));
     }
 
     @Test
     void 존재하지_않는_예약_id로_삭제하면_false를_반환한다() {
         assertFalse(reservationRepository.deleteById(NON_EXISTENT_ID));
+    }
+
+    @Test
+    void 해당_시간을_사용하는_예약이_존재하면_true를_반환한다() {
+        Long timeId = 1L;
+
+        jdbcTemplate.update(
+                "INSERT INTO time (id, time) VALUES (?, ?)",
+                timeId,
+                LocalTime.of(10, 0)
+        );
+
+        jdbcTemplate.update(
+                "INSERT INTO reservation (name, date, time_id) VALUES (?, ?, ?)",
+                NAME,
+                TODAY,
+                timeId
+        );
+
+        assertTrue(reservationRepository.existsByTimeId(timeId));
+    }
+
+    @Test
+    void 해당_시간을_사용하는_예약이_존재하지_않으면_false를_반환한다() {
+        Long timeId = 1L;
+
+        jdbcTemplate.update(
+                "INSERT INTO time (id, time) VALUES (?, ?)",
+                timeId,
+                LocalTime.of(10, 0)
+        );
+
+        assertFalse(reservationRepository.existsByTimeId(timeId));
     }
 }

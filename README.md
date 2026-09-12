@@ -268,3 +268,179 @@ Java 도메인에서는 `LocalDate`, `LocalTime`을 사용하고, 데이터베�
 
 - `ReservationRepository`를 Mockito mock으로 대체한다.
 - DB와 분리해 예약 시각, 중복, 삭제 정책을 검증한다.
+
+---
+
+## Spring Core (8~10단계)
+
+### 미션 소개
+
+예약 시간을 직접 입력하는 방식에서 미리 등록된 시간을 선택하는 방식으로 변경 및
+시간 관리 API를 추가하고 `Reservation`이 `Time` 객체를 참조하도록 수정 데이터베이스에서는 외래키와 JOIN을 활용해 두 테이블의 관계를 표현
+
+
+### 요구사항
+
+- 예약 가능한 시간 목록을 조회, 생성, 삭제할 수 있다.
+- 동일한 시간은 중복으로 등록할 수 없다.
+- 예약 생성 시 직접 시간을 입력하지 않고 등록된 시간의 ID를 전달한다.
+- `Reservation`이 `Time` 객체를 참조하도록 변경한다.
+- `reservation`과 `time` 테이블을 외래키로 연결한다.
+- 예약 조회 시 JOIN을 통해 시간 정보를 함께 조회한다.
+- 존재하지 않는 시간으로 예약할 수 없다.
+- Controller, Service, Repository, Domain의 책임을 분리한다.
+- 각 계층의 클래스를 Spring Bean으로 등록하고 의존성을 주입받아 사용한다.
+
+### 시간 관리 API
+
+#### 시간 목록 조회
+
+- Method: `GET`
+- URL: `/times`
+- Response: `200 OK`
+
+```json
+[
+  {
+    "id": 1,
+    "time": "10:00"
+  },
+  {
+    "id": 2,
+    "time": "11:00"
+  }
+]
+```
+
+#### 시간 생성
+
+- Method: `POST`
+- URL: `/times`
+- Response: `201 Created`
+
+```json
+{
+  "time": "10:00"
+}
+```
+
+```text
+Location: /times/1
+```
+
+```json
+{
+  "id": 1,
+  "time": "10:00"
+}
+```
+
+#### 시간 삭제
+
+- Method: `DELETE`
+- URL: `/times/{id}`
+- Response: `204 No Content`
+
+### 예약 생성 API 변경
+
+기존에는 예약 시간을 직접 전달하였지만, 시간 관리 기능과 연동한 이후에는 등록된 시간의 ID를 전달합니다.
+
+```json
+{
+  "name": "브라운",
+  "date": "2026-09-10",
+  "timeId": 1
+}
+```
+
+예약 조회 및 생성 응답에서는 기존과 동일하게 실제 시간 값을 반환합니다.
+
+```json
+{
+  "id": 1,
+  "name": "브라운",
+  "date": "2026-09-10",
+  "time": "10:00"
+}
+```
+
+### 주요 변경 사항
+
+- 시간 관리 CRUD API 구현
+- `Time` 도메인 및 DTO 추가
+- 시간 데이터 DB 저장
+- `Reservation`의 시간 정보를 `Time` 객체로 변경
+- 예약 생성 요청을 `time`에서 `timeId` 방식으로 변경
+- `reservation.time_id` 외래키 적용
+- JOIN을 이용한 예약 및 시간 정보 조회
+- 존재하지 않는 시간에 대한 예외 처리
+- Controller, Service, Repository, Domain의 책임 분리
+- Spring Bean과 생성자 주입을 활용한 계층 간 의존성 관리
+
+### 주요 객체
+
+| 객체 | 역할 |
+| --- | --- |
+| `ReservationController` | 예약 API 요청과 응답을 처리한다. |
+| `ReservationService` | 예약 생성, 삭제 및 예약 정책을 처리한다. |
+| `ReservationRepository` | 예약 데이터와 시간 관계를 DB에서 관리한다. |
+| `Reservation` | 예약 정보와 선택된 `Time`을 관리한다. |
+| `TimeController` | 시간 조회, 생성, 삭제 API 요청을 처리한다. |
+| `TimeService` | 시간 생성 및 삭제 과정의 비즈니스 로직을 처리한다. |
+| `TimeRepository` | 시간 데이터를 조회, 저장, 삭제한다. |
+| `Time` | 시간의 식별자와 실제 시간을 관리한다. |
+
+### 계층 구조
+
+```text
+Controller
+    ↓
+Service
+    ↓
+Repository
+    ↓
+Database
+```
+
+- Controller는 HTTP 요청과 응답을 담당한다.
+- Service는 비즈니스 흐름을 담당한다.
+- Repository는 데이터베이스 접근을 담당한다.
+- Domain은 상태와 비즈니스 규칙을 담당한다.
+
+### 테스트
+
+#### TimeControllerTest
+
+- 시간 목록 조회 확인
+- 시간 생성 및 삭제 API 확인
+
+#### TimeServiceTest
+
+- 시간 생성 및 중복 검증
+- 존재하지 않는 시간 삭제 검증
+
+#### TimeRepositoryTest
+
+- 시간 조회, 저장, 삭제 확인
+
+#### ReservationControllerTest
+
+- `timeId`를 이용한 예약 생성 확인
+- 예약 조회 및 삭제 확인
+
+#### ReservationServiceTest
+
+- `timeId`를 이용한 시간 조회 및 예약 생성 확인
+- 존재하지 않는 시간으로 예약하는 경우 예외 확인
+- 기존 예약 정책 확인
+
+#### ReservationRepositoryTest
+
+- JOIN을 통한 예약과 시간 조회 확인
+- `time_id` 기반 예약 저장 및 중복 확인
+
+#### MissionStepTest
+
+- 시간 관리 API 요구사항 확인
+- 기존 예약 생성 API 요청이 실패하는지 확인
+- `ReservationController`가 DB 접근 로직에 직접 의존하지 않는지 확인

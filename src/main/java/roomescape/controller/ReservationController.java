@@ -39,7 +39,7 @@ public class ReservationController {
         Reservation reservation = reservationService.create(
                 request.name(),
                 request.date(),
-                request.time()
+                request.timeId()
         );
 
         ReservationResponse reservationResponse = ReservationResponse.from(reservation);

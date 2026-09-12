@@ -4,21 +4,20 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 public class Reservation {
 
     private final Long id;
     private final String name;
     private final LocalDate date;
-    private final LocalTime time;
+    private final Time time;
 
     @JsonCreator
     public Reservation(
             @JsonProperty("id") Long id,
             @JsonProperty("name") String name,
             @JsonProperty("date") LocalDate date,
-            @JsonProperty("time") LocalTime time
+            @JsonProperty("time") Time time
     ) {
         validateName(name);
         validateDate(date);
@@ -30,7 +29,7 @@ public class Reservation {
         this.time = time;
     }
 
-    public Reservation(String name, LocalDate date, LocalTime time) {
+    public Reservation(String name, LocalDate date, Time time) {
         this(null, name, date, time);
     }
 
@@ -46,7 +45,7 @@ public class Reservation {
         return date;
     }
 
-    public LocalTime getTime() {
+    public Time getTime() {
         return time;
     }
 
@@ -62,7 +61,7 @@ public class Reservation {
         }
     }
 
-    private void validateTime(LocalTime time) {
+    private void validateTime(Time time) {
         if (time == null) {
             throw new IllegalArgumentException("시간은 비어있을 수 없습니다.");
         }

@@ -1,0 +1,7 @@
+DELETE FROM reservation;
+DELETE FROM time;
+
+ALTER TABLE time ALTER COLUMN id RESTART WITH 1;
+
+INSERT INTO time (time)
+VALUES ('10:00');
