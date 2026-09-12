@@ -2,6 +2,7 @@ package roomescape;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -9,6 +10,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import roomescape.controller.ReservationController;
 import roomescape.domain.Reservation;
+import roomescape.domain.Time;
 
 import java.lang.reflect.Field;
 import java.sql.Connection;
@@ -19,6 +21,7 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -233,5 +236,21 @@ public class MissionStepTest {
         }
 
         assertThat(isJdbcTemplateInjected).isFalse();
+    }
+
+    @Test
+    @DisplayName("예약 정보가 비어 있으면 Reservation 객체를 생성하지 못한다.")
+    void noReservation() {
+        Time time = new Time(1L, "10:00");
+
+        assertThrows(IllegalArgumentException.class, () -> new Reservation(null, "", "2023-08-05", time));
+        assertThrows(IllegalArgumentException.class, () -> new Reservation(null, "브라운", "", time));
+        assertThrows(IllegalArgumentException.class, () -> new Reservation(null, "브라운", "2023-08-05", null));
+    }
+
+    @Test
+    @DisplayName("시간 정보가 비어 있으면 Time 객체를 생성하지 못한다.")
+    void noTime() {
+        assertThrows(IllegalArgumentException.class, () -> new Time(null, ""));
     }
 }
