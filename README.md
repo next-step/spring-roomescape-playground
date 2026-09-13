@@ -118,3 +118,4 @@
 - [x] Reservation의 날짜와 Time의 시간을 문자열이 아닌 LocalDate/Time 타입으로 수정한다.
 - [x] System.out.println 대신 Logging Framework을 사용한다.
 - [x] 예외 응답 타입을 일관되게 수정한다.
+- [x] 예약 날짜를 VARCHAR에서 DATE 타입으로 수정한다.
