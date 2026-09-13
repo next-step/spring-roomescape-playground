@@ -12,9 +12,4 @@ public record TimeRequest(@NotNull LocalTime time) {
     public TimeRequest(@JsonProperty("time") LocalTime time) {
         this.time = time;
     }
-
-    @Override
-    public LocalTime time() {
-        return time;
-    }
 }

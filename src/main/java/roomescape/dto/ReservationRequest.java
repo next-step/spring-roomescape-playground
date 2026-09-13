@@ -17,19 +17,4 @@ public record ReservationRequest(@NotBlank String name, @NotNull LocalDate date,
     ) {
         this(name, date, timeId);
     }
-
-    @Override
-    public String name() {
-        return name;
-    }
-
-    @Override
-    public LocalDate date() {
-        return date;
-    }
-
-    @Override
-    public Long timeId() {
-        return timeId;
-    }
 }
