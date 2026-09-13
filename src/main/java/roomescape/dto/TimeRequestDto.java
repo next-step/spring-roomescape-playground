@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 
 public class TimeRequestDto {
 
-    @NotBlank
+    @NotBlank(message = "시간을 입력해 주세요.")
     private String time;
 
     public TimeRequestDto() {
