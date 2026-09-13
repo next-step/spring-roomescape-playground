@@ -109,23 +109,29 @@ public class MissionStepTest {
         Map<String, String> timeParams = new HashMap<>();
         timeParams.put("time", "15:53");
 
-        ReservationRequest name_null = new ReservationRequest(
-                LocalDate.of(2023, 8, 5),
-                null,
-                1L
-        );
+        String name_null = """
+            {
+                "name": null,
+                "date": "2023-08-05",
+                "time": "15:53"
+            }
+            """;
 
-        ReservationRequest name_empty = new ReservationRequest(
-                LocalDate.of(2023, 8, 5),
-                "",
-                1L
-        );
+        String name_empty = """
+            {
+                "name": "",
+                "date": "2023-08-05",
+                "time": "15:53"
+            }
+            """;
 
-        ReservationRequest name_blank = new ReservationRequest(
-                LocalDate.of(2023, 8, 5),
-                "    ",
-                1L
-        );
+        String name_blank = """
+            {
+                "name": "     ",
+                "date": "2023-08-05",
+                "time": "15:53"
+            }
+            """;
 
         String name_delete = """
             {

@@ -1,5 +1,7 @@
 package roomescape.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -14,12 +16,17 @@ public class ReservationRequest {
     private final LocalDate date;
 
     @NotNull
-    private final Long time;
+    private final Long timeId;
 
-    public ReservationRequest(LocalDate date, String name, Long time) {
+    @JsonCreator
+    public ReservationRequest(
+            @JsonProperty("date") LocalDate date,
+            @JsonProperty("name") String name,
+            @JsonProperty("time") Long timeId
+    ) {
         this.name = name;
         this.date = date;
-        this.time = time;
+        this.timeId = timeId;
     }
 
     public String getName() {
@@ -30,7 +37,7 @@ public class ReservationRequest {
         return date;
     }
 
-    public Long getTime() {
-        return time;
+    public Long getTimeId() {
+        return timeId;
     }
 }
