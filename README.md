@@ -116,4 +116,5 @@
 - [x] Reservation과 Time 엔티티를 직접 반환하지 않고 응답 DTO 사용한다.
 - [x] ReservationDao에서 alias와 동일한 명을 사용하도록 한다.
 - [x] Reservation의 날짜와 Time의 시간을 문자열이 아닌 LocalDate/Time 타입으로 수정한다.
+- [x] System.out.println 대신 Logging Framework을 사용한다.
 
