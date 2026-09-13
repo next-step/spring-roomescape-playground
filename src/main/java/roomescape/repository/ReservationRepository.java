@@ -2,6 +2,7 @@ package roomescape.repository;
 
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -53,13 +54,14 @@ public class ReservationRepository {
 
 
     public Reservation save(Reservation reservation) {
-        SqlParameterSource parameters = new BeanPropertySqlParameterSource(reservation);
-        Long newId = insertReservation.executeAndReturnKey(parameters).longValue();
+        SqlParameterSource parameters = new MapSqlParameterSource()
+                .addValue("name", reservation.getName())
+                .addValue("date", reservation.getDate().toString())
+                .addValue("time_id", reservation.getTime().getId());
 
+        Long newId = insertReservation.executeAndReturnKey(parameters).longValue();
         return reservation.withId(newId);
     }
-
-
     public int delete(Long id) {
         return jdbcTemplate.update("DELETE FROM reservation WHERE id = ?", id);
     }
