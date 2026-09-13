@@ -45,7 +45,9 @@ public class ReservationDatabaseTest {
                 .when().get("/reservations")
                 .then().log().all()
                 .statusCode(200)
-                .body("size()", is(count));
+                .body("size()", is(count))
+                .body("time.first().id", is(timeId.intValue()))
+                .body("time.first().time", is("15:40"));
     }
 
     @Test
