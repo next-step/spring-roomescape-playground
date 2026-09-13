@@ -36,7 +36,7 @@ public class Time {
 
     @Override
     public String toString() {
-        return "Reservation{" +
+        return "Time{" +
             "id=" + id +
             ", time='" + time + '\'' +
             '}';
