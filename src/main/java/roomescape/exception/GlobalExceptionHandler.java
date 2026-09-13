@@ -12,15 +12,15 @@ import lombok.extern.slf4j.Slf4j;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(NotFoundReservationException.class)
-    public ResponseEntity<Void> handleNotFoundReservationException(NotFoundReservationException e) {
+    public ResponseEntity<String> handleNotFoundReservationException(NotFoundReservationException e) {
         log.warn("NotFoundReservationException occurred: " + e.getMessage());
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.status(404).body(e.getMessage());
     }
 
     @ExceptionHandler(roomescape.exception.IllegalArgumentException.class)
-    public ResponseEntity<Void> handleIllegalArgumentException(IllegalArgumentException e) {
+    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException e) {
         log.warn("IllegalArgumentException occurred: " + e.getMessage());
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.badRequest().body(e.getMessage());
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
