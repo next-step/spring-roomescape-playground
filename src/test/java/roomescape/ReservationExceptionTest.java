@@ -63,6 +63,26 @@ public class ReservationExceptionTest {
         }
     }
 
+    @Test
+    @DisplayName("서버가 기대한 자료형과 다른 타입이 들어오면 400에러가 발생한다.")
+    void handleIllegalArgumentException() {
+        RestAssured.port = this.port;
+        Map<String, String> params = new HashMap<>();
+        params.put("time", "invalid");
+
+        RestAssured.given().log().all().contentType(ContentType.JSON)
+                .body(params).when().post("/times")
+                .then().log().all().statusCode(400);
+    }
+
+    @Test
+    @DisplayName("매개변수 타입과 요청된 데이터 타입이 일치하지 않으면 400에러가 발생한다.")
+    void handleMethodArgumentMismatch() {
+        RestAssured.port = this.port;
+        RestAssured.given().log().all().when().delete("/reservations/abc")
+                .then().log().all().statusCode(400);
+    }
+
     private Map<String, String> createParams() {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
