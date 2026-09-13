@@ -1,0 +1,45 @@
+package roomescape.controller;
+
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import roomescape.domain.Time;
+import roomescape.dto.TimeRequestDto;
+import roomescape.dto.TimeResponseDto;
+import roomescape.service.TimeService;
+
+import java.net.URI;
+import java.util.List;
+
+@RestController
+@RequestMapping("/times")
+public class TimeController {
+
+    private final TimeService timeService;
+
+    public TimeController(TimeService timeService) {
+        this.timeService = timeService;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<TimeResponseDto>> readAll() {
+        List<TimeResponseDto> responseDto = timeService.findAllTimes()
+                .stream().map(TimeResponseDto::from).toList();
+
+        return ResponseEntity.ok(responseDto);
+    }
+
+    @PostMapping
+    public ResponseEntity<TimeResponseDto> create(@Valid @RequestBody TimeRequestDto requestDto) {
+        Time newTime = timeService.createTime(requestDto);
+
+        return ResponseEntity.created(URI.create("/times/" + newTime.getId())).body(TimeResponseDto.from(newTime));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        timeService.deleteTime(id);
+
+        return ResponseEntity.noContent().build();
+    }
+}

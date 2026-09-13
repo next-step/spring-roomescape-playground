@@ -1,18 +1,19 @@
 package roomescape.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public class ReservationRequestDto {
-    @NotBlank
+    @NotBlank(message = "예약자 이름을 입력해 주세요.")
     private String name;
 
-    @NotBlank
+    @NotBlank(message = "예약 날짜를 입력해 주세요.")
     private String date;
 
-    @NotBlank
-    private String time;
+    @NotNull(message = "예약 시간을 선택해 주세요.")
+    private Long time;
 
-    public ReservationRequestDto(String name, String date, String time) {
+    public ReservationRequestDto(String name, String date, Long time) {
         this.name = name;
         this.date = date;
         this.time = time;
@@ -26,7 +27,7 @@ public class ReservationRequestDto {
         return date;
     }
 
-    public String getTime() {
+    public Long getTime() {
         return time;
     }
 }

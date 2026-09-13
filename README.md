@@ -55,6 +55,33 @@
 - [x] KeyHolder를 이용해 예약 추가 시 생성된 id를 조회하여 사용한다.
 - [x] 기존 예약 추가 및 삭제 로직 제거 후 발생하는 오류를 데이터베이스 방식으로 수정한다.
 
+### `시간 관리 기능`
+
+- [x] 시간 테이블을 생성한다.
+- [x] 시간 정보를 추가한다.
+- [x] 시간 목록을 조회한다.
+- [x] 시간을 삭제한다.
+- [x] 시간 관리 API를 구현한다.
+- [x] 시간 데이터 접근 클래스를 `@Repository`로 Spring Bean으로 등록한다.
+- [x] `TimeController`에 `TimeDao`를 생성자 주입한다.
+
+### `예약 시간 선택 기능`
+
+- [x] 예약 관리 페이지에서 `new-reservation.html`을 사용한다.
+- [x] 예약 테이블의 시간 정보를 `time_id` 외래키로 변경한다.
+- [x] `Reservation`의 시간 타입을 `String`에서 `Time`으로 변경한다.
+- [x] 예약 추가 시 `Time`의 식별자를 저장하도록 수정한다.
+- [x] 예약 조회 시 `time` 테이블을 조인하여 시간 정보를 함께 조회한다.
+- [x] 예약과 시간의 의존 관계에 따라 영향을 받는 로직을 수정한다.
+
+### `레이어드 아키텍처 적용`
+
+- [x] `ReservationService`를 생성한다.
+- [x] `ReservationService`를 Spring Bean으로 등록한다.
+- [x] `ReservationService`에 `ReservationDao`를 생성자 주입한다.
+- [x] `ReservationController`의 예약 처리 로직을 `ReservationService`로 분리한다.
+- [x] `ReservationController`가 `ReservationService`를 사용하도록 수정한다.
+
 ### `1~4단계 리뷰 반영`
 
 - [x] 예약 조회 시 예약 데이터가 중복으로 추가되지 않도록 수정한다.
@@ -73,3 +100,22 @@
 - [x] id 값을 처리하기 위한 방식을 비교해 보고 적절한 방식을 적용한다.
 - [x] DB 접근 클래스를 `@Repository`로 Spring Bean으로 등록한다.
 - [x] `@RequiredArgsConstructor`를 적용하여 생성자를 주입한다.
+
+### `8~10단계 리뷰 반영`
+
+- [x]  계층 간 모두 일관된 타입으로 수정한다.
+- [x]  변경된 코드 구조에 맞게 테스트 코드를 수정한다.
+- [x]  미사용 import를 제거한다.
+- [x]  요청 값이 누락되거나 빈 값일 때의 예외 처리를 추가한다.
+- [x]  Reservation과 마찬가지로 Time에도 Service 계층을 추가한다.
+- [x]  DB에 있는 시간 데이터 타입을 확인하고 수정한다.
+- [x]  TimeController의 create 메서드의 반환 형식을 검토한다.
+- [x]  Reservation과 Time 도메인에 필요한 검증하는 코드를 추가한다.
+- [x]  TimeController의 반복되는 매핑 경로의 중복을 수정한다.
+- [x] Validation 어노테이션의 message로 메시지를 구체화한다.
+- [x] Reservation과 Time 엔티티를 직접 반환하지 않고 응답 DTO 사용한다.
+- [x] ReservationDao에서 alias와 동일한 명을 사용하도록 한다.
+- [x] Reservation의 날짜와 Time의 시간을 문자열이 아닌 LocalDate/Time 타입으로 수정한다.
+- [x] System.out.println 대신 Logging Framework을 사용한다.
+- [x] 예외 응답 타입을 일관되게 수정한다.
+- [x] 예약 날짜를 VARCHAR에서 DATE 타입으로 수정한다.
