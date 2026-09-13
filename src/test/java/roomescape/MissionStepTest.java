@@ -99,7 +99,7 @@ public class MissionStepTest {
 //    }
 
     @Test
-    void 삼단계_변경된_예약_요청_형식으로_생성하고_조회하고_삭제한다() {
+    void 삼단계_변경된_예약_요청_형식으로_생성하고_조회하고_반복_삭제한다() {
         jdbcTemplate.update("INSERT INTO time (time) VALUES (?)", "15:40");
 
         Map<String, String> params = new HashMap<>();
@@ -128,6 +128,12 @@ public class MissionStepTest {
                 .statusCode(204);
 
         RestAssured.given().log().all()
+                .when().delete("/reservations/1")
+                .then().log().all()
+                .statusCode(204)
+                .body(is(""));
+
+        RestAssured.given().log().all()
                 .when().get("/reservations")
                 .then().log().all()
                 .statusCode(200)
@@ -151,7 +157,8 @@ public class MissionStepTest {
         RestAssured.given().log().all()
                 .when().delete("/reservations/1")
                 .then().log().all()
-                .statusCode(404);
+                .statusCode(204)
+                .body(is(""));
     }
 
     @Autowired

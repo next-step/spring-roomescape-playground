@@ -6,7 +6,6 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import roomescape.domain.Reservation;
 import roomescape.domain.ReservationTime;
-import roomescape.exception.ReservationNotFoundException;
 import roomescape.repository.ReservationRepository;
 import roomescape.repository.ReservationTimeRepository;
 
@@ -35,10 +34,6 @@ public class ReservationService {
     }
 
     public void deleteReservation(Long reservationId) {
-        int deletedRows = reservationRepository.deleteById(reservationId);
-        if (deletedRows == 0) {
-            throw new ReservationNotFoundException(
-                    "id " + reservationId + "에 해당하는 예약을 찾을 수 없습니다.");
-        }
+        reservationRepository.deleteById(reservationId);
     }
 }
