@@ -114,3 +114,4 @@
 - [x]  TimeController의 반복되는 매핑 경로의 중복을 수정한다.
 - [x] Validation 어노테이션의 message로 메시지를 구체화한다.
 - [x] Reservation과 Time 엔티티를 직접 반환하지 않고 응답 DTO 사용한다.
+- [x] ReservationDao에서 alias와 동일한 명을 사용하도록 한다.

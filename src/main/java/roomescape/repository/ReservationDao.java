@@ -26,7 +26,7 @@ public class ReservationDao {
         );
 
         Reservation reservation = new Reservation(
-                resultSet.getLong("id"),
+                resultSet.getLong("reservation_id"),
                 resultSet.getString("name"),
                 resultSet.getString("date"),
                 time
