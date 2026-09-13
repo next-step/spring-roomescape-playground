@@ -1,5 +1,6 @@
 package roomescape.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import roomescape.domain.Time;
@@ -32,7 +33,7 @@ public class TimeController {
 
     @PostMapping("/times")
     public ResponseEntity<TimeResponse> postTime(
-            @RequestBody TimeRequest timeRequest
+            @Valid @RequestBody TimeRequest timeRequest
     ) {
 
         Time time = timeService.createTime(

@@ -22,11 +22,6 @@ public class TimeService {
     }
 
     public Time createTime(LocalTime time) {
-
-        if (time == null) {
-            throw new IllegalArgumentException();
-        }
-
         return timeRepository.saveTime(time);
     }
 
