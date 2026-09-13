@@ -50,10 +50,24 @@ public class MissionStepTest {
 
     @Test
     void thirdStep() {
-        Map<String, String> params = new HashMap<>();
+        // 시간 생성
+        Map<String, String> timeParams = new HashMap<>();
+        timeParams.put("time", "15:40");
+
+        Integer timeId = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(timeParams)
+                .when().post("/times")
+                .then().log().all()
+                .statusCode(201)
+                .extract()
+                .path("id");
+
+        // 생성된 시간 ID를 이용해서 예약 생성
+        Map<String, Object> params = new HashMap<>();
         params.put("name", "브라운");
         params.put("date", "2023-08-05");
-        params.put("time", "15:40");
+        params.put("time", timeId);
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -62,19 +76,30 @@ public class MissionStepTest {
                 .then().log().all()
                 .statusCode(201)
                 .header("Location", "/reservations/1")
-                .body("id", is(1));
+                .body("id", is(1))
+                .body("name", is("브라운"))
+                .body("date", is("2023-08-05"))
+                .body("time.id", is(timeId))
+                .body("time.time", is("15:40:00"));
 
+        // 예약 목록 조회
         RestAssured.given().log().all()
                 .when().get("/reservations")
                 .then().log().all()
                 .statusCode(200)
-                .body("size()", is(1));
+                .body("size()", is(1))
+                .body("[0].name", is("브라운"))
+                .body("[0].date", is("2023-08-05"))
+                .body("[0].time.id", is(timeId))
+                .body("[0].time.time", is("15:40:00"));
 
+        // 예약 삭제
         RestAssured.given().log().all()
                 .when().delete("/reservations/1")
                 .then().log().all()
                 .statusCode(204);
 
+        // 예약이 삭제됐는지 확인
         RestAssured.given().log().all()
                 .when().get("/reservations")
                 .then().log().all()
@@ -225,10 +250,24 @@ public class MissionStepTest {
 
     @Test
     void seventhStep() {
-        Map<String, String> params = new HashMap<>();
+        // 시간 생성
+        Map<String, String> timeParams = new HashMap<>();
+        timeParams.put("time", "10:00");
+
+        Integer timeId = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(timeParams)
+                .when().post("/times")
+                .then().log().all()
+                .statusCode(201)
+                .extract()
+                .path("id");
+
+        // 생성된 시간 ID를 이용해서 예약 생성
+        Map<String, Object> params = new HashMap<>();
         params.put("name", "브라운");
         params.put("date", "2023-08-05");
-        params.put("time", "10:00");
+        params.put("time", timeId);
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -236,44 +275,76 @@ public class MissionStepTest {
                 .when().post("/reservations")
                 .then().log().all()
                 .statusCode(201)
-                .header("Location", "/reservations/1");
+                .header("Location", "/reservations/1")
+                .body("id", is(1))
+                .body("name", is("브라운"))
+                .body("date", is("2023-08-05"))
+                .body("time.id", is(timeId))
+                .body("time.time", is("10:00:00"));
 
-        Integer count = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
+        // DB에 예약이 저장됐는지 확인
+        Integer count = jdbcTemplate.queryForObject(
+                "SELECT count(1) FROM reservation",
+                Integer.class
+        );
+
         assertThat(count).isEqualTo(1);
 
+        // 예약 삭제
         RestAssured.given().log().all()
                 .when().delete("/reservations/1")
                 .then().log().all()
                 .statusCode(204);
 
-        Integer countAfterDelete = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
+        // DB에서 예약이 삭제됐는지 확인
+        Integer countAfterDelete = jdbcTemplate.queryForObject(
+                "SELECT count(1) FROM reservation",
+                Integer.class
+        );
+
         assertThat(countAfterDelete).isEqualTo(0);
     }
 
     @Test
     void getReservationTest() {
-        Map<String, String> params = new HashMap<>();
+        // 시간 생성
+        Map<String, String> timeParams = new HashMap<>();
+        timeParams.put("time", "15:40");
+
+        Integer timeId = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(timeParams)
+                .when().post("/times")
+                .then().log().all()
+                .statusCode(201)
+                .extract()
+                .path("id");
+
+        // 생성된 시간 ID를 이용해서 예약 생성
+        Map<String, Object> params = new HashMap<>();
         params.put("name", "브라운");
         params.put("date", "2023-08-05");
-        params.put("time", "15:40");
+        params.put("time", timeId);
 
-        // 예약 생성
-        RestAssured.given().log().all()
+        Integer reservationId = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(params)
                 .when().post("/reservations")
                 .then().log().all()
-                .statusCode(201);
+                .statusCode(201)
+                .extract()
+                .path("id");
 
         // 존재하는 예약 조회
         RestAssured.given().log().all()
-                .when().get("/reservations/1")
+                .when().get("/reservations/" + reservationId)
                 .then().log().all()
                 .statusCode(200)
-                .body("id", is(1))
+                .body("id", is(reservationId))
                 .body("name", is("브라운"))
                 .body("date", is("2023-08-05"))
-                .body("time", is("15:40:00"));
+                .body("time.id", is(timeId))
+                .body("time.time", is("15:40:00"));
 
         // 존재하지 않는 예약 조회
         RestAssured.given().log().all()
