@@ -189,17 +189,38 @@ public class MissionStepTest {
 
     @Test
     void sixthStep() {
-        jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "브라운", "2023-08-05", "15:40");
+        jdbcTemplate.update(
+                "INSERT INTO time (time) VALUES (?)",
+                "15:40"
+        );
 
-        List<Reservation> reservations = RestAssured.given().log().all()
+        Long timeId = jdbcTemplate.queryForObject(
+                "SELECT id FROM time WHERE time = ?",
+                Long.class,
+                "15:40"
+        );
+
+        jdbcTemplate.update(
+                "INSERT INTO reservation (name, date, time_id) VALUES (?, ?, ?)",
+                "브라운",
+                "2023-08-05",
+                timeId
+        );
+
+        Integer count = jdbcTemplate.queryForObject(
+                "SELECT count(1) FROM reservation",
+                Integer.class
+        );
+
+        RestAssured.given().log().all()
                 .when().get("/reservations")
                 .then().log().all()
-                .statusCode(200).extract()
-                .jsonPath().getList(".", Reservation.class);
-
-        Integer count = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
-
-        assertThat(reservations.size()).isEqualTo(count);
+                .statusCode(200)
+                .body("size()", is(count))
+                .body("[0].name", is("브라운"))
+                .body("[0].date", is("2023-08-05"))
+                .body("[0].time.id", is(timeId.intValue()))
+                .body("[0].time.time", is("15:40:00"));
     }
 
     @Test
