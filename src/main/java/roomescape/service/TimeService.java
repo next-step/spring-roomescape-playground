@@ -27,7 +27,7 @@ public class TimeService {
 
     public Time getTime(long id) {
         return timeRepository.getTime(id)
-                .orElseThrow(NoSuchElementException::new);
+                             .orElseThrow(NoSuchElementException::new);
     }
 
     public void deleteTime(long id) {

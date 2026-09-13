@@ -31,7 +31,7 @@ public class ReservationService {
     public Reservation createReservation(String name, LocalDate date, Long timeId) {
 
         Time time = timeRepository.getTime(timeId)
-                .orElseThrow(NoSuchElementException::new);
+                                  .orElseThrow(NoSuchElementException::new);
 
         return reservationRepository.saveReservation(
                 name,
@@ -42,7 +42,7 @@ public class ReservationService {
 
     public Reservation getReservation(long id) {
         return reservationRepository.getReservation(id)
-                .orElseThrow(NoSuchElementException::new);
+                                    .orElseThrow(NoSuchElementException::new);
     }
 
     public void deleteReservation(long id) {

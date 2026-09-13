@@ -52,7 +52,7 @@ public class ReservationRepository {
         MapSqlParameterSource params = new MapSqlParameterSource()
                 .addValue("name", name)
                 .addValue("date", date.toString())
-                .addValue("time_id", time.getId());
+                .addValue("time_id", time.id());
 
         Number id = simpleJdbcInsert.executeAndReturnKey(params);
 

@@ -41,8 +41,8 @@ public class ReservationController {
         );
 
         return ResponseEntity.created(
-                        URI.create("/reservations/" + reservation.getId()))
-                .body(ReservationResponse.convert(reservation));
+                                     URI.create("/reservations/" + reservation.id()))
+                             .body(ReservationResponse.convert(reservation));
     }
 
     @GetMapping("/reservations/{id}")

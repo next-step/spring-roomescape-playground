@@ -2,26 +2,13 @@ package roomescape.domain;
 
 import java.time.LocalTime;
 
-public class Time {
+public record Time(long id, LocalTime time) {
 
-    private final long id;
-    private final LocalTime time;
-
-    public Time(long id, LocalTime time) {
+    public Time {
 
         if (time == null) {
             throw new IllegalArgumentException();
         }
 
-        this.id = id;
-        this.time = time;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public LocalTime getTime() {
-        return time;
     }
 }

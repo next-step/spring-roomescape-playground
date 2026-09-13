@@ -12,10 +12,10 @@ public record ReservationResponse(
 ) {
     public static ReservationResponse convert(Reservation reservation) {
         return new ReservationResponse(
-                reservation.getId(),
-                reservation.getName(),
-                reservation.getDate(),
-                TimeResponse.convert(reservation.getTime())
+                reservation.id(),
+                reservation.name(),
+                reservation.date(),
+                TimeResponse.convert(reservation.time())
         );
     }
 }

@@ -24,9 +24,9 @@ public class TimeController {
     public ResponseEntity<List<TimeResponse>> getTimes() {
 
         List<TimeResponse> timeResponses = timeService.getTimes()
-                .stream()
-                .map(TimeResponse::convert)
-                .toList();
+                                                      .stream()
+                                                      .map(TimeResponse::convert)
+                                                      .toList();
 
         return ResponseEntity.ok().body(timeResponses);
     }
@@ -41,8 +41,8 @@ public class TimeController {
         );
 
         return ResponseEntity.created(
-                        URI.create("/times/" + time.getId()))
-                .body(TimeResponse.convert(time));
+                                     URI.create("/times/" + time.id()))
+                             .body(TimeResponse.convert(time));
     }
 
     @GetMapping("/times/{id}")
