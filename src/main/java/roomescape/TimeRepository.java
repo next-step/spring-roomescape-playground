@@ -53,7 +53,7 @@ public class TimeRepository {
             id
         );
         if (deletedCount == 0) {
-            throw new NotFoundException("Reservation not found: id=" + id);
+            throw new NotFoundException("Time not found: id=" + id);
         }
     }
 
