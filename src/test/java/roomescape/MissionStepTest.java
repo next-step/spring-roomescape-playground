@@ -64,40 +64,6 @@ public class MissionStepTest {
                 .body("size()", is(0));
     }
 
-//    @Test
-//    void 삼단계() {
-//        Map<String, String> params = new HashMap<>();
-//        params.put("name", "브라운");
-//        params.put("date", "2023-08-05");
-//        params.put("time", "15:40");
-//
-//        RestAssured.given().log().all()
-//                .contentType(ContentType.JSON)
-//                .body(params)
-//                .when().post("/reservations")
-//                .then().log().all()
-//                .statusCode(201)
-//                .header("Location", "/reservations/1")
-//                .body("id", is(1));
-//
-//        RestAssured.given().log().all()
-//                .when().get("/reservations")
-//                .then().log().all()
-//                .statusCode(200)
-//                .body("size()", is(1));
-//
-//        RestAssured.given().log().all()
-//                .when().delete("/reservations/1")
-//                .then().log().all()
-//                .statusCode(204);
-//
-//        RestAssured.given().log().all()
-//                .when().get("/reservations")
-//                .then().log().all()
-//                .statusCode(200)
-//                .body("size()", is(0));
-//    }
-
     @Test
     void 삼단계_변경된_예약_요청_형식으로_생성하고_조회하고_반복_삭제한다() {
         jdbcTemplate.update("INSERT INTO time (time) VALUES (?)", "15:40");
@@ -175,21 +141,6 @@ public class MissionStepTest {
         }
     }
 
-//    @Test
-//    void 육단계() {
-//        jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "브라운", "2023-08-05", "15:40");
-//
-//        List<Reservation> reservations = RestAssured.given().log().all()
-//                .when().get("/reservations")
-//                .then().log().all()
-//                .statusCode(200).extract()
-//                .jsonPath().getList(".", Reservation.class);
-//
-//        Integer count = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
-//
-//        assertThat(reservations.size()).isEqualTo(count);
-//    }
-
     @Test
     void 육단계_외래키로_연결된_예약을_데이터베이스에서_조회한다() {
         jdbcTemplate.update("INSERT INTO time (time) VALUES (?)", "15:40");
@@ -214,33 +165,6 @@ public class MissionStepTest {
 
         assertThat(reservations.size()).isEqualTo(count);
     }
-
-//    @Test
-//    void 칠단계() {
-//        Map<String, String> params = new HashMap<>();
-//        params.put("name", "브라운");
-//        params.put("date", "2023-08-05");
-//        params.put("time", "10:00");
-//
-//        RestAssured.given().log().all()
-//                .contentType(ContentType.JSON)
-//                .body(params)
-//                .when().post("/reservations")
-//                .then().log().all()
-//                .statusCode(201)
-//                .header("Location", "/reservations/1");
-//
-//        Integer count = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
-//        assertThat(count).isEqualTo(1);
-//
-//        RestAssured.given().log().all()
-//                .when().delete("/reservations/1")
-//                .then().log().all()
-//                .statusCode(204);
-//
-//        Integer countAfterDelete = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
-//        assertThat(countAfterDelete).isEqualTo(0);
-//    }
 
     @Test
     void 칠단계_시간_ID로_예약을_생성하고_삭제하면_데이터베이스에_반영된다() {
