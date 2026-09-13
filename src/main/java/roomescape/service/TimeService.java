@@ -5,6 +5,7 @@ import roomescape.domain.Time;
 import roomescape.dto.TimeRequestDto;
 import roomescape.repository.TimeDao;
 
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -20,7 +21,7 @@ public class TimeService {
     }
 
     public Time createTime(TimeRequestDto requestDto) {
-        Time time = new Time(null, requestDto.getTime());
+        Time time = new Time(null, LocalTime.parse(requestDto.getTime()));
         Long id = timeDao.insert(time);
 
         return new Time(id, time.getTime());

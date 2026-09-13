@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import roomescape.domain.Time;
 
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +22,7 @@ public class TimeDao {
     private final RowMapper<Time> timeRowMapper = (resultSet, rowNum) -> {
         Time time = new Time(
                 resultSet.getLong("id"),
-                resultSet.getString("time")
+                LocalTime.parse(resultSet.getString("time"))
         );
         return time;
     };
@@ -51,6 +52,6 @@ public class TimeDao {
         String sql = "SELECT id, time FROM time WHERE id = ?";
 
         return jdbcTemplate.queryForObject(sql,
-                (rs, rowNum) -> new Time(rs.getLong("id"), rs.getString("time")), id);
+                (rs, rowNum) -> new Time(rs.getLong("id"), LocalTime.parse(rs.getString("time"))), id);
     }
 }

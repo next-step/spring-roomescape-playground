@@ -2,12 +2,14 @@ package roomescape.dto;
 
 import roomescape.domain.Time;
 
+import java.time.LocalTime;
+
 public class TimeResponseDto {
 
     private final Long id;
-    private final String time;
+    private final LocalTime time;
 
-    public TimeResponseDto(Long id, String time) {
+    public TimeResponseDto(Long id, LocalTime time) {
         this.id = id;
         this.time = time;
     }
@@ -20,7 +22,7 @@ public class TimeResponseDto {
         return id;
     }
 
-    public String getTime() {
+    public LocalTime getTime() {
         return time;
     }
 }

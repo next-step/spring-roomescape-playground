@@ -8,6 +8,7 @@ import roomescape.exception.NotFoundReservationException;
 import roomescape.repository.ReservationDao;
 import roomescape.repository.TimeDao;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -32,7 +33,7 @@ public class ReservationService {
         Reservation reservation = new Reservation(
                 null,
                 requestDto.getName(),
-                requestDto.getDate(),
+                LocalDate.parse(requestDto.getDate()),
                 time
         );
 

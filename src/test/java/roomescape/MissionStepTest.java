@@ -15,6 +15,8 @@ import roomescape.domain.Time;
 import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -241,16 +243,16 @@ public class MissionStepTest {
     @Test
     @DisplayName("예약 정보가 비어 있으면 Reservation 객체를 생성하지 못한다.")
     void noReservation() {
-        Time time = new Time(1L, "10:00");
+        Time time = new Time(1L, LocalTime.of(10, 0));
 
-        assertThrows(IllegalArgumentException.class, () -> new Reservation(null, "", "2023-08-05", time));
-        assertThrows(IllegalArgumentException.class, () -> new Reservation(null, "브라운", "", time));
-        assertThrows(IllegalArgumentException.class, () -> new Reservation(null, "브라운", "2023-08-05", null));
+        assertThrows(IllegalArgumentException.class, () -> new Reservation(null, "", LocalDate.of(2023, 8, 5), time));
+        assertThrows(IllegalArgumentException.class, () -> new Reservation(null, "브라운", null, time));
+        assertThrows(IllegalArgumentException.class, () -> new Reservation(null, "브라운", LocalDate.of(2023, 8, 5), null));
     }
 
     @Test
     @DisplayName("시간 정보가 비어 있으면 Time 객체를 생성하지 못한다.")
     void noTime() {
-        assertThrows(IllegalArgumentException.class, () -> new Time(null, ""));
+        assertThrows(IllegalArgumentException.class, () -> new Time(null, null));
     }
 }

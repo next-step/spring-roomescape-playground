@@ -1,12 +1,14 @@
 package roomescape.domain;
 
+import java.time.LocalDate;
+
 public class Reservation {
     private Long id;
     private String name;
-    private String date;
+    private LocalDate date;
     private Time time;
 
-    public Reservation(Long id, String name, String date, Time time) {
+    public Reservation(Long id, String name, LocalDate date, Time time) {
         validateName(name);
         validateDate(date);
         validateTime(time);
@@ -23,8 +25,8 @@ public class Reservation {
         }
     }
 
-    private void validateDate(String date) {
-        if (date == null || date.isBlank()) {
+    private void validateDate(LocalDate date) {
+        if (date == null) {
             throw new IllegalArgumentException("Invalid date.");
         }
     }
@@ -43,7 +45,7 @@ public class Reservation {
         return name;
     }
 
-    public String getDate() {
+    public LocalDate getDate() {
         return date;
     }
 

@@ -115,3 +115,5 @@
 - [x] Validation 어노테이션의 message로 메시지를 구체화한다.
 - [x] Reservation과 Time 엔티티를 직접 반환하지 않고 응답 DTO 사용한다.
 - [x] ReservationDao에서 alias와 동일한 명을 사용하도록 한다.
+- [x] Reservation의 날짜와 Time의 시간을 문자열이 아닌 LocalDate/Time 타입으로 수정한다.
+

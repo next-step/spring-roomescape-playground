@@ -7,6 +7,8 @@ import org.springframework.stereotype.Repository;
 import roomescape.domain.Reservation;
 import roomescape.domain.Time;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,13 +24,13 @@ public class ReservationDao {
     private final RowMapper<Reservation> reservationRowMapper = (resultSet, rowNum) -> {
         Time time = new Time(
                 resultSet.getLong("time_id"),
-                resultSet.getString("time_value")
+                LocalTime.parse(resultSet.getString("time_value"))
         );
 
         Reservation reservation = new Reservation(
                 resultSet.getLong("reservation_id"),
                 resultSet.getString("name"),
-                resultSet.getString("date"),
+                LocalDate.parse(resultSet.getString("date")),
                 time
         );
         return reservation;

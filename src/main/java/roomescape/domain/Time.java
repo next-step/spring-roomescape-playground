@@ -1,18 +1,20 @@
 package roomescape.domain;
 
+import java.time.LocalTime;
+
 public class Time {
 
     private Long id;
-    private String time;
+    private LocalTime time;
 
-    public Time(Long id, String time) {
+    public Time(Long id, LocalTime time) {
         validateTime(time);
         this.id = id;
         this.time = time;
     }
 
-    private void validateTime(String time) {
-        if (time == null || time.isBlank()) {
+    private void validateTime(LocalTime time) {
+        if (time == null) {
             throw new IllegalArgumentException("Invalid time.");
         }
     }
@@ -21,7 +23,7 @@ public class Time {
         return id;
     }
 
-    public String getTime() {
+    public LocalTime getTime() {
         return time;
     }
 }
