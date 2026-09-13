@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import roomescape.domain.Reservation;
 import roomescape.dto.ReservationRequest;
+import roomescape.dto.ReservationResponse;
 import roomescape.service.ReservationService;
 
 import java.net.URI;
@@ -19,16 +20,16 @@ public class ReservationController {
     }
 
     @GetMapping("/reservations")
-    public ResponseEntity<List<Reservation>> getReservations() {
+    public ResponseEntity<List<ReservationResponse>> getReservations() {
 
-        List<Reservation> reservations =
-                reservationService.getReservations();
+        List<ReservationResponse> reservationResponses = reservationService.
+                getReservations().stream().map(ReservationResponse::convert).toList();;
 
-        return ResponseEntity.ok().body(reservations);
+        return ResponseEntity.ok().body(reservationResponses);
     }
 
     @PostMapping("/reservations")
-    public ResponseEntity<Reservation> postReservation(
+    public ResponseEntity<ReservationResponse> postReservation(
             @RequestBody ReservationRequest reservationRequest
     ) {
 
@@ -40,18 +41,18 @@ public class ReservationController {
 
         return ResponseEntity.created(
                         URI.create("/reservations/" + reservation.getId()))
-                .body(reservation);
+                .body(ReservationResponse.convert(reservation));
     }
 
     @GetMapping("/reservations/{id}")
-    public ResponseEntity<Reservation> getReservation(
+    public ResponseEntity<ReservationResponse> getReservation(
             @PathVariable long id
     ) {
 
         Reservation reservation =
                 reservationService.getReservation(id);
 
-        return ResponseEntity.ok().body(reservation);
+        return ResponseEntity.ok().body(ReservationResponse.convert(reservation));
     }
 
     @DeleteMapping("/reservations/{id}")
