@@ -22,7 +22,7 @@ public class TimeRepository {
     public Time findTimeById(long id) {
         String sql = "SELECT id, time FROM time WHERE id = ?";
 
-        return jdbcTemplate.queryForObject(
+        Time time = jdbcTemplate.queryForObject(
             sql,
             (rs, rowNum) -> Time.create(
                 rs.getLong("id"),
@@ -30,6 +30,10 @@ public class TimeRepository {
             ),
             id
         );
+        if (time == null) {
+            throw new NotFoundException(id + "번의 time이 존재하지 않습니다.");
+        }
+        return time;
     }
 
     public List<Time> readTimes() {
