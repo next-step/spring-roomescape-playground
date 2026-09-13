@@ -2,26 +2,33 @@ package roomescape;
 
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.format.ResolverStyle;
-import java.time.Clock;
+import java.util.List;
 
 @Service
 public class ReservationService {
 
+    private static final DateTimeFormatter DATE_FORMATTER =
+            DateTimeFormatter.ofPattern("uuuu-MM-dd")
+                    .withResolverStyle(ResolverStyle.STRICT);
+
     private final ReservationRepository reservationRepository;
+    private final TimeRepository timeRepository;
     private final Clock clock;
 
     public ReservationService(
             ReservationRepository reservationRepository,
+            TimeRepository timeRepository,
             Clock clock
     ) {
         this.reservationRepository = reservationRepository;
+        this.timeRepository = timeRepository;
         this.clock = clock;
     }
 
@@ -29,71 +36,96 @@ public class ReservationService {
         return reservationRepository.findAll();
     }
 
-    public void delete(Long id) {
-        int deletedCount = reservationRepository.delete(id);
-
-        if (deletedCount == 0) {
-            throw new NotFoundReservationException();
-        }
-    }
-
     public Reservation findById(Long id) {
         return reservationRepository.findById(id)
                 .orElseThrow(NotFoundReservationException::new);
     }
 
-    private static final DateTimeFormatter DATE_FORMATTER =
-            DateTimeFormatter.ofPattern("uuuu-MM-dd")
-                    .withResolverStyle(ResolverStyle.STRICT);
+    public Reservation create(String name, String date, Long timeId) {
+        validateName(name);
 
-    private static final DateTimeFormatter TIME_FORMATTER =
-            DateTimeFormatter.ofPattern("HH:mm")
-                    .withResolverStyle(ResolverStyle.STRICT);
+        ReservationTime time = findTime(timeId);
+        LocalDate reservationDate =
+                validateReservationDateTime(date, time.getTime());
 
-    private void validateReservationDateTime(ReservationRequest request) {
-        String date = request.getDate();
-        String time = request.getTime();
+        Reservation reservation = new Reservation(
+                null,
+                name,
+                reservationDate,
+                time
+        );
 
-        if (date == null || time == null
-                || !date.matches("[0-9]{4}-[0-9]{2}-[0-9]{2}")
-                || !time.matches("[0-9]{2}:[0-9]{2}")) {
-            throw new InvalidReservationException();
-        }
-
-        LocalDateTime reservationDateTime;
-
-        try {
-            LocalDate parsedDate = LocalDate.parse(date, DATE_FORMATTER);
-            LocalTime parsedTime = LocalTime.parse(time, TIME_FORMATTER);
-            reservationDateTime = LocalDateTime.of(parsedDate, parsedTime);
-        } catch (DateTimeParseException exception) {
-            throw new InvalidReservationException();
-        }
-
-        if (!reservationDateTime.isAfter(LocalDateTime.now(clock))) {
-            throw new InvalidReservationException();
-        }
+        return reservationRepository.save(reservation);
     }
 
-    public Reservation create(ReservationRequest request) {
-        validateReservationDateTime(request);
-        return reservationRepository.save(request);
-    }
+    public Reservation update(
+            Long id,
+            String name,
+            String date,
+            Long timeId
+    ) {
+        validateName(name);
 
-    public Reservation update(Long id, ReservationRequest request) {
-        validateReservationDateTime(request);
+        ReservationTime time = findTime(timeId);
+        LocalDate reservationDate =
+                validateReservationDateTime(date, time.getTime());
 
-        int updatedCount = reservationRepository.update(id, request);
+        Reservation reservation = new Reservation(
+                id,
+                name,
+                reservationDate,
+                time
+        );
 
-        if (updatedCount == 0) {
+        if (reservationRepository.update(reservation) == 0) {
             throw new NotFoundReservationException();
         }
 
-        return new Reservation(
-                id,
-                request.getName(),
-                request.getDate(),
-                request.getTime()
-        );
+        return reservation;
+    }
+
+    public void delete(Long id) {
+        if (reservationRepository.delete(id) == 0) {
+            throw new NotFoundReservationException();
+        }
+    }
+
+    private void validateName(String name) {
+        if (name == null || name.isBlank()) {
+            throw new InvalidReservationException();
+        }
+    }
+
+    private ReservationTime findTime(Long timeId) {
+        if (timeId == null || timeId <= 0) {
+            throw new InvalidReservationException();
+        }
+
+        return timeRepository.findById(timeId)
+                .orElseThrow(InvalidReservationException::new);
+    }
+
+    private LocalDate validateReservationDateTime(
+            String date,
+            LocalTime time
+    ) {
+        if (date == null
+                || !date.matches("[0-9]{4}-[0-9]{2}-[0-9]{2}")) {
+            throw new InvalidReservationException();
+        }
+
+        try {
+            LocalDate parsedDate = LocalDate.parse(date, DATE_FORMATTER);
+            LocalDateTime reservationDateTime =
+                    LocalDateTime.of(parsedDate, time);
+
+            if (!reservationDateTime.isAfter(LocalDateTime.now(clock))) {
+                throw new InvalidReservationException();
+            }
+
+            return parsedDate;
+        } catch (DateTimeParseException exception) {
+            throw new InvalidReservationException();
+        }
     }
 }

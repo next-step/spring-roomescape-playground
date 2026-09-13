@@ -18,13 +18,13 @@ public class ReservationController {
     }
 
     @GetMapping
-    public ResponseEntity<ReservationsResponse> reservations() {
+    public ResponseEntity<List<ReservationResponse>> reservations() {
         List<ReservationResponse> responses = reservationService.findAll()
                 .stream()
                 .map(ReservationResponse::from)
                 .toList();
 
-        return ResponseEntity.ok(new ReservationsResponse(responses));
+        return ResponseEntity.ok(responses);
     }
 
     @GetMapping("/{id}")
@@ -42,7 +42,11 @@ public class ReservationController {
     public ResponseEntity<ReservationResponse> create(
             @Valid @RequestBody ReservationRequest request
     ) {
-        Reservation reservation = reservationService.create(request);
+        Reservation reservation = reservationService.create(
+                request.getName(),
+                request.getDate(),
+                request.getTime()
+        );
 
         ReservationResponse response =
                 ReservationResponse.from(reservation);
@@ -57,8 +61,12 @@ public class ReservationController {
             @PathVariable Long id,
             @Valid @RequestBody ReservationRequest request
     ) {
-        Reservation reservation =
-                reservationService.update(id, request);
+        Reservation reservation = reservationService.update(
+                id,
+                request.getName(),
+                request.getDate(),
+                request.getTime()
+        );
 
         return ResponseEntity.ok(
                 ReservationResponse.from(reservation)

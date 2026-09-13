@@ -1,6 +1,8 @@
 package roomescape;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 public class ReservationRequest {
 
@@ -10,13 +12,14 @@ public class ReservationRequest {
     @NotBlank
     private String date;
 
-    @NotBlank
-    private String time;
+    @NotNull
+    @Positive
+    private Long time;
 
     public ReservationRequest() {
     }
 
-    public ReservationRequest(String name, String date, String time) {
+    public ReservationRequest(String name, String date, Long time) {
         this.name = name;
         this.date = date;
         this.time = time;
@@ -30,7 +33,7 @@ public class ReservationRequest {
         return date;
     }
 
-    public String getTime() {
+    public Long getTime() {
         return time;
     }
 }

@@ -1,16 +1,27 @@
 package roomescape;
 
+import java.time.LocalDate;
+import java.util.Objects;
+
 public class Reservation {
 
-    private Long id;
-    private String name;
-    private String date;
-    private String time;
+    private final Long id;
+    private final String name;
+    private final LocalDate date;
+    private final ReservationTime time;
 
-    public Reservation(Long id, String name, String date, String time) {
+    public Reservation(
+            Long id,
+            String name,
+            LocalDate date,
+            ReservationTime time
+    ) {
         this.id = id;
         this.name = name;
-        this.date = date;
+        this.date = Objects.requireNonNull(
+                date,
+                "예약 날짜는 필수입니다."
+        );
         this.time = time;
     }
 
@@ -22,11 +33,11 @@ public class Reservation {
         return name;
     }
 
-    public String getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public String getTime() {
+    public ReservationTime getTime() {
         return time;
     }
 }
