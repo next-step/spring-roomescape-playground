@@ -10,10 +10,6 @@ public class Reservation {
     private final Time time;
 
     public Reservation(long id, String name, LocalDate date, Time time) {
-        this.id = id;
-        this.name = name;
-        this.date = date;
-        this.time = time;
 
         if (name == null || name.isBlank()) {
             throw new IllegalArgumentException();
@@ -26,6 +22,11 @@ public class Reservation {
         if (time == null) {
             throw new IllegalArgumentException();
         }
+
+        this.id = id;
+        this.name = name;
+        this.date = date;
+        this.time = time;
     }
 
     public long getId() {

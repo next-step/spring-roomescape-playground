@@ -8,6 +8,11 @@ public class Time {
     private final LocalTime time;
 
     public Time(long id, LocalTime time) {
+
+        if (time == null) {
+            throw new IllegalArgumentException();
+        }
+
         this.id = id;
         this.time = time;
     }
