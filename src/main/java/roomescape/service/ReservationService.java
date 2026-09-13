@@ -28,17 +28,7 @@ public class ReservationService {
         return reservationRepository.getReservations();
     }
 
-    public Reservation createReservation(
-            String name,
-            LocalDate date,
-            Long timeId
-    ) {
-        if (name == null
-                || name.trim().isBlank()
-                || date == null
-                || timeId == null) {
-            throw new IllegalArgumentException();
-        }
+    public Reservation createReservation(String name, LocalDate date, Long timeId) {
 
         Time time = timeRepository.getTime(timeId)
                 .orElseThrow(NoSuchElementException::new);
