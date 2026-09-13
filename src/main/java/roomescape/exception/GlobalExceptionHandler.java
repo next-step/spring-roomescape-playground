@@ -1,5 +1,7 @@
 package roomescape.exception;
 
+import org.apache.coyote.Response;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -33,5 +35,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = NotFoundException.class)
     public ResponseEntity<String> handleNotFoundException(NotFoundException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+
+    @ExceptionHandler(value = DataIntegrityViolationException.class)
+    public ResponseEntity<String> handleDataIntegrityViolation(DataIntegrityViolationException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body("사용중인 시간은 삭제할 수 없습니다.");
     }
 }

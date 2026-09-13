@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -79,8 +80,32 @@ public class ReservationExceptionTest {
     @DisplayName("매개변수 타입과 요청된 데이터 타입이 일치하지 않으면 400에러가 발생한다.")
     void handleMethodArgumentMismatch() {
         RestAssured.port = this.port;
-        RestAssured.given().log().all().when().delete("/reservations/abc")
+        RestAssured.given().log().all().contentType(ContentType.JSON).body(createParams()).delete("/reservations/abc")
                 .then().log().all().statusCode(400);
+    }
+
+    @Test
+    @DisplayName("외래키 제약 위반이 발생하면 409에러가 발생한다.")
+    void exception1() {
+        LocalDate testDate = LocalDate.now().plusDays(1);
+        RestAssured.port = this.port;
+        jdbcTemplate.update("INSERT INTO time (time) VALUES (?)", "10:00");
+        Long timeId = jdbcTemplate.queryForObject("SELECT id FROM time WHERE time = '10:00'", Long.class);
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("name", "브라운");
+        params.put("date", testDate.toString());
+        params.put("time", timeId);
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(201);
+
+        RestAssured.given().log().all().when().delete("times/1")
+                .then().log().all().statusCode(409);
     }
 
     private Map<String, String> createParams() {
