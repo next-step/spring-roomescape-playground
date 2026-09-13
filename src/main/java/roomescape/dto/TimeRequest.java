@@ -6,17 +6,15 @@ import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalTime;
 
-public class TimeRequest {
-
-    @NotNull
-    private final LocalTime time;
+public record TimeRequest(@NotNull LocalTime time) {
 
     @JsonCreator
     public TimeRequest(@JsonProperty("time") LocalTime time) {
         this.time = time;
     }
 
-    public LocalTime getTime() {
+    @Override
+    public LocalTime time() {
         return time;
     }
 }

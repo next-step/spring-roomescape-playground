@@ -37,7 +37,7 @@ public class TimeController {
     ) {
 
         Time time = timeService.createTime(
-                timeRequest.getTime()
+                timeRequest.time()
         );
 
         return ResponseEntity.created(

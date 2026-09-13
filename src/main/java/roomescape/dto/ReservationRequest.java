@@ -7,16 +7,7 @@ import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 
-public class ReservationRequest {
-
-    @NotBlank
-    private final String name;
-
-    @NotNull
-    private final LocalDate date;
-
-    @NotNull
-    private final Long timeId;
+public record ReservationRequest(@NotBlank String name, @NotNull LocalDate date, @NotNull Long timeId) {
 
     @JsonCreator
     public ReservationRequest(
@@ -24,20 +15,21 @@ public class ReservationRequest {
             @JsonProperty("name") String name,
             @JsonProperty("time") Long timeId
     ) {
-        this.name = name;
-        this.date = date;
-        this.timeId = timeId;
+        this(name, date, timeId);
     }
 
-    public String getName() {
+    @Override
+    public String name() {
         return name;
     }
 
-    public LocalDate getDate() {
+    @Override
+    public LocalDate date() {
         return date;
     }
 
-    public Long getTimeId() {
+    @Override
+    public Long timeId() {
         return timeId;
     }
 }
