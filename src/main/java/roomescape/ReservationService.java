@@ -8,9 +8,12 @@ import roomescape.exception.NotFoundException;
 public class ReservationService {
 
     private final ReservationRepository reservationRepository;
+    private final TimeRepository timeRepository;
 
-    public ReservationService(ReservationRepository reservationRepository) {
+    public ReservationService(ReservationRepository reservationRepository,
+        TimeRepository timeRepository) {
         this.reservationRepository = reservationRepository;
+        this.timeRepository = timeRepository;
     }
 
     public List<Reservation> read() {
@@ -19,10 +22,12 @@ public class ReservationService {
 
     public Reservation createReservation(ReservationRequest reservationRequest) {
         reservationRequest.validate();
+        Time time = timeRepository.findTimeById(reservationRequest.getTime());
+
         Reservation newReservation = Reservation.create(
             reservationRequest.name(),
             reservationRequest.date(),
-            reservationRequest.time()
+            time
         );
         long id = reservationRepository.createReservation(newReservation);
         return newReservation.withId(id);

@@ -19,20 +19,37 @@ public class ReservationRepository {
     }
 
     public List<Reservation> read() {
-        String sql = "SELECT id, name, date, time FROM reservation";
+        String sql = """
+            SELECT
+                r.id AS reservation_id,
+                r.name,
+                r.date,
+                t.id AS time_id,
+                t.time AS time_value
+            FROM reservation AS r
+            INNER JOIN time AS t
+                ON r.time_id = t.id
+            """;
         return jdbcTemplate.query(
             sql,
-            (rs, rowNum) -> Reservation.create(
-                rs.getLong("id"),
-                rs.getString("name"),
-                rs.getObject("date", LocalDate.class),
-                rs.getObject("time", LocalTime.class)
-            )
+            (rs, rowNum) -> {
+                Time time = Time.create(
+                    rs.getLong("time_id"),
+                    rs.getObject("time_value", LocalTime.class)
+                );
+
+                return Reservation.create(
+                    rs.getLong("reservation_id"),
+                    rs.getString("name"),
+                    rs.getObject("date", LocalDate.class),
+                    time
+                );
+            }
         );
     }
 
     public long createReservation(Reservation reservation) {
-        String sql = "INSERT INTO reservation(name, date, time) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO reservation(name, date, time_id) VALUES (?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
@@ -43,7 +60,7 @@ public class ReservationRepository {
 
             ps.setString(1, reservation.getName());
             ps.setObject(2, reservation.getDate());
-            ps.setObject(3, reservation.getTime());
+            ps.setLong(3, reservation.getTime().getId());
 
             return ps;
         }, keyHolder);

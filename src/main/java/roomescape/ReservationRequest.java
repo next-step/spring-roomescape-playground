@@ -1,10 +1,9 @@
 package roomescape;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import roomescape.exception.InvalidReservationException;
 
-public record ReservationRequest(String name, LocalDate date, LocalTime time) {
+public record ReservationRequest(String name, LocalDate date, Long time) {
 
     public void validate() {
         if (isBlank(name) || date == null || time == null) {
@@ -24,7 +23,7 @@ public record ReservationRequest(String name, LocalDate date, LocalTime time) {
         return date;
     }
 
-    public LocalTime getTime() {
+    public long getTime() {
         return time;
     }
 }

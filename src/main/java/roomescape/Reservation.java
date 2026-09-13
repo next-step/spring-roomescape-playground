@@ -1,9 +1,8 @@
 package roomescape;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.stream.Stream;
 import roomescape.exception.InvalidReservationException;
+
 
 public class Reservation {
 
@@ -12,17 +11,17 @@ public class Reservation {
 
     private final String name;
     private final LocalDate date;
-    private final LocalTime time;
+    private final Time time;
 
-    public static Reservation create(String name, LocalDate date, LocalTime time) {
+    public static Reservation create(String name, LocalDate date, Time time) {
         return new Reservation(UNSAVED_ID, name, date, time);
     }
 
-    public static Reservation create(long id, String name, LocalDate date, LocalTime time) {
+    public static Reservation create(long id, String name, LocalDate date, Time time) {
         return new Reservation(id, name, date, time);
     }
 
-    private Reservation(long id, String name, LocalDate date, LocalTime time) {
+    private Reservation(long id, String name, LocalDate date, Time time) {
         validate(name, date, time);
         this.id = id;
         this.name = name;
@@ -30,7 +29,7 @@ public class Reservation {
         this.time = time;
     }
 
-    private static void validate(String name, LocalDate date, LocalTime time) {
+    private static void validate(String name, LocalDate date, Time time) {
         if (name == null || name.isBlank() || date == null || time == null) {
             throw new InvalidReservationException("예약 정보는 비어 있을 수 없습니다.");
         }
@@ -52,7 +51,7 @@ public class Reservation {
         return date;
     }
 
-    public LocalTime getTime() {
+    public Time getTime() {
         return time;
     }
 
