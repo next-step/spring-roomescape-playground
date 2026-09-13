@@ -14,6 +14,18 @@ public class Reservation {
         this.name = name;
         this.date = date;
         this.time = time;
+
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException();
+        }
+
+        if (date == null) {
+            throw new IllegalArgumentException();
+        }
+
+        if (time == null) {
+            throw new IllegalArgumentException();
+        }
     }
 
     public long getId() {
