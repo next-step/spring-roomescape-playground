@@ -227,6 +227,65 @@ public class MissionStepTest {
     }
 
     @Test
+    void 예약에서_사용_중인_시간은_삭제할_수_없고_데이터가_유지된다() {
+        int timeId = RestAssured.given()
+                .contentType(ContentType.JSON)
+                .body(Map.of("time", "10:00"))
+                .when().post("/times")
+                .then().statusCode(201)
+                .extract().path("id");
+
+        int reservationId = RestAssured.given()
+                .contentType(ContentType.JSON)
+                .body(Map.of("name", "브라운", "date", "2023-08-05", "time", timeId))
+                .when().post("/reservations")
+                .then().statusCode(201)
+                .extract().path("id");
+
+        RestAssured.given()
+                .when().delete("/times/{id}", timeId)
+                .then().statusCode(409)
+                .body("message", is("예약에서 사용 중인 시간은 삭제할 수 없습니다."));
+
+        RestAssured.given()
+                .when().get("/times")
+                .then().statusCode(200)
+                .body("size()", is(1))
+                .body("[0].id", is(timeId))
+                .body("[0].time", is("10:00"));
+
+        RestAssured.given()
+                .when().get("/reservations")
+                .then().statusCode(200)
+                .body("size()", is(1))
+                .body("[0].id", is(reservationId))
+                .body("[0].name", is("브라운"))
+                .body("[0].date", is("2023-08-05"))
+                .body("[0].time.id", is(timeId))
+                .body("[0].time.time", is("10:00"));
+
+        RestAssured.given()
+                .when().delete("/reservations/{id}", reservationId)
+                .then().statusCode(204);
+
+        RestAssured.given()
+                .when().delete("/times/{id}", timeId)
+                .then().statusCode(204);
+
+        RestAssured.given()
+                .when().get("/times")
+                .then().statusCode(200)
+                .body("size()", is(0));
+    }
+
+    @Test
+    void 없는_시간의_삭제는_404를_반환한다() {
+        RestAssured.given()
+                .when().delete("/times/999")
+                .then().statusCode(404);
+    }
+
+    @Test
     void 구단계() {
         Map<String, String> reservation = new HashMap<>();
         reservation.put("name", "브라운");
