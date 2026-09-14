@@ -90,6 +90,7 @@ H2 인메모리(In-Memory) 데이터베이스를 사용합니다. 데이터가 �
 ### 예약 추가
 
 - 예약자 이름, 날짜, 등록된 시간의 식별자를 받아 예약을 저장합니다.
+- 존재하지 않는 시간 ID로 요청하면 `404 Not Found`와 오류 메시지를 반환하며 예약을 저장하지 않습니다.
 - 요청 JSON의 필드명은 `time`이며, 값은 시간 문자열이 아닌 시간 ID입니다. Java 요청 DTO에서는 `@JsonProperty("time")`을 통해 `timeId`로 매핑합니다.
 - 예약 자체의 식별자(`id`)는 요청에 포함하지 않으며, 데이터베이스가 자동으로 생성합니다.
 - 생성에 성공하면 생성된 예약의 경로를 `Location` 헤더에, 예약 정보를 본문에 담아 응답합니다.
@@ -220,6 +221,36 @@ DELETE /reservations/999 HTTP/1.1
 ```
 HTTP/1.1 204 No Content
 ```
+
+### 예약 추가 실패 (존재하지 않는 시간 ID)
+
+시간 ID `999`가 등록되어 있지 않은 경우의 예시입니다.
+
+**Request**
+
+```http
+POST /reservations HTTP/1.1
+Content-Type: application/json
+
+{
+    "name": "브라운",
+    "date": "2030-08-05",
+    "time": 999
+}
+```
+
+**Response**
+
+```http
+HTTP/1.1 404 Not Found
+Content-Type: application/json
+
+{
+    "message": "예약하려는 시간이 존재하지 않습니다."
+}
+```
+
+실패한 요청으로 예약 데이터가 추가되지 않습니다.
 
 ### 예약 추가 실패 (과거 시간)
 

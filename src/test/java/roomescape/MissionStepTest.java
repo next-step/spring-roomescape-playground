@@ -227,6 +227,39 @@ public class MissionStepTest {
     }
 
     @Test
+    void 구단계() {
+        Map<String, String> reservation = new HashMap<>();
+        reservation.put("name", "브라운");
+        reservation.put("date", "2023-08-05");
+        reservation.put("time", "10:00");
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(reservation)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(400);
+    }
+
+    @Autowired
+    private ReservationController reservationController;
+
+    @Test
+    void 십단계() {
+        boolean isJdbcTemplateInjected = false;
+
+        for (Field field : reservationController.getClass().getDeclaredFields()) {
+            if (field.getType().equals(JdbcTemplate.class)) {
+                isJdbcTemplateInjected = true;
+                break;
+            }
+        }
+
+        assertThat(isJdbcTemplateInjected).isFalse();
+    }
+
+
+    @Test
     void 예약에서_사용_중인_시간은_삭제할_수_없고_데이터가_유지된다() {
         int timeId = RestAssured.given()
                 .contentType(ContentType.JSON)
@@ -286,36 +319,22 @@ public class MissionStepTest {
     }
 
     @Test
-    void 구단계() {
-        Map<String, String> reservation = new HashMap<>();
-        reservation.put("name", "브라운");
-        reservation.put("date", "2023-08-05");
-        reservation.put("time", "10:00");
-
-        RestAssured.given().log().all()
+    void 존재하지_않는_시간으로_예약하면_404를_반환하고_예약을_저장하지_않는다() {
+        RestAssured.given()
                 .contentType(ContentType.JSON)
-                .body(reservation)
+                .body(Map.of("name", "브라운", "date", "2023-08-05", "time", 999))
                 .when().post("/reservations")
-                .then().log().all()
-                .statusCode(400);
+                .then().statusCode(404)
+                .contentType(ContentType.JSON)
+                .body("message", is("예약하려는 시간이 존재하지 않습니다."));
+
+        Integer reservationCount = jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM reservation", Integer.class);
+        assertThat(reservationCount).isZero();
+
+        RestAssured.given()
+                .when().get("/reservations")
+                .then().statusCode(200)
+                .body("size()", is(0));
     }
-
-    @Autowired
-    private ReservationController reservationController;
-
-    @Test
-    void 십단계() {
-        boolean isJdbcTemplateInjected = false;
-
-        for (Field field : reservationController.getClass().getDeclaredFields()) {
-            if (field.getType().equals(JdbcTemplate.class)) {
-                isJdbcTemplateInjected = true;
-                break;
-            }
-        }
-
-        assertThat(isJdbcTemplateInjected).isFalse();
-    }
-
-
 }

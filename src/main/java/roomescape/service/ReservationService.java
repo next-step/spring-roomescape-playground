@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import roomescape.domain.Reservation;
 import roomescape.domain.ReservationTime;
+import roomescape.exception.ReservationTimeNotFoundException;
 import roomescape.repository.ReservationRepository;
 import roomescape.repository.ReservationTimeRepository;
 
@@ -23,7 +24,8 @@ public class ReservationService {
     }
 
     public Reservation createReservation(String name, LocalDate date, Long timeId) {
-        ReservationTime reservationTime = reservationTimeRepository.findById(timeId);
+        ReservationTime reservationTime = reservationTimeRepository.findById(timeId)
+                .orElseThrow(() -> new ReservationTimeNotFoundException("예약하려는 시간이 존재하지 않습니다."));
         Reservation reservation = Reservation.createNewReservation(name, date, reservationTime, clock);
 
         return reservationRepository.save(reservation);
