@@ -14,7 +14,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
-
+import static org.hamcrest.Matchers.is;
 
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -104,8 +104,11 @@ public class ReservationExceptionTest {
                 .then().log().all()
                 .statusCode(201);
 
-        RestAssured.given().log().all().when().delete("times/1")
+        RestAssured.given().log().all().when().delete("times/" + timeId)
                 .then().log().all().statusCode(409);
+
+        RestAssured.given().log().all().when().get("/reservations")
+                .then().log().all().statusCode(200).body("time.first().id", is(timeId.intValue()));
     }
 
     private Map<String, String> createParams() {
