@@ -5,22 +5,21 @@ import roomescape.model.Reservation;
 
 
 import java.time.LocalDate;
-import java.time.LocalTime;
+
 
 public record ReservationResponseDto(
         Long id,
         String name,
         @JsonFormat(pattern = "yyyy-MM-dd")
         LocalDate date,
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
-        LocalTime time
+        TimeResponseDto time
 ) {
     public ReservationResponseDto(Reservation reservation) {
         this(
                 reservation.getId(),
                 reservation.getName(),
                 reservation.getDate(),
-                reservation.getTime()
+                new TimeResponseDto(reservation.getTime().getId(), reservation.getTime().getTime())
         );
     }
 }
