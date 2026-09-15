@@ -1,5 +1,6 @@
-package roomescape;
+package roomescape.controller;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -23,5 +24,13 @@ public class GlobalExceptionHandler {
             NoSuchElementException ex
     ) {
         return ResponseEntity.notFound().build();
+    }
+
+    // 외래키 위반 경우
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Void> handleDataIntegrityViolationException(
+            DataIntegrityViolationException ex
+    ) {
+        return ResponseEntity.status(409).build();
     }
 }
