@@ -1,6 +1,5 @@
 package roomescape.exception;
 
-import org.apache.coyote.Response;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +28,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = RuntimeException.class)
     public ResponseEntity<String> handleRuntimeException(RuntimeException e) {
-        return ResponseEntity.internalServerError().body("Error Name: " + e.getClass().getName());
+        return ResponseEntity.internalServerError().body("서버 내부 오류가 발생했습니다.");
     }
 
     @ExceptionHandler(value = NotFoundException.class)
