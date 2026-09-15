@@ -70,9 +70,5 @@ public class Reservation {
     public Time getTime() {
         return time;
     }
-
-    public Long getTimeId() {
-        return time.getId();
-    }
 }
 
