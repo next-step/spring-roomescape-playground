@@ -3,17 +3,16 @@ package roomescape.domain;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import roomescape.exception.ReservationInvalidException;
 
 public class Reservation {
     private final Long id;
     private final String name;
     private final LocalDate date;
-    private final LocalTime time;
+    private final ReservationTime time;
 
-    private Reservation(Long id, String name, LocalDate date, LocalTime time) {
-        if (name == null || name.isBlank()){
+    private Reservation(Long id, String name, LocalDate date, ReservationTime time) {
+        if (name == null || name.isBlank()) {
             throw new ReservationInvalidException("예약자 이름은 비워둘 수 없습니다.");
         }
 
@@ -31,15 +30,16 @@ public class Reservation {
         this.time = time;
     }
 
-    public static Reservation createNewReservation(String name, LocalDate date, LocalTime time, Clock clock) {
-        LocalDateTime reservationDateTime = LocalDateTime.of(date, time);
+    public static Reservation createNewReservation(String name, LocalDate date, ReservationTime time, Clock clock) {
+        Reservation reservation = new Reservation(null, name, date, time);
+        LocalDateTime reservationDateTime = LocalDateTime.of(date, time.getTime());
         if (reservationDateTime.isBefore(LocalDateTime.now(clock))) {
             throw new ReservationInvalidException("과거 시간으로 예약할 수 없습니다");
         }
-        return new Reservation(null, name, date, time);
+        return reservation;
     }
 
-    public static Reservation createFromPersistedData(Long id, String name, LocalDate date, LocalTime time) {
+    public static Reservation createFromPersistedData(Long id, String name, LocalDate date, ReservationTime time) {
         if (id == null) {
             throw new ReservationInvalidException("DB에 저장된 예약의 ID는 비어있을 수 없습니다.");
         }
@@ -58,7 +58,7 @@ public class Reservation {
         return date;
     }
 
-    public LocalTime getTime() {
+    public ReservationTime getTime() {
         return time;
     }
 }
