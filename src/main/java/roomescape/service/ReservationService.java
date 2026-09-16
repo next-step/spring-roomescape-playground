@@ -5,7 +5,9 @@ import roomescape.controller.dto.ReservationRequestDto;
 import roomescape.controller.dto.ReservationResponseDto;
 import roomescape.exception.NotFoundException;
 import roomescape.model.Reservation;
+import roomescape.model.Time;
 import roomescape.repository.ReservationRepository;
+import roomescape.repository.TimeRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,13 +16,19 @@ import java.util.List;
 @Service
 public class ReservationService {
     private final ReservationRepository reservationRepository;
+    private final TimeRepository timeRepository;
 
-    public ReservationService(ReservationRepository reservationRepository) {
+    public ReservationService(ReservationRepository reservationRepository, TimeRepository timeRepository) {
         this.reservationRepository = reservationRepository;
+        this.timeRepository = timeRepository;
     }
 
     public ReservationResponseDto create(ReservationRequestDto reservationDTO) {
-        Reservation reservation = reservationDTO.toEntity();
+        Time time = timeRepository.findById(reservationDTO.time());
+        if (time == null) {
+            throw new NotFoundException("선택한 시간을 찾을 수 없습니다.");
+        }
+        Reservation reservation = Reservation.create(reservationDTO.name(), reservationDTO.date(), time);
         return new ReservationResponseDto(reservationRepository.save(reservation));
     }
 

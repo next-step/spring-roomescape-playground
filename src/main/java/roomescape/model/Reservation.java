@@ -8,10 +8,10 @@ public class Reservation {
     private final Long id;
     private final String name;
     private final LocalDate date;
-    private final LocalTime time;
+    private final Time time;
 
 
-    private Reservation(Long id, String name, LocalDate date, LocalTime time) {
+    private Reservation(Long id, String name, LocalDate date, Time time) {
         validateReservationArgument(name, date, time);
         this.id = id;
         this.name = name;
@@ -19,14 +19,14 @@ public class Reservation {
         this.time = time;
     }
 
-    public static Reservation create(String name, LocalDate date, LocalTime time) {
-        Reservation reservation= new Reservation(null, name, date, time);
-        LocalTime minuteTime = time.truncatedTo(ChronoUnit.MINUTES);
-        validatePastReservation(date, minuteTime);
-        return new Reservation(null, name, date, minuteTime);
+    public static Reservation create(String name, LocalDate date, Time time) {
+        LocalTime localTime = time.getTime().truncatedTo(ChronoUnit.MINUTES);
+        validatePastReservation(date, localTime);
+
+        return new Reservation(null, name, date, time);
     }
 
-    public static Reservation restore(Long id, String name, LocalDate date, LocalTime time) {
+    public static Reservation restore(Long id, String name, LocalDate date, Time time) {
         return new Reservation(id, name, date, time);
     }
 
@@ -35,14 +35,14 @@ public class Reservation {
     }
 
 
-    public static void validateReservationArgument(String name, LocalDate date, LocalTime time) {
+    public static void validateReservationArgument(String name, LocalDate date, Time time) {
         if (name == null || name.isBlank()) {
             throw new IllegalArgumentException("이름은 비워져있을 수 없습니다.");
         }
         if (date == null) {
             throw new IllegalArgumentException("날짜는 비워져있을 수 없습니다.");
         }
-        if (time == null) {
+        if (time.getTime() == null) {
             throw new IllegalArgumentException("시간은 비워져있을 수 없습니다.");
         }
     }
@@ -67,7 +67,7 @@ public class Reservation {
         return date;
     }
 
-    public LocalTime getTime() {
+    public Time getTime() {
         return time;
     }
 }

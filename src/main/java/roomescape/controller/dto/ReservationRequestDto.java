@@ -1,17 +1,18 @@
 package roomescape.controller.dto;
 
-import roomescape.model.Reservation;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
+
 
 public record ReservationRequestDto(
         String name,
         LocalDate date,
-        LocalTime time
+        Long time
 ) {
-    public Reservation toEntity() {
-        return Reservation.create(name, date, time);
+    public ReservationRequestDto {
+        if (name == null || name.isBlank() || date == null || time == null) {
+            throw new IllegalArgumentException("필수 인자가 누락되었습니다.");
+        }
     }
 }
 

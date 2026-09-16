@@ -12,11 +12,14 @@ import java.sql.SQLException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class DatabaseTest {
+
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
 
     @DisplayName("DB에 정상연결된다.")
     @Test
