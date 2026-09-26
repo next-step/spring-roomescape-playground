@@ -14,6 +14,9 @@ public class Reservation {
     }
 
     public Reservation(Long id, String name, LocalDate date, LocalTime time) {
+        if (!isName(name) || !isDate(date) || !isTime(time)) {
+            throw new IllegalArgumentException("값의 문제가 있습니다.");
+        }
         this.id = id;
         this.name = name;
         this.date = date;
@@ -34,5 +37,17 @@ public class Reservation {
 
     public LocalTime getTime() {
         return time;
+    }
+
+    public boolean isName(String name){
+        return name != null && !name.isBlank();
+    }
+
+    public boolean isDate(LocalDate date){
+        return date != null;
+    }
+
+    public boolean isTime(LocalTime time){
+        return time != null;
     }
 }

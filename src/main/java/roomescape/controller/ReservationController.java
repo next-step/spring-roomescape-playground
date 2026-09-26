@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import roomescape.entity.Reservation;
+import roomescape.exception.NotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +30,6 @@ public class ReservationController {
 
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservation) {
-
         Reservation newReservation = new Reservation(
                 id.getAndIncrement(),
                 reservation.getName(),
@@ -45,9 +45,20 @@ public class ReservationController {
         Reservation asdf = reservations.stream()
                 .filter(r -> r.getId() == id)
                 .findFirst()
-                .orElse(null);
+                .orElseThrow(() -> new NotFoundException("예약을 찾을수 없습니다. id = "+id));
         reservations.remove(asdf);
         return ResponseEntity.noContent().build();
+    }
+
+
+    @ExceptionHandler(value = NotFoundException.class)
+    public ResponseEntity<String> handNotFound(NotFoundException e) {
+        return ResponseEntity.notFound().build();
+    }
+
+    @ExceptionHandler(value = IllegalArgumentException.class)
+    public ResponseEntity<String> handIllgealArgument(IllegalArgumentException e){
+        return ResponseEntity.badRequest().body(e.getMessage());
     }
 
 //    테스트용 데이터 추가
