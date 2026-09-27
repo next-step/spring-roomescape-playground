@@ -11,17 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
-@Controller
+@RestController
 public class ReservationController {
 
     private List<Reservation> reservations = new ArrayList<>();
     private AtomicLong id = new AtomicLong(1);
-
-
-    @GetMapping("/reservation")
-    public String reservation() {
-        return "reservation";
-    }
 
     @GetMapping("/reservations")
     public ResponseEntity<List<Reservation>> getReservations() {
