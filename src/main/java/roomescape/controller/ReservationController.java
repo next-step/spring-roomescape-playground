@@ -31,7 +31,7 @@ public class ReservationController {
                 reservation.getTime());
 
         reservations.add(newReservation);
-        return ResponseEntity.status(HttpStatus.CREATED).header("Location","/reservations/"+newReservation.getId()).body(newReservation);
+        return ResponseEntity.status(HttpStatus.CREATED).header("Location", "/reservations/" + newReservation.getId()).body(newReservation);
     }
 
     @DeleteMapping("/reservations/{id}")
@@ -39,7 +39,7 @@ public class ReservationController {
         Reservation targetReservation = reservations.stream()
                 .filter(r -> r.getId() == id)
                 .findFirst()
-                .orElseThrow(() -> new NotFoundException("예약을 찾을수 없습니다. id = "+id));
+                .orElseThrow(() -> new NotFoundException("예약을 찾을수 없습니다. id = " + id));
         reservations.remove(targetReservation);
         return ResponseEntity.noContent().build();
     }
@@ -51,7 +51,7 @@ public class ReservationController {
     }
 
     @ExceptionHandler(value = IllegalArgumentException.class)
-    public ResponseEntity<String> handIllgealArgument(IllegalArgumentException e){
+    public ResponseEntity<String> handIllgealArgument(IllegalArgumentException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 
