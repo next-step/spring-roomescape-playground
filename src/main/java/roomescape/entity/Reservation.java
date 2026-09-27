@@ -40,7 +40,7 @@ public class Reservation {
     }
 
     public void validateName(String name){
-        if (name == null || name.isBlank()ㅎ) {
+        if (name == null || name.isBlank()) {
             throw new IllegalArgumentException("이름을 적어주세요.");
         }
     }
