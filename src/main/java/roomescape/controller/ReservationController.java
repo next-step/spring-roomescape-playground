@@ -42,11 +42,11 @@ public class ReservationController {
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Reservation> deleteReservation(@PathVariable long id) {
-        Reservation asdf = reservations.stream()
+        Reservation targetReservation = reservations.stream()
                 .filter(r -> r.getId() == id)
                 .findFirst()
                 .orElseThrow(() -> new NotFoundException("예약을 찾을수 없습니다. id = "+id));
-        reservations.remove(asdf);
+        reservations.remove(targetReservation);
         return ResponseEntity.noContent().build();
     }
 
