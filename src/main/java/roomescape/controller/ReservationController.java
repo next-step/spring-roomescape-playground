@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import roomescape.dto.ReservationRequest;
 import roomescape.entity.Reservation;
 import roomescape.exception.NotFoundException;
 
@@ -23,9 +24,9 @@ public class ReservationController {
     }
 
     @PostMapping("/reservations")
-    public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservation) {
+    public ResponseEntity<Reservation> createReservation(@RequestBody ReservationRequest reservation) {
         Reservation newReservation = new Reservation(
-                id.getAndIncrement(),
+                id.getAndIncrement(),ㅎ
                 reservation.getName(),
                 reservation.getDate(),
                 reservation.getTime());
