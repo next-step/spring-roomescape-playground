@@ -11,12 +11,13 @@ import roomescape.exception.NotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicLong;
 
 @RestController
 public class ReservationController {
 
-    private List<Reservation> reservations = new ArrayList<>();
+    private List<Reservation> reservations = new CopyOnWriteArrayList<>();
     private AtomicLong id = new AtomicLong(1);
 
     @GetMapping("/reservations")
