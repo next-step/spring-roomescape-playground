@@ -26,7 +26,7 @@ public class ReservationController {
     @PostMapping("/reservations")
     public ResponseEntity<Reservation> createReservation(@RequestBody ReservationRequest reservation) {
         Reservation newReservation = new Reservation(
-                id.getAndIncrement(),ㅎ
+                id.getAndIncrement(),
                 reservation.getName(),
                 reservation.getDate(),
                 reservation.getTime());
@@ -36,7 +36,7 @@ public class ReservationController {
     }
 
     @DeleteMapping("/reservations/{id}")
-    public ResponseEntity<Reservation> deleteReservation(@PathVariable long id) {
+    public ResponseEntity<Void> deleteReservation(@PathVariable long id) {
         Reservation targetReservation = reservations.stream()
                 .filter(r -> r.getId() == id)
                 .findFirst()
@@ -44,7 +44,6 @@ public class ReservationController {
         reservations.remove(targetReservation);
         return ResponseEntity.noContent().build();
     }
-
 
     @ExceptionHandler(value = NotFoundException.class)
     public ResponseEntity<String> handNotFound(NotFoundException e) {
