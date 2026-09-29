@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import roomescape.dto.ReservationRequest;
+import roomescape.dto.ReservationResponse;
 import roomescape.entity.Reservation;
 import roomescape.exception.NotFoundException;
 
@@ -19,20 +20,20 @@ public class ReservationController {
     private AtomicLong id = new AtomicLong(1);
 
     @GetMapping("/reservations")
-    public ResponseEntity<List<Reservation>> getReservations() {
-        return ResponseEntity.ok(reservations);
+    public ResponseEntity<List<ReservationResponse>> getReservations() {
+        return ResponseEntity.ok(reservations.stream().map(r -> new ReservationResponse(r)).toList());
     }
 
     @PostMapping("/reservations")
-    public ResponseEntity<Reservation> createReservation(@RequestBody ReservationRequest reservation) {
+    public ResponseEntity<ReservationResponse> createReservation(@RequestBody ReservationRequest reservation) {
         Reservation newReservation = new Reservation(
                 id.getAndIncrement(),
                 reservation.getName(),
                 reservation.getDate(),
                 reservation.getTime());
-
+        ReservationResponse dto = new ReservationResponse(newReservation);
         reservations.add(newReservation);
-        return ResponseEntity.status(HttpStatus.CREATED).header("Location", "/reservations/" + newReservation.getId()).body(newReservation);
+        return ResponseEntity.status(HttpStatus.CREATED).header("Location", "/reservations/" + dto.getId()).body(dto);
     }
 
     @DeleteMapping("/reservations/{id}")
