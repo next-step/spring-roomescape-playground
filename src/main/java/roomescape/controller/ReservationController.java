@@ -6,6 +6,9 @@ import roomescape.domain.Reservation;
 import roomescape.exception.NotFoundReservationException;
 
 import java.net.URI;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
@@ -35,6 +38,12 @@ public class ReservationController {
 
             throw new IllegalArgumentException("필수 인자가 누락되었습니다.");
         }
+        try {
+            LocalDate.parse(request.getDate());
+            LocalTime.parse(request.getTime());
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("날짜 또는 시간 형식이 올바르지 않습니다.");
+        }
         Long newId = index.incrementAndGet();
 
         Reservation newReservation = new Reservation(
@@ -56,13 +65,5 @@ public class ReservationController {
             throw new NotFoundReservationException();
         }
         return ResponseEntity.noContent().build();
-    }
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<Void> handleBadRequest(IllegalArgumentException e) {
-        return ResponseEntity.badRequest().build();
-    }
-    @ExceptionHandler(NotFoundReservationException.class)
-    public ResponseEntity<Void> handleNotFound(NotFoundReservationException e) {
-        return ResponseEntity.notFound().build();
     }
 }
