@@ -68,11 +68,10 @@ public class ReservationController {
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable long id) {
-        Reservation targetReservation = reservations.stream()
-                .filter(r -> r.getId() == id)
-                .findFirst()
-                .orElseThrow(() -> new NotFoundException("예약을 찾을수 없습니다. id = " + id));
-        reservations.remove(targetReservation);
+        int deleted = jdbcTemplate.update("delete from reservation where id = ?", id);
+        if(deleted == 0){
+            throw new NotFoundException("예약을 찾을 수 없습니다. id ="+id);
+        }
         return ResponseEntity.noContent().build();
     }
     
