@@ -46,7 +46,7 @@ public class ReservationController {
         reservations.remove(targetReservation);
         return ResponseEntity.noContent().build();
     }
-
+    
     @ExceptionHandler(value = NotFoundException.class)
     public ResponseEntity<String> handNotFound(NotFoundException e) {
         return ResponseEntity.notFound().build();
