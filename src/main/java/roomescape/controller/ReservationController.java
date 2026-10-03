@@ -2,6 +2,7 @@ package roomescape.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import roomescape.dto.ReservationRequest;
@@ -9,6 +10,8 @@ import roomescape.dto.ReservationResponse;
 import roomescape.entity.Reservation;
 import roomescape.exception.NotFoundException;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -17,12 +20,25 @@ import java.util.concurrent.atomic.AtomicLong;
 @RestController
 public class ReservationController {
 
-    private List<Reservation> reservations = new CopyOnWriteArrayList<>();
-    private AtomicLong id = new AtomicLong(1);
+    private final JdbcTemplate jdbcTemplate;
+    private final AtomicLong id = new AtomicLong(1);
+    private final String selectSql = "select id, name, date, time from reservation;";
+    private final List<Reservation> reservations = new CopyOnWriteArrayList<>();
+
+    public ReservationController(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     @GetMapping("/reservations")
     public ResponseEntity<List<ReservationResponse>> getReservations() {
-        return ResponseEntity.ok(reservations.stream().map(r -> new ReservationResponse(r)).toList());
+        List<Reservation> found = jdbcTemplate.query(selectSql,(rs,idx) ->
+            new Reservation(
+                rs.getLong("id"),
+                rs.getString("name"),
+                LocalDate.parse(rs.getString("date")),
+                LocalTime.parse(rs.getString("time"))
+            ));
+        return ResponseEntity.ok(found.stream().map(ReservationResponse::new).toList());
     }
 
     @PostMapping("/reservations")
