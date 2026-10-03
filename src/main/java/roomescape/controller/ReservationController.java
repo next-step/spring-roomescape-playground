@@ -22,7 +22,6 @@ public class ReservationController {
 
     private final JdbcTemplate jdbcTemplate;
     private final AtomicLong id = new AtomicLong(1);
-    private final String selectSql = "select id, name, date, time from reservation;";
     private final List<Reservation> reservations = new CopyOnWriteArrayList<>();
 
     public ReservationController(JdbcTemplate jdbcTemplate) {
@@ -31,7 +30,7 @@ public class ReservationController {
 
     @GetMapping("/reservations")
     public ResponseEntity<List<ReservationResponse>> getReservations() {
-        List<Reservation> found = jdbcTemplate.query(selectSql,(rs,idx) ->
+        List<Reservation> found = jdbcTemplate.query("select id, name, date, time from reservation;",(rs,idx) ->
             new Reservation(
                 rs.getLong("id"),
                 rs.getString("name"),
