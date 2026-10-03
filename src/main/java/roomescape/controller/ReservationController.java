@@ -1,5 +1,6 @@
 package roomescape.controller;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import roomescape.domain.Reservation;
@@ -9,14 +10,16 @@ import java.net.URI;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
+
+import java.sql.PreparedStatement;
+import java.sql.Statement;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
+
 
 @Controller
 public class ReservationController {
-    private final List<Reservation> reservations = new ArrayList<>();
-    private AtomicLong index = new AtomicLong(0);
 
     @GetMapping("/reservation")
     public String reservationPage() {
@@ -26,7 +29,16 @@ public class ReservationController {
     @GetMapping("/reservations")
     @ResponseBody
     public List<Reservation> getReservations() {
-        return reservations;
+        return jdbcTemplate.query(
+                "SELECT id, name, date, time FROM reservation",
+                (rs, rowNum) -> new Reservation(
+                        rs.getLong("id"),
+                        rs.getString("name"),
+                        rs.getString("date"),
+                        rs.getString("time")
+                )
+        );
+
     }
 
     @PostMapping("/reservations")
@@ -41,10 +53,24 @@ public class ReservationController {
         try {
             LocalDate.parse(request.getDate());
             LocalTime.parse(request.getTime());
+
         } catch (DateTimeParseException e) {
             throw new IllegalArgumentException("날짜 또는 시간 형식이 올바르지 않습니다.");
         }
-        Long newId = index.incrementAndGet();
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        jdbcTemplate.update(connection -> {
+            PreparedStatement statement = connection.prepareStatement(
+                    "INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)",
+                    Statement.RETURN_GENERATED_KEYS
+            );
+            statement.setString(1, request.getName());
+            statement.setString(2, request.getDate());
+            statement.setString(3, request.getTime());
+            return statement;
+        }, keyHolder);
+
+        Long newId = keyHolder.getKey().longValue();
 
         Reservation newReservation = new Reservation(
                 newId,
@@ -53,17 +79,27 @@ public class ReservationController {
                 request.getTime()
         );
 
-        reservations.add(newReservation);
+        return ResponseEntity
+                .created(URI.create("/reservations/" + newId))
+                .body(newReservation);
 
-        return ResponseEntity.created(URI.create("/reservations/" + newId)).body(newReservation);
     }
 
     @DeleteMapping("/reservations/{id}")
-    public ResponseEntity<Void> deleteReservation(@PathVariable long id){
-        boolean isRemoved = reservations.removeIf(reservation -> reservation.getId().equals(id));
-        if(!isRemoved){
+    public ResponseEntity<Void> deleteReservation(@PathVariable long id) {
+        int deletedCount = jdbcTemplate.update("DELETE FROM reservation WHERE id = ?", id);
+
+        if (deletedCount == 0) {
             throw new NotFoundReservationException();
         }
+
         return ResponseEntity.noContent().build();
     }
+
+    private final JdbcTemplate jdbcTemplate;
+
+    public ReservationController(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
 }
