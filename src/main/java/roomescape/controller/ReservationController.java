@@ -3,6 +3,8 @@ package roomescape.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import roomescape.dto.ReservationRequest;
@@ -10,6 +12,7 @@ import roomescape.dto.ReservationResponse;
 import roomescape.entity.Reservation;
 import roomescape.exception.NotFoundException;
 
+import java.sql.PreparedStatement;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -42,13 +45,24 @@ public class ReservationController {
 
     @PostMapping("/reservations")
     public ResponseEntity<ReservationResponse> createReservation(@RequestBody ReservationRequest reservation) {
+        Reservation vali = new Reservation(null, reservation.getName(), reservation.getDate(), reservation.getTime());
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(c -> {
+            PreparedStatement ps = c.prepareStatement("insert into reservation(name,date,time) values(?,?,?)",new String[]{"id"});
+            ps.setString(1, vali.getName());
+            ps.setString(2,vali.getDate().toString());
+            ps.setString(3,vali.getTime().toString());
+            return ps;
+        },keyHolder);
+        Long newId = keyHolder.getKey().longValue();
         Reservation newReservation = new Reservation(
-                id.getAndIncrement(),
-                reservation.getName(),
-                reservation.getDate(),
-                reservation.getTime());
+                newId,
+                vali.getName(),
+                vali.getDate(),
+                vali.getTime());
+
         ReservationResponse dto = new ReservationResponse(newReservation);
-        reservations.add(newReservation);
+//        reservations.add(newReservation);
         return ResponseEntity.status(HttpStatus.CREATED).header("Location", "/reservations/" + dto.getId()).body(dto);
     }
 
