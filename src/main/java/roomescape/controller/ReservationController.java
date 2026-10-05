@@ -45,6 +45,7 @@ public class ReservationController {
     public ResponseEntity<Reservation> addReservation(
             @RequestBody Reservation request) {
         if (request.getName() == null || request.getName().isBlank() ||
+                request.getName().length() > 255 ||
                 request.getDate() == null || request.getDate().isBlank() ||
                 request.getTime() == null || request.getTime().isBlank()) {
 

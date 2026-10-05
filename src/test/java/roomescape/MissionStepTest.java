@@ -6,6 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import static org.assertj.core.api.Assertions.tuple;
 import java.sql.Connection;
 import java.sql.SQLException;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -88,6 +89,8 @@ public class MissionStepTest {
         // 필요한 인자가 없는 경우
         assertBadRequest("브라운", "", "15:40");
         assertBadRequest("브라운", "2023-08-05", "");
+        assertBadRequest("a".repeat(256), "2023-08-05", "15:40");
+
 
         // 존재하지 않는 날짜/시간인 경우
         assertBadRequest("브라운", "2023-02-30", "15:40");
@@ -98,6 +101,21 @@ public class MissionStepTest {
                 .when().delete("/reservations/1")
                 .then().log().all()
                 .statusCode(400);
+    }
+
+    @Test
+    void reservation255() {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", "a".repeat(255));
+        params.put("date", "2023-08-05");
+        params.put("time", "15:40");
+
+        RestAssured.given()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/reservations")
+                .then()
+                .statusCode(201);
     }
 
     private void assertBadRequest(String name, String date, String time) {
@@ -129,49 +147,79 @@ public class MissionStepTest {
     }
 
     @Test
-    void sixth() {
-        jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "브라운", "2023-08-05", "15:40");
+    void reservationsFromDatabase() {
+        jdbcTemplate.update(
+                "INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)",
+                "브라운", "2023-08-05", "15:40"
+        );
+        jdbcTemplate.update(
+                "INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)",
+                "블랙", "2023-08-06", "15:40"
+        );
 
-        List<Reservation> reservations = RestAssured.given().log().all()
+        List<Reservation> reservations = RestAssured.given()
                 .when().get("/reservations")
-                .then().log().all()
-                .statusCode(200).extract()
-                .jsonPath().getList(".", Reservation.class);
+                .then().statusCode(200)
+                .extract().jsonPath().getList(".", Reservation.class);
 
-        Integer count = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
-
-        assertThat(reservations.size()).isEqualTo(count);
+        assertThat(reservations)
+                .extracting(
+                        Reservation::getId,
+                        Reservation::getName,
+                        Reservation::getDate,
+                        Reservation::getTime
+                )
+                .containsExactlyInAnyOrder(
+                        tuple(1L, "브라운", "2023-08-05", "15:40"),
+                        tuple(2L, "블랙", "2023-08-06", "15:40")
+                );
     }
 
     @Test
-    void seventh() {
+    void reservationInDatabase() {
+        jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES(?, ?, ?)", "기존 예약", "2023-08-04", "09:00" );
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
         params.put("date", "2023-08-05");
         params.put("time", "10:00");
 
-        RestAssured.given().log().all()
+        String location = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .body(params)
                 .when().post("/reservations")
-                .then().log().all()
+                .then()
                 .statusCode(201)
-                .header("Location", "/reservations/1");
+                .extract()
+                .header("Location");
 
-        Integer count = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
-        assertThat(count).isEqualTo(1);
+        long createdId = Long.parseLong(
+                location.substring(location.lastIndexOf("/") + 1));
 
-        RestAssured.given().log().all()
-                .when().delete("/reservations/1")
-                .then().log().all()
-                .statusCode(204);
+        Integer countAfterCreate = jdbcTemplate.queryForObject(
+                "SELECT count(1) FROM reservation",
+                Integer.class);
+        assertThat(countAfterCreate).isEqualTo(2);
 
-        Integer countAfterDelete = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
-        assertThat(countAfterDelete).isEqualTo(0);
+
+        String createdName = jdbcTemplate.queryForObject(
+                "SELECT name FROM reservation WHERE id = ?",
+                String.class,
+                createdId);
+        assertThat(createdName).isEqualTo("브라운");
+
+
+        RestAssured.given().when().delete(location).then().statusCode(204);
+
+
+        Integer countAfterDelete = jdbcTemplate.queryForObject(
+                "SELECT count(1) FROM reservation",
+                Integer.class);
+        assertThat(countAfterDelete).isEqualTo(1);
+
+        String remainingName = jdbcTemplate.queryForObject(
+                "SELECT name FROM reservation",
+                String.class);
+        assertThat(remainingName).isEqualTo("기존 예약");
     }
-
-
-
-
 }
 
