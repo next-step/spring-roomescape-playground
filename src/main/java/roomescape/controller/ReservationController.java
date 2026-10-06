@@ -49,14 +49,9 @@ public class ReservationController {
             return ps;
         }, keyHolder);
         Long newId = keyHolder.getKey().longValue();
-        Reservation newReservation = new Reservation(
-                newId,
-                validate.getName(),
-                validate.getDate(),
-                validate.getTime());
 
-        ReservationResponse dto = new ReservationResponse(newReservation);
-        return ResponseEntity.status(HttpStatus.CREATED).header("Location", "/reservations/" + dto.getId()).body(dto);
+        ReservationResponse newReservationResponse = new ReservationResponse(newId,validate.getName(),validate.getDate(),validate.getTime());
+        return ResponseEntity.status(HttpStatus.CREATED).header("Location", "/reservations/" + newReservationResponse.getId()).body(newReservationResponse);
     }
 
     @DeleteMapping("/reservations/{id}")
