@@ -38,22 +38,22 @@ public class ReservationController {
     }
 
     @PostMapping("/reservations")
-    public ResponseEntity<ReservationResponse> createReservation(@RequestBody ReservationRequest reservation) {
-        Reservation vali = new Reservation(null, reservation.getName(), reservation.getDate(), reservation.getTime());
+    public ResponseEntity<ReservationResponse> createReservation(@RequestBody ReservationRequest reqeust) {
+        Reservation validate = new Reservation(null, reqeust.getName(), reqeust.getDate(), reqeust.getTime());
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(c -> {
             PreparedStatement ps = c.prepareStatement("insert into reservation(name, date, time) values(?, ?, ?);", new String[]{"id"});
-            ps.setString(1, vali.getName());
-            ps.setString(2, vali.getDate().toString());
-            ps.setString(3, vali.getTime().toString());
+            ps.setString(1, validate.getName());
+            ps.setString(2, validate.getDate().toString());
+            ps.setString(3, validate.getTime().toString());
             return ps;
         }, keyHolder);
         Long newId = keyHolder.getKey().longValue();
         Reservation newReservation = new Reservation(
                 newId,
-                vali.getName(),
-                vali.getDate(),
-                vali.getTime());
+                validate.getName(),
+                validate.getDate(),
+                validate.getTime());
 
         ReservationResponse dto = new ReservationResponse(newReservation);
         return ResponseEntity.status(HttpStatus.CREATED).header("Location", "/reservations/" + dto.getId()).body(dto);
