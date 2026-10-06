@@ -69,12 +69,12 @@ public class ReservationController {
     }
 
     @ExceptionHandler(value = NotFoundException.class)
-    public ResponseEntity<String> handNotFound(NotFoundException e) {
+    public ResponseEntity<String> handleNotFound(NotFoundException e) {
         return ResponseEntity.notFound().build();
     }
 
     @ExceptionHandler(value = IllegalArgumentException.class)
-    public ResponseEntity<String> handIllgealArgument(IllegalArgumentException e) {
+    public ResponseEntity<String> handleIllegalArgument(IllegalArgumentException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 
