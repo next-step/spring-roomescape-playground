@@ -42,7 +42,7 @@ public class ReservationController {
         Reservation vali = new Reservation(null, reservation.getName(), reservation.getDate(), reservation.getTime());
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(c -> {
-            PreparedStatement ps = c.prepareStatement("insert into reservation(name,date,time) values(?,?,?)", new String[]{"id"});
+            PreparedStatement ps = c.prepareStatement("insert into reservation(name,date,time) values(?,?,?);", new String[]{"id"});
             ps.setString(1, vali.getName());
             ps.setString(2, vali.getDate().toString());
             ps.setString(3, vali.getTime().toString());
@@ -61,7 +61,7 @@ public class ReservationController {
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable long id) {
-        int deleted = jdbcTemplate.update("delete from reservation where id = ?", id);
+        int deleted = jdbcTemplate.update("delete from reservation where id = ?;", id);
         if (deleted == 0) {
             throw new NotFoundException("예약을 찾을 수 없습니다. id =" + id);
         }
