@@ -42,7 +42,7 @@ public class ReservationController {
         Reservation vali = new Reservation(null, reservation.getName(), reservation.getDate(), reservation.getTime());
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(c -> {
-            PreparedStatement ps = c.prepareStatement("insert into reservation(name,date,time) values(?,?,?);", new String[]{"id"});
+            PreparedStatement ps = c.prepareStatement("insert into reservation(name, date, time) values(?, ?, ?);", new String[]{"id"});
             ps.setString(1, vali.getName());
             ps.setString(2, vali.getDate().toString());
             ps.setString(3, vali.getTime().toString());
